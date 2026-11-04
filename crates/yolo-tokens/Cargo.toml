@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-tokens"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Canonical multi-preset design tokens (Neutral, Material Design 3, Fluent 2, Apple HIG Liquid Glass, Aphrody Byron Love) and HCT dynamic color engine for Yolo UI."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[features]
+# `std` enables String-returning helpers (CSS export) and 5-preset DynamicScheme builders.
+# Without this feature the crate is `no_std` + `no_alloc` — safe on wasm32-unknown-unknown and embedded targets.
+default = ["std"]
+std     = ["dep:base64", "dep:yolo-shared"]
+embedded-fonts = []
+# PNG/JPEG decode for `image::decode_image` / `image::source_color_from_image_bytes`.
+image   = ["std", "dep:image"]
+# Serde derives for the token types shared with serialized snapshots (`ColorRoles`, `ThemeMode`).
+serde   = ["dep:serde"]
+
+[dependencies]
+base64 = { workspace = true, optional = true }
+image = { workspace = true, optional = true, features = ["png", "jpeg"] }
+serde = { workspace = true, optional = true, features = ["derive"] }
+yolo-shared = { path = "../yolo-shared", optional = true }
+
+[dev-dependencies]
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true, features = ["float_roundtrip"] }

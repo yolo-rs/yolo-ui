@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-emit"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Multi-preset theme emitter for Yolo UI: writes Neutral, M3, Fluent 2, Apple HIG Liquid Glass, and Aphrody Byron Love schemes as CSS, GTK4/libadwaita, KDE, COSMIC, Qt6 QML, WinUI 3, Fluent 2, Apple Liquid Glass, Hyprland, and W3C DTCG themes."
+
+[dependencies]
+yolo-shared = { path = "../yolo-shared" }
+yolo-tokens = { path = "../yolo-tokens" }
+
+[[bin]]
+name = "yolo-emit"
+path = "src/main.rs"

@@ -1,5 +1,5 @@
 # =============================================================================
-# Yolo UI (`aphrody-labs/yolo-ui`) — End-to-End Task Runner (`Justfile`)
+# Yolo UI (`yolo-rs/yolo-ui`) — End-to-End Task Runner (`Justfile`)
 # =============================================================================
 # Unified orchestration for Cargo + sccache + Bun v1.4.4+ + n2b + GitHub CLI (gh)
 
@@ -28,13 +28,13 @@ lint:
     bun fmt --check scripts tests
     bun lint scripts tests
     bun check
-    cargo clippy -p yolo-shared -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase -- -D warnings
+    cargo clippy -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase -- -D warnings
 
 # Run fast typecheck and metadata validation across Bun & Cargo
 check:
     bun check
     cargo metadata --no-deps --format-version 1 > $null
-    cargo check -p yolo-shared -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase
+    cargo check -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-render -p yolo-gpu -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase
 
 # Run all Bun and Rust unit tests
 test: test-bun test-rust
@@ -45,7 +45,7 @@ test-bun:
 
 # Run Rust unit tests across core and multi-engine crates
 test-rust:
-    cargo test -p yolo-shared -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase
+    cargo test -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase
 
 # Build core crates and showcase app
 build:
@@ -55,19 +55,27 @@ build:
 build-release:
     bun scripts/build.ts --release
 
-# Run the unified 4-engine showcase binary (`apps/yolo-showcase`)
+# Run the unified multi-engine showcase binary (`apps/yolo-showcase`)
 showcase:
     cargo run -p yolo-showcase
 
-# Inspect status of all 70 submodules across the 5 upstream ecosystems
+# Unified UI CLI (search, system, theme, migrate, contrast, devtools, awesome, catalog, mcp, doctor)
+ui *ARGS:
+    bun scripts/ui.ts {{ARGS}}
+
+# Full-Bun + Rust React 19 & Expo CLI (create, purge-node, patch-expo, build, status)
+react *ARGS:
+    bun scripts/react-bun.ts {{ARGS}}
+
+# Inspect status of all 124 submodules across the upstream ecosystems
 fleet-status:
     bun scripts/fleet.ts status
 
-# Shallow-sync all 70 submodules (`--depth 1`)
+# Shallow-sync all 124 submodules (`--depth 1`)
 fleet-sync:
     bun scripts/fleet.ts sync
 
-# Generate `fleet.json` inventory for all 70 submodules
+# Generate `fleet.json` inventory for all 124 submodules
 fleet-inventory:
     bun scripts/fleet.ts inventory
 
@@ -89,4 +97,4 @@ sccache-zero:
 
 # Sync GitHub fork status via `gh` CLI
 gh-status:
-    gh repo view aphrody-labs/yolo-ui --json nameWithOwner,defaultBranchRef,diskUsage,pushedAt
+    gh repo view yolo-rs/yolo-ui --json nameWithOwner,defaultBranchRef,diskUsage,pushedAt

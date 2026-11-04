@@ -1,0 +1,21 @@
+[package]
+name = "yolo-craft"
+version = "0.8.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Shared egui creative workbench chrome, docking, layout, tabs, printing, and 13 Craft domain workbench contracts for Yolo UI"
+repository = "https://github.com/yolo-rs/yolo-ui"
+
+[features]
+default = ["serde"]
+serde = ["dep:serde", "egui/serde"]
+
+[dependencies]
+yolo-shared = { path = "../yolo-shared" }
+yolo-tokens = { path = "../yolo-tokens" }
+yolo-contracts = { path = "../yolo-contracts" }
+egui = { version = "0.36.2", default-features = false, features = ["default_fonts"] }
+serde = { version = "1.0.228", features = ["derive"], optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

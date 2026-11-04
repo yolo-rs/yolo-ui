@@ -1,20 +1,46 @@
 {
-  "generatedAt": "2026-11-04T04:28:30.029Z",
-  "repository": "https://github.com/aphrody-labs/yolo-ui",
+  "generatedAt": "2026-11-04T05:35:27.552Z",
+  "repository": "https://github.com/yolo-rs/yolo-ui",
   "version": "0.8.0-alpha.3",
-  "totalSubmodules": 70,
+  "totalSubmodules": 124,
   "byStack": {
     "dioxuslabs": 32,
     "longbridge": 9,
     "zed-industries": 4,
     "iced-rs": 10,
-    "tauri-apps": 15
+    "tauri-apps": 15,
+    "emilk": 2,
+    "pop-os": 1,
+    "gtk-rs": 1,
+    "Relm4": 1,
+    "KDAB": 1,
+    "microsoft": 3,
+    "material-components": 1,
+    "material-foundation": 2,
+    "JetBrains": 1,
+    "macosui": 1,
+    "vinceliuice": 3,
+    "omacom": 3,
+    "hyprwm": 11,
+    "shadcn-ui": 2,
+    "mui": 1,
+    "radix-ui": 1,
+    "tailwindlabs": 2,
+    "bevyengine": 3,
+    "crabnebula-dev": 1,
+    "EmbarkStudios": 1,
+    "facebook": 2,
+    "reactjs": 2,
+    "expo": 5,
+    "ecrindigital": 1,
+    "jhugman": 1,
+    "oxc-project": 1
   },
   "submodules": [
     {
       "name": "accessibility-cli",
       "path": "submodules/accessibility-cli",
-      "url": "https://github.com/aphrody-labs/accessibility-cli.git",
+      "url": "https://github.com/yolo-rs/accessibility-cli.git",
       "sha": "cf7b11008f19ceb37042a6d29ed692dc85698a37",
       "stack": "dioxuslabs",
       "exists": true
@@ -22,7 +48,7 @@
     {
       "name": "anyrender",
       "path": "submodules/anyrender",
-      "url": "https://github.com/aphrody-labs/anyrender.git",
+      "url": "https://github.com/yolo-rs/anyrender.git",
       "sha": "7b7dfbbacc3412a5b5d92df238b6d6937231b1c8",
       "stack": "dioxuslabs",
       "exists": true
@@ -30,7 +56,7 @@
     {
       "name": "async-dispatcher",
       "path": "submodules/async-dispatcher",
-      "url": "https://github.com/aphrody-labs/async-dispatcher.git",
+      "url": "https://github.com/yolo-rs/async-dispatcher.git",
       "sha": "208e59a600fa0be61a4753bba44527fe56d7c69e",
       "stack": "longbridge",
       "exists": true
@@ -38,63 +64,143 @@
     {
       "name": "autocorrect",
       "path": "submodules/autocorrect",
-      "url": "https://github.com/aphrody-labs/autocorrect.git",
+      "url": "https://github.com/yolo-rs/autocorrect.git",
       "sha": "4660010ddb2190fdb34e549b954d84df7dfc0667",
       "stack": "longbridge",
       "exists": true
     },
     {
+      "name": "awesome-bevy",
+      "path": "submodules/awesome-bevy",
+      "url": "https://github.com/yolo-rs/awesome-bevy.git",
+      "sha": "b08835057401d811f60e9eb91cdcd329175f7b1d",
+      "stack": "bevyengine",
+      "exists": true
+    },
+    {
       "name": "awesome-dioxus",
       "path": "submodules/awesome-dioxus",
-      "url": "https://github.com/aphrody-labs/awesome-dioxus.git",
+      "url": "https://github.com/yolo-rs/awesome-dioxus.git",
       "sha": "fb514f36b2e3a17c584e79dd7cb9b0587361da30",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "awesome-egui",
+      "path": "submodules/awesome-egui",
+      "url": "https://github.com/yolo-rs/awesome-egui.git",
+      "sha": "39e204e3c328ba29e6a5540fe68741b7e3a4aa1a",
+      "stack": "emilk",
+      "exists": true
+    },
+    {
       "name": "awesome-gpui",
       "path": "submodules/awesome-gpui",
-      "url": "https://github.com/aphrody-labs/awesome-gpui.git",
+      "url": "https://github.com/yolo-rs/awesome-gpui.git",
       "sha": "839af7f962c49dd930e3167ed7c9fb826da57c9b",
       "stack": "longbridge",
       "exists": true
     },
     {
+      "name": "awesome-hyprland",
+      "path": "submodules/awesome-hyprland",
+      "url": "https://github.com/yolo-rs/awesome-hyprland.git",
+      "sha": "e2b43d67ec06aeee8164957c318a09a1f94f833c",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
       "name": "awesome-iced",
       "path": "submodules/awesome-iced",
-      "url": "https://github.com/aphrody-labs/awesome-iced.git",
+      "url": "https://github.com/yolo-rs/awesome-iced.git",
       "sha": "ad22ef9b689d9aa8fb4f24f5416e9f8fed22ce4c",
       "stack": "iced-rs",
       "exists": true
     },
     {
+      "name": "awesome-omarchy",
+      "path": "submodules/awesome-omarchy",
+      "url": "https://github.com/yolo-rs/awesome-omarchy.git",
+      "sha": "14c777eb10f16c627b1974922e35c7c7af2e2678",
+      "stack": "omacom",
+      "exists": true
+    },
+    {
+      "name": "awesome-shadcn-ui",
+      "path": "submodules/awesome-shadcn-ui",
+      "url": "https://github.com/yolo-rs/awesome-shadcn-ui.git",
+      "sha": "8a82198136f30cb45591ae331f9c25e02e425494",
+      "stack": "shadcn-ui",
+      "exists": true
+    },
+    {
+      "name": "awesome-tailwindcss",
+      "path": "submodules/awesome-tailwindcss",
+      "url": "https://github.com/yolo-rs/awesome-tailwindcss.git",
+      "sha": "3759163f6a6f162f4d5a3dc1950636344ddd87c4",
+      "stack": "tailwindlabs",
+      "exists": true
+    },
+    {
       "name": "awesome-tauri",
       "path": "submodules/awesome-tauri",
-      "url": "https://github.com/aphrody-labs/awesome-tauri.git",
+      "url": "https://github.com/yolo-rs/awesome-tauri.git",
       "sha": "a68d51963d5aea5e1cf2149cce4ac752166e2587",
       "stack": "tauri-apps",
       "exists": true
     },
     {
+      "name": "base-ui",
+      "path": "submodules/base-ui",
+      "url": "https://github.com/yolo-rs/base-ui.git",
+      "sha": "cf696d6f6e08c699c5bda24d5a033430909f2285",
+      "stack": "mui",
+      "exists": true
+    },
+    {
       "name": "bedina",
       "path": "submodules/bedina",
-      "url": "https://github.com/aphrody-labs/bedina.git",
+      "url": "https://github.com/yolo-rs/bedina.git",
       "sha": "32e3873a0b14ba19a7d368f9e679a7bc94951dbe",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "bevy",
+      "path": "submodules/bevy",
+      "url": "https://github.com/yolo-rs/bevy.git",
+      "sha": "4c344352e063923257e50efd65f265fea76bb4ff",
+      "stack": "bevyengine",
+      "exists": true
+    },
+    {
+      "name": "bevy-inspector-egui",
+      "path": "submodules/bevy-inspector-egui",
+      "url": "https://github.com/yolo-rs/bevy-inspector-egui.git",
+      "sha": "9ac848f7a12832347625c71110f03a8cd25d3ffb",
+      "stack": "bevyengine",
+      "exists": true
+    },
+    {
       "name": "blitz",
       "path": "submodules/blitz",
-      "url": "https://github.com/aphrody-labs/blitz.git",
+      "url": "https://github.com/yolo-rs/blitz.git",
       "sha": "cecf9b2c753b9e951cc66db282e7017c71a3f96c",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "caelestia-shell",
+      "path": "submodules/caelestia-shell",
+      "url": "https://github.com/yolo-rs/caelestia-shell.git",
+      "sha": "bcbb5d5139d5159839c7362d8f4954ccc7dbd67d",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
       "name": "cargo-mobile2",
       "path": "submodules/cargo-mobile2",
-      "url": "https://github.com/aphrody-labs/cargo-mobile2.git",
+      "url": "https://github.com/yolo-rs/cargo-mobile2.git",
       "sha": "d00fc95619611eff47a956e9b434936317e9258f",
       "stack": "tauri-apps",
       "exists": true
@@ -102,15 +208,23 @@
     {
       "name": "comet",
       "path": "submodules/comet",
-      "url": "https://github.com/aphrody-labs/comet.git",
+      "url": "https://github.com/yolo-rs/comet.git",
       "sha": "4b4eb8915bf96f97a49c55f45ef5a5dcdd3917fe",
       "stack": "iced-rs",
       "exists": true
     },
     {
+      "name": "compose-multiplatform",
+      "path": "submodules/compose-multiplatform",
+      "url": "https://github.com/yolo-rs/compose-multiplatform.git",
+      "sha": "1574503571a25a3e71f71fef51962beefc494df6",
+      "stack": "JetBrains",
+      "exists": true
+    },
+    {
       "name": "create-gpui-app",
       "path": "submodules/create-gpui-app",
-      "url": "https://github.com/aphrody-labs/create-gpui-app.git",
+      "url": "https://github.com/yolo-rs/create-gpui-app.git",
       "sha": "63fbe214da83c5409f6845147d793d595b12e2c5",
       "stack": "longbridge",
       "exists": true
@@ -118,7 +232,7 @@
     {
       "name": "create-tauri-app",
       "path": "submodules/create-tauri-app",
-      "url": "https://github.com/aphrody-labs/create-tauri-app.git",
+      "url": "https://github.com/yolo-rs/create-tauri-app.git",
       "sha": "c6f5cf68942f187ba7bb738a49ee505c28e6ca5a",
       "stack": "tauri-apps",
       "exists": true
@@ -126,15 +240,23 @@
     {
       "name": "cryoglyph",
       "path": "submodules/cryoglyph",
-      "url": "https://github.com/aphrody-labs/cryoglyph.git",
+      "url": "https://github.com/yolo-rs/cryoglyph.git",
       "sha": "cf38ed5ea0cfe95270b31ced2910560a7fcc5003",
       "stack": "iced-rs",
       "exists": true
     },
     {
+      "name": "cxx-qt",
+      "path": "submodules/cxx-qt",
+      "url": "https://github.com/yolo-rs/cxx-qt.git",
+      "sha": "066d425c5b96c7238e1eda30b1b98df70977ac89",
+      "stack": "KDAB",
+      "exists": true
+    },
+    {
       "name": "deploy-action",
       "path": "submodules/deploy-action",
-      "url": "https://github.com/aphrody-labs/deploy-action.git",
+      "url": "https://github.com/yolo-rs/deploy-action.git",
       "sha": "4f933485ec8f37a9dc1beec181f4eba58789523e",
       "stack": "dioxuslabs",
       "exists": true
@@ -142,7 +264,7 @@
     {
       "name": "dioxus-ai",
       "path": "submodules/dioxus-ai",
-      "url": "https://github.com/aphrody-labs/dioxus-ai.git",
+      "url": "https://github.com/yolo-rs/dioxus-ai.git",
       "sha": "ff54cdf05092cd8f2bf4cc13049e2281b9ef4c5b",
       "stack": "dioxuslabs",
       "exists": true
@@ -150,7 +272,7 @@
     {
       "name": "dioxus-code",
       "path": "submodules/dioxus-code",
-      "url": "https://github.com/aphrody-labs/dioxus-code.git",
+      "url": "https://github.com/yolo-rs/dioxus-code.git",
       "sha": "52a095876706838f040cd6daf15cb38b9d09a129",
       "stack": "dioxuslabs",
       "exists": true
@@ -158,7 +280,7 @@
     {
       "name": "dioxus-components",
       "path": "submodules/dioxus-components",
-      "url": "https://github.com/aphrody-labs/dioxus-components.git",
+      "url": "https://github.com/yolo-rs/dioxus-components.git",
       "sha": "e0e35af32684d4a165757f391b79fc9cd1aa445c",
       "stack": "dioxuslabs",
       "exists": true
@@ -166,7 +288,7 @@
     {
       "name": "dioxus-html-macro",
       "path": "submodules/dioxus-html-macro",
-      "url": "https://github.com/aphrody-labs/dioxus-html-macro.git",
+      "url": "https://github.com/yolo-rs/dioxus-html-macro.git",
       "sha": "f109d1cf816889f3b7bce95b4c46618c5609adbb",
       "stack": "dioxuslabs",
       "exists": true
@@ -174,7 +296,7 @@
     {
       "name": "dioxus-icons",
       "path": "submodules/dioxus-icons",
-      "url": "https://github.com/aphrody-labs/dioxus-icons.git",
+      "url": "https://github.com/yolo-rs/dioxus-icons.git",
       "sha": "77aa396220e4b002042c4c38778cffc12cce5437",
       "stack": "dioxuslabs",
       "exists": true
@@ -182,7 +304,7 @@
     {
       "name": "dioxus-search",
       "path": "submodules/dioxus-search",
-      "url": "https://github.com/aphrody-labs/dioxus-search.git",
+      "url": "https://github.com/yolo-rs/dioxus-search.git",
       "sha": "17e05f9972ea2c052cf7e0fe42faa7b46a7f49a4",
       "stack": "dioxuslabs",
       "exists": true
@@ -190,7 +312,7 @@
     {
       "name": "dioxus-taffy",
       "path": "submodules/dioxus-taffy",
-      "url": "https://github.com/aphrody-labs/dioxus-taffy.git",
+      "url": "https://github.com/yolo-rs/dioxus-taffy.git",
       "sha": "32a714063200e7ef14791a494621f7435cdacfad",
       "stack": "dioxuslabs",
       "exists": true
@@ -198,7 +320,7 @@
     {
       "name": "dioxus-template",
       "path": "submodules/dioxus-template",
-      "url": "https://github.com/aphrody-labs/dioxus-template.git",
+      "url": "https://github.com/yolo-rs/dioxus-template.git",
       "sha": "fdaeaae9d964fa8a871525c82576eb3cdee416dc",
       "stack": "dioxuslabs",
       "exists": true
@@ -206,7 +328,7 @@
     {
       "name": "dioxus-test",
       "path": "submodules/dioxus-test",
-      "url": "https://github.com/aphrody-labs/dioxus-test.git",
+      "url": "https://github.com/yolo-rs/dioxus-test.git",
       "sha": "7ca1bd6c5d0562ef162228e5365d13f86ad06a76",
       "stack": "dioxuslabs",
       "exists": true
@@ -214,23 +336,95 @@
     {
       "name": "docsite",
       "path": "submodules/docsite",
-      "url": "https://github.com/aphrody-labs/docsite.git",
+      "url": "https://github.com/yolo-rs/docsite.git",
       "sha": "675ad77b6213640fee8ff8120ffe10a6b9aa26cc",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "eas-cli",
+      "path": "submodules/eas-cli",
+      "url": "https://github.com/yolo-rs/eas-cli.git",
+      "sha": "156e38eb54c9156202786c97fcb64c110430fe53",
+      "stack": "expo",
+      "exists": true
+    },
+    {
+      "name": "egui",
+      "path": "submodules/egui",
+      "url": "https://github.com/yolo-rs/egui.git",
+      "sha": "fc9d66dda742d722eedaa8684d23f86369cf8e5f",
+      "stack": "emilk",
+      "exists": true
+    },
+    {
       "name": "example-projects",
       "path": "submodules/example-projects",
-      "url": "https://github.com/aphrody-labs/example-projects.git",
+      "url": "https://github.com/yolo-rs/example-projects.git",
       "sha": "db87199d2fcdbdd70cf5b6bed5b156ac35fb1e91",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "expo",
+      "path": "submodules/expo",
+      "url": "https://github.com/yolo-rs/expo.git",
+      "sha": "7bb3dd73691b4d7c61544581d8557ac0790dec84",
+      "stack": "expo",
+      "exists": true
+    },
+    {
+      "name": "expo-device-hub",
+      "path": "submodules/expo-device-hub",
+      "url": "https://github.com/yolo-rs/expo-device-hub.git",
+      "sha": "79221dfb1d0822edbd606435175639b541b98813",
+      "stack": "expo",
+      "exists": true
+    },
+    {
+      "name": "expo-ibex",
+      "path": "submodules/expo-ibex",
+      "url": "https://github.com/yolo-rs/ibex.git",
+      "sha": "a0183568e8229b8243629cdb26cd4a88ac4e2abd",
+      "stack": "expo",
+      "exists": true
+    },
+    {
+      "name": "expo-skills",
+      "path": "submodules/expo-skills",
+      "url": "https://github.com/yolo-rs/expo-skills.git",
+      "sha": "a9e5bd3fa00b4e61f632e43f85da73aee1942582",
+      "stack": "expo",
+      "exists": true
+    },
+    {
+      "name": "facetpack",
+      "path": "submodules/facetpack",
+      "url": "https://github.com/yolo-rs/facetpack.git",
+      "sha": "14dd668aa4a6af8e2bee613c7abff1be06a20529",
+      "stack": "ecrindigital",
+      "exists": true
+    },
+    {
+      "name": "fluentui",
+      "path": "submodules/fluentui",
+      "url": "https://github.com/yolo-rs/fluentui.git",
+      "sha": "a2ebcfa86f7df5930fb4c75a4dde5b81c6d24860",
+      "stack": "microsoft",
+      "exists": true
+    },
+    {
+      "name": "fluentui-system-icons",
+      "path": "submodules/fluentui-system-icons",
+      "url": "https://github.com/yolo-rs/fluentui-system-icons.git",
+      "sha": "9bfae3d782fda4c8764f2128cec4d0dda160b283",
+      "stack": "microsoft",
+      "exists": true
+    },
+    {
       "name": "font-kit",
       "path": "submodules/font-kit",
-      "url": "https://github.com/aphrody-labs/font-kit.git",
+      "url": "https://github.com/yolo-rs/font-kit.git",
       "sha": "ab2ef66421612d6e0c103885dc5a7b7d0d110c2c",
       "stack": "zed-industries",
       "exists": true
@@ -238,7 +432,7 @@
     {
       "name": "global-hotkey",
       "path": "submodules/global-hotkey",
-      "url": "https://github.com/aphrody-labs/global-hotkey.git",
+      "url": "https://github.com/yolo-rs/global-hotkey.git",
       "sha": "c0ee632d8dd4725f2c299cb010453590baa6ecec",
       "stack": "tauri-apps",
       "exists": true
@@ -246,7 +440,7 @@
     {
       "name": "gpui-fast",
       "path": "submodules/gpui-fast",
-      "url": "https://github.com/aphrody-labs/gpui-fast.git",
+      "url": "https://github.com/yolo-rs/gpui-fast.git",
       "sha": "36956df0eb284faba6bd062f5258d5792d464001",
       "stack": "zed-industries",
       "exists": true
@@ -254,7 +448,7 @@
     {
       "name": "gpui-kit",
       "path": "submodules/gpui-kit",
-      "url": "https://github.com/aphrody-labs/gpui-kit.git",
+      "url": "https://github.com/yolo-rs/gpui-kit.git",
       "sha": "b90316b4e6abf1504169e4ae2d21a5906fe65107",
       "stack": "longbridge",
       "exists": true
@@ -262,15 +456,79 @@
     {
       "name": "gpui-mobile",
       "path": "submodules/gpui-mobile",
-      "url": "https://github.com/aphrody-labs/gpui-mobile.git",
+      "url": "https://github.com/yolo-rs/gpui-mobile.git",
       "sha": "7548ebc4b24f00494af9976af8852c7163ded9ce",
       "stack": "longbridge",
       "exists": true
     },
     {
+      "name": "gtk4-rs",
+      "path": "submodules/gtk4-rs",
+      "url": "https://github.com/yolo-rs/gtk4-rs.git",
+      "sha": "4b1aeb496f6af45c4cfca654fcfd2f8b49a8feb6",
+      "stack": "gtk-rs",
+      "exists": true
+    },
+    {
+      "name": "hyprland",
+      "path": "submodules/hyprland",
+      "url": "https://github.com/yolo-rs/Hyprland.git",
+      "sha": "a8a2c24c5bdcec8fc0f65eb24b2933488d90851e",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprland-website",
+      "path": "submodules/hyprland-website",
+      "url": "https://github.com/yolo-rs/hyprland-website.git",
+      "sha": "c31130c2378de8bcac9de028dfc70547586c2dc9",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprlauncher",
+      "path": "submodules/hyprlauncher",
+      "url": "https://github.com/yolo-rs/hyprlauncher.git",
+      "sha": "bdc5f288c2eb348f42163adc1c30e1bc7606c80e",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprlock",
+      "path": "submodules/hyprlock",
+      "url": "https://github.com/yolo-rs/hyprlock.git",
+      "sha": "73969a083e28f5c58428c7239f7b44c32e5fe996",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprperks-dotfiles",
+      "path": "submodules/hyprperks-dotfiles",
+      "url": "https://github.com/yolo-rs/hyprperks-dotfiles.git",
+      "sha": "b87d79b3d7b523e579a873e969e5fca9fc2abe5d",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprqt6engine",
+      "path": "submodules/hyprqt6engine",
+      "url": "https://github.com/yolo-rs/hyprqt6engine.git",
+      "sha": "d0ce29ca5471f406c71558cd9453573686b8c976",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
+      "name": "hyprtoolkit",
+      "path": "submodules/hyprtoolkit",
+      "url": "https://github.com/yolo-rs/hyprtoolkit.git",
+      "sha": "92646e15fb295285b10de626f2d9597216465f7b",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
       "name": "iced",
       "path": "submodules/iced",
-      "url": "https://github.com/aphrody-labs/iced.git",
+      "url": "https://github.com/yolo-rs/iced.git",
       "sha": "266566f9ec9754bb25ae63e55a0c74d079a8d712",
       "stack": "iced-rs",
       "exists": true
@@ -278,7 +536,7 @@
     {
       "name": "iced_audio",
       "path": "submodules/iced_audio",
-      "url": "https://github.com/aphrody-labs/iced_audio.git",
+      "url": "https://github.com/yolo-rs/iced_audio.git",
       "sha": "3b8967c6d8263fe3d8ea703068699af253a9afa0",
       "stack": "iced-rs",
       "exists": true
@@ -286,7 +544,7 @@
     {
       "name": "iced_aw",
       "path": "submodules/iced_aw",
-      "url": "https://github.com/aphrody-labs/iced_aw.git",
+      "url": "https://github.com/yolo-rs/iced_aw.git",
       "sha": "f80f6592807ce79d24f8dbffb37570a4b448fde8",
       "stack": "iced-rs",
       "exists": true
@@ -294,15 +552,15 @@
     {
       "name": "iced-book",
       "path": "submodules/iced-book",
-      "url": "https://github.com/aphrody-labs/iced-book.git",
+      "url": "https://github.com/yolo-rs/iced-book.git",
       "sha": "fae769c12b44fb3aedb3d836332eaf892a0bdc57",
       "stack": "iced-rs",
-      "exists": false
+      "exists": true
     },
     {
       "name": "iced-opengl",
       "path": "submodules/iced-opengl",
-      "url": "https://github.com/aphrody-labs/iced-opengl.git",
+      "url": "https://github.com/yolo-rs/iced-opengl.git",
       "sha": "c387a46025e2b2b73a82af3793f19f1423aad90c",
       "stack": "iced-rs",
       "exists": true
@@ -310,7 +568,7 @@
     {
       "name": "iced-rfcs",
       "path": "submodules/iced-rfcs",
-      "url": "https://github.com/aphrody-labs/iced-rfcs.git",
+      "url": "https://github.com/yolo-rs/iced-rfcs.git",
       "sha": "464a0fd52693a509228bdd99e06f9b25670dbf9b",
       "stack": "iced-rs",
       "exists": true
@@ -318,23 +576,71 @@
     {
       "name": "include_mdbook",
       "path": "submodules/include_mdbook",
-      "url": "https://github.com/aphrody-labs/include_mdbook.git",
+      "url": "https://github.com/yolo-rs/include_mdbook.git",
       "sha": "0c7fcbc10cd40f3ba469fc166fe163789dad7935",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "libcosmic",
+      "path": "submodules/libcosmic",
+      "url": "https://github.com/yolo-rs/libcosmic.git",
+      "sha": "3abe177e5cb6522e4b905260da56451bc8084c07",
+      "stack": "pop-os",
+      "exists": true
+    },
+    {
+      "name": "macos-ui",
+      "path": "submodules/macos-ui",
+      "url": "https://github.com/yolo-rs/macos_ui.git",
+      "sha": "dec19cf6960721f80165ead6c9c19594030b292f",
+      "stack": "macosui",
+      "exists": true
+    },
+    {
+      "name": "mactahoe-gtk-theme",
+      "path": "submodules/mactahoe-gtk-theme",
+      "url": "https://github.com/yolo-rs/MacTahoe-gtk-theme.git",
+      "sha": "1e45e19f510edb8cde18fa84d6cd5319f60b086b",
+      "stack": "vinceliuice",
+      "exists": true
+    },
+    {
       "name": "markdown",
       "path": "submodules/markdown",
-      "url": "https://github.com/aphrody-labs/markdown.git",
+      "url": "https://github.com/yolo-rs/markdown.git",
       "sha": "73846794e9f02956208becd5f3b60bd4eff6c570",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "material-color-utilities",
+      "path": "submodules/material-color-utilities",
+      "url": "https://github.com/yolo-rs/material-color-utilities.git",
+      "sha": "047df89987a5b03682a976c86242fd6e2b77e02a",
+      "stack": "material-foundation",
+      "exists": true
+    },
+    {
+      "name": "material-tokens",
+      "path": "submodules/material-tokens",
+      "url": "https://github.com/yolo-rs/material-tokens.git",
+      "sha": "4da7518146b2e9fd6ce7d84670ffd48b4fc1cded",
+      "stack": "material-foundation",
+      "exists": true
+    },
+    {
+      "name": "material-web",
+      "path": "submodules/material-web",
+      "url": "https://github.com/yolo-rs/material-web.git",
+      "sha": "6ce5a9eb82bc615ce4e0c81a78723d9283a7b835",
+      "stack": "material-components",
+      "exists": true
+    },
+    {
       "name": "mdbook-iced",
       "path": "submodules/mdbook-iced",
-      "url": "https://github.com/aphrody-labs/mdbook-iced.git",
+      "url": "https://github.com/yolo-rs/mdbook-iced.git",
       "sha": "e629d53b24610d92a7c3268b0a50cdf03a4aaf4b",
       "stack": "iced-rs",
       "exists": true
@@ -342,23 +648,55 @@
     {
       "name": "muda",
       "path": "submodules/muda",
-      "url": "https://github.com/aphrody-labs/muda.git",
+      "url": "https://github.com/yolo-rs/muda.git",
       "sha": "5b54a194beed7a11c1547e9b7a01ae6d96927c2b",
       "stack": "tauri-apps",
       "exists": true
     },
     {
+      "name": "noctalia",
+      "path": "submodules/noctalia",
+      "url": "https://github.com/yolo-rs/noctalia.git",
+      "sha": "44e136995a742685bb7d0cb72118cb1d257f6fc2",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
       "name": "nsh",
       "path": "submodules/nsh",
-      "url": "https://github.com/aphrody-labs/nsh.git",
+      "url": "https://github.com/yolo-rs/nsh.git",
       "sha": "93b9f122a982a44aa845d259d9facf9756b7342d",
       "stack": "longbridge",
       "exists": true
     },
     {
+      "name": "omarchy",
+      "path": "submodules/omarchy",
+      "url": "https://github.com/yolo-rs/omarchy.git",
+      "sha": "6ba05d7732f365c7655202c9ee0eae0afcfdc340",
+      "stack": "omacom",
+      "exists": true
+    },
+    {
+      "name": "omarchy-site",
+      "path": "submodules/omarchy-site",
+      "url": "https://github.com/yolo-rs/omarchy-site.git",
+      "sha": "5ce88c0ac1fd10feb50be4106e2e8b33fca8e2f8",
+      "stack": "omacom",
+      "exists": true
+    },
+    {
+      "name": "oxc",
+      "path": "submodules/oxc",
+      "url": "https://github.com/yolo-rs/oxc.git",
+      "sha": "ea76490ca5341e3f413ece4cc766c9c1c836cd3e",
+      "stack": "oxc-project",
+      "exists": true
+    },
+    {
       "name": "parley",
       "path": "submodules/parley",
-      "url": "https://github.com/aphrody-labs/parley.git",
+      "url": "https://github.com/yolo-rs/parley.git",
       "sha": "7403f3ee43eebe4b1c9a5cd2d0786983690b6423",
       "stack": "dioxuslabs",
       "exists": true
@@ -366,7 +704,7 @@
     {
       "name": "playground",
       "path": "submodules/playground",
-      "url": "https://github.com/aphrody-labs/playground.git",
+      "url": "https://github.com/yolo-rs/playground.git",
       "sha": "e9b830a300d04365592a30cfee3dd8bd390beb93",
       "stack": "dioxuslabs",
       "exists": true
@@ -374,7 +712,7 @@
     {
       "name": "plugins-workspace",
       "path": "submodules/plugins-workspace",
-      "url": "https://github.com/aphrody-labs/plugins-workspace.git",
+      "url": "https://github.com/yolo-rs/plugins-workspace.git",
       "sha": "14ed4c4f9e717929347b9c5609acaefc259a4e22",
       "stack": "tauri-apps",
       "exists": true
@@ -382,15 +720,71 @@
     {
       "name": "prettier-please",
       "path": "submodules/prettier-please",
-      "url": "https://github.com/aphrody-labs/prettier-please.git",
+      "url": "https://github.com/yolo-rs/prettier-please.git",
       "sha": "21b87f8a60cb00d6ffba651d314b4e6f740bccff",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "puffin",
+      "path": "submodules/puffin",
+      "url": "https://github.com/yolo-rs/puffin.git",
+      "sha": "39c8970abd6a95871bcaf0d3581c494885f2edd5",
+      "stack": "EmbarkStudios",
+      "exists": true
+    },
+    {
+      "name": "radix-primitives",
+      "path": "submodules/radix-primitives",
+      "url": "https://github.com/yolo-rs/primitives.git",
+      "sha": "eb3a2b7091293e27df8f9ba906632d8daa3d81a3",
+      "stack": "radix-ui",
+      "exists": true
+    },
+    {
+      "name": "react",
+      "path": "submodules/react",
+      "url": "https://github.com/yolo-rs/react.git",
+      "sha": "76baa3b5434fad315ece9cfd4d20d7a8d6c34a25",
+      "stack": "facebook",
+      "exists": true
+    },
+    {
+      "name": "react-dev",
+      "path": "submodules/react-dev",
+      "url": "https://github.com/yolo-rs/react.dev.git",
+      "sha": "6b0a30d54e188ce6f9f84ee6187598aab5d7f2eb",
+      "stack": "reactjs",
+      "exists": true
+    },
+    {
+      "name": "react-docgen",
+      "path": "submodules/react-docgen",
+      "url": "https://github.com/yolo-rs/react-docgen.git",
+      "sha": "2575580d8fdf2a91f4bea43ffd7b245d6610bd92",
+      "stack": "reactjs",
+      "exists": true
+    },
+    {
+      "name": "react-native",
+      "path": "submodules/react-native",
+      "url": "https://github.com/yolo-rs/react-native.git",
+      "sha": "edf2b86e63b311cd844a53b7fba474e9b0994658",
+      "stack": "facebook",
+      "exists": true
+    },
+    {
+      "name": "relm4",
+      "path": "submodules/relm4",
+      "url": "https://github.com/yolo-rs/Relm4.git",
+      "sha": "36b273d460fcf5bb721639fa644072e5e607a4b0",
+      "stack": "Relm4",
+      "exists": true
+    },
+    {
       "name": "rink",
       "path": "submodules/rink",
-      "url": "https://github.com/aphrody-labs/rink.git",
+      "url": "https://github.com/yolo-rs/rink.git",
       "sha": "55ca83a397d9d12938ad186a2009ed9b76e110ea",
       "stack": "dioxuslabs",
       "exists": true
@@ -398,7 +792,7 @@
     {
       "name": "rsrpc",
       "path": "submodules/rsrpc",
-      "url": "https://github.com/aphrody-labs/rsrpc.git",
+      "url": "https://github.com/yolo-rs/rsrpc.git",
       "sha": "cc7dc7770cbd1d39f6fb25d654902c6e659565ac",
       "stack": "dioxuslabs",
       "exists": true
@@ -406,7 +800,7 @@
     {
       "name": "rust-i18n",
       "path": "submodules/rust-i18n",
-      "url": "https://github.com/aphrody-labs/rust-i18n.git",
+      "url": "https://github.com/yolo-rs/rust-i18n.git",
       "sha": "5f3ea5ba03395f2f2908e3587e01788cfdfd3555",
       "stack": "longbridge",
       "exists": true
@@ -414,7 +808,7 @@
     {
       "name": "rustd",
       "path": "submodules/rustd",
-      "url": "https://github.com/aphrody-labs/rustd.git",
+      "url": "https://github.com/yolo-rs/rustd.git",
       "sha": "ebcd234a02f769e380875b8b80e18164bba1b353",
       "stack": "dioxuslabs",
       "exists": true
@@ -422,7 +816,7 @@
     {
       "name": "scap",
       "path": "submodules/scap",
-      "url": "https://github.com/aphrody-labs/scap.git",
+      "url": "https://github.com/yolo-rs/scap.git",
       "sha": "b5c86ec58dd4b6b7732bf6ac8be03d6b1f190a82",
       "stack": "zed-industries",
       "exists": true
@@ -430,23 +824,39 @@
     {
       "name": "sdk",
       "path": "submodules/sdk",
-      "url": "https://github.com/aphrody-labs/sdk.git",
+      "url": "https://github.com/yolo-rs/sdk.git",
       "sha": "2214da17f318a9774516959264352d99de752317",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "shadcn-ui",
+      "path": "submodules/shadcn-ui",
+      "url": "https://github.com/yolo-rs/shadcn-ui.git",
+      "sha": "4aaea19d9cff3e0908e12a8c1d504b8c5ec34610",
+      "stack": "shadcn-ui",
+      "exists": true
+    },
+    {
       "name": "taffy",
       "path": "submodules/taffy",
-      "url": "https://github.com/aphrody-labs/taffy.git",
+      "url": "https://github.com/yolo-rs/taffy.git",
       "sha": "f484b7c4a4586cd762a0858eaa05c05160f48c59",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "tailwindcss",
+      "path": "submodules/tailwindcss",
+      "url": "https://github.com/yolo-rs/tailwindcss.git",
+      "sha": "2626ae6ceddf36069ab6d55c53a5857c1e2e360a",
+      "stack": "tailwindlabs",
+      "exists": true
+    },
+    {
       "name": "tao",
       "path": "submodules/tao",
-      "url": "https://github.com/aphrody-labs/tao.git",
+      "url": "https://github.com/yolo-rs/tao.git",
       "sha": "16b432cb00a5f0dabaf46db74484ca95dca5910b",
       "stack": "tauri-apps",
       "exists": true
@@ -454,7 +864,7 @@
     {
       "name": "tauri",
       "path": "submodules/tauri",
-      "url": "https://github.com/aphrody-labs/tauri.git",
+      "url": "https://github.com/yolo-rs/tauri.git",
       "sha": "78f49ba3993fed5a1b921235c547731006ad2a74",
       "stack": "tauri-apps",
       "exists": true
@@ -462,7 +872,7 @@
     {
       "name": "tauri-action",
       "path": "submodules/tauri-action",
-      "url": "https://github.com/aphrody-labs/tauri-action.git",
+      "url": "https://github.com/yolo-rs/tauri-action.git",
       "sha": "a6e90ddc4ba4721f294e52b856d3d50e645edc07",
       "stack": "tauri-apps",
       "exists": true
@@ -470,15 +880,23 @@
     {
       "name": "tauri-bindgen",
       "path": "submodules/tauri-bindgen",
-      "url": "https://github.com/aphrody-labs/tauri-bindgen.git",
+      "url": "https://github.com/yolo-rs/tauri-bindgen.git",
       "sha": "16e49f59c4c15ace9ac35a1506f35e457b04ee25",
       "stack": "tauri-apps",
       "exists": true
     },
     {
+      "name": "tauri-devtools",
+      "path": "submodules/tauri-devtools",
+      "url": "https://github.com/yolo-rs/crabnebula-devtools.git",
+      "sha": "5f4ae48fdfc5abc63df281baa3b5c97bf8012a70",
+      "stack": "crabnebula-dev",
+      "exists": true
+    },
+    {
       "name": "tauri-docs",
       "path": "submodules/tauri-docs",
-      "url": "https://github.com/aphrody-labs/tauri-docs.git",
+      "url": "https://github.com/yolo-rs/tauri-docs.git",
       "sha": "f2e14b4fdba36ac35a61ce309846b53c45ec606e",
       "stack": "tauri-apps",
       "exists": true
@@ -486,7 +904,7 @@
     {
       "name": "tauri-vscode",
       "path": "submodules/tauri-vscode",
-      "url": "https://github.com/aphrody-labs/tauri-vscode.git",
+      "url": "https://github.com/yolo-rs/tauri-vscode.git",
       "sha": "0c0109a624d69c8ff342af762f14bb54e77ab16e",
       "stack": "tauri-apps",
       "exists": true
@@ -494,15 +912,23 @@
     {
       "name": "tray-icon",
       "path": "submodules/tray-icon",
-      "url": "https://github.com/aphrody-labs/tray-icon.git",
+      "url": "https://github.com/yolo-rs/tray-icon.git",
       "sha": "23ef3d2fe2aff76cc4966099d560ede59191e000",
       "stack": "tauri-apps",
       "exists": true
     },
     {
+      "name": "uniffi-react-native",
+      "path": "submodules/uniffi-react-native",
+      "url": "https://github.com/yolo-rs/uniffi-bindgen-react-native.git",
+      "sha": "3c0b98c5877af3fd7712c7a65d23dbfc13e8a222",
+      "stack": "jhugman",
+      "exists": true
+    },
+    {
       "name": "vello_svg",
       "path": "submodules/vello_svg",
-      "url": "https://github.com/aphrody-labs/vello_svg.git",
+      "url": "https://github.com/yolo-rs/vello_svg.git",
       "sha": "f2db36e3079aa026c83993889642bf567528a8a5",
       "stack": "dioxuslabs",
       "exists": true
@@ -510,7 +936,7 @@
     {
       "name": "warnings",
       "path": "submodules/warnings",
-      "url": "https://github.com/aphrody-labs/warnings.git",
+      "url": "https://github.com/yolo-rs/warnings.git",
       "sha": "dcb98c6b533eb15e2f01a64c420feabd4b7a70bb",
       "stack": "dioxuslabs",
       "exists": true
@@ -518,15 +944,23 @@
     {
       "name": "wasm-bindgen-wry",
       "path": "submodules/wasm-bindgen-wry",
-      "url": "https://github.com/aphrody-labs/wasm-bindgen-wry.git",
+      "url": "https://github.com/yolo-rs/wasm-bindgen-wry.git",
       "sha": "ae6de9fe499eef0c2fe04f817f3515371b360c88",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "wayle",
+      "path": "submodules/wayle",
+      "url": "https://github.com/yolo-rs/wayle.git",
+      "sha": "e4a1e0d62cc16984439e4cb5b4634589a4619222",
+      "stack": "hyprwm",
+      "exists": true
+    },
+    {
       "name": "web-adapters",
       "path": "submodules/web-adapters",
-      "url": "https://github.com/aphrody-labs/web-adapters.git",
+      "url": "https://github.com/yolo-rs/web-adapters.git",
       "sha": "e82305b89efcce2bd0e21f91edc97894c61e8f62",
       "stack": "dioxuslabs",
       "exists": true
@@ -534,15 +968,31 @@
     {
       "name": "wef",
       "path": "submodules/wef",
-      "url": "https://github.com/aphrody-labs/wef.git",
+      "url": "https://github.com/yolo-rs/wef.git",
       "sha": "034489786368e4d817d024223164a48b71afee2c",
       "stack": "longbridge",
       "exists": true
     },
     {
+      "name": "whitesur-gtk-theme",
+      "path": "submodules/whitesur-gtk-theme",
+      "url": "https://github.com/yolo-rs/WhiteSur-gtk-theme.git",
+      "sha": "d5782652d412137e26fb8ff55b55a5572e4c6995",
+      "stack": "vinceliuice",
+      "exists": true
+    },
+    {
+      "name": "whitesur-icon-theme",
+      "path": "submodules/whitesur-icon-theme",
+      "url": "https://github.com/yolo-rs/WhiteSur-icon-theme.git",
+      "sha": "73d8040da51a9ed74e47c7366e7e9ff437601a5c",
+      "stack": "vinceliuice",
+      "exists": true
+    },
+    {
       "name": "window-vibrancy",
       "path": "submodules/window-vibrancy",
-      "url": "https://github.com/aphrody-labs/window-vibrancy.git",
+      "url": "https://github.com/yolo-rs/window-vibrancy.git",
       "sha": "c93f682aa957560d778ca903a881b7c5ba0eb5b9",
       "stack": "tauri-apps",
       "exists": true
@@ -550,15 +1000,23 @@
     {
       "name": "winkin",
       "path": "submodules/winkin",
-      "url": "https://github.com/aphrody-labs/winkin.git",
+      "url": "https://github.com/yolo-rs/winkin.git",
       "sha": "8906e07a7c776fda04830a44b8cbbc84110e3ccd",
       "stack": "dioxuslabs",
       "exists": true
     },
     {
+      "name": "winui-gallery",
+      "path": "submodules/winui-gallery",
+      "url": "https://github.com/yolo-rs/WinUI-Gallery.git",
+      "sha": "7360ac322414e118eadfb0c7c2f4ecc31a218f59",
+      "stack": "microsoft",
+      "exists": true
+    },
+    {
       "name": "wry",
       "path": "submodules/wry",
-      "url": "https://github.com/aphrody-labs/wry.git",
+      "url": "https://github.com/yolo-rs/wry.git",
       "sha": "9f351c5aec4888533812d63d5a003f3b3400210b",
       "stack": "tauri-apps",
       "exists": true
@@ -566,7 +1024,7 @@
     {
       "name": "zed-fonts",
       "path": "submodules/zed-fonts",
-      "url": "https://github.com/aphrody-labs/zed-fonts.git",
+      "url": "https://github.com/yolo-rs/zed-fonts.git",
       "sha": "7781065bb491c5073cb415ae1331818e4239ce06",
       "stack": "zed-industries",
       "exists": true

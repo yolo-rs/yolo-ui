@@ -1,0 +1,23 @@
+{
+  "name": "@yolo-rs/ui-mcp",
+  "version": "0.8.0",
+  "description": "Unified Yolo UI Model Context Protocol (MCP) Server & Tool Host for UI/UX Pro Max, 10-Engine DevTools, Theme Emission & TSX-to-Rust Migration",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "yolo-ui-mcp": "./src/mcp-server.ts",
+    "yolo-ui-tool-host": "./src/tool-host.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./tools": "./src/tools.ts",
+    "./tool-host": "./src/tool-host.ts",
+    "./mcp-server": "./src/mcp-server.ts"
+  },
+  "dependencies": {
+    "@yolo-rs/ui-plugin": "workspace:*"
+  },
+  "sideEffects": false,
+  "license": "MIT OR Apache-2.0"
+}

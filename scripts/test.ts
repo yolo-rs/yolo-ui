@@ -4,10 +4,23 @@ const ROOT_DIR = resolve(import.meta.dir, "..");
 
 export const UMBRELLA_TEST_CRATES = [
   "yolo-shared",
+  "yolo-tokens",
+  "yolo-contracts",
+  "yolo-emit",
+  "yolo-layout",
+  "yolo-migrator",
+  "yolo-shell",
+  "yolo-craft",
+  "yolo-storyteller",
+  "yolo-react",
   "yolo-ui",
   "yolo-gpui",
   "yolo-iced",
   "yolo-tauri",
+  "yolo-egui",
+  "yolo-cosmic",
+  "yolo-gtk",
+  "yolo-qt",
   "yolo-showcase",
 ] as const;
 
@@ -16,10 +29,23 @@ const TEST_CRATE_REL_PATHS: Record<
   string
 > = {
   "yolo-shared": "crates/yolo-shared",
+  "yolo-tokens": "crates/yolo-tokens",
+  "yolo-contracts": "crates/yolo-contracts",
+  "yolo-emit": "crates/yolo-emit",
+  "yolo-layout": "crates/yolo-layout",
+  "yolo-migrator": "crates/yolo-migrator",
+  "yolo-shell": "crates/yolo-shell",
+  "yolo-craft": "crates/yolo-craft",
+  "yolo-storyteller": "crates/yolo-storyteller",
+  "yolo-react": "crates/yolo-react",
   "yolo-ui": "packages/yolo-ui",
   "yolo-gpui": "packages/yolo-gpui",
   "yolo-iced": "packages/yolo-iced",
   "yolo-tauri": "packages/yolo-tauri",
+  "yolo-egui": "packages/yolo-egui",
+  "yolo-cosmic": "packages/yolo-cosmic",
+  "yolo-gtk": "packages/yolo-gtk",
+  "yolo-qt": "packages/yolo-qt",
   "yolo-showcase": "apps/yolo-showcase",
 };
 

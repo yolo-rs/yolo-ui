@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-render"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Unified Yolo UI native renderer contract: 2D/3D scene graphs, deterministic CPU rasterizer, and optional WGPU backend."
+publish = false
+autoexamples = false
+
+[features]
+default = ["cpu", "parallel"]
+cpu = []
+parallel = ["dep:rayon"]
+gpu = ["dep:wgpu", "dep:pollster", "dep:bytemuck"]
+vulkan = ["gpu"]
+dx12 = ["gpu"]
+metal = ["gpu"]
+webgpu = ["gpu"]
+webgl = ["gpu"]
+all-gpu = ["vulkan", "dx12", "metal", "webgpu", "webgl"]
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+unused_must_use = "deny"
+non_ascii_idents = "deny"
+
+[lints.clippy]
+todo = "deny"
+unimplemented = "deny"
+dbg_macro = "deny"
+correctness = { level = "warn", priority = -1 }
+perf = { level = "warn", priority = -1 }
+
+[dependencies]
+aphrody-m3-tokens = { package = "yolo-tokens", path = "../yolo-tokens", version = "0.8.0", features = ["serde"] }
+yolo-shared = { path = "../yolo-shared" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+png = "0.18"
+fontdue = "0.9"
+rayon = { version = "1.11.0", optional = true }
+base64 = "0.22.1"
+gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "KHR_materials_emissive_strength", "KHR_materials_unlit"] }
+tobj = { version = "4.0.3", default-features = false }
+wgpu = { version = "30.0.1", default-features = false, optional = true, features = ["wgsl", "dx12", "vulkan", "metal", "webgpu", "webgl"] }
+pollster = { version = "0.4", optional = true }
+bytemuck = { version = "1", features = ["derive"], optional = true }

@@ -1,77 +1,77 @@
-# Yolo UI (`aphrody-labs/yolo-ui`) — Aphrody Labs Unified Multi-Engine Fullstack Framework & Monorepo Guide
+# Yolo UI (`yolo-rs/yolo-ui`) — Unified Multi-Engine Fullstack Rust & Bun v1.4.4+ Framework Guide
 
-Yolo UI (`aphrody-labs/yolo-ui`) is the unified fullstack Rust + Bun v1.4.4+ UI framework monorepo for all Aphrody Labs sites and applications. It unifies **5 major Rust UI ecosystems** into **one flattened Cargo workspace (186 members, 349 deduplicated dependencies)**, **one Bun v1.4.4+ workspace**, and **70 `aphrody-labs/*` Git submodules (`submodules/*`)**:
+Yolo UI (`yolo-rs/yolo-ui`) is a **vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo**. It unifies **124 `yolo-rs/*` Git submodules (`submodules/*`)** across **31 upstream UI & compiler ecosystems**, **9 Rust UI toolkits**, **7 built-in theme presets (`YoloThemePreset`)**, a **Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`)**, a **Full-Bun + Rust React 19 & React Native/Expo engine (`yolo-react`)**, and **one unified CLI/Plugin/MCP (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`)**.
 
-1. **DioxusLabs (32 submodules)**: **Dioxus 0.8**, **Blitz**, **AnyRender** (Vello/Skia/WGPU), **Taffy 0.15**, **Dioxus Components / Primitives**, **Dioxus SDK**, **Dioxus Icons**, **Dioxus Code**, **RSRPC**, **Accessibility CLI**.
-2. **Longbridge (9 submodules)**: **GPUI-Kit / GPUI-Component** (60+ GPU widgets, DockArea, VirtualList, Charts, Editors), **NSH** shell, **Rust-i18n**, **GPUI-Mobile**, **WEF**, **AutoCorrect**.
-3. **Zed Industries (4 submodules)**: **GPUI-Fast** (WGPU/Metal/DirectX/Blade/WebGL2 GPU engine), **Awesome-GPUI**, **Create-GPUI-App**, **Zed-Fonts**, **Font-Kit**, **Scap**, **Async-Dispatcher**.
-4. **Iced-rs (10 submodules)**: **Iced** (Elm MVU architecture), **Iced_AW**, **Iced_Audio** (audio DSP knobs/faders/FreqRange), **Cryoglyph** (WGPU text atlas), **Comet** (time-travel MVU debugger), **Iced-OpenGL**, **mdBook-Iced**.
-5. **Tauri-Apps v3 Alpha (15 submodules)**: **Tauri 3.0.0-alpha.5** (`v3`/`dev`), **Wry 0.57.1**, **Tao 0.37.2**, **CEF (`tauri-runtime-cef`)**, **Muda 0.21.2**, **Tray-Icon 0.26.1**, **Window-Vibrancy 0.8.1** (Mica/Acrylic/Liquid Glass), **Global-Hotkey 0.9.0**, **Cargo-Mobile2**, **Plugins-Workspace v3**.
+## 1. The 7 First-Class Theme Presets (`YoloThemePreset`)
 
-## Flattened Monorepo Structure
+`yolo-ui` is **neutral by default** (`YoloManifest::default()` uses `YoloThemePreset::Neutral` with `pet_companion: None`):
+
+1. **`yolo-neutral`** (`YoloThemePreset::Neutral`, `#6366F1` default indigo seed) — Unbranded zinc/slate dark & light surfaces.
+2. **`yolo-m3`** (`YoloThemePreset::M3`, `#6750A4`) — Google Material Design 3 / Jetpack Compose upstream (`49` HCT roles, `material-color-utilities`).
+3. **`yolo-fluent`** (`YoloThemePreset::Fluent`, `#0078D4`) — Microsoft Fluent UI 2 / WinUI 3 (`Mica`, `Acrylic`, `Smoke`, `4px`/`8px` radii).
+4. **`yolo-apple`** (`YoloThemePreset::Apple`, `#007AFF`) — Apple macOS Sequoia/Tahoe Liquid Glass (`NSGlassEffectView`) & iOS Cupertino/SwiftUI HIG (`24px` vibrancy blur, `10px`/`14px` squircles, `#FF5F56`/`#FFBD2E`/`#27C93F` traffic lights).
+5. **`yolo-omarchy`** (`YoloThemePreset::Omarchy`, `#7AA2F7`) — Omacom Omarchy Linux & `omarchy-site` TUI-modern design system + **all 23 official subthemes** (`OmarchySubTheme::ALL`).
+6. **`yolo-hyprland`** (`YoloThemePreset::Hyprland`, `#33CCFF`) — Hyprwm / Hyprland Wayland Compositor (`#33CCFF -> #00FF99` `45deg` active border, `8×3` Kawase blur, `hyprtoolkit`, `hyprqt6engine`).
+7. **`yolo-aphrody`** (`YoloThemePreset::Aphrody`, `#17335C`) — Signature Byron Love (Afuro Terumi / Aphrody) pet & brand theme (10 measured Oklch sprite-atlas colors `#F7F3F0`..`#131420`, `#FFD700` gold, `#7C5CFF` violet, `#00D4FF` cyan, `8×11` `ByronLovePetSpec`).
+
+## 2. Flattened Monorepo Structure
 
 ```text
 yolo-ui/
-├── Cargo.toml                  # Unified Cargo workspace (186 members, 349 deduplicated workspace deps)
-├── Justfile                    # Unified task runner (just + bun + cargo + sccache + n2b + gh)
-├── package.json                # Root Bun v1.4.4+ workspace (@aphrody/yolo-ui)
-├── tsconfig.json               # TypeScript 7 (tsgo / bun check) config
-├── bunfig.toml                 # Bun test & workspace config
-├── .cargo/config.toml          # sccache compiler wrapper, sparse crates-io index, Cargo aliases
+├── Cargo.toml                  # Unified Cargo workspace (all crates/*, packages/*, apps/*)
+├── Justfile                    # Unified task runner (just + bun + cargo + sccache + gh)
+├── package.json                # Root Bun v1.4.4+ workspace (@yolo-rs/yolo-ui)
+├── catalog/conversion.toml     # Cross-host M3 + 7-preset role conversion matrix
 ├── crates/
-│   └── yolo-shared/            # Zero-duplication shared foundation (RgbaColor, AphrodyThemeTokens)
+│   ├── yolo-shared/            # Neutral manifest (YoloManifest), 7 presets, Omarchy (23), Hyprland, Byron Love
+│   ├── yolo-tokens/            # CAM16 / HCT dynamic color engine, 49 M3 roles, shape/motion/typography
+│   ├── yolo-contracts/         # WCAG contrast solver, 31 widget contracts, adaptive window classes
+│   ├── yolo-emit/              # 11-target theme emitter (css, gtk, kde, cosmic, qml, winui, fluent, apple, omarchy, hyprland, dtcg)
+│   ├── yolo-layout/            # Taffy 0.15 Flexbox/Grid layout engine with 4px/8px snapping & WCAG tap targets
+│   ├── yolo-migrator/          # OXC TSX/JSX + Tailwind v4 + Shadcn/Radix/BaseUI -> 6 Rust targets compiler
+│   ├── yolo-render/            # Analytical SDF primitives, damage tracking, Kawase blur, spring physics
+│   ├── yolo-gpu/               # WGPU 24 instanced SDF GPU pipeline & glyph atlas
+│   ├── yolo-shell/             # Desktop lifecycle, muda menus, tray-icon, global-hotkey, window-vibrancy
+│   ├── yolo-craft/             # 13 Creative Workbenches (Writer, Screenplay, Storyboard, Comic, etc.)
+│   ├── yolo-storyteller/       # 10 Storyteller narrative studio modules
+│   └── yolo-react/             # Rust React 19 RSC Flight stream, RN Taffy layout, JSI/TurboModule codegen, OXC analyzer
 ├── apps/
-│   └── yolo-showcase/          # Unified 4-engine showcase binary (Dioxus + GPUI + Iced + Tauri v3)
+│   └── yolo-showcase/          # Unified multi-engine & 7-theme showcase binary
 ├── packages/
-│   ├── yolo-ui/                # Aphrody Labs umbrella fullstack crate (re-exports Dioxus, GPUI, Iced, Tauri)
-│   ├── yolo-gpui/              # Zed GPUI + Longbridge GPUI-Kit + Rust-i18n bridge
+│   ├── yolo-ui/                # Umbrella fullstack crate re-exporting Dioxus 0.8 + all Yolo crates & toolkits
+│   ├── yolo-gpui/              # Zed GPUI-Fast + Longbridge GPUI-Kit + Rust-i18n bridge
 │   ├── yolo-iced/              # Iced Elm MVU + Iced_AW + Iced_Audio + Comet bridge
+│   ├── yolo-cosmic/            # System76 libcosmic + Iced 0.14 + cosmic-config RON bridge
+│   ├── yolo-egui/              # Egui 0.36 immediate-mode bridge + Puffin profiler hook
+│   ├── yolo-gtk/               # GTK 4.16 + libadwaita 1.6 + Relm4 bridge
+│   ├── yolo-qt/                # KDAB cxx-qt 0.8 + Qt6 Quick / Kirigami QML singleton bridge
 │   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + CEF + ACL bridge
-│   ├── dioxus/                 # Core Dioxus re-export crate
-│   ├── core/, signals/, rsx/, router/, fullstack/, web/, desktop/, native/, liveview/, dx/ ...
+│   ├── yolo-shadcn-bun/        # @yolo-rs/shadcn-bun Full-Bun TSX/Tailwind -> Rust CLI & SDK
+│   ├── yolo-react/             # @yolo-rs/react Full-Bun + Rust React 19 & Expo runtime package
+│   ├── yolo-ui-plugin/         # @yolo-rs/ui-plugin Single Bun.plugin for .yolo.toml, .shadcn.tsx, .tailwind.css
+│   └── yolo-ui-mcp/            # @yolo-rs/ui-mcp Single MCP server for UI search, theme emit, migration & devtools
+├── skills/
+│   └── yolo-ui-pro-max/        # UI/UX Pro Max skill (34 stacks, 13 domains, 7 presets, BM25 search)
 ├── scripts/
-│   ├── fleet.ts                # 70-submodule status, shallow sync & fleet.json inventory generator
-│   ├── build.ts                # Fast metadata & multi-engine Cargo check/release builder
+│   ├── ui.ts                   # Single unified UI command (`bun run ui <subcommand>`)
+│   ├── react-bun.ts            # Full-Bun React 19 & Expo patcher, node-purger & bundler
+│   ├── fleet.ts                # 124-submodule `yolo-rs/*` inventory & shallow sync generator
+│   ├── build.ts                # Multi-engine Cargo check/release builder
 │   ├── test.ts                 # Multi-engine Rust unit test runner
 │   ├── optimize.ts             # Cargo dependency deduplication & profile auditor
 │   └── migrate-bun.ts          # Node.js -> Bun v1.4.4+ (n2b) workspace auditor
-├── tests/
-│   └── monorepo.test.ts        # Bun v1.4.4+ automated monorepo integrity test suite
-├── docs/
-│   ├── README.md               # Documentation index
-│   ├── MONOREPO-BEST-PRACTICES.md
-│   └── BUN-N2B-MIGRATION.md
-└── submodules/                 # 70 shallow-cloned aphrody-labs/* forks across 5 ecosystems
+└── submodules/                 # 124 shallow-cloned `yolo-rs/*` forks across 31 ecosystems
 ```
 
-## Architecture Documentation (`notes/architecture/`)
-
-| When working on...                                 | Read...                   |
-| -------------------------------------------------- | ------------------------- |
-| Full 70-submodule fleet & 4-engine overview        | `00-MONOREPO-FLEET.md`    |
-| VirtualDOM, components, diffing, events            | `01-CORE.md`              |
-| CLI (`dx`), build system, bundling, dev server     | `02-CLI.md`               |
-| RSX macro, parsing, formatting                     | `03-RSX.md`               |
-| Signals, state management, reactivity              | `04-SIGNALS.md`           |
-| Server functions, SSR, hydration                   | `05-FULLSTACK.md`         |
-| Web/desktop/native/liveview renderers              | `06-RENDERERS.md`         |
-| Hot-reload, hot-patching (`subsecond`), devtools   | `07-HOTRELOAD.md`         |
-| Asset macro, manganis, const serialization         | `08-ASSETS.md`            |
-| Router, navigation, nested routes                  | `09-ROUTER.md`            |
-| WASM code splitting                                | `10-WASM-SPLIT.md`        |
-| Longbridge GPUI-Kit, Zed GPUI-Fast, NSH, Rust-i18n | `11-GPUI-LONGBRIDGE.md`   |
-| Iced Elm MVU, Iced_AW, Iced_Audio, Cryoglyph, Comet| `12-ICED.md`              |
-| Tauri v3 Alpha, Wry 0.57, Tao 0.37, CEF, ACL       | `13-TAURI-V3.md`          |
-
-## Core Toolchain Commands (`just` + `bun` + `cargo` + `sccache`)
+## 3. Core Toolchain Commands (`bun ui` + `just` + `cargo` + `sccache`)
 
 ```bash
-just doctor           # Verify bun, cargo, rustc, sccache, just, gh
+bun run ui doctor     # Verify all 124 submodules, 7 theme presets, 34 UI/UX Pro Max stacks, and toolchains
+bun run ui search <q> # Query the 13-domain UI/UX Pro Max BM25 engine across 34 stacks
+bun run ui theme      # Emit any of the 7 YoloThemePresets to 11 targets (css, gtk, cosmic, qml, fluent, apple, omarchy, hyprland, dtcg)
+bun run ui migrate    # Compile Shadcn/Tailwind/Radix/BaseUI TSX into Dioxus, WGPU, Egui, Cosmic, GTK4, or QML
+bun run react:status  # Inspect the 12 React/Expo/Rust submodules and Full-Bun React pipeline
 just check            # Run bun check (tsgo) + cargo metadata + cargo check
-just test             # Run bun test + Rust unit tests across all 4 engines
-just showcase         # Run apps/yolo-showcase unifying Dioxus + GPUI + Iced + Tauri v3
-just fleet-inventory  # Generate fleet.json for all 70 submodules
-just optimize         # Audit Cargo workspace dependencies & profiles
-just n2b-migrate      # Verify zero Node/npm lockfiles and 100% Bun v1.4.4+ scripts
-just sccache-stats    # Inspect sccache compilation cache hit statistics
+just test             # Run bun test + Rust unit tests across all engines
+just showcase         # Run apps/yolo-showcase unifying all 9 toolkits and 7 theme presets
 ```

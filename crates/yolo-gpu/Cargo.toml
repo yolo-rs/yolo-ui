@@ -1,0 +1,38 @@
+[package]
+name = "yolo-gpu"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Unified WebGPU/WGPU backend, SPIR-V to WGSL shader translator, 2D sprite sheet & atlas engine, and SVG sanitizer/optimizer/rasterizer for Yolo UI."
+publish = false
+autoexamples = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+cuda = []
+wasm-abi = ["dep:js-sys", "dep:wasm-bindgen"]
+
+[dependencies]
+yolo-shared = { path = "../yolo-shared" }
+yolo-tokens = { path = "../yolo-tokens", version = "0.8.0" }
+wgpu = "30.0.1"
+naga = { version = "30.0.0", features = ["spv-in", "wgsl-out"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+roxmltree = "0.21"
+resvg = "0.48.1"
+svgtypes = "0.16"
+skrifa = "0.42.0"
+woff2 = { package = "woff2-patched", version = "0.4.0" }
+js-sys = { version = "0.3", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+pollster = "0.4"

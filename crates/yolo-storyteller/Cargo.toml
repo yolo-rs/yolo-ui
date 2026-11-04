@@ -1,0 +1,13 @@
+[package]
+name = "yolo-storyteller"
+version = "0.8.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Storyteller creative suite contracts for Yolo UI: PromptBox, Moodboard, PageDraw, PageScene, StoryTimeline, VfxGraph, Viewer3D, AudioMixer, VideoEditor, and CharacterSheet with 5-preset theme support"
+repository = "https://github.com/yolo-rs/yolo-ui"
+
+[dependencies]
+yolo-shared = { path = "../yolo-shared" }
+yolo-tokens = { path = "../yolo-tokens" }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"

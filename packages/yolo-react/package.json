@@ -1,0 +1,28 @@
+{
+  "name": "@yolo-rs/react",
+  "version": "0.8.0",
+  "description": "Yolo UI 100% Full-Bun v1.4.4+ & Rust React 19 + Expo SDK 53/54 Universal Framework (7 YoloThemePresets, Universal Primitives, Bun.build, Bun.serve RSC, Facetpack OXC & UniFFI TurboModules)",
+  "type": "module",
+  "sideEffects": false,
+  "packageManager": "bun@1.4.4",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yolo-rs/yolo-ui.git"
+  },
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core.ts",
+    "./primitives": "./src/primitives.ts",
+    "./build": "./src/build.ts",
+    "./server": "./src/server.ts",
+    "./expo": "./src/expo.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "bun check"
+  }
+}

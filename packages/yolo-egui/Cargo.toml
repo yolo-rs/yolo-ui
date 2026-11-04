@@ -1,0 +1,12 @@
+[package]
+name = "yolo-egui"
+version = "0.8.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "egui adapter for Yolo UI: 5-preset theme engine (Neutral, M3, Fluent, Apple, Aphrody), visuals, spacing, shapes, typography, and custom widgets"
+repository = "https://github.com/yolo-rs/yolo-ui"
+
+[dependencies]
+yolo-shared = { path = "../../crates/yolo-shared" }
+yolo-tokens = { path = "../../crates/yolo-tokens" }
+egui = { version = "0.36.2", default-features = false, features = ["default_fonts"] }

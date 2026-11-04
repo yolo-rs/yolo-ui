@@ -1,280 +1,496 @@
 [submodule "submodules/blitz"]
 	path = submodules/blitz
-	url = https://github.com/aphrody-labs/blitz.git
+	url = https://github.com/yolo-rs/blitz.git
 	shallow = true
 [submodule "submodules/dioxus-taffy"]
 	path = submodules/dioxus-taffy
-	url = https://github.com/aphrody-labs/dioxus-taffy.git
+	url = https://github.com/yolo-rs/dioxus-taffy.git
 	shallow = true
 [submodule "submodules/taffy"]
 	path = submodules/taffy
-	url = https://github.com/aphrody-labs/taffy.git
+	url = https://github.com/yolo-rs/taffy.git
 	shallow = true
 [submodule "submodules/anyrender"]
 	path = submodules/anyrender
-	url = https://github.com/aphrody-labs/anyrender.git
+	url = https://github.com/yolo-rs/anyrender.git
 	shallow = true
 [submodule "submodules/dioxus-components"]
 	path = submodules/dioxus-components
-	url = https://github.com/aphrody-labs/dioxus-components.git
+	url = https://github.com/yolo-rs/dioxus-components.git
 	shallow = true
 [submodule "submodules/sdk"]
 	path = submodules/sdk
-	url = https://github.com/aphrody-labs/sdk.git
+	url = https://github.com/yolo-rs/sdk.git
 	shallow = true
 [submodule "submodules/dioxus-icons"]
 	path = submodules/dioxus-icons
-	url = https://github.com/aphrody-labs/dioxus-icons.git
+	url = https://github.com/yolo-rs/dioxus-icons.git
 	shallow = true
 [submodule "submodules/dioxus-code"]
 	path = submodules/dioxus-code
-	url = https://github.com/aphrody-labs/dioxus-code.git
+	url = https://github.com/yolo-rs/dioxus-code.git
 	shallow = true
 [submodule "submodules/dioxus-html-macro"]
 	path = submodules/dioxus-html-macro
-	url = https://github.com/aphrody-labs/dioxus-html-macro.git
+	url = https://github.com/yolo-rs/dioxus-html-macro.git
 	shallow = true
 [submodule "submodules/markdown"]
 	path = submodules/markdown
-	url = https://github.com/aphrody-labs/markdown.git
+	url = https://github.com/yolo-rs/markdown.git
 	shallow = true
 [submodule "submodules/rsrpc"]
 	path = submodules/rsrpc
-	url = https://github.com/aphrody-labs/rsrpc.git
+	url = https://github.com/yolo-rs/rsrpc.git
 	shallow = true
 [submodule "submodules/dioxus-test"]
 	path = submodules/dioxus-test
-	url = https://github.com/aphrody-labs/dioxus-test.git
+	url = https://github.com/yolo-rs/dioxus-test.git
 	shallow = true
 [submodule "submodules/warnings"]
 	path = submodules/warnings
-	url = https://github.com/aphrody-labs/warnings.git
+	url = https://github.com/yolo-rs/warnings.git
 	shallow = true
 [submodule "submodules/prettier-please"]
 	path = submodules/prettier-please
-	url = https://github.com/aphrody-labs/prettier-please.git
+	url = https://github.com/yolo-rs/prettier-please.git
 	shallow = true
 [submodule "submodules/accessibility-cli"]
 	path = submodules/accessibility-cli
-	url = https://github.com/aphrody-labs/accessibility-cli.git
+	url = https://github.com/yolo-rs/accessibility-cli.git
 	shallow = true
 [submodule "submodules/wasm-bindgen-wry"]
 	path = submodules/wasm-bindgen-wry
-	url = https://github.com/aphrody-labs/wasm-bindgen-wry.git
+	url = https://github.com/yolo-rs/wasm-bindgen-wry.git
 	shallow = true
 [submodule "submodules/bedina"]
 	path = submodules/bedina
-	url = https://github.com/aphrody-labs/bedina.git
+	url = https://github.com/yolo-rs/bedina.git
 	shallow = true
 [submodule "submodules/web-adapters"]
 	path = submodules/web-adapters
-	url = https://github.com/aphrody-labs/web-adapters.git
+	url = https://github.com/yolo-rs/web-adapters.git
 	shallow = true
 [submodule "submodules/dioxus-template"]
 	path = submodules/dioxus-template
-	url = https://github.com/aphrody-labs/dioxus-template.git
+	url = https://github.com/yolo-rs/dioxus-template.git
 	shallow = true
 [submodule "submodules/dioxus-ai"]
 	path = submodules/dioxus-ai
-	url = https://github.com/aphrody-labs/dioxus-ai.git
+	url = https://github.com/yolo-rs/dioxus-ai.git
 	shallow = true
 [submodule "submodules/include_mdbook"]
 	path = submodules/include_mdbook
-	url = https://github.com/aphrody-labs/include_mdbook.git
+	url = https://github.com/yolo-rs/include_mdbook.git
 	shallow = true
 [submodule "submodules/dioxus-search"]
 	path = submodules/dioxus-search
-	url = https://github.com/aphrody-labs/dioxus-search.git
+	url = https://github.com/yolo-rs/dioxus-search.git
 	shallow = true
 [submodule "submodules/playground"]
 	path = submodules/playground
-	url = https://github.com/aphrody-labs/playground.git
+	url = https://github.com/yolo-rs/playground.git
 	shallow = true
 [submodule "submodules/rink"]
 	path = submodules/rink
-	url = https://github.com/aphrody-labs/rink.git
+	url = https://github.com/yolo-rs/rink.git
 	shallow = true
 [submodule "submodules/example-projects"]
 	path = submodules/example-projects
-	url = https://github.com/aphrody-labs/example-projects.git
+	url = https://github.com/yolo-rs/example-projects.git
 	shallow = true
 [submodule "submodules/awesome-dioxus"]
 	path = submodules/awesome-dioxus
-	url = https://github.com/aphrody-labs/awesome-dioxus.git
+	url = https://github.com/yolo-rs/awesome-dioxus.git
 	shallow = true
 [submodule "submodules/deploy-action"]
 	path = submodules/deploy-action
-	url = https://github.com/aphrody-labs/deploy-action.git
+	url = https://github.com/yolo-rs/deploy-action.git
 	shallow = true
 [submodule "submodules/parley"]
 	path = submodules/parley
-	url = https://github.com/aphrody-labs/parley.git
+	url = https://github.com/yolo-rs/parley.git
 	shallow = true
 [submodule "submodules/vello_svg"]
 	path = submodules/vello_svg
-	url = https://github.com/aphrody-labs/vello_svg.git
+	url = https://github.com/yolo-rs/vello_svg.git
 	shallow = true
 [submodule "submodules/winkin"]
 	path = submodules/winkin
-	url = https://github.com/aphrody-labs/winkin.git
+	url = https://github.com/yolo-rs/winkin.git
 	shallow = true
 [submodule "submodules/rustd"]
 	path = submodules/rustd
-	url = https://github.com/aphrody-labs/rustd.git
+	url = https://github.com/yolo-rs/rustd.git
 	shallow = true
 [submodule "submodules/docsite"]
 	path = submodules/docsite
-	url = https://github.com/aphrody-labs/docsite.git
+	url = https://github.com/yolo-rs/docsite.git
 	shallow = true
 [submodule "submodules/async-dispatcher"]
 	path = submodules/async-dispatcher
-	url = https://github.com/aphrody-labs/async-dispatcher.git
+	url = https://github.com/yolo-rs/async-dispatcher.git
 	shallow = true
 [submodule "submodules/autocorrect"]
 	path = submodules/autocorrect
-	url = https://github.com/aphrody-labs/autocorrect.git
+	url = https://github.com/yolo-rs/autocorrect.git
 	shallow = true
 [submodule "submodules/awesome-gpui"]
 	path = submodules/awesome-gpui
-	url = https://github.com/aphrody-labs/awesome-gpui.git
+	url = https://github.com/yolo-rs/awesome-gpui.git
 	shallow = true
 [submodule "submodules/awesome-iced"]
 	path = submodules/awesome-iced
-	url = https://github.com/aphrody-labs/awesome-iced.git
+	url = https://github.com/yolo-rs/awesome-iced.git
 	shallow = true
 [submodule "submodules/awesome-tauri"]
 	path = submodules/awesome-tauri
-	url = https://github.com/aphrody-labs/awesome-tauri.git
+	url = https://github.com/yolo-rs/awesome-tauri.git
 	shallow = true
 [submodule "submodules/cargo-mobile2"]
 	path = submodules/cargo-mobile2
-	url = https://github.com/aphrody-labs/cargo-mobile2.git
+	url = https://github.com/yolo-rs/cargo-mobile2.git
 	shallow = true
 [submodule "submodules/comet"]
 	path = submodules/comet
-	url = https://github.com/aphrody-labs/comet.git
+	url = https://github.com/yolo-rs/comet.git
 	shallow = true
 [submodule "submodules/create-gpui-app"]
 	path = submodules/create-gpui-app
-	url = https://github.com/aphrody-labs/create-gpui-app.git
+	url = https://github.com/yolo-rs/create-gpui-app.git
 	shallow = true
 [submodule "submodules/create-tauri-app"]
 	path = submodules/create-tauri-app
-	url = https://github.com/aphrody-labs/create-tauri-app.git
+	url = https://github.com/yolo-rs/create-tauri-app.git
 	shallow = true
 [submodule "submodules/cryoglyph"]
 	path = submodules/cryoglyph
-	url = https://github.com/aphrody-labs/cryoglyph.git
+	url = https://github.com/yolo-rs/cryoglyph.git
 	shallow = true
 [submodule "submodules/font-kit"]
 	path = submodules/font-kit
-	url = https://github.com/aphrody-labs/font-kit.git
+	url = https://github.com/yolo-rs/font-kit.git
 	shallow = true
 [submodule "submodules/global-hotkey"]
 	path = submodules/global-hotkey
-	url = https://github.com/aphrody-labs/global-hotkey.git
+	url = https://github.com/yolo-rs/global-hotkey.git
 	shallow = true
 [submodule "submodules/gpui-fast"]
 	path = submodules/gpui-fast
-	url = https://github.com/aphrody-labs/gpui-fast.git
+	url = https://github.com/yolo-rs/gpui-fast.git
 	shallow = true
 [submodule "submodules/gpui-kit"]
 	path = submodules/gpui-kit
-	url = https://github.com/aphrody-labs/gpui-kit.git
+	url = https://github.com/yolo-rs/gpui-kit.git
 	shallow = true
 [submodule "submodules/gpui-mobile"]
 	path = submodules/gpui-mobile
-	url = https://github.com/aphrody-labs/gpui-mobile.git
+	url = https://github.com/yolo-rs/gpui-mobile.git
 	shallow = true
 [submodule "submodules/iced"]
 	path = submodules/iced
-	url = https://github.com/aphrody-labs/iced.git
+	url = https://github.com/yolo-rs/iced.git
 	shallow = true
 [submodule "submodules/iced_audio"]
 	path = submodules/iced_audio
-	url = https://github.com/aphrody-labs/iced_audio.git
+	url = https://github.com/yolo-rs/iced_audio.git
 	shallow = true
 [submodule "submodules/iced_aw"]
 	path = submodules/iced_aw
-	url = https://github.com/aphrody-labs/iced_aw.git
+	url = https://github.com/yolo-rs/iced_aw.git
 	shallow = true
 [submodule "submodules/iced-book"]
 	path = submodules/iced-book
-	url = https://github.com/aphrody-labs/iced-book.git
+	url = https://github.com/yolo-rs/iced-book.git
 	shallow = true
 [submodule "submodules/iced-opengl"]
 	path = submodules/iced-opengl
-	url = https://github.com/aphrody-labs/iced-opengl.git
+	url = https://github.com/yolo-rs/iced-opengl.git
 	shallow = true
 [submodule "submodules/iced-rfcs"]
 	path = submodules/iced-rfcs
-	url = https://github.com/aphrody-labs/iced-rfcs.git
+	url = https://github.com/yolo-rs/iced-rfcs.git
 	shallow = true
 [submodule "submodules/mdbook-iced"]
 	path = submodules/mdbook-iced
-	url = https://github.com/aphrody-labs/mdbook-iced.git
+	url = https://github.com/yolo-rs/mdbook-iced.git
 	shallow = true
 [submodule "submodules/muda"]
 	path = submodules/muda
-	url = https://github.com/aphrody-labs/muda.git
+	url = https://github.com/yolo-rs/muda.git
 	shallow = true
 [submodule "submodules/nsh"]
 	path = submodules/nsh
-	url = https://github.com/aphrody-labs/nsh.git
+	url = https://github.com/yolo-rs/nsh.git
 	shallow = true
 [submodule "submodules/plugins-workspace"]
 	path = submodules/plugins-workspace
-	url = https://github.com/aphrody-labs/plugins-workspace.git
+	url = https://github.com/yolo-rs/plugins-workspace.git
 	shallow = true
 [submodule "submodules/rust-i18n"]
 	path = submodules/rust-i18n
-	url = https://github.com/aphrody-labs/rust-i18n.git
+	url = https://github.com/yolo-rs/rust-i18n.git
 	shallow = true
 [submodule "submodules/scap"]
 	path = submodules/scap
-	url = https://github.com/aphrody-labs/scap.git
+	url = https://github.com/yolo-rs/scap.git
 	shallow = true
 [submodule "submodules/tao"]
 	path = submodules/tao
-	url = https://github.com/aphrody-labs/tao.git
+	url = https://github.com/yolo-rs/tao.git
 	shallow = true
 [submodule "submodules/tauri"]
 	path = submodules/tauri
-	url = https://github.com/aphrody-labs/tauri.git
+	url = https://github.com/yolo-rs/tauri.git
 	shallow = true
 [submodule "submodules/tauri-action"]
 	path = submodules/tauri-action
-	url = https://github.com/aphrody-labs/tauri-action.git
+	url = https://github.com/yolo-rs/tauri-action.git
 	shallow = true
 [submodule "submodules/tauri-bindgen"]
 	path = submodules/tauri-bindgen
-	url = https://github.com/aphrody-labs/tauri-bindgen.git
+	url = https://github.com/yolo-rs/tauri-bindgen.git
 	shallow = true
 [submodule "submodules/tauri-docs"]
 	path = submodules/tauri-docs
-	url = https://github.com/aphrody-labs/tauri-docs.git
+	url = https://github.com/yolo-rs/tauri-docs.git
 	shallow = true
 [submodule "submodules/tauri-vscode"]
 	path = submodules/tauri-vscode
-	url = https://github.com/aphrody-labs/tauri-vscode.git
+	url = https://github.com/yolo-rs/tauri-vscode.git
 	shallow = true
 [submodule "submodules/tray-icon"]
 	path = submodules/tray-icon
-	url = https://github.com/aphrody-labs/tray-icon.git
+	url = https://github.com/yolo-rs/tray-icon.git
 	shallow = true
 [submodule "submodules/wef"]
 	path = submodules/wef
-	url = https://github.com/aphrody-labs/wef.git
+	url = https://github.com/yolo-rs/wef.git
 	shallow = true
 [submodule "submodules/window-vibrancy"]
 	path = submodules/window-vibrancy
-	url = https://github.com/aphrody-labs/window-vibrancy.git
+	url = https://github.com/yolo-rs/window-vibrancy.git
 	shallow = true
 [submodule "submodules/wry"]
 	path = submodules/wry
-	url = https://github.com/aphrody-labs/wry.git
+	url = https://github.com/yolo-rs/wry.git
 	shallow = true
 [submodule "submodules/zed-fonts"]
 	path = submodules/zed-fonts
-	url = https://github.com/aphrody-labs/zed-fonts.git
+	url = https://github.com/yolo-rs/zed-fonts.git
+	shallow = true
+[submodule "submodules/egui"]
+	path = submodules/egui
+	url = https://github.com/yolo-rs/egui.git
+	shallow = true
+[submodule "submodules/libcosmic"]
+	path = submodules/libcosmic
+	url = https://github.com/yolo-rs/libcosmic.git
+	shallow = true
+[submodule "submodules/gtk4-rs"]
+	path = submodules/gtk4-rs
+	url = https://github.com/yolo-rs/gtk4-rs.git
+	shallow = true
+[submodule "submodules/relm4"]
+	path = submodules/relm4
+	url = https://github.com/yolo-rs/Relm4.git
+	shallow = true
+[submodule "submodules/cxx-qt"]
+	path = submodules/cxx-qt
+	url = https://github.com/yolo-rs/cxx-qt.git
+	shallow = true
+[submodule "submodules/fluentui"]
+	path = submodules/fluentui
+	url = https://github.com/yolo-rs/fluentui.git
+	shallow = true
+[submodule "submodules/fluentui-system-icons"]
+	path = submodules/fluentui-system-icons
+	url = https://github.com/yolo-rs/fluentui-system-icons.git
+	shallow = true
+[submodule "submodules/winui-gallery"]
+	path = submodules/winui-gallery
+	url = https://github.com/yolo-rs/WinUI-Gallery.git
+	shallow = true
+[submodule "submodules/material-web"]
+	path = submodules/material-web
+	url = https://github.com/yolo-rs/material-web.git
+	shallow = true
+[submodule "submodules/material-tokens"]
+	path = submodules/material-tokens
+	url = https://github.com/yolo-rs/material-tokens.git
+	shallow = true
+[submodule "submodules/material-color-utilities"]
+	path = submodules/material-color-utilities
+	url = https://github.com/yolo-rs/material-color-utilities.git
+	shallow = true
+[submodule "submodules/compose-multiplatform"]
+	path = submodules/compose-multiplatform
+	url = https://github.com/yolo-rs/compose-multiplatform.git
+	shallow = true
+[submodule "submodules/macos-ui"]
+	path = submodules/macos-ui
+	url = https://github.com/yolo-rs/macos_ui.git
+	shallow = true
+[submodule "submodules/whitesur-gtk-theme"]
+	path = submodules/whitesur-gtk-theme
+	url = https://github.com/yolo-rs/WhiteSur-gtk-theme.git
+	shallow = true
+[submodule "submodules/mactahoe-gtk-theme"]
+	path = submodules/mactahoe-gtk-theme
+	url = https://github.com/yolo-rs/MacTahoe-gtk-theme.git
+	shallow = true
+[submodule "submodules/whitesur-icon-theme"]
+	path = submodules/whitesur-icon-theme
+	url = https://github.com/yolo-rs/WhiteSur-icon-theme.git
+	shallow = true
+[submodule "submodules/omarchy"]
+	path = submodules/omarchy
+	url = https://github.com/yolo-rs/omarchy.git
+	shallow = true
+[submodule "submodules/omarchy-site"]
+	path = submodules/omarchy-site
+	url = https://github.com/yolo-rs/omarchy-site.git
+	shallow = true
+[submodule "submodules/awesome-omarchy"]
+	path = submodules/awesome-omarchy
+	url = https://github.com/yolo-rs/awesome-omarchy.git
+	shallow = true
+[submodule "submodules/hyprland"]
+	path = submodules/hyprland
+	url = https://github.com/yolo-rs/Hyprland.git
+	shallow = true
+[submodule "submodules/hyprland-website"]
+	path = submodules/hyprland-website
+	url = https://github.com/yolo-rs/hyprland-website.git
+	shallow = true
+[submodule "submodules/hyprtoolkit"]
+	path = submodules/hyprtoolkit
+	url = https://github.com/yolo-rs/hyprtoolkit.git
+	shallow = true
+[submodule "submodules/hyprqt6engine"]
+	path = submodules/hyprqt6engine
+	url = https://github.com/yolo-rs/hyprqt6engine.git
+	shallow = true
+[submodule "submodules/hyprlock"]
+	path = submodules/hyprlock
+	url = https://github.com/yolo-rs/hyprlock.git
+	shallow = true
+[submodule "submodules/hyprlauncher"]
+	path = submodules/hyprlauncher
+	url = https://github.com/yolo-rs/hyprlauncher.git
+	shallow = true
+[submodule "submodules/hyprperks-dotfiles"]
+	path = submodules/hyprperks-dotfiles
+	url = https://github.com/yolo-rs/hyprperks-dotfiles.git
+	shallow = true
+[submodule "submodules/awesome-hyprland"]
+	path = submodules/awesome-hyprland
+	url = https://github.com/yolo-rs/awesome-hyprland.git
+	shallow = true
+[submodule "submodules/wayle"]
+	path = submodules/wayle
+	url = https://github.com/yolo-rs/wayle.git
+	shallow = true
+[submodule "submodules/caelestia-shell"]
+	path = submodules/caelestia-shell
+	url = https://github.com/yolo-rs/caelestia-shell.git
+	shallow = true
+[submodule "submodules/noctalia"]
+	path = submodules/noctalia
+	url = https://github.com/yolo-rs/noctalia.git
+	shallow = true
+[submodule "submodules/shadcn-ui"]
+	path = submodules/shadcn-ui
+	url = https://github.com/yolo-rs/shadcn-ui.git
+	shallow = true
+[submodule "submodules/base-ui"]
+	path = submodules/base-ui
+	url = https://github.com/yolo-rs/base-ui.git
+	shallow = true
+[submodule "submodules/radix-primitives"]
+	path = submodules/radix-primitives
+	url = https://github.com/yolo-rs/primitives.git
+	shallow = true
+[submodule "submodules/tailwindcss"]
+	path = submodules/tailwindcss
+	url = https://github.com/yolo-rs/tailwindcss.git
+	shallow = true
+[submodule "submodules/awesome-egui"]
+	path = submodules/awesome-egui
+	url = https://github.com/yolo-rs/awesome-egui.git
+	shallow = true
+[submodule "submodules/puffin"]
+	path = submodules/puffin
+	url = https://github.com/yolo-rs/puffin.git
+	shallow = true
+[submodule "submodules/bevy"]
+	path = submodules/bevy
+	url = https://github.com/yolo-rs/bevy.git
+	shallow = true
+[submodule "submodules/awesome-bevy"]
+	path = submodules/awesome-bevy
+	url = https://github.com/yolo-rs/awesome-bevy.git
+	shallow = true
+[submodule "submodules/bevy-inspector-egui"]
+	path = submodules/bevy-inspector-egui
+	url = https://github.com/yolo-rs/bevy-inspector-egui.git
+	shallow = true
+[submodule "submodules/tauri-devtools"]
+	path = submodules/tauri-devtools
+	url = https://github.com/yolo-rs/crabnebula-devtools.git
+	shallow = true
+[submodule "submodules/awesome-shadcn-ui"]
+	path = submodules/awesome-shadcn-ui
+	url = https://github.com/yolo-rs/awesome-shadcn-ui.git
+	shallow = true
+[submodule "submodules/awesome-tailwindcss"]
+	path = submodules/awesome-tailwindcss
+	url = https://github.com/yolo-rs/awesome-tailwindcss.git
+	shallow = true
+[submodule "submodules/react"]
+	path = submodules/react
+	url = https://github.com/yolo-rs/react.git
+	shallow = true
+[submodule "submodules/react-native"]
+	path = submodules/react-native
+	url = https://github.com/yolo-rs/react-native.git
+	shallow = true
+[submodule "submodules/react-dev"]
+	path = submodules/react-dev
+	url = https://github.com/yolo-rs/react.dev.git
+	shallow = true
+[submodule "submodules/react-docgen"]
+	path = submodules/react-docgen
+	url = https://github.com/yolo-rs/react-docgen.git
+	shallow = true
+[submodule "submodules/expo"]
+	path = submodules/expo
+	url = https://github.com/yolo-rs/expo.git
+	shallow = true
+[submodule "submodules/expo-skills"]
+	path = submodules/expo-skills
+	url = https://github.com/yolo-rs/expo-skills.git
+	shallow = true
+[submodule "submodules/eas-cli"]
+	path = submodules/eas-cli
+	url = https://github.com/yolo-rs/eas-cli.git
+	shallow = true
+[submodule "submodules/expo-device-hub"]
+	path = submodules/expo-device-hub
+	url = https://github.com/yolo-rs/expo-device-hub.git
+	shallow = true
+[submodule "submodules/expo-ibex"]
+	path = submodules/expo-ibex
+	url = https://github.com/yolo-rs/ibex.git
+	shallow = true
+[submodule "submodules/facetpack"]
+	path = submodules/facetpack
+	url = https://github.com/yolo-rs/facetpack.git
+	shallow = true
+[submodule "submodules/uniffi-react-native"]
+	path = submodules/uniffi-react-native
+	url = https://github.com/yolo-rs/uniffi-bindgen-react-native.git
+	shallow = true
+[submodule "submodules/oxc"]
+	path = submodules/oxc
+	url = https://github.com/yolo-rs/oxc.git
 	shallow = true

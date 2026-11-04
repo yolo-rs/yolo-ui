@@ -4,6 +4,33 @@ pub use dioxus;
 pub use dioxus::*;
 pub use yolo_shared as shared;
 
+#[cfg(feature = "tokens")]
+pub use yolo_tokens as tokens;
+
+#[cfg(feature = "contracts")]
+pub use yolo_contracts as contracts;
+
+#[cfg(feature = "emit")]
+pub use yolo_emit as emit;
+
+#[cfg(feature = "layout")]
+pub use yolo_layout as layout;
+
+#[cfg(feature = "migrator")]
+pub use yolo_migrator as migrator;
+
+#[cfg(feature = "shell-lifecycle")]
+pub use yolo_shell as shell_lifecycle;
+
+#[cfg(feature = "craft")]
+pub use yolo_craft as craft;
+
+#[cfg(feature = "storyteller")]
+pub use yolo_storyteller as storyteller;
+
+#[cfg(feature = "react")]
+pub use yolo_react as react;
+
 #[cfg(feature = "gpui")]
 pub use yolo_gpui as gpui;
 
@@ -12,6 +39,18 @@ pub use yolo_iced as iced;
 
 #[cfg(feature = "tauri")]
 pub use yolo_tauri as tauri;
+
+#[cfg(feature = "egui")]
+pub use yolo_egui as egui;
+
+#[cfg(feature = "cosmic")]
+pub use yolo_cosmic as cosmic;
+
+#[cfg(feature = "gtk")]
+pub use yolo_gtk as gtk;
+
+#[cfg(feature = "qt")]
+pub use yolo_qt as qt;
 
 pub use dioxus_core as core;
 pub use dioxus_document as document;
@@ -81,11 +120,17 @@ pub mod engine {
     pub use taffy;
 }
 
-/// Aphrody Labs Design System Tokens (Material 3 Dark Glass & Surface Palette)
+/// Yolo UI Neutral & Multi-Preset Design System Tokens (`yolo-neutral`, `yolo-m3`,
+/// `yolo-fluent`, `yolo-apple`, `yolo-omarchy`, `yolo-hyprland`, `yolo-aphrody`).
 /// Re-exported from the shared foundation crate [`yolo_shared`].
 pub mod theme {
     pub use yolo_shared::{
-        css_variables, AphrodyThemeTokens, RgbaColor, APHRODY_DARK_THEME,
+        APHRODY_DARK_THEME, AphrodyThemeTokens, BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC,
+        ByronLovePetSpec, HYPRLAND_DECORATION_SPEC, HyprlandDecorationSpec, OMARCHY_THEMES,
+        OmarchySubTheme, OmarchyThemePalette, RgbaColor, YOLO_APPLE_DARK_THEME,
+        YOLO_FLUENT_DARK_THEME, YOLO_HYPRLAND_DARK_THEME, YOLO_M3_DARK_THEME,
+        YOLO_NEUTRAL_DARK_THEME, YOLO_OMARCHY_DARK_THEME, YoloManifest, YoloStyle,
+        YoloThemePreset, YoloThemeTokens, css_preset_variables, css_variables,
     };
 }
 

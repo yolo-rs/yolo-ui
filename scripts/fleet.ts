@@ -1,7 +1,37 @@
 import { join, resolve } from "node:path";
 
 export type UpstreamStack =
-  "dioxuslabs" | "longbridge" | "zed-industries" | "iced-rs" | "tauri-apps";
+  | "dioxuslabs"
+  | "longbridge"
+  | "zed-industries"
+  | "iced-rs"
+  | "tauri-apps"
+  | "emilk"
+  | "pop-os"
+  | "gtk-rs"
+  | "Relm4"
+  | "KDAB"
+  | "microsoft"
+  | "material-components"
+  | "material-foundation"
+  | "JetBrains"
+  | "macosui"
+  | "vinceliuice"
+  | "omacom"
+  | "hyprwm"
+  | "shadcn-ui"
+  | "mui"
+  | "radix-ui"
+  | "tailwindlabs"
+  | "bevyengine"
+  | "crabnebula-dev"
+  | "EmbarkStudios"
+  | "facebook"
+  | "reactjs"
+  | "expo"
+  | "ecrindigital"
+  | "jhugman"
+  | "oxc-project";
 
 export interface SubmoduleEntry {
   name: string;
@@ -26,7 +56,7 @@ const SUBMODULES_DIR = join(ROOT_DIR, "submodules");
 const GITMODULES_PATH = join(ROOT_DIR, ".gitmodules");
 const FLEET_JSON_PATH = join(ROOT_DIR, "fleet.json");
 
-const STACK_PATTERNS: Record<UpstreamStack, string[]> = {
+export const ECOSYSTEM_REPOS: Record<UpstreamStack, string[]> = {
   "zed-industries": ["gpui-fast", "zed", "zed-fonts", "font-kit", "scap"],
   longbridge: [
     "gpui-kit",
@@ -82,6 +112,65 @@ const STACK_PATTERNS: Record<UpstreamStack, string[]> = {
     "awesome-tauri",
     "velato",
   ],
+  emilk: ["egui", "awesome-egui"],
+  "pop-os": ["libcosmic"],
+  "gtk-rs": ["gtk4-rs"],
+  Relm4: ["relm4", "Relm4"],
+  KDAB: ["cxx-qt"],
+  microsoft: [
+    "fluentui",
+    "fluentui-system-icons",
+    "winui-gallery",
+    "WinUI-Gallery",
+  ],
+  "material-components": ["material-web"],
+  "material-foundation": ["material-tokens", "material-color-utilities"],
+  JetBrains: ["compose-multiplatform"],
+  macosui: ["macos-ui", "macos_ui"],
+  vinceliuice: [
+    "whitesur-gtk-theme",
+    "WhiteSur-gtk-theme",
+    "mactahoe-gtk-theme",
+    "MacTahoe-gtk-theme",
+    "whitesur-icon-theme",
+    "WhiteSur-icon-theme",
+  ],
+  omacom: ["omarchy", "omarchy-site", "awesome-omarchy"],
+  hyprwm: [
+    "hyprland",
+    "Hyprland",
+    "hyprland-website",
+    "hyprtoolkit",
+    "hyprqt6engine",
+    "hyprlock",
+    "hyprlauncher",
+    "hyprperks-dotfiles",
+    "awesome-hyprland",
+    "wayle",
+    "caelestia-shell",
+    "noctalia",
+    "noctalia-shell",
+  ],
+  "shadcn-ui": ["shadcn-ui", "ui", "awesome-shadcn-ui"],
+  mui: ["base-ui"],
+  "radix-ui": ["radix-primitives", "primitives"],
+  tailwindlabs: ["tailwindcss", "awesome-tailwindcss"],
+  bevyengine: ["bevy", "awesome-bevy", "bevy-inspector-egui"],
+  "crabnebula-dev": ["tauri-devtools", "crabnebula-devtools", "devtools"],
+  EmbarkStudios: ["puffin"],
+  facebook: ["react", "react-native"],
+  reactjs: ["react-dev", "react.dev", "react-docgen"],
+  expo: [
+    "expo",
+    "expo-skills",
+    "eas-cli",
+    "expo-device-hub",
+    "expo-ibex",
+    "ibex",
+  ],
+  ecrindigital: ["facetpack"],
+  jhugman: ["uniffi-react-native", "uniffi-bindgen-react-native"],
+  "oxc-project": ["oxc"],
   dioxuslabs: [
     "blitz",
     "dioxus",
@@ -110,12 +199,55 @@ const STACK_PATTERNS: Record<UpstreamStack, string[]> = {
   ],
 };
 
+export const STACK_PATTERNS: Record<UpstreamStack, string[]> = ECOSYSTEM_REPOS;
+
+const DIRECT_ORGS: UpstreamStack[] = [
+  "emilk",
+  "pop-os",
+  "gtk-rs",
+  "Relm4",
+  "KDAB",
+  "microsoft",
+  "material-components",
+  "material-foundation",
+  "JetBrains",
+  "macosui",
+  "vinceliuice",
+  "omacom",
+  "hyprwm",
+  "shadcn-ui",
+  "mui",
+  "radix-ui",
+  "tailwindlabs",
+  "bevyengine",
+  "crabnebula-dev",
+  "EmbarkStudios",
+  "facebook",
+  "reactjs",
+  "expo",
+  "ecrindigital",
+  "jhugman",
+  "oxc-project",
+];
+
 /* @__PURE__ */
 export function categorizeSubmodule(name: string, url = ""): UpstreamStack {
   const lower = `${name} ${url}`.toLowerCase();
+  const nameLower = name.toLowerCase();
+
+  for (const org of DIRECT_ORGS) {
+    for (const token of ECOSYSTEM_REPOS[org]) {
+      if (
+        nameLower === token.toLowerCase() ||
+        lower.includes(`/${token.toLowerCase()}.git`)
+      ) {
+        return org;
+      }
+    }
+  }
 
   for (const token of STACK_PATTERNS["zed-industries"]) {
-    if (name.toLowerCase() === token.toLowerCase()) {
+    if (nameLower === token.toLowerCase()) {
       return "zed-industries";
     }
   }
@@ -130,10 +262,7 @@ export function categorizeSubmodule(name: string, url = ""): UpstreamStack {
   }
 
   for (const token of STACK_PATTERNS["iced-rs"]) {
-    if (
-      name.toLowerCase() === token.toLowerCase() ||
-      name.toLowerCase().startsWith("iced")
-    ) {
+    if (nameLower === token.toLowerCase() || nameLower.startsWith("iced")) {
       return "iced-rs";
     }
   }
@@ -143,10 +272,7 @@ export function categorizeSubmodule(name: string, url = ""): UpstreamStack {
   }
 
   for (const token of STACK_PATTERNS["tauri-apps"]) {
-    if (
-      name.toLowerCase() === token.toLowerCase() ||
-      name.toLowerCase().startsWith("tauri")
-    ) {
+    if (nameLower === token.toLowerCase() || nameLower.startsWith("tauri")) {
       return "tauri-apps";
     }
   }
@@ -231,8 +357,7 @@ export async function discoverSubmodules(): Promise<SubmoduleEntry[]> {
     sortedNames.map(async (name): Promise<SubmoduleEntry> => {
       const relPath = `submodules/${name}`;
       const url =
-        gitmodulesMap.get(relPath) ??
-        `https://github.com/aphrody-labs/${name}.git`;
+        gitmodulesMap.get(relPath) ?? `https://github.com/yolo-rs/${name}.git`;
       const gitHeadFile = Bun.file(join(ROOT_DIR, relPath, "Cargo.toml"));
       const readmeFile = Bun.file(join(ROOT_DIR, relPath, "README.md"));
       const [hasCargo, hasReadme, sha] = await Promise.all([
@@ -240,7 +365,7 @@ export async function discoverSubmodules(): Promise<SubmoduleEntry[]> {
         readmeFile.exists(),
         resolveSubmoduleSha(relPath),
       ]);
-      const exists = hasCargo || hasReadme;
+      const exists = hasCargo || hasReadme || sha !== "uninitialized";
       const stack = categorizeSubmodule(name, url);
 
       return {
@@ -265,6 +390,32 @@ export async function buildInventory(): Promise<FleetInventory> {
     "zed-industries": 0,
     "iced-rs": 0,
     "tauri-apps": 0,
+    emilk: 0,
+    "pop-os": 0,
+    "gtk-rs": 0,
+    Relm4: 0,
+    KDAB: 0,
+    microsoft: 0,
+    "material-components": 0,
+    "material-foundation": 0,
+    JetBrains: 0,
+    macosui: 0,
+    vinceliuice: 0,
+    omacom: 0,
+    hyprwm: 0,
+    "shadcn-ui": 0,
+    mui: 0,
+    "radix-ui": 0,
+    tailwindlabs: 0,
+    bevyengine: 0,
+    "crabnebula-dev": 0,
+    EmbarkStudios: 0,
+    facebook: 0,
+    reactjs: 0,
+    expo: 0,
+    ecrindigital: 0,
+    jhugman: 0,
+    "oxc-project": 0,
   };
 
   for (const sub of submodules) {
@@ -273,7 +424,7 @@ export async function buildInventory(): Promise<FleetInventory> {
 
   return {
     generatedAt: new Date().toISOString(),
-    repository: "https://github.com/aphrody-labs/yolo-ui",
+    repository: "https://github.com/yolo-rs/yolo-ui",
     version: "0.8.0-alpha.3",
     totalSubmodules: submodules.length,
     byStack,
@@ -288,14 +439,14 @@ async function runStatus(): Promise<void> {
   );
   console.log("Stack Breakdown:");
   for (const [stack, count] of Object.entries(inv.byStack)) {
-    console.log(`  - ${stack.padEnd(16)}: ${count}`);
+    console.log(`  - ${stack.padEnd(20)}: ${count}`);
   }
   console.log("\nSubmodules:");
   for (const sub of inv.submodules) {
     const shortSha =
       sub.sha === "uninitialized" ? "uninit  " : sub.sha.slice(0, 8);
     console.log(
-      `  [${sub.stack.padEnd(14)}] ${sub.path.padEnd(36)} ${shortSha} -> ${sub.url}`,
+      `  [${sub.stack.padEnd(19)}] ${sub.path.padEnd(36)} ${shortSha} -> ${sub.url}`,
     );
   }
 }
@@ -325,7 +476,8 @@ async function runInventory(): Promise<void> {
 }
 
 if (import.meta.main) {
-  const cmd = Bun.argv[2] ?? "status";
+  const rawCmd = Bun.argv[2] ?? "status";
+  const cmd = rawCmd.replace(/^--+/, "");
   if (cmd === "status") {
     await runStatus();
   } else if (cmd === "sync") {
@@ -334,7 +486,7 @@ if (import.meta.main) {
     await runInventory();
   } else {
     console.error(
-      `Unknown command: ${cmd}. Expected: status | sync | inventory`,
+      `Unknown command: ${rawCmd}. Expected: status | sync | inventory (or --status | --sync | --inventory)`,
     );
     process.exit(1);
   }

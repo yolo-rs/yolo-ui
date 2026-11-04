@@ -1,13 +1,16 @@
-# Yolo UI (`aphrody-labs/yolo-ui`) — Documentation Index (`docs/`)
+# Yolo UI (`yolo-rs/yolo-ui`) — Documentation Index (`docs/`)
 
-Welcome to the documentation hub for **`aphrody-labs/yolo-ui`**, the unified multi-engine Rust + Bun v1.4.4+ fullstack monorepo fleet.
+Welcome to the documentation hub for **[`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui)**, the vendor-neutral, multi-engine Rust + Bun v1.4.4+ fullstack UI monorepo fleet.
 
-## 1. Monorepo & Toolchain Guides (`docs/`)
+## 1. Monorepo, React/Expo & Toolchain Guides (`docs/`)
+- **[Plan Directeur de Migration 6 Piliers & Portail Unifié `yolo.aphrody.com` (`docs/YOLO-MASTER-MIGRATION-AND-SITE-PLAN.md`)](./YOLO-MASTER-MIGRATION-AND-SITE-PLAN.md)**
+- **[Yolo React 19 & Expo Full-Bun + Rust Architecture (`docs/YOLO-REACT-AND-EXPO-BUN-RUST.md`)](./YOLO-REACT-AND-EXPO-BUN-RUST.md)**
 - **[Monorepo Best Practices (`crates/`, `apps/`, `packages/`, `scripts/`, `docs/`, `just`, `sccache`, `bun`, `gh`)](./MONOREPO-BEST-PRACTICES.md)**
 - **[Node.js -> Bun v1.4.4+ & `n2b` Migration Guide](./BUN-N2B-MIGRATION.md)**
+- **[UI/UX Pro Max Skill (`skills/yolo-ui-pro-max/SKILL.md`)](../skills/yolo-ui-pro-max/SKILL.md)**
 
 ## 2. Multi-Engine Architecture Deep Dives (`notes/architecture/`)
-- **[00 — Monorepo Fleet Master Overview (70 Submodules / 5 Ecosystems)](../notes/architecture/00-MONOREPO-FLEET.md)**
+- **[00 — Monorepo Fleet Master Overview (124 Submodules / 31 Ecosystems)](../notes/architecture/00-MONOREPO-FLEET.md)**
 - **[01 — Core VirtualDOM & Diffing](../notes/architecture/01-CORE.md)**
 - **[02 — CLI (`dx`), Bundling & Dev Server](../notes/architecture/02-CLI.md)**
 - **[03 — RSX Macro & Code Generation](../notes/architecture/03-RSX.md)**

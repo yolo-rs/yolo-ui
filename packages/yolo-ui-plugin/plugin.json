@@ -1,0 +1,50 @@
+{
+  "name": "@yolo-rs/ui-plugin",
+  "version": "0.8.0",
+  "description": "Unified Yolo UI Plugin, Theme Engine, TSX-to-Rust Migrator, DevTools Registry & UI/UX Pro Max Intelligence",
+  "entry": "./src/index.ts",
+  "mcpServer": "@yolo-rs/ui-mcp",
+  "cli": "bun ui",
+  "skill": "skills/yolo-ui-pro-max/SKILL.md",
+  "virtualModules": [
+    "virtual:yolo-theme",
+    "yolo-ui/theme.css",
+    "virtual:yolo-devtools"
+  ],
+  "loaders": [".tsx?rust", ".jsx?rust"],
+  "presets": [
+    "yolo-neutral",
+    "yolo-m3",
+    "yolo-fluent",
+    "yolo-apple",
+    "yolo-omarchy",
+    "yolo-hyprland",
+    "yolo-aphrody"
+  ],
+  "devtools": [
+    "dioxus",
+    "gpui",
+    "egui",
+    "iced",
+    "cosmic",
+    "bevy",
+    "tauri",
+    "gtk4",
+    "qt6",
+    "shadcn-tailwind"
+  ],
+  "emitTargets": [
+    "css",
+    "gtk",
+    "kde",
+    "cosmic",
+    "qml",
+    "winui",
+    "fluent",
+    "apple",
+    "omarchy",
+    "hyprland",
+    "dtcg"
+  ],
+  "migrateTargets": ["dioxus", "wgpu", "egui", "cosmic", "gtk", "qml"]
+}

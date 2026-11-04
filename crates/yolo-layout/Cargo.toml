@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-layout"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+license = "MIT OR Apache-2.0"
+description = "One CSS + Tailwind v3/v4 layout engine for every Yolo UI host: Lightning CSS + Tailwind utilities laid out by Taffy 0.15"
+repository = "https://github.com/yolo-rs/yolo-ui"
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[features]
+default = []
+# CSS -> bevy::ui::Node (Bevy 0.20).
+bevy = ["dep:bevy"]
+# Computed rects as egui::Rect for Ui::put.
+egui = ["dep:egui"]
+
+[dependencies]
+lightningcss = { version = "=1.0.0-alpha.72", default-features = false }
+taffy = { path = "../../submodules/dioxus-taffy", version = "0.15.0", default-features = false, features = [
+  "std",
+  "taffy_tree",
+  "flexbox",
+  "grid",
+  "block_layout",
+  "content_size",
+] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+bevy = { version = "0.20.0", optional = true, default-features = false, features = ["std", "bevy_ui"] }
+egui = { version = "0.36.2", optional = true, default-features = false }
+
+[[example]]
+name = "settings"
+path = "examples/settings.rs"

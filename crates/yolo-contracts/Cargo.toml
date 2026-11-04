@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-contracts"
+version = "0.8.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Host-neutral Rust component, accessibility, keyboard, focus, Taffy layout, and 5-preset theme contracts for Yolo UI."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[features]
+default = []
+native-render = []
+wasm = []
+
+[dependencies]
+yolo-shared = { path = "../yolo-shared" }
+yolo-tokens = { path = "../yolo-tokens", features = ["serde"] }
+taffy = { workspace = true }
+serde = { workspace = true, features = ["derive"] }

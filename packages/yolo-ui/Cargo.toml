@@ -1,19 +1,32 @@
 [package]
 name = "yolo-ui"
 version = { workspace = true }
-authors = ["Aphrody <contact@aphrody.com>", "Dioxus Labs"]
+authors = ["Yolo UI Contributors <contact@aphrody.com>", "Dioxus Labs"]
 edition = "2024"
-description = "Aphrody Labs unified fullstack Rust framework for Web (WASM/SSR), Desktop (Wry), Native (Blitz/AnyRender GPU), Mobile (Android/iOS), and LiveView sites and apps."
+description = "Yolo UI unified fullstack Rust framework for Web (WASM/SSR), Desktop (Wry/Tauri v3), Native (Blitz/AnyRender/WGPU), GPUI, Iced/Cosmic, Egui/Craft, GTK4, Qt6, and React 19/Expo."
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/aphrody-labs/yolo-ui"
-keywords = ["dioxus", "fullstack", "web", "desktop", "native"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+keywords = ["yolo-ui", "dioxus", "fullstack", "web", "desktop"]
 rust-version = "1.85.0"
 
 [dependencies]
 yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true, optional = true }
+yolo-contracts = { workspace = true, optional = true }
+yolo-emit = { workspace = true, optional = true }
+yolo-layout = { workspace = true, optional = true }
+yolo-migrator = { workspace = true, optional = true }
+yolo-shell = { workspace = true, optional = true }
+yolo-craft = { workspace = true, optional = true }
+yolo-storyteller = { workspace = true, optional = true }
+yolo-react = { workspace = true, optional = true }
 yolo-gpui = { workspace = true, optional = true }
 yolo-iced = { workspace = true, optional = true }
 yolo-tauri = { workspace = true, optional = true }
+yolo-egui = { workspace = true, optional = true }
+yolo-cosmic = { workspace = true, optional = true }
+yolo-gtk = { workspace = true, optional = true }
+yolo-qt = { workspace = true, optional = true }
 dioxus = { workspace = true, default-features = false }
 dioxus-core = { workspace = true }
 dioxus-signals = { workspace = true }
@@ -101,8 +114,39 @@ code = ["dep:dioxus-code"]
 html-macro = ["dep:dioxus-html-macro"]
 rpc = ["dep:rsrpc"]
 
-# Multi-Engine Stack Bridges (GPUI + Longbridge, Iced Elm MVU, Tauri v3 Alpha)
+# Multi-Engine Stack Bridges (GPUI, Iced, Cosmic, Egui, GTK4, Qt6, Tauri v3, Craft, Storyteller, React)
+tokens = ["dep:yolo-tokens"]
+contracts = ["dep:yolo-contracts"]
+emit = ["dep:yolo-emit"]
+layout = ["dep:yolo-layout"]
+migrator = ["dep:yolo-migrator"]
+shell-lifecycle = ["dep:yolo-shell"]
+craft = ["dep:yolo-craft"]
+storyteller = ["dep:yolo-storyteller"]
+react = ["dep:yolo-react"]
 gpui = ["dep:yolo-gpui"]
 iced = ["dep:yolo-iced"]
 tauri = ["dep:yolo-tauri"]
-all-engines = ["gpui", "iced", "tauri", "native"]
+egui = ["dep:yolo-egui"]
+cosmic = ["dep:yolo-cosmic"]
+gtk = ["dep:yolo-gtk"]
+qt = ["dep:yolo-qt"]
+multi-engine = [
+    "tokens",
+    "contracts",
+    "emit",
+    "layout",
+    "migrator",
+    "shell-lifecycle",
+    "craft",
+    "storyteller",
+    "react",
+    "gpui",
+    "iced",
+    "tauri",
+    "egui",
+    "cosmic",
+    "gtk",
+    "qt",
+]
+all-engines = ["multi-engine", "native"]

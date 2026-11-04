@@ -1,0 +1,1066 @@
+# Bun UI conversion catalog: one Material 3 contract, every host.
+#
+# Source of truth for the token emitters (`aphrody-m3-emit`), the TSX/CSS converter and the
+# host adapters. Rust reads it with serde/toml, Bun with Bun.TOML. Each entry names the
+# canonical M3 concept and the closest construct per host. `none` means the host has no
+# equivalent and the adapter draws it from the M3 primitives (tier A) or composes it (tier B).
+#
+# Hosts:
+#   web     material-web <md-*> / @aphrody/m3-baseui (Base UI) / CSS custom properties
+#   gtk     GTK 4.16+ with libadwaita 1.6+ through gtk4-rs / libadwaita-rs
+#   qt      Qt 6.8+ Qt Quick Controls (Material style) + Kirigami, through cxx-qt
+#   cosmic  libcosmic (pop-os iced fork) and cosmic-theme
+#   egui    egui 0.32+
+#   bevy    bevy_ui 0.17+ with bevy_ui_widgets (headless) and the M3 skin
+#   winui   WinUI 3 / Windows App SDK 1.7+ (CommunityToolkit where noted)
+#   win32   classic Win32 through windows-rs (common controls v6)
+#
+# Tiers: A = Bun UI draws the component (pixel-identical M3): web, egui, bevy, wgpu/vello,
+#        Qt with the Bun UI Controls style. B = Bun UI themes native widgets: gtk, cosmic,
+#        winui, win32, KDE/Plasma.
+
+[meta]
+schema = 2
+repository = "https://github.com/yolo-rs/yolo-ui"
+shared_owner = "crates/yolo-shared"
+m3_owner = "crates/yolo-tokens"
+contract_owner = "crates/yolo-contracts"
+emit_owner = "crates/yolo-emit"
+default_preset = "yolo-neutral"
+updated = "2026-11-04"
+
+# ---------------------------------------------------------------------------------------------
+# Color roles. M3 role -> per-host theme slot. Emitters resolve the role with HCT in Rust, then
+# write the slot. Light and dark are emitted separately; contrast levels map to each host's
+# high-contrast variant where one exists.
+# ---------------------------------------------------------------------------------------------
+[colors.primary]
+web = "--md-sys-color-primary"
+gtk = "--accent-bg-color (@accent_bg_color)"
+qt = "QPalette::Highlight, QPalette::Accent; Material.accent"
+cosmic = "theme.accent.base"
+egui = "visuals.selection.bg_fill, widgets.active.bg_fill"
+bevy = "M3Theme.primary"
+winui = "SystemAccentColor / AccentFillColorDefaultBrush"
+win32 = "COLOR_HIGHLIGHT (owner-drawn)"
+kde = "[Colors:Selection] BackgroundNormal; [General] AccentColor"
+hyprland = "general:col.active_border"
+
+[colors.on_primary]
+web = "--md-sys-color-on-primary"
+gtk = "--accent-fg-color (@accent_fg_color)"
+qt = "QPalette::HighlightedText"
+cosmic = "theme.accent.on"
+egui = "visuals.selection.stroke.color"
+bevy = "M3Theme.on_primary"
+winui = "TextOnAccentFillColorPrimaryBrush"
+win32 = "COLOR_HIGHLIGHTTEXT"
+kde = "[Colors:Selection] ForegroundNormal"
+
+[colors.primary_text]
+note = "Primary used as text/link color on surfaces"
+web = "--md-sys-color-primary"
+gtk = "--accent-color (@accent_color)"
+qt = "QPalette::Link"
+cosmic = "theme.accent_text"
+egui = "visuals.hyperlink_color"
+winui = "AccentTextFillColorPrimaryBrush"
+kde = "[Colors:View] ForegroundLink"
+
+[colors.primary_container]
+web = "--md-sys-color-primary-container"
+gtk = "custom @define-color m3_primary_container"
+qt = "Bun UI style property (Material style has no container roles)"
+cosmic = "theme.accent.selected"
+egui = "widgets.hovered.weak_bg_fill (tonal buttons)"
+bevy = "M3Theme.primary_container"
+winui = "AccentFillColorSecondaryBrush (approx.)"
+
+[colors.secondary_container]
+web = "--md-sys-color-secondary-container"
+gtk = "custom @define-color m3_secondary_container"
+qt = "Bun UI style property"
+cosmic = "theme.secondary.component.base"
+egui = "widgets.inactive.weak_bg_fill"
+bevy = "M3Theme.secondary_container"
+winui = "ControlFillColorSecondaryBrush (approx.)"
+
+[colors.tertiary]
+web = "--md-sys-color-tertiary"
+gtk = "custom @define-color m3_tertiary"
+qt = "Bun UI style property"
+cosmic = "theme.palette.ext_* (closest accent)"
+egui = "custom M3Visuals.tertiary"
+bevy = "M3Theme.tertiary"
+winui = "custom resource"
+
+[colors.error]
+web = "--md-sys-color-error"
+gtk = "--error-bg-color, --destructive-bg-color"
+qt = "Material.color(Material.Red) / Kirigami.Theme.negativeTextColor"
+cosmic = "theme.destructive.base"
+egui = "visuals.error_fg_color"
+bevy = "M3Theme.error"
+winui = "SystemFillColorCriticalBrush"
+win32 = "owner-drawn"
+kde = "[Colors:View] ForegroundNegative"
+
+[colors.on_error]
+web = "--md-sys-color-on-error"
+gtk = "--error-fg-color, --destructive-fg-color"
+cosmic = "theme.destructive.on"
+egui = "custom"
+winui = "TextOnAccentFillColorPrimaryBrush"
+
+[colors.surface]
+web = "--md-sys-color-surface"
+gtk = "--window-bg-color"
+qt = "QPalette::Window; Material.background"
+cosmic = "theme.background.base"
+egui = "visuals.panel_fill"
+bevy = "M3Theme.surface"
+winui = "SolidBackgroundFillColorBaseBrush"
+win32 = "COLOR_WINDOW"
+kde = "[Colors:Window] BackgroundNormal"
+
+[colors.on_surface]
+web = "--md-sys-color-on-surface"
+gtk = "--window-fg-color, --view-fg-color"
+qt = "QPalette::WindowText, QPalette::Text; Material.foreground"
+cosmic = "theme.background.on"
+egui = "visuals.override_text_color / widgets.*.fg_stroke"
+bevy = "M3Theme.on_surface"
+winui = "TextFillColorPrimaryBrush"
+win32 = "COLOR_WINDOWTEXT"
+kde = "[Colors:Window] ForegroundNormal"
+
+[colors.on_surface_variant]
+web = "--md-sys-color-on-surface-variant"
+gtk = "--dim-label opacity on --window-fg-color (.dim-label)"
+qt = "QPalette::PlaceholderText; Kirigami.Theme.disabledTextColor"
+cosmic = "theme.background.component.on (dimmed)"
+egui = "widgets.noninteractive.fg_stroke"
+winui = "TextFillColorSecondaryBrush"
+kde = "[Colors:Window] ForegroundInactive"
+
+[colors.surface_container_lowest]
+web = "--md-sys-color-surface-container-lowest"
+gtk = "--view-bg-color"
+qt = "QPalette::Base"
+cosmic = "theme.background.base"
+egui = "visuals.extreme_bg_color"
+winui = "SolidBackgroundFillColorTertiaryBrush"
+kde = "[Colors:View] BackgroundNormal"
+
+[colors.surface_container]
+web = "--md-sys-color-surface-container"
+gtk = "--card-bg-color, --sidebar-bg-color"
+qt = "QPalette::Button; Material.dialogColor"
+cosmic = "theme.primary.base"
+egui = "visuals.window_fill"
+winui = "CardBackgroundFillColorDefaultBrush, LayerFillColorDefaultBrush"
+kde = "[Colors:Button] BackgroundNormal"
+
+[colors.surface_container_high]
+web = "--md-sys-color-surface-container-high"
+gtk = "--dialog-bg-color, --popover-bg-color"
+qt = "QPalette::ToolTipBase; Material.dialogColor"
+cosmic = "theme.secondary.base"
+egui = "visuals.faint_bg_color"
+winui = "SolidBackgroundFillColorSecondaryBrush"
+kde = "[Colors:Tooltip] BackgroundNormal"
+
+[colors.surface_container_highest]
+web = "--md-sys-color-surface-container-highest"
+gtk = "--headerbar-bg-color"
+qt = "QPalette::AlternateBase"
+cosmic = "theme.secondary.component.base"
+egui = "visuals.code_bg_color"
+winui = "ControlFillColorDefaultBrush"
+kde = "[Colors:Header] BackgroundNormal"
+
+[colors.outline]
+web = "--md-sys-color-outline"
+gtk = "--border-color"
+qt = "QPalette::Mid"
+cosmic = "theme.background.divider / component.border"
+egui = "widgets.inactive.bg_stroke"
+winui = "ControlStrokeColorDefaultBrush"
+win32 = "COLOR_BTNSHADOW"
+kde = "[Colors:Window] DecorationFocus (focus) / Mid"
+
+[colors.outline_variant]
+web = "--md-sys-color-outline-variant"
+gtk = "--border-color at reduced opacity"
+qt = "QPalette::Midlight"
+cosmic = "theme.background.component.divider"
+egui = "widgets.noninteractive.bg_stroke"
+winui = "DividerStrokeColorDefaultBrush"
+
+[colors.shadow]
+web = "--md-sys-color-shadow"
+gtk = "--shade-color"
+qt = "QPalette::Shadow"
+cosmic = "theme.shade"
+egui = "visuals.window_shadow.color"
+winui = "(theme shadows)"
+
+[colors.scrim]
+web = "--md-sys-color-scrim"
+gtk = "dimming of AdwDialog (not themable)"
+qt = "Overlay.modal color"
+cosmic = "theme.shade"
+egui = "Modal backdrop_color"
+
+[colors.inverse_surface]
+web = "--md-sys-color-inverse-surface"
+gtk = "AdwToast background (.toast)"
+qt = "ToolTip background in Material style"
+cosmic = "theme.background (inverted theme)"
+egui = "custom (snackbar)"
+winui = "InfoBar inverse (custom)"
+
+[colors.success]
+note = "Not an M3 role: Bun UI extended color resolved from a harmonized seed"
+web = "--md-ext-color-success"
+gtk = "--success-bg-color / --success-fg-color"
+qt = "Kirigami.Theme.positiveTextColor"
+cosmic = "theme.success"
+egui = "custom"
+winui = "SystemFillColorSuccessBrush"
+kde = "[Colors:View] ForegroundPositive"
+
+[colors.warning]
+note = "Bun UI extended color"
+web = "--md-ext-color-warning"
+gtk = "--warning-bg-color / --warning-fg-color"
+qt = "Kirigami.Theme.neutralTextColor"
+cosmic = "theme.warning"
+egui = "visuals.warn_fg_color"
+winui = "SystemFillColorCautionBrush"
+kde = "[Colors:View] ForegroundNeutral"
+
+# ---------------------------------------------------------------------------------------------
+# Non-color tokens.
+# ---------------------------------------------------------------------------------------------
+[tokens.shape]
+web = "--md-sys-shape-corner-{none,extra-small,small,medium,large,extra-large,full}"
+gtk = "border-radius in generated CSS per widget class (libadwaita has no radius variables)"
+qt = "Material.roundedScale (Qt 6.5+) or Bun UI style radius"
+cosmic = "theme.corner_radii { radius_0, radius_xs, radius_s, radius_m, radius_l, radius_xl }"
+egui = "visuals.widgets.*.corner_radius, window_corner_radius, menu_corner_radius"
+bevy = "BorderRadius"
+winui = "ControlCornerRadius, OverlayCornerRadius"
+kde = "Breeze: none (fixed); Kirigami.Units.cornerRadius"
+hyprland = "decoration:rounding"
+
+[tokens.spacing]
+web = "--md-sys-spacing-* (4dp grid)"
+gtk = "margin/padding in generated CSS; AdwClamp maximum-size"
+qt = "Kirigami.Units.smallSpacing / largeSpacing / gridUnit"
+cosmic = "theme.spacing { space_none .. space_xxxl }"
+egui = "style.spacing.item_spacing, button_padding, window_margin"
+bevy = "Node padding/margin (Val::Px)"
+winui = "ControlContentThemeThickness and layout spacing resources"
+hyprland = "general:gaps_in / gaps_out"
+
+[tokens.typography]
+web = "--md-sys-typescale-{display,headline,title,body,label}-{large,medium,small}-*"
+gtk = "libadwaita classes .title-1..4, .heading, .body, .caption, .caption-heading, .monospace; font via GtkSettings:gtk-font-name"
+qt = "Material.font roles / Kirigami.Heading level + Kirigami.Theme.defaultFont"
+cosmic = "cosmic::widget::text::{title1..4, heading, body, caption, caption_heading, monotext}"
+egui = "style.text_styles (TextStyle::Heading/Body/Button/Small/Monospace + custom Name)"
+bevy = "TextFont { font, font_size } from M3Theme.typescale"
+winui = "TitleLargeTextBlockStyle, TitleTextBlockStyle, SubtitleTextBlockStyle, BodyTextBlockStyle, CaptionTextBlockStyle"
+win32 = "CreateFontIndirectW from typescale"
+
+[tokens.elevation]
+web = "--md-sys-elevation-level{0..5} (tonal + shadow)"
+gtk = "box-shadow in generated CSS (.card, popovers)"
+qt = "Material.elevation"
+cosmic = "none (flat); theme.shade for overlays"
+egui = "Shadow on window/popup/menu"
+bevy = "BoxShadow"
+winui = "ThemeShadow + Translation Z"
+
+[tokens.motion]
+web = "--md-sys-motion-easing-*, --md-sys-motion-duration-*"
+gtk = "transition/animation in generated CSS; AdwSpringAnimation / AdwTimedAnimation"
+qt = "Behavior + NumberAnimation with Easing; Kirigami.Units.shortDuration / longDuration"
+cosmic = "cosmic::anim / iced animation (limited)"
+egui = "ctx.animate_bool_with_time / animate_value_with_time; style.animation_time"
+bevy = "Bun UI tween systems (bevy_tween-like) from M3 springs"
+winui = "Storyboard, ConnectedAnimation, implicit animations"
+
+[tokens.state_layer]
+web = "--md-sys-state-{hover,focus,pressed,dragged}-state-layer-opacity"
+gtk = ":hover/:active/:focus-visible rules with alpha(currentColor, x)"
+qt = "Material ripple; Bun UI style state layer"
+cosmic = "Component.{hover, pressed, selected, focus}"
+egui = "widgets.{hovered, active, open}"
+bevy = "Interaction component -> state layer alpha"
+winui = "PointerOver/Pressed visual states"
+
+[tokens.icons]
+web = "Material Symbols (m3:icon/<style>/<name>)"
+gtk = "Icon theme lookup (symbolic SVG); ship Material Symbols as an icon theme"
+qt = "QIcon::fromTheme / Kirigami.Icon; ship Material Symbols icon theme"
+cosmic = "cosmic::widget::icon::from_name (freedesktop-icons)"
+egui = "egui::Image from SVG (egui_extras svg loader) or icon font"
+bevy = "ImageNode from rasterized SVG atlas"
+winui = "FontIcon (Segoe Fluent Icons) / PathIcon from Material Symbols"
+
+# ---------------------------------------------------------------------------------------------
+# Components. key -> canonical M3 component; per host the widget/class to use.
+# ---------------------------------------------------------------------------------------------
+[components.button_filled]
+web = "md-filled-button / M3 Button variant=filled"
+gtk = "GtkButton .suggested-action (.pill for large)"
+qt = "Button { highlighted: true }"
+cosmic = "widget::button::suggested"
+egui = "egui::Button::new().fill(primary)"
+bevy = "bevy_ui_widgets::Button + M3 skin filled"
+winui = "Button Style=AccentButtonStyle"
+win32 = "BS_DEFPUSHBUTTON (owner-drawn for M3)"
+
+[components.button_tonal]
+web = "md-filled-tonal-button"
+gtk = "GtkButton + .m3-tonal (generated CSS)"
+qt = "Button { Material.background: secondaryContainer }"
+cosmic = "widget::button::standard"
+egui = "Button::new().fill(secondary_container)"
+bevy = "Button + M3 skin tonal"
+winui = "Button (default style)"
+win32 = "BS_PUSHBUTTON"
+
+[components.button_outlined]
+web = "md-outlined-button"
+gtk = "GtkButton + .m3-outlined (generated CSS)"
+qt = "Button { flat: true } + outline (Bun UI style)"
+cosmic = "widget::button::standard with outlined style class"
+egui = "Button::new().stroke(outline).fill(TRANSPARENT)"
+bevy = "Button + M3 skin outlined"
+winui = "Button with custom outline style"
+
+[components.button_text]
+web = "md-text-button"
+gtk = "GtkButton .flat"
+qt = "Button { flat: true }"
+cosmic = "widget::button::text"
+egui = "Button::new().frame(false)"
+bevy = "Button + M3 skin text"
+winui = "HyperlinkButton / Button with SubtleButtonStyle"
+win32 = "BS_FLAT / SysLink"
+
+[components.button_elevated]
+web = "md-elevated-button"
+gtk = "GtkButton .card"
+qt = "Button { Material.elevation: 1 }"
+cosmic = "widget::button::standard in container with shade"
+egui = "Button inside Frame with Shadow"
+bevy = "Button + BoxShadow"
+winui = "Button + ThemeShadow"
+
+[components.icon_button]
+web = "md-icon-button (+ filled/tonal/outlined)"
+gtk = "GtkButton icon-name + .flat / .circular"
+qt = "ToolButton { icon.name } / RoundButton"
+cosmic = "widget::button::icon"
+egui = "Button::image / ImageButton"
+bevy = "Button + ImageNode"
+winui = "AppBarButton / Button with FontIcon"
+win32 = "BS_ICON"
+
+[components.fab]
+web = "md-fab / md-branded-fab"
+gtk = "GtkButton .circular .suggested-action in GtkOverlay"
+qt = "RoundButton { highlighted: true } in Overlay"
+cosmic = "none (button::icon suggested in overlay)"
+egui = "Area anchored bottom-right with Button"
+bevy = "Absolute-positioned Button"
+winui = "none (Button in grid overlay)"
+
+[components.segmented_button]
+web = "md-outlined-segmented-button-set"
+gtk = "GtkBox .linked with GtkToggleButton (AdwToggleGroup in libadwaita 1.7+)"
+qt = "ButtonGroup + Button { checkable } / Kirigami.ActionToolBar"
+cosmic = "widget::segmented_button / segmented_control"
+egui = "ui.selectable_value in horizontal group"
+bevy = "RadioGroup + Button skin"
+winui = "CommunityToolkit Segmented / SelectorBar"
+
+[components.checkbox]
+web = "md-checkbox"
+gtk = "GtkCheckButton"
+qt = "CheckBox"
+cosmic = "widget::checkbox"
+egui = "ui.checkbox"
+bevy = "bevy_ui_widgets::Checkbox"
+winui = "CheckBox"
+win32 = "BS_AUTOCHECKBOX"
+
+[components.radio]
+web = "md-radio"
+gtk = "GtkCheckButton with group"
+qt = "RadioButton"
+cosmic = "widget::radio"
+egui = "ui.radio_value"
+bevy = "bevy_ui_widgets::RadioButton + RadioGroup"
+winui = "RadioButton / RadioButtons"
+win32 = "BS_AUTORADIOBUTTON"
+
+[components.switch]
+web = "md-switch"
+gtk = "GtkSwitch / AdwSwitchRow"
+qt = "Switch / SwitchDelegate"
+cosmic = "widget::toggler"
+egui = "toggle_switch (Bun UI widget, from egui demo)"
+bevy = "Checkbox + switch skin"
+winui = "ToggleSwitch"
+win32 = "owner-drawn checkbox"
+
+[components.slider]
+web = "md-slider"
+gtk = "GtkScale"
+qt = "Slider / RangeSlider"
+cosmic = "widget::slider"
+egui = "egui::Slider"
+bevy = "bevy_ui_widgets::Slider"
+winui = "Slider"
+win32 = "TRACKBAR_CLASSW"
+
+[components.text_field]
+web = "md-filled-text-field / md-outlined-text-field"
+gtk = "GtkEntry / AdwEntryRow / GtkPasswordEntry"
+qt = "TextField { Material.containerStyle: Material.Filled | Material.Outlined }"
+cosmic = "widget::text_input / secure_input"
+egui = "egui::TextEdit::singleline"
+bevy = "Bun UI text field (bevy_ui text input)"
+winui = "TextBox / PasswordBox / NumberBox"
+win32 = "WC_EDITW"
+
+[components.text_area]
+web = "md-filled-text-field type=textarea"
+gtk = "GtkTextView in GtkScrolledWindow"
+qt = "TextArea"
+cosmic = "widget::text_editor"
+egui = "egui::TextEdit::multiline"
+winui = "TextBox AcceptsReturn / RichEditBox"
+win32 = "WC_EDITW ES_MULTILINE / MSFTEDIT_CLASS"
+
+[components.chip]
+web = "md-assist-chip / md-filter-chip / md-input-chip / md-suggestion-chip"
+gtk = "GtkToggleButton .pill (filter) / GtkButton .pill (assist)"
+qt = "Kirigami.Chip"
+cosmic = "widget::button::standard with chip style"
+egui = "ui.selectable_label (filter) / Button rounded full"
+bevy = "Button + chip skin"
+winui = "ToggleButton rounded / CommunityToolkit TokenizingTextBox (input)"
+
+[components.card]
+web = "M3 Card (filled/outlined/elevated)"
+gtk = "GtkBox .card / AdwPreferencesGroup"
+qt = "Pane { Material.elevation } / Kirigami.Card"
+cosmic = "widget::container with card style / widget::settings::section"
+egui = "egui::Frame::group / Frame::new().fill().corner_radius()"
+bevy = "Node + BackgroundColor + BorderRadius"
+winui = "Border with CardBackgroundFillColorDefaultBrush / SettingsCard (toolkit)"
+
+[components.dialog]
+web = "md-dialog / Base UI Dialog"
+gtk = "AdwDialog / AdwAlertDialog"
+qt = "Dialog (modal) / Kirigami.PromptDialog"
+cosmic = "widget::dialog"
+egui = "egui::Modal"
+bevy = "Modal overlay node + focus trap"
+winui = "ContentDialog"
+win32 = "DialogBoxIndirectParamW / TaskDialogIndirect"
+
+[components.bottom_sheet]
+web = "M3 BottomSheet (Base UI Dialog bottom)"
+gtk = "AdwBottomSheet"
+qt = "Drawer { edge: Qt.BottomEdge }"
+cosmic = "none (context drawer)"
+egui = "TopBottomPanel::bottom (animated) / Modal anchored"
+bevy = "Animated bottom node"
+winui = "none (custom flyout)"
+
+[components.side_sheet]
+web = "M3 SideSheet"
+gtk = "AdwOverlaySplitView sidebar end"
+qt = "Drawer { edge: Qt.RightEdge } / Kirigami.ContextDrawer"
+cosmic = "context_drawer"
+egui = "egui::SidePanel::right"
+bevy = "Animated side node"
+winui = "SplitView Pane right"
+
+[components.menu]
+web = "md-menu / Base UI Menu"
+gtk = "GtkPopoverMenu from GMenuModel / GtkPopoverMenuBar"
+qt = "Menu / MenuBar / Platform.Menu"
+cosmic = "widget::menu::bar / menu::context_menu"
+egui = "egui::menu::bar / Response::context_menu / Popup"
+bevy = "Popup node"
+winui = "MenuFlyout / MenuBar / CommandBarFlyout"
+win32 = "CreatePopupMenu / TrackPopupMenuEx / SetMenu"
+
+[components.navigation_bar]
+web = "md-navigation-bar"
+gtk = "AdwViewSwitcherBar"
+qt = "Kirigami.NavigationTabBar / TabBar at footer"
+cosmic = "segmented_button::horizontal at bottom"
+egui = "TopBottomPanel::bottom with selectable_value"
+bevy = "Bottom row node"
+winui = "NavigationView PaneDisplayMode=Top (no bottom bar)"
+
+[components.navigation_rail]
+web = "md-navigation-rail"
+gtk = "AdwNavigationSplitView collapsed sidebar / GtkStackSidebar"
+qt = "Kirigami.GlobalDrawer { collapsible; collapsed }"
+cosmic = "widget::nav_bar (condensed)"
+egui = "SidePanel::left narrow with icon buttons"
+bevy = "Left column node"
+winui = "NavigationView PaneDisplayMode=LeftCompact"
+
+[components.navigation_drawer]
+web = "md-navigation-drawer"
+gtk = "AdwOverlaySplitView / AdwNavigationSplitView"
+qt = "Drawer / Kirigami.GlobalDrawer"
+cosmic = "widget::nav_bar"
+egui = "SidePanel::left"
+bevy = "Animated left node"
+winui = "NavigationView PaneDisplayMode=Left"
+
+[components.top_app_bar]
+web = "M3 TopAppBar (small/center/medium/large)"
+gtk = "AdwHeaderBar (+ AdwWindowTitle)"
+qt = "ToolBar in ApplicationWindow.header / Kirigami.ApplicationWindow page header"
+cosmic = "widget::header_bar (application header)"
+egui = "TopBottomPanel::top"
+bevy = "Top row node"
+winui = "TitleBar (1.7) / CommandBar"
+win32 = "non-client area + rebar"
+
+[components.tabs]
+web = "md-tabs (primary/secondary)"
+gtk = "AdwTabBar + AdwTabView / AdwViewSwitcher"
+qt = "TabBar + StackLayout"
+cosmic = "segmented_button::horizontal (tab model)"
+egui = "selectable_value row / egui_dock tabs"
+bevy = "RadioGroup + tab skin"
+winui = "TabView / SelectorBar / Pivot"
+win32 = "WC_TABCONTROLW"
+
+[components.list]
+web = "md-list / md-list-item"
+gtk = "GtkListView (factory) / GtkListBox .boxed-list / AdwActionRow"
+qt = "ListView + ItemDelegate / Kirigami.SwipeListItem"
+cosmic = "widget::list_column / settings::item"
+egui = "ScrollArea::show_rows + selectable_label"
+bevy = "Scroll node + virtualized rows"
+winui = "ListView / ItemsView"
+win32 = "WC_LISTVIEWW (LVS_REPORT)"
+
+[components.divider]
+web = "md-divider"
+gtk = "GtkSeparator"
+qt = "MenuSeparator / Kirigami.Separator"
+cosmic = "widget::divider::horizontal / vertical"
+egui = "ui.separator()"
+bevy = "1px node with outline_variant"
+winui = "MenuFlyoutSeparator / Rectangle Height=1"
+
+[components.progress_linear]
+web = "md-linear-progress"
+gtk = "GtkProgressBar"
+qt = "ProgressBar"
+cosmic = "widget::progress_bar"
+egui = "egui::ProgressBar"
+bevy = "Bun UI progress node"
+winui = "ProgressBar"
+win32 = "PROGRESS_CLASSW"
+
+[components.progress_circular]
+web = "md-circular-progress"
+gtk = "AdwSpinner (1.6) / GtkSpinner"
+qt = "BusyIndicator"
+cosmic = "widget::spin? (none in stable; custom canvas)"
+egui = "egui::Spinner"
+bevy = "Rotating arc node"
+winui = "ProgressRing"
+
+[components.snackbar]
+web = "M3 Snackbar"
+gtk = "AdwToast in AdwToastOverlay"
+qt = "Kirigami.ApplicationWindow.showPassiveNotification / InlineMessage"
+cosmic = "widget::toaster"
+egui = "egui-notify Toasts"
+bevy = "Animated bottom node"
+winui = "InfoBar / TeachingTip"
+
+[components.tooltip]
+web = "Base UI Tooltip / md tooltip"
+gtk = "widget tooltip-text / tooltip-markup"
+qt = "ToolTip"
+cosmic = "widget::tooltip"
+egui = "Response::on_hover_text / on_hover_ui"
+bevy = "Hover popup node"
+winui = "ToolTipService.ToolTip"
+win32 = "TOOLTIPS_CLASSW"
+
+[components.badge]
+web = "M3 Badge"
+gtk = "AdwViewStackPage badge-number / needs-attention"
+qt = "Kirigami.Badge? (none: Rectangle overlay)"
+cosmic = "none (custom container)"
+egui = "custom painter circle"
+bevy = "Absolute small node"
+winui = "InfoBadge"
+
+[components.date_picker]
+web = "M3 DatePicker"
+gtk = "GtkCalendar in GtkPopover"
+qt = "Qt Quick MonthGrid (QtQuick.Controls 6.3+) / Kirigami date picker (addons)"
+cosmic = "widget::calendar"
+egui = "egui_extras::DatePickerButton"
+bevy = "none (Bun UI widget)"
+winui = "CalendarDatePicker / DatePicker"
+win32 = "DATETIMEPICK_CLASSW / MONTHCAL_CLASSW"
+
+[components.time_picker]
+web = "M3 TimePicker"
+gtk = "none (GtkSpinButton pair)"
+qt = "Tumbler pair"
+cosmic = "none (spin buttons)"
+egui = "DragValue pair"
+winui = "TimePicker"
+win32 = "DATETIMEPICK_CLASSW DTS_TIMEFORMAT"
+
+[components.search]
+web = "M3 Search bar / view"
+gtk = "GtkSearchBar + GtkSearchEntry"
+qt = "Kirigami.SearchField"
+cosmic = "widget::search_input"
+egui = "TextEdit::singleline().hint_text()"
+bevy = "Text field skin"
+winui = "AutoSuggestBox"
+
+[components.carousel]
+web = "M3 Carousel"
+gtk = "AdwCarousel + AdwCarouselIndicatorDots"
+qt = "SwipeView + PageIndicator"
+cosmic = "none"
+egui = "ScrollArea horizontal"
+bevy = "Horizontal scroll node"
+winui = "FlipView / PipsPager"
+
+[components.tree]
+web = "Base UI / m3-explorer tree"
+gtk = "GtkListView + GtkTreeListModel + GtkTreeExpander"
+qt = "TreeView (Qt Quick 6.3+)"
+cosmic = "none (list with indentation)"
+egui = "CollapsingHeader nesting / egui_ltreeview"
+winui = "TreeView"
+win32 = "WC_TREEVIEWW"
+
+[components.data_table]
+web = "M3 data table (m3-explorer)"
+gtk = "GtkColumnView"
+qt = "TableView / HorizontalHeaderView"
+cosmic = "widget::table (cosmic-files list view)"
+egui = "egui_extras::TableBuilder"
+winui = "CommunityToolkit DataGrid / ListView with columns"
+win32 = "WC_LISTVIEWW LVS_REPORT"
+
+# ---------------------------------------------------------------------------------------------
+# Application and platform APIs. Bun UI exposes one trait/TS interface per row; adapters call
+# the host construct below.
+# ---------------------------------------------------------------------------------------------
+[apis.app_lifecycle]
+tauri = "tauri::Builder::default().run()"
+winit = "EventLoop + ApplicationHandler"
+gtk = "adw::Application::run (GApplication)"
+qt = "QGuiApplication + QQmlApplicationEngine (cxx-qt)"
+cosmic = "cosmic::app::run::<impl cosmic::Application>"
+egui = "eframe::run_native"
+bevy = "App::new().add_plugins(DefaultPlugins).run()"
+win32 = "RegisterClassExW + GetMessageW loop"
+web = "DOM load + requestAnimationFrame"
+
+[apis.window]
+tauri = "WebviewWindowBuilder"
+winit = "ActiveEventLoop::create_window(WindowAttributes)"
+gtk = "adw::ApplicationWindow"
+qt = "ApplicationWindow (QML) / QQuickWindow"
+cosmic = "cosmic::app::Settings + window::open (multi-window)"
+egui = "ViewportBuilder (eframe viewports)"
+bevy = "Window component"
+win32 = "CreateWindowExW"
+web = "document / <iframe> per app in WebOS"
+
+[apis.menu_bar]
+tauri = "tauri::menu::Menu / MenuBuilder"
+winit = "muda crate"
+gtk = "gio::Menu + gtk::PopoverMenuBar"
+qt = "MenuBar / Platform.MenuBar (Qt.labs.platform)"
+cosmic = "widget::menu::bar"
+egui = "egui::menu::bar"
+win32 = "CreateMenu + SetMenu"
+web = "Bun UI menu bar component"
+
+[apis.tray]
+tauri = "tauri::tray::TrayIconBuilder"
+winit = "tray-icon crate"
+gtk = "StatusNotifierItem via ksni (no GTK API)"
+qt = "QSystemTrayIcon / Platform.SystemTrayIcon"
+cosmic = "StatusNotifierItem (cosmic-applet-status-area host)"
+win32 = "Shell_NotifyIconW"
+web = "WebOS shell tray area"
+
+[apis.file_dialog]
+tauri = "tauri-plugin-dialog"
+winit = "rfd crate"
+gtk = "gtk::FileDialog (4.10+), XDG portal underneath"
+qt = "FileDialog (QtQuick.Dialogs) / QFileDialog"
+cosmic = "cosmic::dialog::file_chooser (XDG portal)"
+egui = "rfd crate"
+win32 = "IFileOpenDialog / IFileSaveDialog (COM)"
+web = "showOpenFilePicker / <input type=file>; WebOS OPFS chooser"
+
+[apis.notification]
+tauri = "tauri-plugin-notification"
+winit = "notify-rust"
+gtk = "gio::Notification + Application::send_notification"
+qt = "KNotification (KDE) / QSystemTrayIcon::showMessage"
+cosmic = "org.freedesktop.Notifications via notify-rust (cosmic-notifications daemon)"
+win32 = "Windows.UI.Notifications ToastNotificationManager (WinRT)"
+web = "Notification API / WebOS notification center"
+
+[apis.clipboard]
+tauri = "tauri-plugin-clipboard-manager"
+winit = "arboard / smithay-clipboard"
+gtk = "gdk::Display::clipboard()"
+qt = "QGuiApplication::clipboard()"
+cosmic = "cosmic::iced::clipboard (Wayland data device)"
+egui = "ctx.copy_text / egui::Event::Paste"
+win32 = "OpenClipboard + SetClipboardData"
+web = "navigator.clipboard"
+
+[apis.global_shortcut]
+tauri = "tauri-plugin-global-shortcut"
+winit = "global-hotkey crate"
+gtk = "GlobalShortcuts XDG portal (ashpd)"
+qt = "KGlobalAccel / GlobalShortcuts portal"
+cosmic = "cosmic-settings shortcuts config (cosmic-config)"
+win32 = "RegisterHotKey"
+web = "WebOS shell keybinding registry"
+
+[apis.color_scheme]
+tauri = "Window::theme() + WindowEvent::ThemeChanged"
+winit = "Window::theme() + WindowEvent::ThemeChanged"
+gtk = "adw::StyleManager::is_dark() / connect_dark_notify; accent: StyleManager::accent_color (1.6)"
+qt = "QStyleHints::colorScheme() (6.5) + colorSchemeChanged; QPalette::Accent (6.6)"
+cosmic = "cosmic::theme::system_preference() + cosmic-config watch"
+egui = "ctx.system_theme() / ThemePreference"
+bevy = "WindowThemeChanged event"
+win32 = "UISettings.GetColorValue(Accent) + registry AppsUseLightTheme + WM_SETTINGCHANGE"
+web = "matchMedia('(prefers-color-scheme: dark)')"
+
+[apis.ipc_events]
+tauri = "invoke / emit / listen"
+winit = "EventLoopProxy::send_event"
+gtk = "gio::SimpleAction + glib::MainContext channels"
+qt = "signals/slots (cxx-qt #[qsignal])"
+cosmic = "Task / Message (iced)"
+egui = "app state + ctx.request_repaint"
+bevy = "Events / Observers"
+win32 = "PostMessageW(WM_APP + n)"
+web = "postMessage / BroadcastChannel"
+
+[apis.single_instance]
+tauri = "tauri-plugin-single-instance"
+gtk = "GApplication D-Bus uniqueness (default)"
+qt = "KDBusService::Unique / QLocalServer"
+cosmic = "cosmic `single-instance` feature (D-Bus)"
+win32 = "CreateMutexW + FindWindowW"
+web = "Web Locks API"
+
+[apis.deep_link]
+tauri = "tauri-plugin-deep-link"
+gtk = "desktop file MimeType=x-scheme-handler + GApplication::open"
+qt = "QDesktopServices::setUrlHandler / desktop file"
+cosmic = "desktop file x-scheme-handler"
+win32 = "HKCU\\Software\\Classes\\<scheme> URL protocol"
+web = "navigator.registerProtocolHandler / WebOS route"
+
+[apis.autostart]
+tauri = "tauri-plugin-autostart"
+gtk = "Background XDG portal RequestBackground (ashpd)"
+qt = "Background portal / ~/.config/autostart"
+cosmic = "Background portal / ~/.config/autostart"
+win32 = "HKCU Run key / StartupTask (packaged)"
+web = "WebOS session restore"
+
+[apis.accessibility]
+tauri = "WebView accessibility (platform)"
+winit = "accesskit_winit"
+gtk = "GtkAccessible (AT-SPI)"
+qt = "QAccessible (AT-SPI / UIA)"
+cosmic = "accesskit (iced a11y feature)"
+egui = "accesskit (eframe feature)"
+bevy = "bevy_a11y (accesskit)"
+win32 = "UI Automation providers"
+web = "ARIA / DOM"
+
+[apis.gpu_surface]
+tauri = "wgpu surface on window handle (raw-window-handle)"
+winit = "raw-window-handle -> wgpu::Surface"
+gtk = "gtk::GLArea / GdkDmabufTexture (4.14)"
+qt = "QQuickRhiItem (6.7) / QRhi"
+cosmic = "iced wgpu renderer"
+egui = "egui-wgpu"
+bevy = "bevy_render (wgpu)"
+win32 = "DXGI swapchain / wgpu on HWND"
+web = "WebGPU canvas"
+
+# ---------------------------------------------------------------------------------------------
+# 7 First-Class Built-In Theme Presets (`YoloThemePreset` in `crates/yolo-shared` & `crates/yolo-tokens`)
+# ---------------------------------------------------------------------------------------------
+
+[themes.yolo-neutral]
+id = "yolo-neutral"
+display_name = "Yolo Neutral (Customizable Default)"
+seed_hex = "#6366F1"
+seed_argb = 0xFF6366F1
+variant = "neutral"
+is_default = true
+bg_primary_dark = "#09090b"
+bg_surface_dark = "#18181b"
+bg_elevated_dark = "#27272a"
+text_primary_dark = "#fafafa"
+text_secondary_dark = "#a1a1aa"
+accent_primary_dark = "#6366f1"
+accent_secondary_dark = "#818cf8"
+radius_sm_px = 6
+radius_md_px = 8
+radius_lg_px = 12
+window_vibrancy = "none"
+font_sans = "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+font_mono = "'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace"
+
+[themes.yolo-m3]
+id = "yolo-m3"
+display_name = "Google Material Design 3 (Jetpack Compose)"
+seed_hex = "#6750A4"
+seed_argb = 0xFF6750A4
+variant = "tonal-spot"
+is_default = false
+bg_primary_dark = "#141218"
+bg_surface_dark = "#1d1b20"
+bg_elevated_dark = "#2b2930"
+text_primary_dark = "#e6e0e9"
+text_secondary_dark = "#cac4d0"
+accent_primary_dark = "#d0bcff"
+accent_secondary_dark = "#ccc2dc"
+radius_sm_px = 8
+radius_md_px = 12
+radius_lg_px = 16
+radius_pill_px = 9999
+elevation_levels = [0, 1, 2, 3, 4, 5]
+window_vibrancy = "surface-tint"
+font_sans = "'Google Sans Flex', 'Google Sans', Roboto, system-ui, sans-serif"
+font_mono = "'Google Sans Code', 'JetBrains Mono', monospace"
+
+[themes.yolo-fluent]
+id = "yolo-fluent"
+display_name = "Microsoft Fluent UI 2 (WinUI 3 Mica/Acrylic)"
+seed_hex = "#0078D4"
+seed_argb = 0xFF0078D4
+variant = "content"
+is_default = false
+bg_primary_dark = "#202020"
+bg_surface_dark = "#2c2c2c"
+bg_elevated_dark = "#383838"
+text_primary_dark = "#ffffff"
+text_secondary_dark = "#c5c5c5"
+accent_primary_dark = "#60cdff"
+accent_secondary_dark = "#0078d4"
+radius_control_px = 4
+radius_overlay_px = 8
+stroke_reveal_px = 1
+window_vibrancy = "mica"
+backdrop_modes = ["mica", "mica-tabbed", "acrylic", "smoke"]
+font_sans = "'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif"
+font_mono = "'Cascadia Code', Consolas, monospace"
+
+[themes.yolo-apple]
+id = "yolo-apple"
+display_name = "Apple HIG Liquid Glass (macOS Tahoe & iOS Cupertino)"
+seed_hex = "#007AFF"
+seed_argb = 0xFF007AFF
+variant = "fidelity"
+is_default = false
+bg_primary_dark = "#1e1e1e"
+bg_surface_dark = "#28282a"
+bg_elevated_dark = "#323236"
+text_primary_dark = "#ffffff"
+text_secondary_dark = "#98989d"
+accent_primary_dark = "#0a84ff"
+accent_secondary_dark = "#30d158"
+system_blue = "#007AFF"
+system_green = "#34C759"
+system_orange = "#FF9500"
+system_red = "#FF3B30"
+traffic_light_close = "#FF5F56"
+traffic_light_minimize = "#FFBD2E"
+traffic_light_zoom = "#27C93F"
+liquid_glass_blur_px = 24
+radius_squircle_md_px = 10
+radius_squircle_lg_px = 14
+window_vibrancy = "macos-liquid-glass"
+font_sans = "'SF Pro', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
+font_mono = "'SF Mono', ui-monospace, Menlo, monospace"
+
+[themes.yolo-omarchy]
+id = "yolo-omarchy"
+display_name = "Omacom Omarchy (23 TUI & Wayland Themes + omarchy-site)"
+seed_hex = "#7AA2F7"
+seed_argb = 0xFF7AA2F7
+variant = "vibrant"
+is_default = false
+default_subtheme = "tokyo-night"
+bg_primary_dark = "#1a1b26"
+bg_surface_dark = "#15161e"
+bg_elevated_dark = "#24283b"
+text_primary_dark = "#c0caf5"
+text_secondary_dark = "#a9b1d6"
+accent_primary_dark = "#7aa2f7"
+accent_secondary_dark = "#bb9af7"
+radius_xs_px = 0
+radius_sm_px = 0
+radius_md_px = 2
+border_width_px = 2
+window_vibrancy = "wayland-blur"
+font_sans = "'Geist Variable', -apple-system, BlinkMacSystemFont, sans-serif"
+font_mono = "'JetBrains Mono Variable', 'CaskaydiaMono Nerd Font', monospace"
+targets = ["waybar", "walker", "hyprland", "ghostty", "alacritty", "kitty", "neovim", "btop", "omarchy-site"]
+subthemes = [
+  "catppuccin",
+  "catppuccin-latte",
+  "ethereal",
+  "everforest",
+  "flexoki-light",
+  "gruvbox",
+  "hackerman",
+  "jade-horse",
+  "kanagawa",
+  "last-horizon",
+  "lumon",
+  "lupine",
+  "matte-black",
+  "miasma",
+  "nord",
+  "retro-82",
+  "ristretto",
+  "rose-pine",
+  "solitude",
+  "starship",
+  "tokyo-night",
+  "vantablack",
+  "white",
+]
+
+[themes.yolo-hyprland]
+id = "yolo-hyprland"
+display_name = "Hyprland Wayland Compositor (hyprwm / hyprtoolkit / hyprqt6engine)"
+seed_hex = "#33CCFF"
+seed_argb = 0xFF33CCFF
+variant = "vibrant"
+is_default = false
+active_border_start_hex = "#33CCFF"
+active_border_end_hex = "#00FF99"
+active_border_angle_deg = 45.0
+inactive_border_rgba = "rgba(89, 89, 89, 0.67)"
+bg_primary_dark = "#0b0e14"
+bg_surface_dark = "#111622"
+bg_elevated_dark = "#192030"
+text_primary_dark = "#e6f1ff"
+text_secondary_dark = "#8b9eb7"
+accent_primary_dark = "#33ccff"
+accent_secondary_dark = "#00ff99"
+rounding_px = 10
+border_size_px = 2
+gaps_in_px = 5
+gaps_out_px = 20
+blur_size = 8
+blur_passes = 3
+blur_vibrancy = 0.1696
+bezier_name = "myBezier"
+bezier_points = [0.05, 0.9, 0.1, 1.05]
+window_vibrancy = "hyprland-kawase-blur"
+font_sans = "'Inter', 'Noto Sans', system-ui, sans-serif"
+font_mono = "'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace"
+
+[themes.yolo-aphrody]
+id = "yolo-aphrody"
+display_name = "Aphrody Byron Love (10-Teinte Sprite Atlas & Celestial Gold)"
+seed_hex = "#17335C"
+seed_argb = 0xFF17335C
+variant = "tonal-spot"
+is_default = false
+bg_primary_dark = "#090b10"
+bg_surface_dark = "#111520"
+bg_elevated_dark = "#181e2e"
+text_primary_dark = "#f3f6fc"
+text_secondary_dark = "#9ba6bf"
+accent_primary_dark = "#7c5cff"
+accent_secondary_dark = "#00d4ff"
+celestial_gold = "#FFD700"
+divine_violet = "#7C5CFF"
+divine_cyan = "#00D4FF"
+pet_id = "aphrody-byron-love"
+pet_grid = [8, 11]
+pet_cell_px = [192, 208]
+byron_love_palette = [
+  "#F7F3F0", # 1 creme
+  "#EADBA6", # 2 blond
+  "#C2B19E", # 3 sable
+  "#AF9183", # 4 taupe
+  "#8B7083", # 5 mauve
+  "#6C5454", # 6 brun
+  "#91704C", # 7 ocre
+  "#4E3738", # 8 cacao
+  "#17335C", # 9 azur (seed)
+  "#131420", # 10 nuit
+]
+window_vibrancy = "acrylic-dark-glass"
+font_sans = "'Google Sans Flex', 'Zed Plex Sans', Inter, system-ui, sans-serif"
+font_mono = "'Google Sans Code', 'Zed Plex Mono', 'JetBrains Mono', monospace"
+
+# ---------------------------------------------------------------------------------------------
+# React Shadcn UI / Radix UI / Base UI / Tailwind CSS -> 7 Rust UI Engines Migration Matrix
+# ---------------------------------------------------------------------------------------------
+
+[migration.shadcn_radix_baseui_tailwind]
+Button = { dioxus = "dioxus_primitives::button / rsx! { button }", egui = "egui::Button", cosmic = "cosmic::widget::button::standard", gtk4 = "gtk::Button", qt6 = "QtQuick.Controls.Button", gpui = "gpui_component::button::Button", iced = "iced::widget::button" }
+Dialog = { dioxus = "dioxus_primitives::dialog::DialogRoot", egui = "egui::Modal", cosmic = "cosmic::widget::dialog", gtk4 = "adw::Dialog / adw::AlertDialog", qt6 = "QtQuick.Controls.Dialog", gpui = "gpui_component::modal::Modal", iced = "iced_aw::Modal" }
+AlertDialog = { dioxus = "dioxus_primitives::alert_dialog::AlertDialogRoot", egui = "egui::Modal", cosmic = "cosmic::widget::dialog", gtk4 = "adw::AlertDialog", qt6 = "Kirigami.PromptDialog", gpui = "gpui_component::modal::Modal", iced = "iced_aw::Modal" }
+Sheet = { dioxus = "dioxus_primitives::sheet::Sheet", egui = "egui::SidePanel / TopBottomPanel", cosmic = "cosmic::app::context_drawer", gtk4 = "adw::OverlaySplitView / adw::BottomSheet", qt6 = "QtQuick.Controls.Drawer", gpui = "gpui_component::drawer::Drawer", iced = "iced_aw::Split" }
+Popover = { dioxus = "dioxus_primitives::popover::PopoverRoot", egui = "egui::Popup", cosmic = "cosmic::widget::popover", gtk4 = "gtk::Popover", qt6 = "QtQuick.Controls.Popup", gpui = "gpui_component::popover::Popover", iced = "iced::widget::overlay" }
+Tooltip = { dioxus = "dioxus_primitives::tooltip::TooltipRoot", egui = "egui::Response::on_hover_ui", cosmic = "cosmic::widget::tooltip", gtk4 = "gtk::Widget::set_tooltip_text", qt6 = "QtQuick.Controls.ToolTip", gpui = "gpui_component::tooltip::Tooltip", iced = "iced::widget::tooltip" }
+DropdownMenu = { dioxus = "dioxus_primitives::dropdown_menu::DropdownMenuRoot", egui = "egui::menu::bar / Response::context_menu", cosmic = "cosmic::widget::menu::bar", gtk4 = "gtk::PopoverMenu", qt6 = "QtQuick.Controls.Menu", gpui = "gpui_component::popup_menu::PopupMenu", iced = "iced_aw::Menu" }
+ContextMenu = { dioxus = "dioxus_primitives::context_menu::ContextMenuRoot", egui = "egui::Response::context_menu", cosmic = "cosmic::widget::menu::context_menu", gtk4 = "gtk::PopoverMenu", qt6 = "QtQuick.Controls.Menu", gpui = "gpui_component::context_menu::ContextMenu", iced = "iced_aw::ContextMenu" }
+Tabs = { dioxus = "dioxus_primitives::tabs::TabsRoot", egui = "egui::Ui::selectable_value", cosmic = "cosmic::widget::segmented_button::horizontal", gtk4 = "adw::TabBar + adw::TabView", qt6 = "QtQuick.Controls.TabBar + StackLayout", gpui = "gpui_component::tab::TabBar", iced = "iced_aw::Tabs" }
+Accordion = { dioxus = "dioxus_primitives::accordion::AccordionRoot", egui = "egui::CollapsingHeader", cosmic = "cosmic::widget::settings::section", gtk4 = "adw::ExpanderRow", qt6 = "Kirigami.FormLayout", gpui = "gpui_component::accordion::Accordion", iced = "iced::widget::column" }
+Switch = { dioxus = "dioxus_primitives::switch::Switch", egui = "yolo_egui::toggle_switch", cosmic = "cosmic::widget::toggler", gtk4 = "gtk::Switch / adw::SwitchRow", qt6 = "QtQuick.Controls.Switch", gpui = "gpui_component::switch::Switch", iced = "iced::widget::toggler" }
+Checkbox = { dioxus = "dioxus_primitives::checkbox::Checkbox", egui = "egui::Checkbox", cosmic = "cosmic::widget::checkbox", gtk4 = "gtk::CheckButton", qt6 = "QtQuick.Controls.CheckBox", gpui = "gpui_component::checkbox::Checkbox", iced = "iced::widget::checkbox" }
+RadioGroup = { dioxus = "dioxus_primitives::radio_group::RadioGroup", egui = "egui::Ui::radio_value", cosmic = "cosmic::widget::radio", gtk4 = "gtk::CheckButton (grouped)", qt6 = "QtQuick.Controls.RadioButton", gpui = "gpui_component::radio::RadioGroup", iced = "iced::widget::radio" }
+Slider = { dioxus = "dioxus_primitives::slider::Slider", egui = "egui::Slider", cosmic = "cosmic::widget::slider", gtk4 = "gtk::Scale", qt6 = "QtQuick.Controls.Slider", gpui = "gpui_component::slider::Slider", iced = "iced::widget::slider" }
+Input = { dioxus = "rsx! { input }", egui = "egui::TextEdit::singleline", cosmic = "cosmic::widget::text_input", gtk4 = "gtk::Entry / adw::EntryRow", qt6 = "QtQuick.Controls.TextField", gpui = "gpui_component::input::TextInput", iced = "iced::widget::text_input" }
+Textarea = { dioxus = "rsx! { textarea }", egui = "egui::TextEdit::multiline", cosmic = "cosmic::widget::text_editor", gtk4 = "gtk::TextView", qt6 = "QtQuick.Controls.TextArea", gpui = "gpui_component::input::TextInput (multiline)", iced = "iced::widget::text_editor" }
+Select = { dioxus = "dioxus_primitives::select::SelectRoot", egui = "egui::ComboBox", cosmic = "cosmic::widget::dropdown", gtk4 = "gtk::DropDown / adw::ComboRow", qt6 = "QtQuick.Controls.ComboBox", gpui = "gpui_component::dropdown::Dropdown", iced = "iced::widget::pick_list" }
+Progress = { dioxus = "dioxus_primitives::progress::Progress", egui = "egui::ProgressBar", cosmic = "cosmic::widget::progress_bar", gtk4 = "gtk::ProgressBar", qt6 = "QtQuick.Controls.ProgressBar", gpui = "gpui_component::progress::Progress", iced = "iced::widget::progress_bar" }
+ScrollArea = { dioxus = "dioxus_primitives::scroll_area::ScrollArea", egui = "egui::ScrollArea", cosmic = "cosmic::iced::widget::scrollable", gtk4 = "gtk::ScrolledWindow", qt6 = "QtQuick.Controls.ScrollView", gpui = "gpui_component::scroll::Scrollable", iced = "iced::widget::scrollable" }
+ResizablePanelGroup = { dioxus = "yolo_ui::SplitPane", egui = "egui::SidePanel::resizable", cosmic = "cosmic::widget::pane_grid", gtk4 = "gtk::Paned / adw::NavigationSplitView", qt6 = "QtQuick.Controls.SplitView", gpui = "gpui_component::dock::DockArea", iced = "iced_aw::Split" }
+DataTable = { dioxus = "rsx! { table }", egui = "egui_extras::TableBuilder", cosmic = "cosmic::widget::table", gtk4 = "gtk::ColumnView", qt6 = "QtQuick.TableView", gpui = "gpui_component::table::Table", iced = "iced::widget::column (virtualized)" }
+Toast = { dioxus = "dioxus_primitives::toast::ToastProvider", egui = "egui_notify::Toasts", cosmic = "cosmic::widget::toaster", gtk4 = "adw::ToastOverlay + adw::Toast", qt6 = "Kirigami.ApplicationWindow::showPassiveNotification", gpui = "gpui_component::notification::Notification", iced = "iced_aw::Toast" }

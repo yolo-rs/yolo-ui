@@ -67,7 +67,8 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
 
     const sharedSource = await sharedLib.text();
     expect(sharedSource).toContain("pub struct RgbaColor");
-    expect(sharedSource).toContain("pub struct AphrodyThemeTokens");
+    expect(sharedSource).toContain("pub struct YoloThemeTokens");
+    expect(sharedSource).toContain("AphrodyThemeTokens");
     expect(sharedSource).toContain("APHRODY_DARK_THEME");
 
     const libSource = await uiLib.text();
@@ -105,6 +106,8 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
       "test.ts",
       "optimize.ts",
       "migrate-bun.ts",
+      "ui.ts",
+      "react-bun.ts",
     ];
     for (const scriptName of scriptNames) {
       const scriptPath = join(ROOT_DIR, "scripts", scriptName);
@@ -139,14 +142,27 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
     expect(categorizeSubmodule("tao")).toBe("tauri-apps");
     expect(categorizeSubmodule("muda")).toBe("tauri-apps");
     expect(categorizeSubmodule("tray-icon")).toBe("tauri-apps");
+    expect(categorizeSubmodule("egui")).toBe("emilk");
+    expect(categorizeSubmodule("libcosmic")).toBe("pop-os");
+    expect(categorizeSubmodule("gtk4-rs")).toBe("gtk-rs");
+    expect(categorizeSubmodule("cxx-qt")).toBe("KDAB");
+    expect(categorizeSubmodule("fluentui")).toBe("microsoft");
+    expect(categorizeSubmodule("material-web")).toBe("material-components");
+    expect(categorizeSubmodule("omarchy")).toBe("omacom");
+    expect(categorizeSubmodule("hyprland")).toBe("hyprwm");
+    expect(categorizeSubmodule("shadcn-ui")).toBe("shadcn-ui");
+    expect(categorizeSubmodule("base-ui")).toBe("mui");
+    expect(categorizeSubmodule("tailwindcss")).toBe("tailwindlabs");
+    expect(categorizeSubmodule("react")).toBe("facebook");
+    expect(categorizeSubmodule("expo")).toBe("expo");
 
     const submodules = await discoverSubmodules();
-    expect(submodules.length).toBeGreaterThanOrEqual(70);
+    expect(submodules.length).toBeGreaterThanOrEqual(120);
 
     const inventory = await buildInventory();
     expect(inventory.version).toBe("0.8.0-alpha.3");
     expect(inventory.totalSubmodules).toBe(inventory.submodules.length);
-    expect(inventory.totalSubmodules).toBeGreaterThanOrEqual(70);
+    expect(inventory.totalSubmodules).toBeGreaterThanOrEqual(120);
   });
 
   test("Workspace optimization analyzer reports valid metrics and zero duplicate dependencies", async () => {
