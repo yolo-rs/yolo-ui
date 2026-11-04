@@ -105,7 +105,8 @@ export async function compileAppRouter(options: CompileAppRouterOptions): Promis
   const { project } = options;
   const outDir = options.outDir ?? project.outDir;
   if (options.build !== false) await buildAppProject(project, { outDir, prerender: options.prerender });
-  if (!existsSync(join(outDir, "manifest.json"))) throw new Error(`yolo-fullstack compile: no build in ${outDir} (run yolo-fullstack build)`);
+  if (!existsSync(join(outDir, "manifest.json")))
+    throw new Error(`yolo-fullstack compile: no build in ${outDir} (run yolo-fullstack build)`);
   const manifest = (await Bun.file(join(outDir, "manifest.json")).json()) as AppManifest;
   const files = await embeddedFiles(outDir);
   const entryFile = join(options.cacheDir ?? join(project.root, ".yolo"), "compile-entry.ts");
@@ -133,7 +134,8 @@ export async function compileAppRouter(options: CompileAppRouterOptions): Promis
     throw: false,
   });
   if (!result.success) throw new Error(`yolo-fullstack compile: failed\n${result.logs.map(String).join("\n")}`);
-  if (!existsSync(outfile)) throw new Error(`yolo-fullstack compile: Bun.build reported success but wrote no ${outfile}`);
+  if (!existsSync(outfile))
+    throw new Error(`yolo-fullstack compile: Bun.build reported success but wrote no ${outfile}`);
   return {
     outfile,
     bytes: Bun.file(outfile).size,
@@ -216,7 +218,8 @@ export async function dockerAppRouter(options: DockerAppRouterOptions): Promise<
     throw: false,
   });
   rmSync(entryFile, { force: true });
-  if (!result.success) throw new Error(`yolo-fullstack docker: server bundle failed\n${result.logs.map(String).join("\n")}`);
+  if (!result.success)
+    throw new Error(`yolo-fullstack docker: server bundle failed\n${result.logs.map(String).join("\n")}`);
   await Bun.write(join(contextDir, "Dockerfile"), renderDockerfile({ base: options.base ?? DOCKER_BASE_IMAGE, port }));
   return {
     contextDir,

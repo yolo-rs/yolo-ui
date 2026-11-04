@@ -26,6 +26,10 @@ export interface FontArtifact {
   preload: string[];
   /** The network was unavailable: the stylesheet only declares the fallback stack. */
   fallback: boolean;
+  /** Stylesheet rewritten to public URLs (set by `materializeFont`). */
+  builtCssFile?: string;
+  /** Preloads relative to the client directory (set by `materializeFont`). */
+  publicPreloads?: string[];
 }
 
 /** What the generated module exports to the app (`inter.className`, `inter.style`, `inter.variable`). */
@@ -44,7 +48,28 @@ export function fontClassNames(id: string, variable?: string): { className: stri
   return { className: `yf_${hash}`, variableClassName: variable ? `yfv_${hash}` : undefined };
 }
 
-const quote = (name: string) => (/^[a-zA-Z-]+$/.test(name) && ["serif", "sans-serif", "monospace", "cursive", "fantasy", "system-ui", "ui-serif", "ui-sans-serif", "ui-monospace", "ui-rounded", "emoji", "math", "fangsong", "inherit", "initial", "unset"].includes(name) ? name : `'${name.replace(/'/g, "\\'")}'`);
+const quote = (name: string) =>
+  /^[a-zA-Z-]+$/.test(name) &&
+  [
+    "serif",
+    "sans-serif",
+    "monospace",
+    "cursive",
+    "fantasy",
+    "system-ui",
+    "ui-serif",
+    "ui-sans-serif",
+    "ui-monospace",
+    "ui-rounded",
+    "emoji",
+    "math",
+    "fangsong",
+    "inherit",
+    "initial",
+    "unset",
+  ].includes(name)
+    ? name
+    : `'${name.replace(/'/g, "\\'")}'`;
 
 /** `'Inter', 'Segoe UI', sans-serif` from a family and its fallback list. */
 export function fontFamilyList(family: string, fallback: string[]): string {
@@ -57,7 +82,9 @@ export async function writeArtifact(artifact: FontArtifact, faces: string, displ
   const rules = [
     faces.replace(/font-display:\s*[^;]+;/g, "").replace(/@font-face\s*\{/g, `@font-face {font-display:${display};`),
     `.${artifact.className}{font-family:${artifact.style.fontFamily};${artifact.style.fontWeight ? `font-weight:${artifact.style.fontWeight};` : ""}${artifact.style.fontStyle ? `font-style:${artifact.style.fontStyle};` : ""}}`,
-    artifact.variableClassName && artifact.variable ? `.${artifact.variableClassName}{${artifact.variable}:${artifact.style.fontFamily};}` : "",
+    artifact.variableClassName && artifact.variable
+      ? `.${artifact.variableClassName}{${artifact.variable}:${artifact.style.fontFamily};}`
+      : "",
   ].filter(Boolean);
   await Bun.write(artifact.cssFile, `${rules.join("\n")}\n`);
   await Bun.write(`${dirname(artifact.cssFile)}/artifact.json`, JSON.stringify(artifact, null, 2));

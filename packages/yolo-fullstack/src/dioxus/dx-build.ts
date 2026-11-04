@@ -80,10 +80,7 @@ export async function dxBuild(options: DxBuildOptions): Promise<DxBuildResult> {
     stdout: "pipe",
     stderr: "pipe",
   });
-  await Promise.all([
-    pump(proc.stdout, "stdout", onOutput),
-    pump(proc.stderr, "stderr", onOutput),
-  ]);
+  await Promise.all([pump(proc.stdout, "stdout", onOutput), pump(proc.stderr, "stderr", onOutput)]);
   const exitCode = await proc.exited;
   return {
     exitCode,

@@ -21,9 +21,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 /** Read the global set by `define` (a JSON string or an object). */
 export default function getConfig(): RuntimeConfig {
-  let raw: unknown = (globalThis as Record<string, unknown>)[
-    RUNTIME_CONFIG_GLOBAL
-  ];
+  let raw: unknown = (globalThis as Record<string, unknown>)[RUNTIME_CONFIG_GLOBAL];
   if (typeof raw === "string") {
     try {
       raw = JSON.parse(raw);
@@ -33,23 +31,15 @@ export default function getConfig(): RuntimeConfig {
   }
   const value = isRecord(raw) ? raw : {};
   return {
-    serverRuntimeConfig: isRecord(value.serverRuntimeConfig)
-      ? value.serverRuntimeConfig
-      : {},
-    publicRuntimeConfig: isRecord(value.publicRuntimeConfig)
-      ? value.publicRuntimeConfig
-      : {},
+    serverRuntimeConfig: isRecord(value.serverRuntimeConfig) ? value.serverRuntimeConfig : {},
+    publicRuntimeConfig: isRecord(value.publicRuntimeConfig) ? value.publicRuntimeConfig : {},
   };
 }
 
 /** `define` entry of the global for one bundle layer: the client bundle gets only `publicRuntimeConfig`. */
-export function runtimeConfigDefine(
-  config: RuntimeConfigInput,
-  layer: Layer,
-): Record<string, string> {
+export function runtimeConfigDefine(config: RuntimeConfigInput, layer: Layer): Record<string, string> {
   const value: RuntimeConfig = {
-    serverRuntimeConfig:
-      layer === "client" ? {} : (config.serverRuntimeConfig ?? {}),
+    serverRuntimeConfig: layer === "client" ? {} : (config.serverRuntimeConfig ?? {}),
     publicRuntimeConfig: config.publicRuntimeConfig ?? {},
   };
   // The define value is a JS expression: a string literal holding the JSON.

@@ -4,11 +4,7 @@
 // resizes through sharp when installed (pass-through otherwise) and caches the result in memory and on disk.
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import type {
-  LocalPattern,
-  RemotePattern,
-  ResolvedImages,
-} from "../config/next-config";
+import type { LocalPattern, RemotePattern, ResolvedImages } from "../config/next-config";
 
 export const AVIF = "image/avif";
 export const WEBP = "image/webp";
@@ -20,8 +16,7 @@ export const ICO = "image/x-icon";
 export const BMP = "image/bmp";
 export const TIFF = "image/tiff";
 
-export type ResizeFormat =
-  typeof AVIF | typeof WEBP | typeof JPEG | typeof PNG | undefined;
+export type ResizeFormat = typeof AVIF | typeof WEBP | typeof JPEG | typeof PNG | undefined;
 
 export interface ResizeOptions {
   width: number;
@@ -37,10 +32,7 @@ export interface ResizeResult {
   passthrough?: boolean;
 }
 
-export type Resizer = (
-  bytes: Uint8Array,
-  opts: ResizeOptions,
-) => Promise<ResizeResult>;
+export type Resizer = (bytes: Uint8Array, opts: ResizeOptions) => Promise<ResizeResult>;
 
 export interface ImageOptimizerOptions {
   images: ResolvedImages;
@@ -79,47 +71,24 @@ class ImageError extends Error {
 }
 
 // Content type from magic bytes (Next.js `detectContentType`).
-const ascii = (bytes: Uint8Array, start: number, end: number) =>
-  String.fromCharCode(...bytes.subarray(start, end));
+const ascii = (bytes: Uint8Array, start: number, end: number) => String.fromCharCode(...bytes.subarray(start, end));
 
 /** The MIME type of an encoded image, or `undefined`. */
 export function detectContentType(bytes: Uint8Array): string | undefined {
-  if (bytes.length < 12)
-    return bytes.length >= 2 && bytes[0] === 0x3c ? maybeSvg(bytes) : undefined;
+  if (bytes.length < 12) return bytes.length >= 2 && bytes[0] === 0x3c ? maybeSvg(bytes) : undefined;
   if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return JPEG;
-  if (
-    bytes[0] === 0x89 &&
-    bytes[1] === 0x50 &&
-    bytes[2] === 0x4e &&
-    bytes[3] === 0x47
-  )
-    return PNG;
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return PNG;
   if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return GIF;
-  if (ascii(bytes, 0, 4) === "RIFF" && ascii(bytes, 8, 12) === "WEBP")
-    return WEBP;
-  if (
-    ascii(bytes, 4, 8) === "ftyp" &&
-    ["avif", "avis"].includes(ascii(bytes, 8, 12))
-  )
-    return AVIF;
-  if (
-    bytes[0] === 0x00 &&
-    bytes[1] === 0x00 &&
-    bytes[2] === 0x01 &&
-    bytes[3] === 0x00
-  )
-    return ICO;
+  if (ascii(bytes, 0, 4) === "RIFF" && ascii(bytes, 8, 12) === "WEBP") return WEBP;
+  if (ascii(bytes, 4, 8) === "ftyp" && ["avif", "avis"].includes(ascii(bytes, 8, 12))) return AVIF;
+  if (bytes[0] === 0x00 && bytes[1] === 0x00 && bytes[2] === 0x01 && bytes[3] === 0x00) return ICO;
   if (bytes[0] === 0x42 && bytes[1] === 0x4d) return BMP;
   if (
     (bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2a) ||
     (bytes[0] === 0x4d && bytes[1] === 0x4d && bytes[2] === 0x00)
   )
     return TIFF;
-  if (
-    bytes[0] === 0x3c ||
-    (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf)
-  )
-    return maybeSvg(bytes);
+  if (bytes[0] === 0x3c || (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf)) return maybeSvg(bytes);
   return undefined;
 }
 
@@ -129,10 +98,7 @@ function maybeSvg(bytes: Uint8Array): string | undefined {
 }
 
 /** Whether the GIF, APNG or WebP has several frames. */
-export function isAnimated(
-  bytes: Uint8Array,
-  contentType: string | undefined,
-): boolean {
+export function isAnimated(bytes: Uint8Array, contentType: string | undefined): boolean {
   if (contentType === GIF) {
     let descriptors = 0;
     for (let i = 13; i < bytes.length - 4; i++) {
@@ -145,23 +111,13 @@ export function isAnimated(
       )
         return true;
       // A graphic control extension precedes each frame.
-      if (
-        bytes[i] === 0x21 &&
-        bytes[i + 1] === 0xf9 &&
-        bytes[i + 2] === 0x04 &&
-        ++descriptors > 1
-      )
-        return true;
+      if (bytes[i] === 0x21 && bytes[i + 1] === 0xf9 && bytes[i + 2] === 0x04 && ++descriptors > 1) return true;
     }
     return false;
   }
   if (contentType === PNG) {
     for (let i = 8; i + 8 <= bytes.length;) {
-      const length =
-        (bytes[i]! << 24) |
-        (bytes[i + 1]! << 16) |
-        (bytes[i + 2]! << 8) |
-        bytes[i + 3]!;
+      const length = (bytes[i]! << 24) | (bytes[i + 1]! << 16) | (bytes[i + 2]! << 8) | bytes[i + 3]!;
       const type = ascii(bytes, i + 4, i + 8);
       if (type === "acTL") return true;
       if (type === "IDAT" || type === "IEND") return false;
@@ -193,35 +149,20 @@ function globToRegExp(glob: string, separator: string): RegExp {
 }
 
 export function matchRemotePattern(pattern: RemotePattern, url: URL): boolean {
-  if (
-    pattern.protocol !== undefined &&
-    pattern.protocol.replace(/:$/, "") !== url.protocol.replace(/:$/, "")
-  )
+  if (pattern.protocol !== undefined && pattern.protocol.replace(/:$/, "") !== url.protocol.replace(/:$/, ""))
     return false;
   if (pattern.port !== undefined && pattern.port !== url.port) return false;
   if (pattern.hostname === undefined)
-    throw new Error(
-      "@yolo-rs/fullstack: images.remotePatterns[].hostname is required",
-    );
+    throw new Error("@yolo-rs/fullstack: images.remotePatterns[].hostname is required");
   if (!globToRegExp(pattern.hostname, ".").test(url.hostname)) return false;
-  if (pattern.search !== undefined && pattern.search !== url.search)
-    return false;
-  if (
-    pattern.pathname !== undefined &&
-    !globToRegExp(pattern.pathname, "/").test(url.pathname)
-  )
-    return false;
+  if (pattern.search !== undefined && pattern.search !== url.search) return false;
+  if (pattern.pathname !== undefined && !globToRegExp(pattern.pathname, "/").test(url.pathname)) return false;
   return true;
 }
 
 export function matchLocalPattern(pattern: LocalPattern, url: URL): boolean {
-  if (pattern.search !== undefined && pattern.search !== url.search)
-    return false;
-  if (
-    pattern.pathname !== undefined &&
-    !globToRegExp(pattern.pathname, "/").test(url.pathname)
-  )
-    return false;
+  if (pattern.search !== undefined && pattern.search !== url.search) return false;
+  if (pattern.pathname !== undefined && !globToRegExp(pattern.pathname, "/").test(url.pathname)) return false;
   return true;
 }
 
@@ -235,24 +176,14 @@ export interface ValidatedParams {
 }
 
 /** Validate `url`, `w` and `q` against the images config; throws `ImageError` (400) when invalid. */
-export function validateParams(
-  images: ResolvedImages,
-  query: URLSearchParams,
-  accept: string,
-): ValidatedParams {
+export function validateParams(images: ResolvedImages, query: URLSearchParams, accept: string): ValidatedParams {
   const url = query.get("url");
   const w = query.get("w");
   const q = query.get("q");
   if (!url) throw new ImageError(400, '"url" parameter is required');
-  if (query.getAll("url").length > 1)
-    throw new ImageError(400, '"url" parameter cannot be an array');
-  if (url.length > MAX_URL_LENGTH)
-    throw new ImageError(400, '"url" parameter is too long');
-  if (url.startsWith("//"))
-    throw new ImageError(
-      400,
-      '"url" parameter cannot be a protocol-relative URL (//)',
-    );
+  if (query.getAll("url").length > 1) throw new ImageError(400, '"url" parameter cannot be an array');
+  if (url.length > MAX_URL_LENGTH) throw new ImageError(400, '"url" parameter is too long');
+  if (url.startsWith("//")) throw new ImageError(400, '"url" parameter cannot be a protocol-relative URL (//)');
 
   let href: string;
   let isAbsolute: boolean;
@@ -266,15 +197,9 @@ export function validateParams(
     } catch {
       throw new ImageError(400, '"url" parameter is invalid');
     }
-    if (
-      /\/(_next|_yolo)\/image($|\/)/.test(pathname) ||
-      pathname === images.path
-    )
+    if (/\/(_next|_yolo)\/image($|\/)/.test(pathname) || pathname === images.path)
       throw new ImageError(400, '"url" parameter cannot be recursive');
-    if (
-      images.localPatterns &&
-      !images.localPatterns.some((p) => matchLocalPattern(p, parsed))
-    )
+    if (images.localPatterns && !images.localPatterns.some(p => matchLocalPattern(p, parsed)))
       throw new ImageError(400, '"url" parameter is not allowed');
   } else {
     let parsed: URL;
@@ -285,52 +210,29 @@ export function validateParams(
     }
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:")
       throw new ImageError(400, '"url" parameter is invalid');
-    if (!images.remotePatterns.some((p) => matchRemotePattern(p, parsed)))
+    if (!images.remotePatterns.some(p => matchRemotePattern(p, parsed)))
       throw new ImageError(400, '"url" parameter is not allowed');
     href = parsed.toString();
     isAbsolute = true;
   }
 
   if (!w) throw new ImageError(400, '"w" parameter (width) is required');
-  if (query.getAll("w").length > 1)
-    throw new ImageError(400, '"w" parameter (width) cannot be an array');
-  if (!/^[0-9]+$/.test(w))
-    throw new ImageError(
-      400,
-      '"w" parameter (width) must be an integer greater than 0',
-    );
+  if (query.getAll("w").length > 1) throw new ImageError(400, '"w" parameter (width) cannot be an array');
+  if (!/^[0-9]+$/.test(w)) throw new ImageError(400, '"w" parameter (width) must be an integer greater than 0');
   const width = parseInt(w, 10);
   if (width <= 0 || Number.isNaN(width))
-    throw new ImageError(
-      400,
-      '"w" parameter (width) must be an integer greater than 0',
-    );
+    throw new ImageError(400, '"w" parameter (width) must be an integer greater than 0');
   const sizes = [...images.deviceSizes, ...images.imageSizes];
-  if (!sizes.includes(width))
-    throw new ImageError(
-      400,
-      `"w" parameter (width) of ${width} is not allowed`,
-    );
+  if (!sizes.includes(width)) throw new ImageError(400, `"w" parameter (width) of ${width} is not allowed`);
 
   if (!q) throw new ImageError(400, '"q" parameter (quality) is required');
-  if (query.getAll("q").length > 1)
-    throw new ImageError(400, '"q" parameter (quality) cannot be an array');
-  if (!/^[0-9]+$/.test(q))
-    throw new ImageError(
-      400,
-      '"q" parameter (quality) must be an integer between 1 and 100',
-    );
+  if (query.getAll("q").length > 1) throw new ImageError(400, '"q" parameter (quality) cannot be an array');
+  if (!/^[0-9]+$/.test(q)) throw new ImageError(400, '"q" parameter (quality) must be an integer between 1 and 100');
   const quality = parseInt(q, 10);
   if (quality < 1 || quality > 100)
-    throw new ImageError(
-      400,
-      '"q" parameter (quality) must be an integer between 1 and 100',
-    );
+    throw new ImageError(400, '"q" parameter (quality) must be an integer between 1 and 100');
   if (!images.qualities.includes(quality))
-    throw new ImageError(
-      400,
-      `"q" parameter (quality) of ${quality} is not allowed`,
-    );
+    throw new ImageError(400, `"q" parameter (quality) of ${quality} is not allowed`);
 
   return {
     href,
@@ -342,17 +244,12 @@ export function validateParams(
 }
 
 /** The first configured format the client accepts. */
-export function negotiate(
-  formats: readonly string[],
-  accept: string,
-): typeof AVIF | typeof WEBP | undefined {
+export function negotiate(formats: readonly string[], accept: string): typeof AVIF | typeof WEBP | undefined {
   const accepted = accept
     .split(",")
-    .map((part) => part.split(";")[0]!.trim().toLowerCase())
+    .map(part => part.split(";")[0]!.trim().toLowerCase())
     .filter(Boolean);
-  for (const format of formats)
-    if ((format === AVIF || format === WEBP) && accepted.includes(format))
-      return format;
+  for (const format of formats) if ((format === AVIF || format === WEBP) && accepted.includes(format)) return format;
   return undefined;
 }
 
@@ -385,9 +282,7 @@ export function fileName(href: string, contentType: string): string {
   } catch {
     // keep the raw value
   }
-  const base =
-    (pathname.split("/").pop() || "image").replace(/\.[a-z0-9]+$/i, "") ||
-    "image";
+  const base = (pathname.split("/").pop() || "image").replace(/\.[a-z0-9]+$/i, "") || "image";
   const ext = EXTENSIONS[contentType];
   return ext ? `${base}.${ext}` : base;
 }
@@ -395,22 +290,16 @@ export function fileName(href: string, contentType: string): string {
 // Resizers.
 
 /** Keeps the source bytes; sharp is not consulted. */
-export const passthroughResizer: Resizer = async (bytes) => ({
+export const passthroughResizer: Resizer = async bytes => ({
   bytes,
   contentType: detectContentType(bytes) ?? "application/octet-stream",
   passthrough: true,
 });
 
-type SharpModule = (
-  input: Uint8Array,
-  options?: Record<string, unknown>,
-) => SharpInstance;
+type SharpModule = (input: Uint8Array, options?: Record<string, unknown>) => SharpInstance;
 interface SharpInstance {
   rotate(): SharpInstance;
-  resize(options: {
-    width: number;
-    withoutEnlargement: boolean;
-  }): SharpInstance;
+  resize(options: { width: number; withoutEnlargement: boolean }): SharpInstance;
   avif(options: Record<string, unknown>): SharpInstance;
   webp(options: Record<string, unknown>): SharpInstance;
   png(options: Record<string, unknown>): SharpInstance;
@@ -422,9 +311,7 @@ let sharpPromise: Promise<SharpModule | undefined> | undefined;
 function loadSharp(): Promise<SharpModule | undefined> {
   // The specifier is a variable so bundlers do not try to resolve the optional dependency.
   const specifier = "sharp";
-  sharpPromise ??= import(specifier)
-    .then((mod) => (mod.default ?? mod) as SharpModule)
-    .catch(() => undefined);
+  sharpPromise ??= import(specifier).then(mod => (mod.default ?? mod) as SharpModule).catch(() => undefined);
   return sharpPromise;
 }
 
@@ -434,13 +321,8 @@ export const defaultResizer: Resizer = async (bytes, opts) => {
   if (!sharp) return passthroughResizer(bytes, opts);
   const source = detectContentType(bytes);
   const format =
-    opts.format ??
-    (source === PNG || source === JPEG || source === WEBP || source === AVIF
-      ? source
-      : JPEG);
-  let image = sharp(bytes)
-    .rotate()
-    .resize({ width: opts.width, withoutEnlargement: true });
+    opts.format ?? (source === PNG || source === JPEG || source === WEBP || source === AVIF ? source : JPEG);
+  let image = sharp(bytes).rotate().resize({ width: opts.width, withoutEnlargement: true });
   switch (format) {
     case AVIF:
       image = image.avif({
@@ -501,8 +383,7 @@ class MemoryCache {
     this.map.set(key, entry);
     this.bytes += entry.bytes.byteLength;
     for (const [oldest] of this.map) {
-      if (this.map.size <= this.maxEntries && this.bytes <= this.maxBytes)
-        break;
+      if (this.map.size <= this.maxEntries && this.bytes <= this.maxBytes) break;
       this.delete(oldest);
     }
   }
@@ -541,43 +422,32 @@ class DiskCache {
       await Bun.write(join(this.dir, `${key}.bin`), bytes);
       await Bun.write(join(this.dir, `${key}.json`), JSON.stringify(meta));
     } catch (error) {
-      console.warn(
-        `@yolo-rs/fullstack: image cache write failed: ${String(error)}`,
-      );
+      console.warn(`@yolo-rs/fullstack: image cache write failed: ${String(error)}`);
     }
   }
 }
 
-const hash = (input: string | Uint8Array) =>
-  new Bun.CryptoHasher("sha256").update(input).digest("hex");
+const hash = (input: string | Uint8Array) => new Bun.CryptoHasher("sha256").update(input).digest("hex");
 
 /** Create the `/_next/image` handler. */
-export function createImageOptimizer(
-  options: ImageOptimizerOptions,
-): ImageOptimizer {
+export function createImageOptimizer(options: ImageOptimizerOptions): ImageOptimizer {
   const { images } = options;
   const now = options.now ?? (() => Date.now());
   const doFetch = options.fetch ?? fetch;
   const resize = options.resize ?? defaultResizer;
   const timeout = options.timeout ?? DEFAULT_TIMEOUT;
-  const memory = new MemoryCache(
-    options.memoryEntries ?? 256,
-    options.memoryBytes ?? 64 * 1024 * 1024,
-  );
+  const memory = new MemoryCache(options.memoryEntries ?? 256, options.memoryBytes ?? 64 * 1024 * 1024);
   const disk = options.cacheDir ? new DiskCache(options.cacheDir) : undefined;
   // Collapses concurrent misses of one key into one optimization.
   const inflight = new Map<string, Promise<CacheEntry>>();
 
-  const matches = (pathname: string) =>
-    pathname === images.path || pathname === YOLO_IMAGE_PATH;
+  const matches = (pathname: string) => pathname === images.path || pathname === YOLO_IMAGE_PATH;
 
   const fetchSource = async (
     params: ValidatedParams,
   ): Promise<{ bytes: Uint8Array; contentType?: string; maxAge: number }> => {
     if (!params.isAbsolute) {
-      const pathname = decodeURIComponent(
-        new URL(params.href, "http://n").pathname,
-      );
+      const pathname = decodeURIComponent(new URL(params.href, "http://n").pathname);
       const blob = await options.local(pathname);
       if (!blob) throw new ImageError(404, "image not found");
       return {
@@ -595,25 +465,18 @@ export function createImageOptimizer(
       });
     } catch (error) {
       const name = error instanceof Error ? error.name : "";
-      throw new ImageError(
-        name === "TimeoutError" || name === "AbortError" ? 504 : 502,
-        "upstream image fetch failed",
-      );
+      throw new ImageError(name === "TimeoutError" || name === "AbortError" ? 504 : 502, "upstream image fetch failed");
     }
     if (!response.ok) {
       await response.body?.cancel().catch(() => {});
       throw new ImageError(
-        response.status >= 400 && response.status <= 599
-          ? response.status
-          : 502,
+        response.status >= 400 && response.status <= 599 ? response.status : 502,
         "upstream image response failed",
       );
     }
     return {
       bytes: new Uint8Array(await response.arrayBuffer()),
-      contentType:
-        response.headers.get("content-type")?.split(";")[0]?.trim() ||
-        undefined,
+      contentType: response.headers.get("content-type")?.split(";")[0]?.trim() || undefined,
       maxAge: getMaxAge(response.headers.get("cache-control")),
     };
   };
@@ -622,11 +485,7 @@ export function createImageOptimizer(
     const source = await fetchSource(params);
     const upstreamType = detectContentType(source.bytes) ?? source.contentType;
     const maxAge = Math.max(images.minimumCacheTTL, source.maxAge);
-    const finish = (
-      bytes: Uint8Array,
-      contentType: string,
-      passthrough: boolean,
-    ): CacheEntry => ({
+    const finish = (bytes: Uint8Array, contentType: string, passthrough: boolean): CacheEntry => ({
       bytes,
       contentType,
       maxAge,
@@ -636,28 +495,14 @@ export function createImageOptimizer(
     });
     if (upstreamType === SVG) {
       if (!images.dangerouslyAllowSVG)
-        throw new ImageError(
-          400,
-          '"url" parameter is valid but image type is not allowed',
-        );
+        throw new ImageError(400, '"url" parameter is valid but image type is not allowed');
       return finish(source.bytes, SVG, false);
     }
-    if (
-      upstreamType === ICO ||
-      upstreamType === BMP ||
-      isAnimated(source.bytes, upstreamType)
-    )
-      return finish(
-        source.bytes,
-        upstreamType ?? "application/octet-stream",
-        false,
-      );
+    if (upstreamType === ICO || upstreamType === BMP || isAnimated(source.bytes, upstreamType))
+      return finish(source.bytes, upstreamType ?? "application/octet-stream", false);
     const format: ResizeFormat =
       params.mimeType ??
-      (upstreamType === PNG ||
-      upstreamType === JPEG ||
-      upstreamType === WEBP ||
-      upstreamType === AVIF
+      (upstreamType === PNG || upstreamType === JPEG || upstreamType === WEBP || upstreamType === AVIF
         ? upstreamType
         : undefined);
     let result: ResizeResult;
@@ -671,19 +516,10 @@ export function createImageOptimizer(
       console.error(error);
       throw new ImageError(500, "image optimization failed");
     }
-    return finish(
-      result.bytes,
-      result.contentType,
-      result.passthrough === true,
-    );
+    return finish(result.bytes, result.contentType, result.passthrough === true);
   };
 
-  const respond = (
-    request: Request,
-    params: ValidatedParams,
-    entry: CacheEntry,
-    cache: "HIT" | "MISS",
-  ): Response => {
+  const respond = (request: Request, params: ValidatedParams, entry: CacheEntry, cache: "HIT" | "MISS"): Response => {
     const headers = new Headers({
       "content-type": entry.contentType,
       "cache-control": `public, max-age=${entry.maxAge}, must-revalidate`,
@@ -694,18 +530,12 @@ export function createImageOptimizer(
       "content-disposition": `${images.contentDispositionType}; filename="${fileName(params.href, entry.contentType)}"`,
     });
     if (entry.passthrough) headers.set("x-yolo-image", "passthrough");
-    if (request.headers.get("if-none-match") === entry.etag)
-      return new Response(null, { status: 304, headers });
+    if (request.headers.get("if-none-match") === entry.etag) return new Response(null, { status: 304, headers });
     headers.set("content-length", String(entry.bytes.byteLength));
-    return new Response(
-      request.method === "HEAD"
-        ? null
-        : (entry.bytes as Uint8Array<ArrayBuffer>),
-      {
-        status: 200,
-        headers,
-      },
-    );
+    return new Response(request.method === "HEAD" ? null : (entry.bytes as Uint8Array<ArrayBuffer>), {
+      status: 200,
+      headers,
+    });
   };
 
   const handle = async (request: Request): Promise<Response> => {
@@ -715,23 +545,15 @@ export function createImageOptimizer(
         headers: { allow: "GET, HEAD" },
       });
     const url = new URL(request.url);
-    if (!matches(url.pathname))
-      return new Response("Not Found", { status: 404 });
+    if (!matches(url.pathname)) return new Response("Not Found", { status: 404 });
     let params: ValidatedParams;
     try {
-      params = validateParams(
-        images,
-        url.searchParams,
-        request.headers.get("accept") ?? "",
-      );
+      params = validateParams(images, url.searchParams, request.headers.get("accept") ?? "");
     } catch (error) {
-      if (error instanceof ImageError)
-        return new Response(error.message, { status: error.status });
+      if (error instanceof ImageError) return new Response(error.message, { status: error.status });
       throw error;
     }
-    const key = hash(
-      `${params.href}\0${params.width}\0${params.quality}\0${params.mimeType ?? ""}`,
-    );
+    const key = hash(`${params.href}\0${params.width}\0${params.quality}\0${params.mimeType ?? ""}`);
     const time = now();
     const hit = memory.get(key, time) ?? (await disk?.get(key, time));
     if (hit) {
@@ -751,8 +573,7 @@ export function createImageOptimizer(
       await disk?.set(key, entry);
       return respond(request, params, entry, "MISS");
     } catch (error) {
-      if (error instanceof ImageError)
-        return new Response(error.message, { status: error.status });
+      if (error instanceof ImageError) return new Response(error.message, { status: error.status });
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });
     }

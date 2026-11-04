@@ -39,28 +39,20 @@ describe("xxh64", () => {
 
 describe("serverFnPath", () => {
   test("explicit endpoint skips the hash", () => {
-    expect(serverFnPath({ name: "get_user", endpoint: "/users" })).toBe(
-      "/api/users",
-    );
-    expect(
-      serverFnPath({ name: "get_user", endpoint: "users", prefix: "/rpc" }),
-    ).toBe("/rpc/users");
+    expect(serverFnPath({ name: "get_user", endpoint: "/users" })).toBe("/api/users");
+    expect(serverFnPath({ name: "get_user", endpoint: "users", prefix: "/rpc" })).toBe("/rpc/users");
   });
 
   test("implicit endpoint appends xxh64(manifestDir:modulePath)", () => {
     const manifestDir = "/home/dev/my_app";
     const modulePath = "my_app::api";
     const expected = `/api/get_user${xxh64(`${manifestDir}:${modulePath}`, 0n).toString(10)}`;
-    expect(serverFnPath({ name: "get_user", manifestDir, modulePath })).toBe(
-      expected,
-    );
+    expect(serverFnPath({ name: "get_user", manifestDir, modulePath })).toBe(expected);
   });
 
   test("missing manifest or module path yields no hash", () => {
     expect(serverFnPath({ name: "get_user" })).toBe("/api/get_user");
-    expect(serverFnPath({ name: "get_user", prefix: "/api/" })).toBe(
-      "/api/get_user",
-    );
+    expect(serverFnPath({ name: "get_user", prefix: "/api/" })).toBe("/api/get_user");
     expect(serverFnPath({ name: "get_user", prefix: "" })).toBe("/get_user");
   });
 });
@@ -87,19 +79,13 @@ describe("callServerFn", () => {
           body,
         });
         if (url.pathname.startsWith("/api/fail")) {
-          return Response.json(
-            { ServerError: { message: "boom" } },
-            { status: 500 },
-          );
+          return Response.json({ ServerError: { message: "boom" } }, { status: 500 });
         }
         if (url.pathname.startsWith("/api/echo")) {
           return Response.json({
             method: request.method,
             args:
-              request.headers.get("content-type") === "application/json" &&
-              body.length > 0
-                ? JSON.parse(body)
-                : body,
+              request.headers.get("content-type") === "application/json" && body.length > 0 ? JSON.parse(body) : body,
           });
         }
         return new Response("Not Found", { status: 404 });
@@ -110,13 +96,11 @@ describe("callServerFn", () => {
   });
 
   test("posts JSON and parses JSON", async () => {
-    const result = await callServerFn<{ method: string; args: { id: number } }>(
-      {
-        baseUrl,
-        name: "echo",
-        args: { id: 7 },
-      },
-    );
+    const result = await callServerFn<{ method: string; args: { id: number } }>({
+      baseUrl,
+      name: "echo",
+      args: { id: 7 },
+    });
     expect(result.method).toBe("POST");
     expect(result.args).toEqual({ id: 7 });
     const last = seen.at(-1)!;
@@ -138,9 +122,7 @@ describe("callServerFn", () => {
   });
 
   test("non-2xx throws DioxusServerFnError with status and body", async () => {
-    const error = await callServerFn({ baseUrl, name: "fail", args: {} }).catch(
-      (e: unknown) => e,
-    );
+    const error = await callServerFn({ baseUrl, name: "fail", args: {} }).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(DioxusServerFnError);
     const typed = error as DioxusServerFnError;
     expect(typed.status).toBe(500);
@@ -209,18 +191,15 @@ describe("dioxusProxy", () => {
   });
 
   test("forwards method, headers, body and query", async () => {
-    const response = await fetch(
-      `http://127.0.0.1:${proxyPort}/api/thing?x=1`,
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-custom": "yes",
-          connection: "keep-alive",
-        },
-        body: JSON.stringify({ a: 1 }),
+    const response = await fetch(`http://127.0.0.1:${proxyPort}/api/thing?x=1`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-custom": "yes",
+        connection: "keep-alive",
       },
-    );
+      body: JSON.stringify({ a: 1 }),
+    });
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ ok: true });
     expect(lastUpstream).not.toBeNull();
@@ -256,10 +235,7 @@ function makeWebDir(): string {
   writeFileSync(join(dir, "index.html"), "<!doctype html><title>dx</title>");
   writeFileSync(join(dir, "assets", "app.js"), "console.log('dx');");
   writeFileSync(join(dir, "assets", "style.css"), "body{}");
-  writeFileSync(
-    join(dir, "wasm", "app.wasm"),
-    new Uint8Array([0x00, 0x61, 0x73, 0x6d, 1, 0, 0, 0]),
-  );
+  writeFileSync(join(dir, "wasm", "app.wasm"), new Uint8Array([0x00, 0x61, 0x73, 0x6d, 1, 0, 0, 0]));
   writeFileSync(join(dir, "secret.txt"), "nope");
   return dir;
 }
@@ -279,9 +255,7 @@ describe("dioxusWebRoutes", () => {
   });
 
   test("rejects a missing directory", () => {
-    expect(() =>
-      dioxusWebRoutes({ dir: join(tmpdir(), "does-not-exist-yolo") }),
-    ).toThrow(/not found/);
+    expect(() => dioxusWebRoutes({ dir: join(tmpdir(), "does-not-exist-yolo") })).toThrow(/not found/);
   });
 
   test("serves index.html at the prefix", async () => {
@@ -295,9 +269,7 @@ describe("dioxusWebRoutes", () => {
     const js = await fetch(`${base}/assets/app.js`);
     expect(js.status).toBe(200);
     expect(js.headers.get("content-type")).toContain("text/javascript");
-    expect(js.headers.get("cache-control")).toBe(
-      "public, max-age=31536000, immutable",
-    );
+    expect(js.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
     expect(await js.text()).toBe("console.log('dx');");
 
     const css = await fetch(`${base}/assets/style.css`);
@@ -306,9 +278,7 @@ describe("dioxusWebRoutes", () => {
     const wasm = await fetch(`${base}/wasm/app.wasm`);
     expect(wasm.status).toBe(200);
     expect(wasm.headers.get("content-type")).toBe("application/wasm");
-    expect(wasm.headers.get("cache-control")).toBe(
-      "public, max-age=31536000, immutable",
-    );
+    expect(wasm.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
     expect((await wasm.arrayBuffer()).byteLength).toBe(8);
   });
 
@@ -352,9 +322,7 @@ describe("dioxusWebRoutes", () => {
     servers.push(server);
     const index = await fetch(`http://127.0.0.1:${server.port}/app/`);
     expect(index.status).toBe(200);
-    const asset = await fetch(
-      `http://127.0.0.1:${server.port}/app/assets/app.js`,
-    );
+    const asset = await fetch(`http://127.0.0.1:${server.port}/app/assets/app.js`);
     expect(asset.status).toBe(200);
     const unknown = await fetch(`http://127.0.0.1:${server.port}/app/unknown`);
     expect(unknown.status).toBe(404);
@@ -366,8 +334,7 @@ describe("dioxusBridge", () => {
   test("routes API to the proxy and everything else to the web build", async () => {
     const upstream = Bun.serve({
       port: 0,
-      fetch: (request) =>
-        Response.json({ path: new URL(request.url).pathname }),
+      fetch: request => Response.json({ path: new URL(request.url).pathname }),
     });
     servers.push(upstream);
     const dir = makeWebDir();

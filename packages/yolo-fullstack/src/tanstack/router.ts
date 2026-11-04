@@ -30,10 +30,9 @@ export function tanstackRoutePath(pattern: string): string {
 }
 
 function tanstackSegment(raw: string): string {
-  let m: RegExpExecArray | null;
-  if ((m = /^\[\[\.\.\.([^\]]+)\]\]$/.exec(raw))) return "$";
-  if ((m = /^\[\.\.\.([^\]]+)\]$/.exec(raw))) return "$";
-  if ((m = /^\[([^\]]+)\]$/.exec(raw))) return `$${m[1]}`;
+  if (/^\[\[\.\.\.([^\]]+)\]\]$/.test(raw) || /^\[\.\.\.([^\]]+)\]$/.test(raw)) return "$";
+  const m = /^\[([^\]]+)\]$/.exec(raw);
+  if (m) return `$${m[1]}`;
   return raw;
 }
 

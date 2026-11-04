@@ -39,15 +39,11 @@ function normalizePrefix(prefix: string | undefined): string {
 export function serverFnPath(options: ServerFnPathOptions): string {
   const prefix = normalizePrefix(options.prefix);
   if (options.endpoint !== undefined) {
-    const endpoint = options.endpoint.startsWith("/")
-      ? options.endpoint
-      : `/${options.endpoint}`;
+    const endpoint = options.endpoint.startsWith("/") ? options.endpoint : `/${options.endpoint}`;
     return `${prefix}${endpoint}`;
   }
   const hash =
-    options.manifestDir && options.modulePath
-      ? xxh64Decimal(`${options.manifestDir}:${options.modulePath}`, 0n)
-      : "";
+    options.manifestDir && options.modulePath ? xxh64Decimal(`${options.manifestDir}:${options.modulePath}`, 0n) : "";
   return `${prefix}/${options.name}${hash}`;
 }
 
@@ -81,18 +77,12 @@ export type CallServerFnOptions = {
   signal?: AbortSignal;
 } & ({ path: string } | ServerFnPathOptions);
 
-function encodeArgs(
-  args: Record<string, unknown>,
-  input: ServerFnInput,
-): { body: string; contentType: string } {
+function encodeArgs(args: Record<string, unknown>, input: ServerFnInput): { body: string; contentType: string } {
   if (input === "url") {
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(args)) {
       if (value === undefined) continue;
-      params.append(
-        key,
-        typeof value === "string" ? value : JSON.stringify(value),
-      );
+      params.append(key, typeof value === "string" ? value : JSON.stringify(value));
     }
     return {
       body: params.toString(),
@@ -113,18 +103,10 @@ async function parseBody(response: Response): Promise<unknown> {
 }
 
 /** Invoke a Dioxus server function over HTTP and return its decoded JSON output. */
-export async function callServerFn<T = unknown>(
-  options: CallServerFnOptions,
-): Promise<T> {
+export async function callServerFn<T = unknown>(options: CallServerFnOptions): Promise<T> {
   const path = "path" in options ? options.path : serverFnPath(options);
-  const url = new URL(
-    path,
-    options.baseUrl.endsWith("/") ? options.baseUrl : `${options.baseUrl}/`,
-  );
-  const { body, contentType } = encodeArgs(
-    options.args ?? {},
-    options.input ?? "json",
-  );
+  const url = new URL(path, options.baseUrl.endsWith("/") ? options.baseUrl : `${options.baseUrl}/`);
+  const { body, contentType } = encodeArgs(options.args ?? {}, options.input ?? "json");
   const headers = new Headers(options.headers);
   headers.set("content-type", contentType);
   if (!headers.has("accept")) headers.set("accept", "application/json");
@@ -136,7 +118,6 @@ export async function callServerFn<T = unknown>(
     signal: options.signal,
   });
   const parsed = await parseBody(response);
-  if (!response.ok)
-    throw new DioxusServerFnError(url.pathname, response.status, parsed);
+  if (!response.ok) throw new DioxusServerFnError(url.pathname, response.status, parsed);
   return parsed as T;
 }

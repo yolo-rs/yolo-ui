@@ -5,7 +5,7 @@
 // CLI flags are accepted and reported as no-ops.
 import type { BunPlugin } from "bun";
 import { existsSync } from "node:fs";
-import { dirname, extname, isAbsolute, join, resolve } from "node:path";
+import { dirname, extname, isAbsolute, resolve } from "node:path";
 import type { AliasTarget, TurbopackConfig, TurbopackRule, Unsupported } from "./next-config";
 
 export type Layer = "rsc" | "ssr" | "client";
@@ -37,7 +37,11 @@ const escapeRegex = (text: string) => text.replace(/[.+*?^${}()|[\]\\]/g, c => `
 
 /** Conditions tried, in order, for a conditional alias target in one layer. */
 export function aliasConditions(layer: Layer): string[] {
-  return layer === "client" ? ["browser", "import", "module", "default"] : layer === "rsc" ? ["react-server", "node", "import", "module", "default"] : ["node", "import", "module", "default"];
+  return layer === "client"
+    ? ["browser", "import", "module", "default"]
+    : layer === "rsc"
+      ? ["react-server", "node", "import", "module", "default"]
+      : ["node", "import", "module", "default"];
 }
 
 /** Pick the target string of an alias for one layer; `undefined` when the target excludes the layer. */
@@ -50,8 +54,9 @@ export function pickAliasTarget(target: AliasTarget, layer: Layer): string | str
   return undefined;
 }
 
-/** Convert a glob rule key (`*.svg`, `**/*.md`, `./src/**/*.yaml`) to a RegExp over posix paths. */
-export function ruleGlobToRegExp(glob: string): RegExp {
+// Convert a glob rule key ("*.svg", "**" + "/*.md", "./src/**" + "/*.yaml") to a RegExp over posix paths.
+export function ruleGlobToRegExp(pattern: string): RegExp {
+  const glob = pattern.startsWith("./") ? pattern.slice(2) : pattern;
   let source = "";
   for (let i = 0; i < glob.length; i++) {
     const c = glob[i]!;
@@ -72,7 +77,7 @@ export function ruleGlobToRegExp(glob: string): RegExp {
       i = end;
     } else source += escapeRegex(c);
   }
-  return new RegExp(`(^|/)${source.replace(/^\\\.\//, "")}$`);
+  return new RegExp(`(^|/)${source}$`);
 }
 
 /** The Bun loader of a Turbopack rule, or `undefined` with a reason when it cannot be mapped. */
@@ -108,7 +113,10 @@ export interface TurbopackPluginOptions {
 }
 
 /** Build the plugin applying `turbopack` for one layer. */
-export function turbopackPlugin(config: TurbopackConfig | undefined, options: TurbopackPluginOptions): TurbopackMapping {
+export function turbopackPlugin(
+  config: TurbopackConfig | undefined,
+  options: TurbopackPluginOptions,
+): TurbopackMapping {
   const unsupported: Unsupported[] = [];
   const base = config?.root ? resolve(options.root, config.root) : options.root;
   const aliases: { regex: RegExp; name: string; subpath: boolean; target: string | string[] }[] = [];
@@ -117,7 +125,12 @@ export function turbopackPlugin(config: TurbopackConfig | undefined, options: Tu
     if (target === undefined) continue;
     const subpath = name.endsWith("/*");
     const bare = subpath ? name.slice(0, -2) : name;
-    aliases.push({ regex: subpath ? new RegExp(`^${escapeRegex(bare)}/(.+)$`) : new RegExp(`^${escapeRegex(name)}$`), name: bare, subpath, target });
+    aliases.push({
+      regex: subpath ? new RegExp(`^${escapeRegex(bare)}/(.+)$`) : new RegExp(`^${escapeRegex(name)}$`),
+      name: bare,
+      subpath,
+      target,
+    });
   }
   const rules: { regex: RegExp; loader: RuleLoader; key: string }[] = [];
   for (const [key, raw] of Object.entries(config?.rules ?? {})) {
@@ -128,7 +141,8 @@ export function turbopackPlugin(config: TurbopackConfig | undefined, options: Tu
     if (loader) rules.push({ regex: ruleGlobToRegExp(key), loader, key });
   }
   for (const key of ["moduleIds", "treeShaking", "memoryLimit", "debugIds", "sourceMaps", "conditions"] as const)
-    if (config?.[key] !== undefined) unsupported.push({ key: `turbopack.${key}`, reason: "Bun.build has its own setting; ignored" });
+    if (config?.[key] !== undefined)
+      unsupported.push({ key: `turbopack.${key}`, reason: "Bun.build has its own setting; ignored" });
   const extensions = config?.resolveExtensions;
 
   const resolveTarget = (target: string, importer: string): string | undefined => {
@@ -159,7 +173,10 @@ export function turbopackPlugin(config: TurbopackConfig | undefined, options: Tu
               const path = resolveTarget(spec, args.importer);
               if (path) return { path };
             }
-            unsupported.push({ key: `turbopack.resolveAlias[${alias.name}]`, reason: `could not resolve ${JSON.stringify(alias.target)}` });
+            unsupported.push({
+              key: `turbopack.resolveAlias[${alias.name}]`,
+              reason: `could not resolve ${JSON.stringify(alias.target)}`,
+            });
           }
           return undefined;
         });
@@ -174,10 +191,17 @@ export function turbopackPlugin(config: TurbopackConfig | undefined, options: Tu
       }
       for (const rule of rules) {
         if (rule.loader === "svgr") {
-          build.onLoad({ filter: rule.regex }, async args => ({ contents: svgrModule(await Bun.file(args.path).text()), loader: "js", resolveDir: dirname(args.path) }));
+          build.onLoad({ filter: rule.regex }, async args => ({
+            contents: svgrModule(await Bun.file(args.path).text()),
+            loader: "js",
+            resolveDir: dirname(args.path),
+          }));
         } else {
           const loader = rule.loader;
-          build.onLoad({ filter: rule.regex }, async args => ({ contents: await Bun.file(args.path).arrayBuffer(), loader }));
+          build.onLoad({ filter: rule.regex }, async args => ({
+            contents: new Uint8Array(await Bun.file(args.path).arrayBuffer()),
+            loader: loader as Bun.Loader,
+          }));
         }
       }
     },

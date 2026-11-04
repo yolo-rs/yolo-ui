@@ -5,19 +5,13 @@ import { createElement } from "react";
 import { renderToReadableStream, renderToString } from "react-dom/server";
 import { PHASE_PRODUCTION_BUILD } from "../src/app/constants";
 import dynamic from "../src/app/dynamic";
-import getConfig, {
-  RUNTIME_CONFIG_GLOBAL,
-  runtimeConfigDefine,
-} from "../src/app/runtime-config";
+import getConfig, { RUNTIME_CONFIG_GLOBAL, runtimeConfigDefine } from "../src/app/runtime-config";
 import Script from "../src/app/script";
 
-const Hello = ({ name }: { name: string }) =>
-  createElement("p", null, `hello ${name}`);
+const Hello = ({ name }: { name: string }) => createElement("p", null, `hello ${name}`);
 const Loading = () => createElement("span", null, "loading");
 
-async function renderAll(
-  element: Parameters<typeof renderToString>[0],
-): Promise<string> {
+async function renderAll(element: Parameters<typeof renderToString>[0]): Promise<string> {
   const stream = await renderToReadableStream(element);
   await stream.allReady;
   return new Response(stream).text();
@@ -91,26 +85,18 @@ describe("Script", () => {
 
   test("beforeInteractive and worker render like afterInteractive", () => {
     for (const strategy of ["beforeInteractive", "worker"] as const) {
-      const html = renderToString(
-        createElement(Script, { src: "/b.js", strategy }),
-      );
+      const html = renderToString(createElement(Script, { src: "/b.js", strategy }));
       expect(html).toContain("<script");
       expect(html).toContain('src="/b.js"');
     }
   });
 
   test("lazyOnload renders nothing on the server", () => {
-    expect(
-      renderToString(
-        createElement(Script, { src: "/lazy.js", strategy: "lazyOnload" }),
-      ),
-    ).toBe("");
+    expect(renderToString(createElement(Script, { src: "/lazy.js", strategy: "lazyOnload" }))).toBe("");
   });
 
   test("inline children and dangerouslySetInnerHTML", () => {
-    const inline = renderToString(
-      createElement(Script, { id: "inline" }, "console.log(1)"),
-    );
+    const inline = renderToString(createElement(Script, { id: "inline" }, "console.log(1)"));
     expect(inline).toBe('<script id="inline">console.log(1)</script>');
     const html = renderToString(
       createElement(Script, {

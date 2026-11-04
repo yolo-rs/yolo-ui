@@ -41,8 +41,8 @@ export function forwardedHeaders(request: Request, requestUrl: URL): Headers {
   const connectionTokens = new Set(
     (request.headers.get("connection") ?? "")
       .split(",")
-      .map((token) => token.trim().toLowerCase())
-      .filter((token) => token.length > 0),
+      .map(token => token.trim().toLowerCase())
+      .filter(token => token.length > 0),
   );
   request.headers.forEach((value, key) => {
     const name = key.toLowerCase();
@@ -75,13 +75,9 @@ export function dioxusProxy(options: DioxusProxyOptions): DioxusProxy {
 
   const handler = async (request: Request): Promise<Response> => {
     const requestUrl = new URL(request.url);
-    const upstreamUrl = new URL(
-      requestUrl.pathname + requestUrl.search,
-      target,
-    );
+    const upstreamUrl = new URL(requestUrl.pathname + requestUrl.search, target);
     const method = request.method.toUpperCase();
-    const hasBody =
-      method !== "GET" && method !== "HEAD" && request.body !== null;
+    const hasBody = method !== "GET" && method !== "HEAD" && request.body !== null;
     const init: RequestInit & { duplex?: "half" } = {
       method,
       headers: forwardedHeaders(request, requestUrl),

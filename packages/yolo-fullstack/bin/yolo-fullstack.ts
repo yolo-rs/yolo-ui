@@ -67,7 +67,23 @@ export async function main(args: string[]): Promise<number> {
   }
   if (command === "config") {
     const config = await loadNextConfig(root);
-    console.log(JSON.stringify({ file: config.file, basePath: config.basePath, assetPrefix: config.assetPrefix, images: config.images, turbopack: config.turbopack, rewrites: config.rewrites, redirects: config.redirects, headers: config.headers, unsupported: config.unsupported }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          file: config.file,
+          basePath: config.basePath,
+          assetPrefix: config.assetPrefix,
+          images: config.images,
+          turbopack: config.turbopack,
+          rewrites: config.rewrites,
+          redirects: config.redirects,
+          headers: config.headers,
+          unsupported: config.unsupported,
+        },
+        null,
+        2,
+      ),
+    );
     return 0;
   }
   const project = findAppProject(root);
@@ -77,10 +93,23 @@ export async function main(args: string[]): Promise<number> {
   }
   project.label = "yolo-fullstack";
   if (command === "dev" || command === "build" || command === "start")
-    return runAppCommand(command, project, { port: port ? Number(port) : undefined, outdir, prerender, offline, turbopack: stripped.turbopack });
+    return runAppCommand(command, project, {
+      port: port ? Number(port) : undefined,
+      outdir,
+      prerender,
+      offline,
+      turbopack: stripped.turbopack,
+    });
   if (command === "compile") {
-    const report = await compileAppRouter({ project, outDir: outdir ? resolve(root, outdir) : undefined, target, prerender });
-    console.log(`yolo-fullstack compile: ${report.outfile} (${report.bytes} bytes, ${report.files} files, ${report.target}) in ${report.ms} ms`);
+    const report = await compileAppRouter({
+      project,
+      outDir: outdir ? resolve(root, outdir) : undefined,
+      target,
+      prerender,
+    });
+    console.log(
+      `yolo-fullstack compile: ${report.outfile} (${report.bytes} bytes, ${report.files} files, ${report.target}) in ${report.ms} ms`,
+    );
     return 0;
   }
   if (command === "docker") {

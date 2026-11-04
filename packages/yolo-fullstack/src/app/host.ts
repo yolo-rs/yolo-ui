@@ -4,7 +4,15 @@
 // The build comes from a directory (`loadApp`) or from files embedded in an executable (`yolo-fullstack compile`).
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { afterRoutes, beforeRoutes, compileRoutes, normalizePath, proxyRewrite, responseHeaders, type RouteRules } from "../config/routes";
+import {
+  afterRoutes,
+  beforeRoutes,
+  compileRoutes,
+  normalizePath,
+  proxyRewrite,
+  responseHeaders,
+  type RouteRules,
+} from "../config/routes";
 import { createImageOptimizer } from "../image";
 import type { AppManifest } from "./build";
 import type { HandleOptions, HandleResult } from "./runtime/rsc";
@@ -151,7 +159,13 @@ export async function loadAppSource(source: AppSource, options: LoadAppOptions =
     redirects: manifest.rules?.redirects ?? [],
     headers: manifest.rules?.headers ?? [],
   });
-  const routes: AppRoute[] = manifest.routes.map(r => ({ kind: r.kind, pattern: r.pattern, parts: parsePattern(r.pattern), file: "", segments: [] }));
+  const routes: AppRoute[] = manifest.routes.map(r => ({
+    kind: r.kind,
+    pattern: r.pattern,
+    parts: parsePattern(r.pattern),
+    file: "",
+    segments: [],
+  }));
   const images = manifest.images
     ? createImageOptimizer({
         images: manifest.images,
@@ -225,7 +239,11 @@ export async function loadAppSource(source: AppSource, options: LoadAppOptions =
     if (pathname.startsWith(ASSET_PREFIX)) {
       const path = relativeFile(pathname.slice(ASSET_PREFIX.length));
       const file = path && (await source.file(`client/${path}`));
-      if (file) return { response: new Response(file, { headers: { "cache-control": "public, max-age=31536000, immutable" } }), matched: true };
+      if (file)
+        return {
+          response: new Response(file, { headers: { "cache-control": "public, max-age=31536000, immutable" } }),
+          matched: true,
+        };
       return { response: new Response("Not Found", { status: 404 }), matched: false };
     }
     if (images?.matches(pathname)) return { response: await images.handle(request), matched: true };

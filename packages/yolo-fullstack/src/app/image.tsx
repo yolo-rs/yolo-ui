@@ -2,12 +2,7 @@
 // `next/image`: an `<img>` with `srcset` from the configured loader (the `/_next/image` optimizer or a CDN),
 // intrinsic size from static imports, lazy loading, `priority`, `fill` and blur placeholders. The images config
 // comes from the `__YOLO_IMAGE_CONFIG__` build define (`imageConfigDefine`) or from `globalThis` at runtime.
-import type {
-  CSSProperties,
-  ImgHTMLAttributes,
-  Ref,
-  SyntheticEvent,
-} from "react";
+import type { CSSProperties, ImgHTMLAttributes, Ref, SyntheticEvent } from "react";
 import {
   DEFAULT_DEVICE_SIZES,
   DEFAULT_IMAGE_PATH,
@@ -84,20 +79,13 @@ const DEFAULT_CONFIG: ImageConfig = {
 
 /** The images config of the build (define) or of the process (`globalThis.__YOLO_IMAGE_CONFIG__`), with defaults. */
 export function imageConfig(): ImageConfig {
-  const defined =
-    typeof __YOLO_IMAGE_CONFIG__ !== "undefined"
-      ? __YOLO_IMAGE_CONFIG__
-      : undefined;
-  const runtime = (
-    globalThis as { __YOLO_IMAGE_CONFIG__?: Partial<ImageConfig> }
-  ).__YOLO_IMAGE_CONFIG__;
+  const defined = typeof __YOLO_IMAGE_CONFIG__ !== "undefined" ? __YOLO_IMAGE_CONFIG__ : undefined;
+  const runtime = (globalThis as { __YOLO_IMAGE_CONFIG__?: Partial<ImageConfig> }).__YOLO_IMAGE_CONFIG__;
   const config = defined ?? runtime;
   return config ? { ...DEFAULT_CONFIG, ...config } : DEFAULT_CONFIG;
 }
 
-const toNumber = (
-  value: number | `${number}` | undefined,
-): number | undefined => {
+const toNumber = (value: number | `${number}` | undefined): number | undefined => {
   if (value === undefined) return undefined;
   const n = typeof value === "number" ? value : parseInt(value, 10);
   return Number.isFinite(n) ? n : undefined;
@@ -135,19 +123,14 @@ export function getImageProps(props: ImageProps): {
     fetchPriority,
     ...rest
   } = props;
-  if (!rawSrc)
-    throw new Error('@yolo-rs/fullstack: next/image requires a "src"');
+  if (!rawSrc) throw new Error('@yolo-rs/fullstack: next/image requires a "src"');
   const config = imageConfig();
   const data = staticData(rawSrc);
   const src = data.src;
   if (typeof src !== "string")
-    throw new Error(
-      '@yolo-rs/fullstack: next/image "src" must be a string or a static image import',
-    );
+    throw new Error('@yolo-rs/fullstack: next/image "src" must be a string or a static image import');
   if (src.startsWith("//"))
-    throw new Error(
-      `@yolo-rs/fullstack: next/image src "${src}" cannot be protocol-relative; use an absolute URL`,
-    );
+    throw new Error(`@yolo-rs/fullstack: next/image src "${src}" cannot be protocol-relative; use an absolute URL`);
 
   let width = toNumber(widthProp);
   let height = toNumber(heightProp);
@@ -158,19 +141,15 @@ export function getImageProps(props: ImageProps): {
       height = data.height;
     } else if (data.width && data.height) {
       // One dimension given: keep the aspect ratio of the static import.
-      if (width !== undefined && height === undefined)
-        height = Math.round((width * data.height) / data.width);
-      else if (height !== undefined && width === undefined)
-        width = Math.round((height * data.width) / data.height);
+      if (width !== undefined && height === undefined) height = Math.round((width * data.height) / data.width);
+      else if (height !== undefined && width === undefined) width = Math.round((height * data.width) / data.height);
     }
     if (width === undefined || height === undefined)
       throw new Error(
         `@yolo-rs/fullstack: next/image with src "${src}" must have "width" and "height" properties or use "fill"`,
       );
   } else if (widthProp !== undefined || heightProp !== undefined) {
-    throw new Error(
-      `@yolo-rs/fullstack: next/image with src "${src}" has both "fill" and "width"/"height"`,
-    );
+    throw new Error(`@yolo-rs/fullstack: next/image with src "${src}" has both "fill" and "width"/"height"`);
   }
 
   const quality = toNumber(qualityProp);
@@ -184,13 +163,9 @@ export function getImageProps(props: ImageProps): {
   const loader: ImageLoaderFn | undefined =
     loaderProp ??
     customLoader ??
-    (config.loader === "custom"
-      ? undefined
-      : (loaderProps) => imageLoaderUrl(config, loaderProps));
+    (config.loader === "custom" ? undefined : loaderProps => imageLoaderUrl(config, loaderProps));
   if (!unoptimized && !loader)
-    throw new Error(
-      `@yolo-rs/fullstack: images.loader is "custom" but no loader is configured for "${src}"`,
-    );
+    throw new Error(`@yolo-rs/fullstack: images.loader is "custom" but no loader is configured for "${src}"`);
 
   const attrs = generateImgAttrs({
     config,
@@ -203,12 +178,7 @@ export function getImageProps(props: ImageProps): {
   });
 
   const placeholderStyle: CSSProperties = {};
-  const blur =
-    placeholder === "blur"
-      ? blurDataURL
-      : placeholder.startsWith("data:")
-        ? placeholder
-        : undefined;
+  const blur = placeholder === "blur" ? blurDataURL : placeholder.startsWith("data:") ? placeholder : undefined;
   if (blur) {
     placeholderStyle.backgroundSize = style?.objectFit ?? "cover";
     placeholderStyle.backgroundPosition = style?.objectPosition ?? "50% 50%";

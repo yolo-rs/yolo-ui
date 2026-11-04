@@ -14,12 +14,7 @@ export {
   type ServerFnInput,
   type ServerFnPathOptions,
 } from "./server-fn";
-export {
-  dioxusProxy,
-  forwardedHeaders,
-  type DioxusProxy,
-  type DioxusProxyOptions,
-} from "./proxy";
+export { dioxusProxy, forwardedHeaders, type DioxusProxy, type DioxusProxyOptions } from "./proxy";
 export {
   contentTypeFor,
   dioxusWebRoutes,
@@ -29,12 +24,7 @@ export {
   type DioxusWebRoutesOptions,
   type RouteHandler,
 } from "./web";
-export {
-  dxBuild,
-  findDxPublicDir,
-  type DxBuildOptions,
-  type DxBuildResult,
-} from "./dx-build";
+export { dxBuild, findDxPublicDir, type DxBuildOptions, type DxBuildResult } from "./dx-build";
 
 export interface DioxusBridgeOptions {
   /** Dioxus fullstack server origin receiving server function calls. */

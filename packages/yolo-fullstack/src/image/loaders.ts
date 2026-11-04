@@ -24,14 +24,10 @@ export interface SizesConfig {
 export type ImageLoaderFn = (props: ImageLoaderProps) => string;
 
 /** CDN loaders expect `path` to end with `/`; a leading `/` of `src` is dropped so the two join cleanly. */
-const normalizeSrc = (src: string) =>
-  src.startsWith("/") ? src.slice(1) : src;
+const normalizeSrc = (src: string) => (src.startsWith("/") ? src.slice(1) : src);
 
 /** The URL of `src` at `width` for the configured loader. */
-export function imageLoaderUrl(
-  config: LoaderConfig,
-  { src, width, quality }: ImageLoaderProps,
-): string {
+export function imageLoaderUrl(config: LoaderConfig, { src, width, quality }: ImageLoaderProps): string {
   const q = quality ?? 75;
   switch (config.loader) {
     case "default":
@@ -65,9 +61,7 @@ export function imageLoaderUrl(
         `@yolo-rs/fullstack: image with src "${src}" is missing a loader: set images.loaderFile or pass a \`loader\` prop`,
       );
     default:
-      throw new Error(
-        `@yolo-rs/fullstack: unknown image loader "${String(config.loader)}"`,
-      );
+      throw new Error(`@yolo-rs/fullstack: unknown image loader "${String(config.loader)}"`);
   }
 }
 
@@ -80,30 +74,18 @@ export interface Widths {
 const VIEWPORT_WIDTH = /(^|\s)(1?\d?\d)vw/g;
 
 /** Candidate widths of an image, the way `next/image` picks them. */
-export function getWidths(
-  config: SizesConfig,
-  width: number | undefined,
-  sizes?: string,
-): Widths {
-  const allSizes = [...config.deviceSizes, ...config.imageSizes].sort(
-    (a, b) => a - b,
-  );
+export function getWidths(config: SizesConfig, width: number | undefined, sizes?: string): Widths {
+  const allSizes = [...config.deviceSizes, ...config.imageSizes].sort((a, b) => a - b);
   const deviceSizes = [...config.deviceSizes].sort((a, b) => a - b);
   if (sizes) {
     const percentSizes: number[] = [];
-    for (
-      let match = VIEWPORT_WIDTH.exec(sizes);
-      match;
-      match = VIEWPORT_WIDTH.exec(sizes)
-    )
+    for (let match = VIEWPORT_WIDTH.exec(sizes); match; match = VIEWPORT_WIDTH.exec(sizes))
       percentSizes.push(parseInt(match[2]!, 10));
     VIEWPORT_WIDTH.lastIndex = 0;
     if (percentSizes.length) {
       const smallestRatio = Math.min(...percentSizes) * 0.01;
       return {
-        widths: allSizes.filter(
-          (size) => size >= (deviceSizes[0] ?? 0) * smallestRatio,
-        ),
+        widths: allSizes.filter(size => size >= (deviceSizes[0] ?? 0) * smallestRatio),
         kind: "w",
       };
     }
@@ -111,11 +93,9 @@ export function getWidths(
   }
   if (typeof width !== "number") return { widths: deviceSizes, kind: "w" };
   const last = allSizes[allSizes.length - 1];
-  const widths = [
-    ...new Set(
-      [width, width * 2].map((w) => allSizes.find((p) => p >= w) ?? last),
-    ),
-  ].filter((w): w is number => w !== undefined);
+  const widths = [...new Set([width, width * 2].map(w => allSizes.find(p => p >= w) ?? last))].filter(
+    (w): w is number => w !== undefined,
+  );
   return { widths, kind: "x" };
 }
 
@@ -147,18 +127,12 @@ export function generateImgAttrs({
   loader,
 }: ImgAttrsOptions): ImgAttrs {
   if (unoptimized) return { src, srcSet: undefined, sizes: undefined };
-  const load =
-    loader ?? ((props: ImageLoaderProps) => imageLoaderUrl(config, props));
+  const load = loader ?? ((props: ImageLoaderProps) => imageLoaderUrl(config, props));
   const { widths, kind } = getWidths(config, width, sizes);
   const last = widths.length - 1;
   return {
     sizes: !sizes && kind === "w" ? "100vw" : sizes,
-    srcSet: widths
-      .map(
-        (w, i) =>
-          `${load({ src, quality, width: w })} ${kind === "w" ? w : i + 1}${kind}`,
-      )
-      .join(", "),
+    srcSet: widths.map((w, i) => `${load({ src, quality, width: w })} ${kind === "w" ? w : i + 1}${kind}`).join(", "),
     src: load({ src, quality, width: widths[last]! }),
   };
 }

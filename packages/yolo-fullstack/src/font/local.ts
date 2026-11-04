@@ -2,7 +2,7 @@
 // `next/font/local`: font files of the project become `@font-face` rules in a generated stylesheet whose
 // `url()`s point at the files; the CSS bundler copies them next to the client assets.
 import { existsSync } from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve } from "node:path";
 import { type FontArtifact, fontClassNames, fontFamilyList, fontId, writeArtifact } from "./shared";
 
 export interface LocalFontSrc {
@@ -29,7 +29,13 @@ export interface LocalFontContext {
   importerDir: string;
 }
 
-const FORMATS: Record<string, string> = { woff2: "woff2", woff: "woff", ttf: "truetype", otf: "opentype", eot: "embedded-opentype" };
+const FORMATS: Record<string, string> = {
+  woff2: "woff2",
+  woff: "woff",
+  ttf: "truetype",
+  otf: "opentype",
+  eot: "embedded-opentype",
+};
 const toPosix = (path: string) => path.replaceAll("\\", "/");
 
 /** The family name derived from the first file (`my-font.woff2` -> `my-font`), as Next does. */
@@ -45,9 +51,14 @@ export function localFamilyName(src: string | LocalFontSrc[]): string {
 /** Resolve a local font into its stylesheet. */
 export async function localFont(options: LocalFontOptions, ctx: LocalFontContext): Promise<FontArtifact> {
   const family = localFamilyName(options.src);
-  const srcs: LocalFontSrc[] = typeof options.src === "string" ? [{ path: options.src, weight: options.weight, style: options.style }] : options.src;
+  const srcs: LocalFontSrc[] =
+    typeof options.src === "string"
+      ? [{ path: options.src, weight: options.weight, style: options.style }]
+      : options.src;
   const files = srcs.map(s => ({ ...s, abs: isAbsolute(s.path) ? s.path : resolve(ctx.importerDir, s.path) }));
-  for (const file of files) if (!existsSync(file.abs)) throw new Error(`@yolo-rs/fullstack: localFont src ${file.path} not found (from ${ctx.importerDir})`);
+  for (const file of files)
+    if (!existsSync(file.abs))
+      throw new Error(`@yolo-rs/fullstack: localFont src ${file.path} not found (from ${ctx.importerDir})`);
   const id = fontId("local", family, { ...options, files: files.map(f => toPosix(f.abs)) });
   const dir = join(ctx.cacheDir, id);
   const cssFile = join(dir, "font.css");
@@ -57,7 +68,7 @@ export async function localFont(options: LocalFontOptions, ctx: LocalFontContext
       const ext = f.abs.split(".").pop()!.toLowerCase();
       const format = FORMATS[ext] ? `format("${FORMATS[ext]}")` : "";
       const url = toPosix(relative(dir, f.abs));
-      return `@font-face {font-family:'${family}';src:url("${url.startsWith(".") ? url : `./${url}`}") ${format};${f.weight ?? options.weight ? `font-weight:${f.weight ?? options.weight};` : ""}${f.style ?? options.style ? `font-style:${f.style ?? options.style};` : ""}${extra}}`;
+      return `@font-face {font-family:'${family}';src:url("${url.startsWith(".") ? url : `./${url}`}") ${format};${(f.weight ?? options.weight) ? `font-weight:${f.weight ?? options.weight};` : ""}${(f.style ?? options.style) ? `font-style:${f.style ?? options.style};` : ""}${extra}}`;
     })
     .join("\n");
   const names = fontClassNames(id, options.variable);
@@ -72,7 +83,9 @@ export async function localFont(options: LocalFontOptions, ctx: LocalFontContext
     variable: options.variable,
     style: {
       fontFamily: fontFamilyList(family, options.fallback ?? []),
-      ...(files.length === 1 && single(options.weight) && Number(options.weight) ? { fontWeight: Number(options.weight) } : {}),
+      ...(files.length === 1 && single(options.weight) && Number(options.weight)
+        ? { fontWeight: Number(options.weight) }
+        : {}),
       ...(files.length === 1 && single(options.style) ? { fontStyle: options.style } : {}),
     },
     preload: options.preload === false ? [] : files.map(f => toPosix(relative(dir, f.abs))),

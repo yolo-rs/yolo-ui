@@ -33,7 +33,8 @@ export function compileSource(source: string): CompiledSource {
       else if (mod === "+") out += `/(?<${name}>${inner}(?:/${inner})*)`;
       else if (mod === "?") out += `(?:/(?<${name}>${inner}))?`;
       else out += `${slash ? "/" : ""}(?<${name}>${inner})`;
-      if (!slash && (mod === "*" || mod === "+" || mod === "?")) throw new Error(`@yolo-rs/fullstack: modifier ${mod} needs a leading "/" in ${source}`);
+      if (!slash && (mod === "*" || mod === "+" || mod === "?"))
+        throw new Error(`@yolo-rs/fullstack: modifier ${mod} needs a leading "/" in ${source}`);
       keys.push({ name: name!, repeat: mod === "*" || mod === "+", optional: mod === "*" || mod === "?" });
       i += m[0].length;
       continue;
@@ -67,7 +68,7 @@ export function matchSource(compiled: CompiledSource, pathname: string): Capture
 
 /** Replace `:name` references in a destination with captured values. */
 export function fillDestination(destination: string, captures: Captures): string {
-  return destination.replace(/:([A-Za-z_]\w*)(\*|\+|\?)?/g, (whole, name: string) => {
+  return destination.replace(/:([A-Za-z_]\w*)(\*|\+|\?(?![\w=]))?/g, (whole, name: string) => {
     const value = captures[name];
     return value === undefined ? whole : value;
   });
@@ -96,7 +97,11 @@ function hasMatches(cond: RouteHas, facts: RequestFacts, captures: Captures): bo
   return true;
 }
 
-export function conditionsMatch(rule: { has?: RouteHas[]; missing?: RouteHas[] }, facts: RequestFacts, captures: Captures): boolean {
+export function conditionsMatch(
+  rule: { has?: RouteHas[]; missing?: RouteHas[] },
+  facts: RequestFacts,
+  captures: Captures,
+): boolean {
   for (const cond of rule.has ?? []) if (!hasMatches(cond, facts, captures)) return false;
   for (const cond of rule.missing ?? []) if (hasMatches(cond, facts, { ...captures })) return false;
   return true;
@@ -119,11 +124,28 @@ export interface RouteRules {
   headers: CompiledRule<HeaderRule>[];
 }
 
-const compileRules = <T extends { source: string; basePath?: false }>(rules: T[], basePath: string): CompiledRule<T>[] =>
-  rules.map(rule => ({ rule, source: compileSource(rule.basePath === false || !basePath ? rule.source : basePath + rule.source) }));
+const compileRules = <T extends { source: string; basePath?: false }>(
+  rules: T[],
+  basePath: string,
+): CompiledRule<T>[] =>
+  rules.map(rule => ({
+    rule,
+    source: compileSource(rule.basePath === false || !basePath ? rule.source : basePath + rule.source),
+  }));
 
 /** Compile the routing rules of a resolved config. */
-export function compileRoutes(config: Pick<ResolvedConfig, "basePath" | "trailingSlash" | "skipTrailingSlashRedirect" | "poweredByHeader" | "redirects" | "rewrites" | "headers">): RouteRules {
+export function compileRoutes(
+  config: Pick<
+    ResolvedConfig,
+    | "basePath"
+    | "trailingSlash"
+    | "skipTrailingSlashRedirect"
+    | "poweredByHeader"
+    | "redirects"
+    | "rewrites"
+    | "headers"
+  >,
+): RouteRules {
   const { basePath } = config;
   return {
     basePath,
@@ -139,19 +161,27 @@ export function compileRoutes(config: Pick<ResolvedConfig, "basePath" | "trailin
 }
 
 export type RouteDecision =
-  | { kind: "response"; response: Response }
-  | { kind: "rewrite"; url: URL; external: boolean }
-  | { kind: "next" };
+  { kind: "response"; response: Response } | { kind: "rewrite"; url: URL; external: boolean } | { kind: "next" };
 
-const facts = (request: Request, url: URL): RequestFacts => ({ url, headers: request.headers, cookies: new Bun.CookieMap(request.headers.get("cookie") ?? "") });
+const facts = (request: Request, url: URL): RequestFacts => ({
+  url,
+  headers: request.headers,
+  cookies: new Bun.CookieMap(request.headers.get("cookie") ?? ""),
+});
 
-function destinationUrl(rule: Rewrite, captures: Captures, url: URL, basePath: string): { url: URL; external: boolean } {
+function destinationUrl(
+  rule: Rewrite,
+  captures: Captures,
+  url: URL,
+  basePath: string,
+): { url: URL; external: boolean } {
   let target = fillDestination(rule.destination, captures);
   const external = /^https?:\/\//.test(target);
   if (!external && basePath && rule.basePath !== false && !target.startsWith(basePath)) target = basePath + target;
   const out = new URL(target, url);
   // Query parameters of the request not consumed by the destination are carried over.
-  for (const [key, value] of url.searchParams) if (!out.searchParams.has(key)) out.searchParams.append(key, value);
+  for (const [key, value] of url.searchParams)
+    if (!out.searchParams.has(key) && !(key in captures)) out.searchParams.append(key, value);
   return { url: out, external };
 }
 
@@ -163,17 +193,28 @@ export function normalizePath(rules: RouteRules, url: URL): { redirect?: Respons
     else if (pathname.startsWith(`${rules.basePath}/`)) pathname = pathname.slice(rules.basePath.length);
     else return { pathname };
   }
-  if (!rules.skipTrailingSlashRedirect && pathname !== "/" && !pathname.startsWith("/_yolo/") && !/\.[a-z0-9]+$/i.test(pathname)) {
+  if (
+    !rules.skipTrailingSlashRedirect &&
+    pathname !== "/" &&
+    !pathname.startsWith("/_yolo/") &&
+    !/\.[a-z0-9]+$/i.test(pathname)
+  ) {
     const hasSlash = pathname.endsWith("/");
     if (rules.trailingSlash && !hasSlash) {
       const target = new URL(url);
       target.pathname = `${url.pathname}/`;
-      return { redirect: new Response(null, { status: 308, headers: { location: target.pathname + target.search } }), pathname };
+      return {
+        redirect: new Response(null, { status: 308, headers: { location: target.pathname + target.search } }),
+        pathname,
+      };
     }
     if (!rules.trailingSlash && hasSlash) {
       const target = new URL(url);
       target.pathname = url.pathname.replace(/\/+$/, "");
-      return { redirect: new Response(null, { status: 308, headers: { location: target.pathname + target.search } }), pathname };
+      return {
+        redirect: new Response(null, { status: 308, headers: { location: target.pathname + target.search } }),
+        pathname,
+      };
     }
   }
   if (pathname.length > 1 && pathname.endsWith("/")) pathname = pathname.replace(/\/+$/, "");
@@ -195,11 +236,22 @@ export function beforeRoutes(rules: RouteRules, request: Request, url: URL): Rou
 }
 
 /** `afterFiles` then `fallback` rewrites, evaluated when nothing matched. */
-export function afterRoutes(rules: RouteRules, request: Request, url: URL, stage: "afterFiles" | "fallback"): RouteDecision {
+export function afterRoutes(
+  rules: RouteRules,
+  request: Request,
+  url: URL,
+  stage: "afterFiles" | "fallback",
+): RouteDecision {
   return applyRewrites(rules[stage], rules, request, url, facts(request, url));
 }
 
-function applyRewrites(list: CompiledRule<Rewrite>[], rules: RouteRules, _request: Request, url: URL, f: RequestFacts): RouteDecision {
+function applyRewrites(
+  list: CompiledRule<Rewrite>[],
+  rules: RouteRules,
+  _request: Request,
+  url: URL,
+  f: RequestFacts,
+): RouteDecision {
   for (const { rule, source } of list) {
     const captures = matchSource(source, url.pathname);
     if (!captures || !conditionsMatch(rule, f, captures)) continue;
@@ -222,7 +274,17 @@ export function responseHeaders(rules: RouteRules, request: Request, url: URL): 
   return out;
 }
 
-const HOP_BY_HOP = new Set(["connection", "keep-alive", "proxy-authenticate", "proxy-authorization", "te", "trailer", "transfer-encoding", "upgrade", "host"]);
+const HOP_BY_HOP = new Set([
+  "connection",
+  "keep-alive",
+  "proxy-authenticate",
+  "proxy-authorization",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+  "host",
+]);
 
 /** Proxy an external rewrite (streams the upstream response). */
 export async function proxyRewrite(request: Request, target: URL): Promise<Response> {

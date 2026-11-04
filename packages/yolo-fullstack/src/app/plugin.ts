@@ -9,7 +9,7 @@
 import type { BunPlugin, PluginBuilder } from "bun";
 import { mkdirSync, copyFileSync } from "node:fs";
 import { basename, dirname, extname, join, relative } from "node:path";
-import { FONT_NAMESPACE, type FontRewriteContext, fontVirtualModule, rewriteFonts } from "../font";
+import { FONT_NAMESPACE, type FontRewriteContext, fontVirtualModule, materializeFont, rewriteFonts } from "../font";
 import { imageSize } from "./image-size";
 
 const toPosix = (path: string) => path.replaceAll("\\", "/");
@@ -193,13 +193,21 @@ export function appPlugin(options: AppPluginOptions): BunPlugin {
         );
       }
 
+      // Public URLs of materialized font files inside stylesheets stay as they are.
+      build.onResolve({ filter: /^\/_yolo\/media\// }, args => ({ path: args.path, external: true }));
+
       if (options.fonts) {
         const fonts = options.fonts;
-        build.onResolve({ filter: /^yolo-font:/ }, args => ({ path: args.path.slice("yolo-font:".length), namespace: FONT_NAMESPACE }));
+        build.onResolve({ filter: /^yolo-font:/ }, args => ({
+          path: args.path.slice("yolo-font:".length),
+          namespace: FONT_NAMESPACE,
+        }));
         build.onLoad({ filter: /.*/, namespace: FONT_NAMESPACE }, args => {
-          const artifact = fonts.registry.get(args.path);
-          if (!artifact) throw new Error(`@yolo-rs/fullstack: unknown font ${args.path}`);
-          if (layer === "rsc") options.cssFiles?.add(artifact.cssFile);
+          const found = fonts.registry.get(args.path);
+          if (!found) throw new Error(`@yolo-rs/fullstack: unknown font ${args.path}`);
+          const artifact =
+            options.mediaDir && options.mediaUrl ? materializeFont(found, options.mediaDir, options.mediaUrl) : found;
+          if (layer === "rsc") options.cssFiles?.add(artifact.builtCssFile ?? artifact.cssFile);
           return { contents: fontVirtualModule(artifact, layer), loader: "js", resolveDir: dirname(artifact.cssFile) };
         });
       }
@@ -260,7 +268,8 @@ export function appPlugin(options: AppPluginOptions): BunPlugin {
             rewritten = true;
           }
         }
-        const directive = source.includes("use client") || source.includes("use server") ? moduleDirective(source) : undefined;
+        const directive =
+          source.includes("use client") || source.includes("use server") ? moduleDirective(source) : undefined;
         if (!directive) {
           if (!rewritten) return undefined;
           return { contents: source, loader: LOADERS[extname(args.path)] ?? "tsx", resolveDir: dirname(args.path) };

@@ -49,8 +49,7 @@ function png(width: number, height: number): Uint8Array<ArrayBuffer> {
   const raw = new Uint8Array(height * (1 + width * 4));
   for (let y = 0; y < height; y++) {
     const row = y * (1 + width * 4);
-    for (let x = 0; x < width; x++)
-      raw.set([200, 30, 30, 255], row + 1 + x * 4);
+    for (let x = 0; x < width; x++) raw.set([200, 30, 30, 255], row + 1 + x * 4);
   }
   const idat = new Uint8Array(deflateSync(raw));
   const parts = [
@@ -77,9 +76,7 @@ const SIZES = {
   imageSizes: DEFAULTS.imageSizes!,
 };
 
-async function images(
-  overrides: Partial<ResolvedImages> = {},
-): Promise<ResolvedImages> {
+async function images(overrides: Partial<ResolvedImages> = {}): Promise<ResolvedImages> {
   const resolved = await resolveNextConfig({}, "phase-test");
   return { ...resolved.images, ...overrides };
 }
@@ -87,26 +84,18 @@ async function images(
 describe("image loaders", () => {
   const props = { src: "/photo.jpg", width: 640, quality: 80 };
   test("default and vercel", () => {
-    expect(
-      imageLoaderUrl({ loader: "default", path: "/_next/image" }, props),
-    ).toBe("/_next/image?url=%2Fphoto.jpg&w=640&q=80");
-    expect(
-      imageLoaderUrl(
-        { loader: "default", path: "/_next/image" },
-        { src: "/a.png", width: 16 },
-      ),
-    ).toBe("/_next/image?url=%2Fa.png&w=16&q=75");
-    expect(
-      imageLoaderUrl({ loader: "vercel", path: "/_next/image" }, props),
-    ).toBe("/_vercel/image?url=%2Fphoto.jpg&w=640&q=80");
+    expect(imageLoaderUrl({ loader: "default", path: "/_next/image" }, props)).toBe(
+      "/_next/image?url=%2Fphoto.jpg&w=640&q=80",
+    );
+    expect(imageLoaderUrl({ loader: "default", path: "/_next/image" }, { src: "/a.png", width: 16 })).toBe(
+      "/_next/image?url=%2Fa.png&w=16&q=75",
+    );
+    expect(imageLoaderUrl({ loader: "vercel", path: "/_next/image" }, props)).toBe(
+      "/_vercel/image?url=%2Fphoto.jpg&w=640&q=80",
+    );
   });
   test("imgix", () => {
-    expect(
-      imageLoaderUrl(
-        { loader: "imgix", path: "https://example.imgix.net/" },
-        props,
-      ),
-    ).toBe(
+    expect(imageLoaderUrl({ loader: "imgix", path: "https://example.imgix.net/" }, props)).toBe(
       "https://example.imgix.net/photo.jpg?auto=format&fit=max&w=640&q=80",
     );
   });
@@ -119,40 +108,28 @@ describe("image loaders", () => {
         },
         props,
       ),
-    ).toBe(
-      "https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_640,q_80/photo.jpg",
+    ).toBe("https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_640,q_80/photo.jpg");
+    expect(imageLoaderUrl({ loader: "cloudinary", path: "https://c.example/" }, { src: "a.jpg", width: 100 })).toBe(
+      "https://c.example/f_auto,c_limit,w_100,q_auto/a.jpg",
     );
-    expect(
-      imageLoaderUrl(
-        { loader: "cloudinary", path: "https://c.example/" },
-        { src: "a.jpg", width: 100 },
-      ),
-    ).toBe("https://c.example/f_auto,c_limit,w_100,q_auto/a.jpg");
   });
   test("akamai", () => {
-    expect(
-      imageLoaderUrl({ loader: "akamai", path: "https://example.com/" }, props),
-    ).toBe("https://example.com/photo.jpg?imwidth=640");
+    expect(imageLoaderUrl({ loader: "akamai", path: "https://example.com/" }, props)).toBe(
+      "https://example.com/photo.jpg?imwidth=640",
+    );
   });
   test("cloudflare", () => {
-    expect(
-      imageLoaderUrl(
-        { loader: "cloudflare", path: "https://example.com" },
-        props,
-      ),
-    ).toBe(
+    expect(imageLoaderUrl({ loader: "cloudflare", path: "https://example.com" }, props)).toBe(
       "https://example.com/cdn-cgi/image/width=640,quality=80,format=auto/photo.jpg",
     );
   });
   test("fastly", () => {
-    expect(
-      imageLoaderUrl({ loader: "fastly", path: "https://example.com/" }, props),
-    ).toBe("https://example.com/photo.jpg?auto=webp&width=640&quality=80");
+    expect(imageLoaderUrl({ loader: "fastly", path: "https://example.com/" }, props)).toBe(
+      "https://example.com/photo.jpg?auto=webp&width=640&quality=80",
+    );
   });
   test("custom without a loader throws", () => {
-    expect(() =>
-      imageLoaderUrl({ loader: "custom", path: "/" }, props),
-    ).toThrow(/loader/);
+    expect(() => imageLoaderUrl({ loader: "custom", path: "/" }, props)).toThrow(/loader/);
   });
 });
 
@@ -170,17 +147,11 @@ describe("srcset", () => {
     });
     expect(attrs.sizes).toBe("100vw");
     expect(attrs.srcSet!.split(", ")).toHaveLength(8);
-    expect(
-      attrs.srcSet!.startsWith("/_next/image?url=%2Fa.jpg&w=640&q=75 640w"),
-    ).toBe(true);
+    expect(attrs.srcSet!.startsWith("/_next/image?url=%2Fa.jpg&w=640&q=75 640w")).toBe(true);
     expect(attrs.src).toBe("/_next/image?url=%2Fa.jpg&w=3840&q=75");
   });
   test("sizes with a small vw filters small widths", () => {
-    const { widths } = getWidths(
-      SIZES,
-      undefined,
-      "(max-width: 600px) 50vw, 25vw",
-    );
+    const { widths } = getWidths(SIZES, undefined, "(max-width: 600px) 50vw, 25vw");
     expect(widths[0]).toBe(256);
     expect(widths).not.toContain(128);
   });
@@ -192,9 +163,7 @@ describe("srcset", () => {
       width: 400,
       quality: 50,
     });
-    expect(attrs.srcSet).toBe(
-      "/_next/image?url=%2Fa.jpg&w=640&q=50 1x, /_next/image?url=%2Fa.jpg&w=828&q=50 2x",
-    );
+    expect(attrs.srcSet).toBe("/_next/image?url=%2Fa.jpg&w=640&q=50 1x, /_next/image?url=%2Fa.jpg&w=828&q=50 2x");
     expect(attrs.src).toBe("/_next/image?url=%2Fa.jpg&w=828&q=50");
     expect(attrs.sizes).toBeUndefined();
   });
@@ -229,10 +198,8 @@ describe("optimizer", () => {
   let cacheDir: string;
   let fetched = 0;
   const local = async (pathname: string) => {
-    if (pathname === "/local.png")
-      return new Blob([PNG_BYTES], { type: "image/png" });
-    if (pathname === "/icon.svg")
-      return new Blob([SVG_SOURCE], { type: "image/svg+xml" });
+    if (pathname === "/local.png") return new Blob([PNG_BYTES], { type: "image/png" });
+    if (pathname === "/icon.svg") return new Blob([SVG_SOURCE], { type: "image/svg+xml" });
     return undefined;
   };
   const resize: Resizer = async (bytes, opts) => ({
@@ -258,10 +225,8 @@ describe("optimizer", () => {
           return new Response(SVG_SOURCE, {
             headers: { "content-type": "image/svg+xml" },
           });
-        if (pathname === "/teapot.png")
-          return new Response("no", { status: 418 });
-        if (pathname === "/broken.png")
-          return new Response("no", { status: 503 });
+        if (pathname === "/teapot.png") return new Response("no", { status: 418 });
+        if (pathname === "/broken.png") return new Response("no", { status: 503 });
         return new Response("Not Found", { status: 404 });
       },
     });
@@ -276,10 +241,7 @@ describe("optimizer", () => {
     optimizer: ReturnType<typeof createImageOptimizer>,
     query: string,
     headers: Record<string, string> = {},
-  ) =>
-    optimizer.handle(
-      new Request(`http://app.test/_next/image?${query}`, { headers }),
-    );
+  ) => optimizer.handle(new Request(`http://app.test/_next/image?${query}`, { headers }));
 
   test("matches the configured and the yolo path", async () => {
     const optimizer = createImageOptimizer({ images: await images(), local });
@@ -317,10 +279,7 @@ describe("optimizer", () => {
     expect(await response.text()).toContain("80 is not allowed");
     response = await get(optimizer, "url=%2F%2Fevil.test%2Fa.png&w=640&q=75");
     expect(response.status).toBe(400);
-    response = await get(
-      optimizer,
-      "url=%2F_next%2Fimage%3Furl%3D%2Fa.png&w=640&q=75",
-    );
+    response = await get(optimizer, "url=%2F_next%2Fimage%3Furl%3D%2Fa.png&w=640&q=75");
     expect(response.status).toBe(400);
     expect(await response.text()).toContain("recursive");
     response = await get(optimizer, "url=ftp%3A%2F%2Fx%2Fa.png&w=640&q=75");
@@ -335,9 +294,7 @@ describe("optimizer", () => {
       local,
       resize,
     });
-    expect((await get(optimizer, "url=%2Flocal.png&w=640&q=75")).status).toBe(
-      400,
-    );
+    expect((await get(optimizer, "url=%2Flocal.png&w=640&q=75")).status).toBe(400);
   });
 
   test("remote urls must match remotePatterns", async () => {
@@ -355,52 +312,36 @@ describe("optimizer", () => {
       local,
       resize,
     });
-    const denied = await get(
-      optimizer,
-      `url=${encodeURIComponent("http://evil.test/photo.png")}&w=640&q=75`,
-    );
+    const denied = await get(optimizer, `url=${encodeURIComponent("http://evil.test/photo.png")}&w=640&q=75`);
     expect(denied.status).toBe(400);
     expect(await denied.text()).toContain("not allowed");
     const wrongPort = await get(
       optimizer,
-      `url=${encodeURIComponent(`http://127.0.0.1:${server.port + 1}/photo.png`)}&w=640&q=75`,
+      `url=${encodeURIComponent(`http://127.0.0.1:${(server.port ?? 0) + 1}/photo.png`)}&w=640&q=75`,
     );
     expect(wrongPort.status).toBe(400);
-    const allowed = await get(
-      optimizer,
-      `url=${encodeURIComponent(`${origin}/photo.png`)}&w=640&q=75`,
-      { accept: "image/avif,image/webp,*/*" },
-    );
+    const allowed = await get(optimizer, `url=${encodeURIComponent(`${origin}/photo.png`)}&w=640&q=75`, {
+      accept: "image/avif,image/webp,*/*",
+    });
     expect(allowed.status).toBe(200);
     expect(allowed.headers.get("content-type")).toBe("image/webp");
     expect(allowed.headers.get("x-yolo-cache")).toBe("MISS");
     expect(allowed.headers.get("vary")).toBe("Accept");
     // Upstream max-age (86400) is larger than minimumCacheTTL (14400).
-    expect(allowed.headers.get("cache-control")).toBe(
-      "public, max-age=86400, must-revalidate",
-    );
-    expect(allowed.headers.get("content-disposition")).toBe(
-      'attachment; filename="photo.webp"',
-    );
-    expect(new Uint8Array(await allowed.arrayBuffer())).toEqual(
-      PNG_BYTES.subarray(0, 16),
-    );
+    expect(allowed.headers.get("cache-control")).toBe("public, max-age=86400, must-revalidate");
+    expect(allowed.headers.get("content-disposition")).toBe('attachment; filename="photo.webp"');
+    expect(new Uint8Array(await allowed.arrayBuffer())).toEqual(PNG_BYTES.subarray(0, 16));
   });
 
   test("wildcard hostnames", async () => {
     const optimizer = createImageOptimizer({
       images: await images({
-        remotePatterns: [
-          { hostname: "**.example.com" },
-          { hostname: "*.one.test" },
-        ],
+        remotePatterns: [{ hostname: "**.example.com" }, { hostname: "*.one.test" }],
       }),
       local,
       resize,
     });
-    const status = async (url: string) =>
-      (await get(optimizer, `url=${encodeURIComponent(url)}&w=640&q=75`))
-        .status;
+    const status = async (url: string) => (await get(optimizer, `url=${encodeURIComponent(url)}&w=640&q=75`)).status;
     // 404s come from the (unreachable) fetch, so a non-400 status proves the pattern matched.
     expect(await status("https://example.org/a.png")).toBe(400);
     expect(await status("https://b.a.one.test/a.png")).toBe(400);
@@ -413,30 +354,9 @@ describe("optimizer", () => {
       local,
       resize,
     });
-    expect(
-      (
-        await get(
-          optimizer,
-          `url=${encodeURIComponent(`${origin}/teapot.png`)}&w=640&q=75`,
-        )
-      ).status,
-    ).toBe(418);
-    expect(
-      (
-        await get(
-          optimizer,
-          `url=${encodeURIComponent(`${origin}/broken.png`)}&w=640&q=75`,
-        )
-      ).status,
-    ).toBe(503);
-    expect(
-      (
-        await get(
-          optimizer,
-          `url=${encodeURIComponent(`${origin}/nope.png`)}&w=640&q=75`,
-        )
-      ).status,
-    ).toBe(404);
+    expect((await get(optimizer, `url=${encodeURIComponent(`${origin}/teapot.png`)}&w=640&q=75`)).status).toBe(418);
+    expect((await get(optimizer, `url=${encodeURIComponent(`${origin}/broken.png`)}&w=640&q=75`)).status).toBe(503);
+    expect((await get(optimizer, `url=${encodeURIComponent(`${origin}/nope.png`)}&w=640&q=75`)).status).toBe(404);
   });
 
   test("svg is refused unless dangerouslyAllowSVG", async () => {
@@ -461,12 +381,8 @@ describe("optimizer", () => {
     });
     expect(ok.status).toBe(200);
     expect(ok.headers.get("content-type")).toBe("image/svg+xml");
-    expect(ok.headers.get("content-security-policy")).toBe(
-      "script-src 'none'; frame-src 'none'; sandbox;",
-    );
-    expect(ok.headers.get("content-disposition")).toBe(
-      'inline; filename="icon.svg"',
-    );
+    expect(ok.headers.get("content-security-policy")).toBe("script-src 'none'; frame-src 'none'; sandbox;");
+    expect(ok.headers.get("content-disposition")).toBe('inline; filename="icon.svg"');
     expect(await ok.text()).toBe(SVG_SOURCE);
   });
 
@@ -492,9 +408,7 @@ describe("optimizer", () => {
     });
     expect(response.status).toBe(200);
     const passthrough = response.headers.get("x-yolo-image") === "passthrough";
-    expect(response.headers.get("content-type")).toBe(
-      passthrough ? "image/png" : "image/webp",
-    );
+    expect(response.headers.get("content-type")).toBe(passthrough ? "image/png" : "image/webp");
     expect((await response.arrayBuffer()).byteLength).toBeGreaterThan(0);
   });
 
@@ -505,9 +419,7 @@ describe("optimizer", () => {
       resize,
     });
     const type = async (accept: string) =>
-      (
-        await get(optimizer, "url=%2Flocal.png&w=640&q=75", { accept })
-      ).headers.get("content-type");
+      (await get(optimizer, "url=%2Flocal.png&w=640&q=75", { accept })).headers.get("content-type");
     expect(await type("image/avif,image/webp,*/*")).toBe("image/avif");
     expect(await type("image/webp,*/*")).toBe("image/webp");
     expect(await type("image/jpeg")).toBe("image/png");
@@ -529,18 +441,12 @@ describe("optimizer", () => {
     expect(miss.headers.get("x-yolo-cache")).toBe("MISS");
     const hit = await get(first, remote, { accept: "image/webp" });
     expect(hit.headers.get("x-yolo-cache")).toBe("HIT");
-    expect(hit.headers.get("cache-control")).toBe(
-      "public, max-age=86400, must-revalidate",
-    );
+    expect(hit.headers.get("cache-control")).toBe("public, max-age=86400, must-revalidate");
     expect(hit.headers.get("vary")).toBe("Accept");
     expect(await hit.arrayBuffer()).toEqual(await miss.arrayBuffer());
     expect(fetched - before).toBe(1);
     // A different Accept is a different variant.
-    expect(
-      (await get(first, remote, { accept: "image/jpeg" })).headers.get(
-        "x-yolo-cache",
-      ),
-    ).toBe("MISS");
+    expect((await get(first, remote, { accept: "image/jpeg" })).headers.get("x-yolo-cache")).toBe("MISS");
     // A new process with the same cacheDir reads the disk entry.
     const second = createImageOptimizer({
       images: await images({ remotePatterns: [{ hostname: "127.0.0.1" }] }),
@@ -549,19 +455,11 @@ describe("optimizer", () => {
       cacheDir,
       now,
     });
-    expect(
-      (await get(second, remote, { accept: "image/webp" })).headers.get(
-        "x-yolo-cache",
-      ),
-    ).toBe("HIT");
+    expect((await get(second, remote, { accept: "image/webp" })).headers.get("x-yolo-cache")).toBe("HIT");
     expect(fetched - before).toBe(2);
     // Expired entries are fetched again.
     clock += 86400 * 1000 + 1;
-    expect(
-      (await get(second, remote, { accept: "image/webp" })).headers.get(
-        "x-yolo-cache",
-      ),
-    ).toBe("MISS");
+    expect((await get(second, remote, { accept: "image/webp" })).headers.get("x-yolo-cache")).toBe("MISS");
     expect(fetched - before).toBe(3);
   });
 
@@ -602,9 +500,7 @@ describe("next/image", () => {
   });
 
   test("imageConfigDefine", async () => {
-    const define = imageConfigDefine(
-      await images({ loaderFile: "./loader.ts", loader: "custom" }),
-    );
+    const define = imageConfigDefine(await images({ loaderFile: "./loader.ts", loader: "custom" }));
     expect(Object.keys(define)).toEqual([IMAGE_CONFIG_GLOBAL]);
     expect(JSON.parse(define[IMAGE_CONFIG_GLOBAL]!)).toEqual({
       loader: "custom",
@@ -627,9 +523,7 @@ describe("next/image", () => {
       quality: 75,
     });
     expect(props.src).toBe("/_next/image?url=%2Fhero.jpg&w=828&q=75");
-    expect(props.srcSet).toBe(
-      "/_next/image?url=%2Fhero.jpg&w=640&q=75 1x, /_next/image?url=%2Fhero.jpg&w=828&q=75 2x",
-    );
+    expect(props.srcSet).toBe("/_next/image?url=%2Fhero.jpg&w=640&q=75 1x, /_next/image?url=%2Fhero.jpg&w=828&q=75 2x");
     expect(props.width).toBe(400);
     expect(props.height).toBe(300);
     expect(props.loading).toBe("lazy");
@@ -653,7 +547,7 @@ describe("next/image", () => {
     expect(props.fetchPriority).toBe("high");
     expect(props.src).toBe("/hero.jpg");
     expect(props.sizes).toBe("50vw");
-    expect(props.srcSet!.split(", ").map((c) => c.split(" ")[1])).toEqual([
+    expect(props.srcSet!.split(", ").map(c => c.split(" ")[1])).toEqual([
       "384w",
       "640w",
       "750w",
@@ -702,10 +596,7 @@ describe("next/image", () => {
   });
 
   test("unoptimized, data urls and svg keep src", () => {
-    expect(
-      getImageProps({ src: "/logo.svg", alt: "", width: 10, height: 10 }).props
-        .src,
-    ).toBe("/logo.svg");
+    expect(getImageProps({ src: "/logo.svg", alt: "", width: 10, height: 10 }).props.src).toBe("/logo.svg");
     expect(
       getImageProps({
         src: "data:image/png;base64,AAAA",
@@ -726,12 +617,10 @@ describe("next/image", () => {
   });
 
   test("loader prop and runtime config", () => {
-    const loader = ({ src, width }: { src: string; width: number }) =>
-      `https://cdn.test${src}?w=${width}`;
-    expect(
-      getImageProps({ src: "/a.png", alt: "", width: 100, height: 100, loader })
-        .props.src,
-    ).toBe("https://cdn.test/a.png?w=256");
+    const loader = ({ src, width }: { src: string; width: number }) => `https://cdn.test${src}?w=${width}`;
+    expect(getImageProps({ src: "/a.png", alt: "", width: 100, height: 100, loader }).props.src).toBe(
+      "https://cdn.test/a.png?w=256",
+    );
     g.__YOLO_IMAGE_CONFIG__ = {
       loader: "cloudinary",
       path: "https://res.cloudinary.com/demo/image/upload/",
@@ -744,26 +633,18 @@ describe("next/image", () => {
       width: 300,
       height: 100,
     });
-    expect(props.src).toBe(
-      "https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_640,q_auto/a.png",
-    );
+    expect(props.src).toBe("https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_640,q_auto/a.png");
     expect(props.srcSet).toBe(
       "https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_320,q_auto/a.png 1x, https://res.cloudinary.com/demo/image/upload/f_auto,c_limit,w_640,q_auto/a.png 2x",
     );
     g.__YOLO_IMAGE_CONFIG__ = { loader: "custom" };
-    expect(() =>
-      getImageProps({ src: "/a.png", alt: "", width: 1, height: 1 }),
-    ).toThrow(/custom/);
+    expect(() => getImageProps({ src: "/a.png", alt: "", width: 1, height: 1 })).toThrow(/custom/);
     delete g.__YOLO_IMAGE_CONFIG__;
   });
 
   test("missing dimensions throw", () => {
     expect(() => getImageProps({ src: "/a.png", alt: "" })).toThrow(/width/);
-    expect(() =>
-      getImageProps({ src: "/a.png", alt: "", fill: true, width: 10 }),
-    ).toThrow(/fill/);
-    expect(() =>
-      getImageProps({ src: "//cdn.test/a.png", alt: "", width: 1, height: 1 }),
-    ).toThrow(/protocol-relative/);
+    expect(() => getImageProps({ src: "/a.png", alt: "", fill: true, width: 10 })).toThrow(/fill/);
+    expect(() => getImageProps({ src: "//cdn.test/a.png", alt: "", width: 1, height: 1 })).toThrow(/protocol-relative/);
   });
 });

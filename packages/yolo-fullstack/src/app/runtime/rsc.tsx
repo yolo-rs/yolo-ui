@@ -68,7 +68,14 @@ const FONT_TYPES: Record<string, string> = { woff2: "font/woff2", woff: "font/wo
 
 function preloadLinks(): ReactNode {
   return preloads.map(href => (
-    <link key={href} rel="preload" as="font" href={href} type={FONT_TYPES[href.split(".").pop() ?? ""] ?? "font/woff2"} crossOrigin="anonymous" />
+    <link
+      key={href}
+      rel="preload"
+      as="font"
+      href={href}
+      type={FONT_TYPES[href.split(".").pop() ?? ""] ?? "font/woff2"}
+      crossOrigin="anonymous"
+    />
   ));
 }
 
@@ -138,8 +145,7 @@ async function runMiddleware(
   const mod = await load(definition().middleware!);
   if (!middlewareMatches(mod.config, store.url.pathname)) return { request };
   const fn = (mod.default ?? mod.middleware ?? mod.proxy) as
-    | ((req: NextRequest, event: unknown) => Response | undefined | Promise<Response | undefined>)
-    | undefined;
+    ((req: NextRequest, event: unknown) => Response | undefined | Promise<Response | undefined>) | undefined;
   if (typeof fn !== "function") throw new Error("@yolo-rs/fullstack: middleware must export a default function");
   const result = await fn(new NextRequest(request), {
     waitUntil: (p: Promise<unknown>) => void p.catch(console.error),
@@ -215,8 +221,7 @@ async function routeHandler(request: Request, route: AppRoute, params: Params, s
   const mod = await load(route.file);
   const method = request.method.toUpperCase();
   const fn = (mod[method] ?? (method === "HEAD" ? mod.GET : undefined)) as
-    | ((req: Request, ctx: { params: Promise<Params> }) => Response | Promise<Response>)
-    | undefined;
+    ((req: Request, ctx: { params: Promise<Params> }) => Response | Promise<Response>) | undefined;
   const allow = METHODS.filter(m => typeof mod[m] === "function" || (m === "HEAD" && typeof mod.GET === "function"));
   if (!fn) {
     if (method === "OPTIONS")
@@ -352,7 +357,10 @@ function buildTree(
 }
 
 function stylesheetLinks(): ReactNode {
-  return [preloadLinks(), ...stylesheets.map(href => <link key={href} rel="stylesheet" href={href} precedence="yolo" />)];
+  return [
+    preloadLinks(),
+    ...stylesheets.map(href => <link key={href} rel="stylesheet" href={href} precedence="yolo" />),
+  ];
 }
 
 async function renderRoute(

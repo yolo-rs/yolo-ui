@@ -3,10 +3,19 @@
 // `Inter({ ... })` / `localFont({ ... })` call (whose argument must be a literal, as in Next.js) is resolved
 // to a font artifact and replaced by the default import of a virtual module `yolo-font:<id>` exporting
 // `{ className, style, variable }`; the generated stylesheet joins the client build.
-import { dirname, join } from "node:path";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, dirname, extname, join, resolve } from "node:path";
 import { type GoogleFontContext, type GoogleFontOptions, familyFromExport, googleFont } from "./google";
 import { type LocalFontOptions, localFont } from "./local";
-import { type FontArtifact, type FontResult, fallbackArtifact, fontClassNames, fontFamilyList, fontId, writeArtifact } from "./shared";
+import {
+  type FontArtifact,
+  type FontResult,
+  fallbackArtifact,
+  fontClassNames,
+  fontFamilyList,
+  fontId,
+  writeArtifact,
+} from "./shared";
 
 export * from "./google";
 export * from "./local";
@@ -36,14 +45,22 @@ export function findFontImports(source: string): FontBinding[] {
   const out: FontBinding[] = [];
   for (const m of source.matchAll(IMPORT_RE)) {
     const specifier = m[3]!;
-    const kind = FONT_SPECIFIERS.google.includes(specifier) ? "google" : FONT_SPECIFIERS.local.includes(specifier) ? "local" : undefined;
+    const kind = FONT_SPECIFIERS.google.includes(specifier)
+      ? "google"
+      : FONT_SPECIFIERS.local.includes(specifier)
+        ? "local"
+        : undefined;
     if (!kind) continue;
     const clause = m[1]!.trim();
     const start = m.index!;
     const end = start + m[0].length;
     const braces = /\{([^}]*)\}/.exec(clause);
-    const defaultName = clause.replace(/\{[^}]*\}/, "").replace(/,/g, "").trim();
-    if (defaultName && !defaultName.startsWith("*")) out.push({ local: defaultName, kind, imported: "default", start, end });
+    const defaultName = clause
+      .replace(/\{[^}]*\}/, "")
+      .replace(/,/g, "")
+      .trim();
+    if (defaultName && !defaultName.startsWith("*"))
+      out.push({ local: defaultName, kind, imported: "default", start, end });
     for (const part of (braces?.[1] ?? "").split(",")) {
       const item = part.trim();
       if (!item) continue;
@@ -97,7 +114,9 @@ export function evaluateOptions(text: string, where: string): Record<string, unk
   try {
     return new Function(`"use strict"; return (${trimmed});`)() as Record<string, unknown>;
   } catch (error) {
-    throw new Error(`@yolo-rs/fullstack: cannot evaluate the font options in ${where}: ${String(error)}`);
+    throw new Error(`@yolo-rs/fullstack: cannot evaluate the font options in ${where}: ${String(error)}`, {
+      cause: error,
+    });
   }
 }
 
@@ -163,7 +182,11 @@ export interface FontRewrite {
 }
 
 async function resolveCall(call: FontCall, path: string, ctx: FontRewriteContext): Promise<FontArtifact> {
-  if (call.binding.kind === "local") return localFont(call.options as unknown as LocalFontOptions, { cacheDir: ctx.cacheDir, importerDir: dirname(path) });
+  if (call.binding.kind === "local")
+    return localFont(call.options as unknown as LocalFontOptions, {
+      cacheDir: ctx.cacheDir,
+      importerDir: dirname(path),
+    });
   const options = call.options as GoogleFontOptions;
   const google: GoogleFontContext = { cacheDir: ctx.cacheDir, fetch: ctx.fetch, offline: ctx.offline };
   try {
@@ -185,13 +208,19 @@ async function resolveCall(call: FontCall, path: string, ctx: FontRewriteContext
       style: { fontFamily: fontFamilyList(family, options.fallback ?? ["system-ui", "sans-serif"]) },
     });
     await writeArtifact(artifact, "", options.display ?? "swap");
-    (ctx.warn ?? console.warn)(`@yolo-rs/fullstack: ${family} could not be downloaded (${error instanceof Error ? error.message : String(error)}); using the fallback stack`);
+    (ctx.warn ?? console.warn)(
+      `@yolo-rs/fullstack: ${family} could not be downloaded (${error instanceof Error ? error.message : String(error)}); using the fallback stack`,
+    );
     return artifact;
   }
 }
 
 /** Rewrite the font calls of a module; `undefined` when it has none. */
-export async function rewriteFonts(source: string, path: string, ctx: FontRewriteContext): Promise<FontRewrite | undefined> {
+export async function rewriteFonts(
+  source: string,
+  path: string,
+  ctx: FontRewriteContext,
+): Promise<FontRewrite | undefined> {
   if (!source.includes("next/font") && !source.includes("@yolo-rs/fullstack/font")) return undefined;
   const bindings = findFontImports(source);
   if (!bindings.length) return undefined;
@@ -203,10 +232,11 @@ export async function rewriteFonts(source: string, path: string, ctx: FontRewrit
   // Drop the import statements and replace the calls, left to right.
   const edits: { start: number; end: number; text: string }[] = [];
   const seen = new Set<string>();
-  for (const b of bindings) if (!seen.has(`${b.start}`)) {
-    seen.add(`${b.start}`);
-    edits.push({ start: b.start, end: b.end, text: "" });
-  }
+  for (const b of bindings)
+    if (!seen.has(`${b.start}`)) {
+      seen.add(`${b.start}`);
+      edits.push({ start: b.start, end: b.end, text: "" });
+    }
   for (const [i, call] of calls.entries()) {
     const artifact = await resolveCall(call, path, ctx);
     ctx.registry.set(artifact.id, artifact);
@@ -233,11 +263,41 @@ export function fontVirtualModule(artifact: FontArtifact, layer: "rsc" | "ssr" |
     ...(artifact.variableClassName ? { variable: artifact.variableClassName } : {}),
   };
   const lines = [`export default ${JSON.stringify(result)};`];
-  if (layer === "client") lines.unshift(`import ${JSON.stringify(artifact.cssFile.replaceAll("\\", "/"))};`);
+  if (layer === "client")
+    lines.unshift(`import ${JSON.stringify((artifact.builtCssFile ?? artifact.cssFile).replaceAll("\\", "/"))};`);
   return lines.join("\n");
 }
 
 /** `<link rel="preload" as="font">` hrefs of the registry, relative to the client asset prefix. */
 export function fontPreloads(registry: Map<string, FontArtifact>): { id: string; files: string[] }[] {
   return [...registry.values()].filter(a => a.preload.length).map(a => ({ id: a.id, files: a.preload }));
+}
+
+/**
+ * Copy the files of a font into the client media directory and rewrite the stylesheet to their public
+ * URLs, so the stylesheet can be bundled by any layer and the preload list is known at build time.
+ */
+export function materializeFont(artifact: FontArtifact, mediaDir: string, mediaUrl: string): FontArtifact {
+  if (artifact.builtCssFile) return artifact;
+  const dir = dirname(artifact.cssFile);
+  const css = readFileSync(artifact.cssFile, "utf8");
+  const preloads: string[] = [];
+  const wanted = new Set(artifact.preload.map(p => resolve(dir, p)));
+  const built = css.replace(/url\((["']?)([^"')]+)\1\)/g, (whole, q: string, ref: string) => {
+    if (/^(data:|https?:|\/)/.test(ref)) return whole;
+    const abs = resolve(dir, ref);
+    if (!existsSync(abs)) return whole;
+    const bytes = readFileSync(abs);
+    const ext = extname(abs);
+    const name = `${basename(abs, ext)}-${Bun.hash(bytes).toString(36).slice(0, 8)}${ext}`;
+    mkdirSync(join(mediaDir, "fonts"), { recursive: true });
+    copyFileSync(abs, join(mediaDir, "fonts", name));
+    if (wanted.has(abs)) preloads.push(`media/fonts/${name}`);
+    return `url("${mediaUrl.replace(/\/$/, "")}/fonts/${name}")`;
+  });
+  const builtCssFile = join(dir, "built.css");
+  writeFileSync(builtCssFile, built);
+  artifact.builtCssFile = builtCssFile;
+  artifact.publicPreloads = preloads;
+  return artifact;
 }

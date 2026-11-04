@@ -20,7 +20,13 @@ export type Phase =
   | typeof PHASE_TEST;
 
 /** Order Next.js probes config files in. */
-export const CONFIG_FILES = ["next.config.js", "next.config.mjs", "next.config.ts", "next.config.mts", "next.config.cjs"];
+export const CONFIG_FILES = [
+  "next.config.js",
+  "next.config.mjs",
+  "next.config.ts",
+  "next.config.mts",
+  "next.config.cjs",
+];
 
 export interface RouteHas {
   type: "header" | "cookie" | "host" | "query";
@@ -259,7 +265,7 @@ const UNSUPPORTED: Record<string, string> = {
   compress: "compression is left to the reverse proxy",
   onDemandEntries: "no equivalent in the Bun dev server",
   httpAgentOptions: "fetch uses Bun's own agent",
-  outputFileTracingRoot: "no file tracing; `output: \"standalone\"` copies the build directory",
+  outputFileTracingRoot: 'no file tracing; `output: "standalone"` copies the build directory',
   serverRuntimeConfig: "exposed through `next/config` on the server only",
   publicRuntimeConfig: "exposed through `next/config`; prefer `NEXT_PUBLIC_*`",
   devIndicators: "no dev indicator overlay",
@@ -312,8 +318,10 @@ function normalizeImages(images: ImagesConfig | undefined, unsupported: Unsuppor
     } else remotePatterns.push(pattern);
   }
   for (const host of images?.domains ?? []) remotePatterns.push({ protocol: "https", hostname: host });
-  if (images?.domains?.length) unsupported.push({ key: "images.domains", reason: "deprecated; converted to remotePatterns (https)" });
-  if (images?.disableStaticImages) unsupported.push({ key: "images.disableStaticImages", reason: "static image imports are always typed objects" });
+  if (images?.domains?.length)
+    unsupported.push({ key: "images.domains", reason: "deprecated; converted to remotePatterns (https)" });
+  if (images?.disableStaticImages)
+    unsupported.push({ key: "images.disableStaticImages", reason: "static image imports are always typed objects" });
   const loader = images?.loader ?? (images?.loaderFile ? "custom" : base.loader!);
   return {
     loader,
@@ -334,10 +342,15 @@ function normalizeImages(images: ImagesConfig | undefined, unsupported: Unsuppor
 }
 
 /** `define` entries of `process.env.X` for `config.env` and every `NEXT_PUBLIC_*` variable. */
-export function envDefines(config: NextConfig, env: Record<string, string | undefined> = process.env): Record<string, string> {
+export function envDefines(
+  config: NextConfig,
+  env: Record<string, string | undefined> = process.env,
+): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const [key, value] of Object.entries(env)) if (key.startsWith("NEXT_PUBLIC_") && value !== undefined) out[`process.env.${key}`] = JSON.stringify(value);
-  for (const [key, value] of Object.entries(config.env ?? {})) if (value !== undefined) out[`process.env.${key}`] = JSON.stringify(value);
+  for (const [key, value] of Object.entries(env))
+    if (key.startsWith("NEXT_PUBLIC_") && value !== undefined) out[`process.env.${key}`] = JSON.stringify(value);
+  for (const [key, value] of Object.entries(config.env ?? {}))
+    if (value !== undefined) out[`process.env.${key}`] = JSON.stringify(value);
   return out;
 }
 
@@ -349,7 +362,12 @@ export interface LoadConfigOptions {
 }
 
 /** Normalize a loaded config object. */
-export async function resolveNextConfig(raw: NextConfig, phase: Phase, file?: string, env?: Record<string, string | undefined>): Promise<ResolvedConfig> {
+export async function resolveNextConfig(
+  raw: NextConfig,
+  phase: Phase,
+  file?: string,
+  env?: Record<string, string | undefined>,
+): Promise<ResolvedConfig> {
   const config: NextConfig = { ...defaultConfig(), ...raw };
   const unsupported: Unsupported[] = [];
   for (const [key, reason] of Object.entries(UNSUPPORTED)) {
@@ -357,10 +375,16 @@ export async function resolveNextConfig(raw: NextConfig, phase: Phase, file?: st
     if (key === "compress" && raw[key] === true) continue;
     unsupported.push({ key, reason });
   }
-  for (const key of Object.keys(raw.experimental ?? {})) unsupported.push({ key: `experimental.${key}`, reason: "experimental flags are ignored" });
-  if (raw.output === "standalone") unsupported.push({ key: "output", reason: "`standalone` copies the whole build; use `yolo-fullstack compile` for one executable" });
+  for (const key of Object.keys(raw.experimental ?? {}))
+    unsupported.push({ key: `experimental.${key}`, reason: "experimental flags are ignored" });
+  if (raw.output === "standalone")
+    unsupported.push({
+      key: "output",
+      reason: "`standalone` copies the whole build; use `yolo-fullstack compile` for one executable",
+    });
   const basePath = (config.basePath ?? "").replace(/\/$/, "");
-  if (basePath && !basePath.startsWith("/")) throw new Error(`@yolo-rs/fullstack: basePath must start with "/" (got ${basePath})`);
+  if (basePath && !basePath.startsWith("/"))
+    throw new Error(`@yolo-rs/fullstack: basePath must start with "/" (got ${basePath})`);
   const [rewrites, redirects, headers] = await Promise.all([
     typeof config.rewrites === "function" ? config.rewrites() : config.rewrites,
     typeof config.redirects === "function" ? config.redirects() : config.redirects,
@@ -402,7 +426,11 @@ export async function loadNextConfig(root: string, options: LoadConfigOptions = 
       raw = readExport(mod);
     } else raw = {};
   }
-  if (typeof raw === "function") raw = await (raw as (p: Phase, c: { defaultConfig: NextConfig }) => unknown)(phase, { defaultConfig: defaultConfig() });
-  if (!raw || typeof raw !== "object") throw new Error(`@yolo-rs/fullstack: ${file ?? "next.config"} must export an object or a function returning one`);
+  if (typeof raw === "function")
+    raw = await (raw as (p: Phase, c: { defaultConfig: NextConfig }) => unknown)(phase, {
+      defaultConfig: defaultConfig(),
+    });
+  if (!raw || typeof raw !== "object")
+    throw new Error(`@yolo-rs/fullstack: ${file ?? "next.config"} must export an object or a function returning one`);
   return resolveNextConfig(raw as NextConfig, phase, file, options.env);
 }

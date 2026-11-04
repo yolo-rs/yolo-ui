@@ -61,8 +61,7 @@ export function isUnsafeRelativePath(relative: string): boolean {
   if (relative.startsWith("/")) return true;
   if (/^[a-zA-Z]:/.test(relative)) return true;
   for (const segment of relative.split("/")) {
-    if (segment === ".." || segment === "." || segment.length === 0)
-      return true;
+    if (segment === ".." || segment === "." || segment.length === 0) return true;
   }
   return false;
 }
@@ -76,10 +75,7 @@ function decodeSegment(raw: string): string | null {
 }
 
 /** Resolve a request pathname (already stripped of the prefix) to a file under `root`. */
-export function resolvePublicFile(
-  root: string,
-  relative: string,
-): string | null {
+export function resolvePublicFile(root: string, relative: string): string | null {
   const decoded = decodeSegment(relative);
   if (decoded === null || isUnsafeRelativePath(decoded)) return null;
   const absolute = resolve(root, decoded);
@@ -97,10 +93,7 @@ function fileResponse(path: string, immutable: boolean): Response {
   return new Response(file, { headers });
 }
 
-async function serveFile(
-  path: string | null,
-  immutable: boolean,
-): Promise<Response> {
+async function serveFile(path: string | null, immutable: boolean): Promise<Response> {
   if (path === null) return new Response("Forbidden", { status: 403 });
   const file = Bun.file(path);
   if (!(await file.exists())) return new Response("Not Found", { status: 404 });
@@ -108,9 +101,7 @@ async function serveFile(
 }
 
 /** Build Bun.serve `routes` serving index.html, assets/* and wasm/* from a dx web build. */
-export function dioxusWebRoutes(
-  options: DioxusWebRoutesOptions,
-): Record<string, RouteHandler> {
+export function dioxusWebRoutes(options: DioxusWebRoutesOptions): Record<string, RouteHandler> {
   const root = resolve(options.dir);
   if (!existsSync(root) || !statSync(root).isDirectory()) {
     throw new Error(`dioxusWebRoutes: directory not found: ${root}`);
@@ -132,11 +123,10 @@ export function dioxusWebRoutes(
 
   const hashedDir =
     (folder: "assets" | "wasm"): RouteHandler =>
-    (request) => {
+    request => {
       const pathname = new URL(request.url).pathname;
       const base = `${prefix}${folder}/`;
-      if (!pathname.startsWith(base))
-        return new Response("Not Found", { status: 404 });
+      if (!pathname.startsWith(base)) return new Response("Not Found", { status: 404 });
       const relative = `${folder}/${pathname.slice(base.length)}`;
       return serveFile(resolvePublicFile(root, relative), true);
     };

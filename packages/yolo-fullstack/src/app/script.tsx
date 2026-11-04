@@ -3,20 +3,11 @@
 // `next/script`: `beforeInteractive`, `afterInteractive` and `worker` render `<script async src>` (React 19
 // hoists and deduplicates async scripts); `lazyOnload` injects the script after the window `load` event.
 // Inline scripts (`children` or `dangerouslySetInnerHTML`) are rendered as is. A `src` is injected once.
-import {
-  useEffect,
-  type ReactNode,
-  type ScriptHTMLAttributes,
-  type SyntheticEvent,
-} from "react";
+import { useEffect, type ReactNode, type ScriptHTMLAttributes, type SyntheticEvent } from "react";
 
-export type ScriptStrategy =
-  "beforeInteractive" | "afterInteractive" | "lazyOnload" | "worker";
+export type ScriptStrategy = "beforeInteractive" | "afterInteractive" | "lazyOnload" | "worker";
 
-export interface ScriptProps extends Omit<
-  ScriptHTMLAttributes<HTMLScriptElement>,
-  "onLoad" | "onError" | "children"
-> {
+export interface ScriptProps extends Omit<ScriptHTMLAttributes<HTMLScriptElement>, "onLoad" | "onError" | "children"> {
   src?: string;
   id?: string;
   strategy?: ScriptStrategy;
@@ -35,18 +26,11 @@ export function resetScriptRegistry(): void {
   injected.clear();
 }
 
-function inlineSource(
-  children: ReactNode,
-  html: string | TrustedHTML | undefined,
-): string | undefined {
+function inlineSource(children: ReactNode, html: string | TrustedHTML | undefined): string | undefined {
   if (html !== undefined) return String(html);
   if (children === undefined || children === null) return undefined;
   const parts = Array.isArray(children) ? children : [children];
-  return parts
-    .map((part) =>
-      typeof part === "string" || typeof part === "number" ? String(part) : "",
-    )
-    .join("");
+  return parts.map(part => (typeof part === "string" || typeof part === "number" ? String(part) : "")).join("");
 }
 
 export default function Script({
@@ -82,22 +66,14 @@ export default function Script({
       el.async = true;
       if (id) el.id = id;
       for (const [key, value] of Object.entries(rest)) {
-        if (
-          value === undefined ||
-          value === null ||
-          typeof value === "function"
-        )
-          continue;
-        el.setAttribute(
-          key.toLowerCase() === "classname" ? "class" : key,
-          String(value),
-        );
+        if (value === undefined || value === null || typeof value === "function") continue;
+        el.setAttribute(key.toLowerCase() === "classname" ? "class" : key, String(value));
       }
-      el.addEventListener("load", (event) => {
+      el.addEventListener("load", event => {
         onLoad?.(event);
         onReady?.();
       });
-      el.addEventListener("error", (event) => onError?.(event));
+      el.addEventListener("error", event => onError?.(event));
       document.body.appendChild(el);
     };
     if (document.readyState === "complete") run();
@@ -116,17 +92,14 @@ export default function Script({
         id={id}
         src={src}
         async
-        onLoad={(event) => {
+        onLoad={event => {
           onLoad?.(event);
           onReady?.();
         }}
-        onError={(event) => onError?.(event)}
+        onError={event => onError?.(event)}
       />
     );
   }
-  if (inline !== undefined)
-    return (
-      <script {...rest} id={id} dangerouslySetInnerHTML={{ __html: inline }} />
-    );
+  if (inline !== undefined) return <script {...rest} id={id} dangerouslySetInnerHTML={{ __html: inline }} />;
   return null;
 }

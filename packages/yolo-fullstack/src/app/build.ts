@@ -8,7 +8,17 @@
 import type { BunPlugin } from "bun";
 import { cpSync, existsSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
-import { loadNextConfig, PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type HeaderRule, type Redirect, type ResolvedConfig, type ResolvedImages, type RewriteGroups, type Unsupported } from "../config/next-config";
+import {
+  loadNextConfig,
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_BUILD,
+  type HeaderRule,
+  type Redirect,
+  type ResolvedConfig,
+  type ResolvedImages,
+  type RewriteGroups,
+  type Unsupported,
+} from "../config/next-config";
 import { turbopackPlugin } from "../config/turbopack";
 import type { FontArtifact, FontRewriteContext } from "../font";
 import { imageConfigDefine } from "../image";
@@ -199,7 +209,8 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
   const dev = options.dev ?? false;
   const buildId = options.buildId ?? Date.now().toString(36);
   const tree = scanApp(root, appDir);
-  const config = options.config ?? (await loadNextConfig(root, { phase: dev ? PHASE_DEVELOPMENT_SERVER : PHASE_PRODUCTION_BUILD }));
+  const config =
+    options.config ?? (await loadNextConfig(root, { phase: dev ? PHASE_DEVELOPMENT_SERVER : PHASE_PRODUCTION_BUILD }));
   const assetPrefix = config.assetPrefix;
   const baseDefine = {
     "process.env.NODE_ENV": js(dev ? "development" : "production"),
@@ -209,7 +220,10 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
     __YOLO_BASE_PATH__: js(config.basePath),
     ...options.define,
   };
-  const layerDefine = (layer: "rsc" | "ssr" | "client") => ({ ...baseDefine, ...runtimeConfigDefine(config.config, layer) });
+  const layerDefine = (layer: "rsc" | "ssr" | "client") => ({
+    ...baseDefine,
+    ...runtimeConfigDefine(config.config, layer),
+  });
   const mediaDir = join(outDir, "client", "media");
   const fontRegistry = new Map<string, FontArtifact>();
   const fonts: FontRewriteContext = {
@@ -219,7 +233,14 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
     registry: fontRegistry,
   };
   const imageLoaderFile = config.images.loaderFile ? join(root, config.images.loaderFile) : undefined;
-  const shared = { root, nextCompat: options.nextCompat, mediaDir, mediaUrl: `${assetPrefix}/_yolo/media`, fonts, imageLoaderFile };
+  const shared = {
+    root,
+    nextCompat: options.nextCompat,
+    mediaDir,
+    mediaUrl: `${assetPrefix}/_yolo/media`,
+    fonts,
+    imageLoaderFile,
+  };
   const turbo = (layer: "rsc" | "ssr" | "client") => turbopackPlugin(config.turbopack, { root, layer });
   const unsupported: Unsupported[] = [...config.unsupported];
 
@@ -306,18 +327,11 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
   ]);
   logs(client, "client");
   logs(ssr, "ssr");
-  for (const m of [turboClient, turboSsr]) for (const u of m.unsupported) if (!unsupported.some(x => x.key === u.key)) unsupported.push(u);
+  for (const m of [turboClient, turboSsr])
+    for (const u of m.unsupported) if (!unsupported.some(x => x.key === u.key)) unsupported.push(u);
 
-  // Font files to preload: the assets Bun copied for the generated stylesheets.
-  const preloads: string[] = [];
-  for (const artifact of fontRegistry.values()) {
-    for (const file of artifact.preload) {
-      const name = basename(file);
-      const stem = name.replace(/\.[^.]+$/, "");
-      const output = client.outputs.find(o => o.kind === "asset" && basename(o.path).startsWith(`${stem}-`));
-      if (output) preloads.push(toPosix(relative(join(outDir, "client"), output.path)));
-    }
-  }
+  // Font files to preload (copied into client/media/fonts by the plugin).
+  const preloads = [...new Set([...fontRegistry.values()].flatMap(a => a.publicPreloads ?? []))];
 
   const clientDir = join(outDir, "client");
   const entryFile = (name: string) => {

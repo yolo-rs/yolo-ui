@@ -3,7 +3,20 @@
 // streaming SSR, static generation) on Bun.build + Bun.serve, driven by next.config, with next/font, the
 // image CDN endpoint, TanStack adapters and the Dioxus bridge.
 export * from "./app/index";
-export * from "./config/index";
+export * from "./config/next-config";
+export * from "./config/routes";
+export {
+  BUNDLER_FLAGS,
+  LOADER_MAP,
+  aliasConditions,
+  pickAliasTarget,
+  ruleGlobToRegExp,
+  ruleLoader,
+  stripBundlerFlags,
+  svgrModule,
+  turbopackPlugin,
+} from "./config/turbopack";
+export type { RuleLoader, TurbopackMapping, TurbopackPluginOptions } from "./config/turbopack";
 export * from "./font/index";
 export * from "./image/index";
 export * from "./migrate/index";

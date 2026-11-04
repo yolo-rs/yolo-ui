@@ -4,7 +4,12 @@
 import type { BunPlugin } from "bun";
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { loadNextConfig, PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type ResolvedConfig } from "../config/next-config";
+import {
+  loadNextConfig,
+  PHASE_DEVELOPMENT_SERVER,
+  PHASE_PRODUCTION_BUILD,
+  type ResolvedConfig,
+} from "../config/next-config";
 import { buildApp, resolveAppDir } from "./build";
 import { devApp } from "./dev";
 import { serveApp } from "./host";
@@ -56,7 +61,9 @@ export async function buildAppProject(
   const { outDir } = options;
   const label = project.label ?? "app";
   const started = performance.now();
-  const config = project.config ?? (await loadNextConfig(project.root, { phase: options.dev ? PHASE_DEVELOPMENT_SERVER : PHASE_PRODUCTION_BUILD }));
+  const config =
+    project.config ??
+    (await loadNextConfig(project.root, { phase: options.dev ? PHASE_DEVELOPMENT_SERVER : PHASE_PRODUCTION_BUILD }));
   reportUnsupported(label, config);
   const { manifest } = await buildApp({
     root: project.root,
@@ -89,7 +96,8 @@ export async function runAppCommand(
   const label = project.label ?? "app";
   const outDir = flags.outdir ? resolve(project.root, flags.outdir) : project.outDir;
   const port = flags.port ?? (Bun.env.PORT ? undefined : project.port);
-  if (flags.turbopack) console.log(`${label}: --turbopack accepted; Bun.build is the bundler and honours next.config turbopack settings`);
+  if (flags.turbopack)
+    console.log(`${label}: --turbopack accepted; Bun.build is the bundler and honours next.config turbopack settings`);
   if (command === "dev") {
     const started = performance.now();
     const dev = await devApp({
