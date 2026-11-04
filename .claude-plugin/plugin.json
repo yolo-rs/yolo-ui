@@ -1,0 +1,22 @@
+{
+    "name":  "yolo-ui",
+    "version":  "0.8.0",
+    "description":  "Yolo UI: unified Rust+Bun UI framework, themes, migrator and UI/UX Pro Max",
+    "author":  {
+                   "name":  "yolo-rs"
+               },
+    "homepage":  "https://github.com/yolo-rs/yolo-ui",
+    "license":  "Apache-2.0",
+    "skills":  "./.agents/skills",
+    "mcpServers":  {
+                       "yolo-ui":  {
+                                       "args":  [
+                                                    "run",
+                                                    "--cwd",
+                                                    "packages/yolo-ui-mcp",
+                                                    "start"
+                                                ],
+                                       "command":  "bun"
+                                   }
+                   }
+}

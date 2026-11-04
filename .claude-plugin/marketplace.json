@@ -1,0 +1,13 @@
+{
+    "name":  "yolo-rs",
+    "owner":  {
+                  "name":  "yolo-rs"
+              },
+    "plugins":  [
+                    {
+                        "description":  "Yolo UI: unified Rust+Bun UI framework, themes, migrator and UI/UX Pro Max",
+                        "name":  "yolo-ui",
+                        "source":  "./"
+                    }
+                ]
+}
