@@ -8,6 +8,7 @@
 //! `yolo-migrator` (Shadcn/Tailwind/Radix/BaseUI TSX -> 6 Rust targets), and
 //! `yolo-react` (Full-Bun + Rust React 19 RSC & React Native Taffy Layout) compile and work together!
 
+pub mod benchmarks;
 pub mod site_hub;
 
 use std::fs;
@@ -205,5 +206,8 @@ mod tests {
         assert!(html.contains("Taffy 0.15"));
         assert!(html.contains("WGPUI 24"));
         assert!(html.contains("Zed GPUI"));
+        assert!(html.contains("Benchmarks &amp; Comparatifs"));
+        assert!(html.contains("Cold Startup"));
+        assert!(html.contains("Electron (Legacy)"));
     }
 }

@@ -20,6 +20,8 @@ use yolo_ui::shared::{
     YoloThemePreset,
 };
 
+pub use crate::benchmarks::{ALL_BENCHMARKS, FrameworkBenchmark, render_benchmark_section_html};
+
 /// Domain of the 6-Pillar Master Migration Plan.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MigrationPillar {
@@ -631,6 +633,24 @@ pub fn render_yolo_aphrody_com_html() -> String {
         th {{ background: var(--yolo-elevated); font-weight: 600; }}
         pre {{ background: #050507; padding: 0.75rem; border-radius: 6px; overflow-x: auto; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.07); }}
         section {{ margin-bottom: 3rem; scroll-margin-top: 5rem; }}
+        .chart-container {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin: 1.5rem 0 2.5rem; }}
+        .chart-box {{ background: var(--yolo-surface); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--yolo-radius); padding: 1.25rem; }}
+        .bar-row {{ display: flex; align-items: center; margin: 0.6rem 0; font-size: 0.85rem; }}
+        .bar-label {{ width: 140px; font-weight: 500; white-space: nowrap; }}
+        .bar-track {{ flex: 1; background: rgba(255,255,255,0.05); height: 22px; border-radius: 4px; overflow: hidden; display: flex; }}
+        .bar-fill {{ height: 100%; display: flex; align-items: center; padding-left: 8px; font-size: 0.76rem; font-weight: 600; color: #09090b; white-space: nowrap; min-width: 48px; border-radius: 4px; }}
+        .baseline-row {{ background: rgba(239, 68, 68, 0.08) !important; }}
+        .rust-row {{ background: rgba(16, 185, 129, 0.04); }}
+        .metric-val {{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 600; color: var(--yolo-text); }}
+        .progress-bar {{ width: 70px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px; }}
+        .progress-fill {{ height: 100%; }}
+        .benchmark-card {{ font-size: 0.9rem; }}
+        .benchmark-card h4 {{ margin: 0; font-size: 1.05rem; }}
+        .sweet-spot {{ color: #10B981; margin: 0.4rem 0; }}
+        .anti-pattern {{ color: #EF4444; margin: 0.4rem 0; }}
+        .pro-tag {{ font-weight: 600; }}
+        .con-tag {{ font-weight: 600; }}
+        .table-responsive {{ overflow-x: auto; -webkit-overflow-scrolling: touch; }}
     </style>
 </head>
 <body>
@@ -645,6 +665,7 @@ pub fn render_yolo_aphrody_com_html() -> String {
             <a href="#migration">Plan de Migration (6 Piliers)</a>
             <a href="#templates">Starter Templates (8)</a>
             <a href="#awesome">Awesome Hub (124 Submodules)</a>
+            <a href="#benchmarks">Benchmarks &amp; Comparatifs</a>
         </nav>
     </header>
     <main>
@@ -698,6 +719,8 @@ pub fn render_yolo_aphrody_com_html() -> String {
             <h2>4. Awesome Ecosystem Hub ({awesome_count} Familles • 124 Sous-modules <code>yolo-rs/*</code>)</h2>
             <div class="grid">{awesome_cards}</div>
         </section>
+
+        {benchmarks_html}
     </main>
     <script>
         const PRESET_VARS = {{
@@ -735,5 +758,6 @@ pub fn render_yolo_aphrody_com_html() -> String {
         template_cards = template_cards,
         awesome_count = AWESOME_HUB_CATEGORIES.len(),
         awesome_cards = awesome_cards,
+        benchmarks_html = render_benchmark_section_html(),
     )
 }
