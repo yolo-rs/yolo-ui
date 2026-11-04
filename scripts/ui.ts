@@ -527,8 +527,8 @@ export async function runUnifiedUiCli(
             "Lightweight alternative to Electron leveraging OS native Webview (Wry 0.57 / Tao 0.37)",
         },
         {
-          name: "WGPU 30/29 & Bevy 0.16 (yolo-gpu)",
-          ecosystem: "gfx-rs / bevyengine",
+          name: "WGPU 30/29 & Bevy 0.16 (yolo-gpu / yolo-3d)",
+          ecosystem: "gfx-rs / bevyengine / three.js",
           category: "GpuRendering",
           startup_ms: 25.0,
           ram_idle_mb: 38.0,
@@ -539,9 +539,26 @@ export async function runUnifiedUiCli(
           battery_score: 85,
           stars: 43000,
           use_case:
-            "Analytical SDF graphics, instanced GPU primitives, 3D viewport scenes, WGSL shaders",
+            "Analytical SDF graphics, instanced GPU primitives, 3D viewport scenes, Three.js to WGPU, WGSL shaders",
           sweet_spot:
-            "Hardware-native Vulkan/DirectX 12/Metal execution, 8x3 Kawase dual-filter blur",
+            "Hardware-native Vulkan/DirectX 12/Metal execution, 8x3 Kawase dual-filter blur, glTF/OBJ import",
+        },
+        {
+          name: "Three.js WebGL / R3F (Browser Baseline)",
+          ecosystem: "mrdoob / pmndrs",
+          category: "GpuRendering",
+          startup_ms: 85.0,
+          ram_idle_mb: 72.0,
+          ram_load_mb: 230.0,
+          fps: 60,
+          binary_size_mb: 1.8,
+          dom_diff_ns: 40,
+          battery_score: 68,
+          stars: 104000,
+          use_case:
+            "Browser 3D web applications, canvas visualizers, WebGL product configurators",
+          sweet_spot:
+            "Vast three.js ecosystem, easy rapid prototyping in JavaScript/TypeScript",
         },
         {
           name: "Taffy 0.15 (yolo-layout)",

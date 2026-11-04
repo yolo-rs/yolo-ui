@@ -52,6 +52,9 @@ pub use yolo_gtk as gtk;
 #[cfg(feature = "qt")]
 pub use yolo_qt as qt;
 
+#[cfg(feature = "three3d")]
+pub use yolo_3d as three3d;
+
 pub use dioxus_core as core;
 pub use dioxus_document as document;
 pub use dioxus_history as history;

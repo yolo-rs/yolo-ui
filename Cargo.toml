@@ -14,6 +14,7 @@ members = [
     "crates/yolo-craft",
     "crates/yolo-storyteller",
     "crates/yolo-react",
+    "crates/yolo-3d",
     "apps/yolo-showcase",
 
     # Umbrella & Multi-Engine Packages

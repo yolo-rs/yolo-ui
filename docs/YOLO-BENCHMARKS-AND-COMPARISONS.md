@@ -96,12 +96,23 @@ Electron Legacy  [████████████████████�
   - Zéro dépendance d'environnement graphique : fonctionne sur serveur, WASM ou GPU.
 - **À éviter** : Disposition de texte complexe avec retours à la ligne multilingues (déléguer à `cosmic-text`).
 
-### 6. WGPU 30/29 & Bevy 0.16 (`crates/yolo-gpu` + `crates/yolo-render`)
-- **Cas d'usage idéal** : Moteurs de rendu analytique SDF, scènes 3D interactives, flou Kawase 8×3 passes, shaders WGSL personnalisés.
+### 6. WGPU 30/29 & Bevy 0.16 & Three.js Bridge (`crates/yolo-gpu` + `crates/yolo-render` + `crates/yolo-3d`)
+- **Cas d'usage idéal** : Moteurs de rendu analytique SDF, scènes 3D interactives, flou Kawase 8×3 passes, shaders WGSL personnalisés, translation Three.js/R3F vers WGPU 30/29 natif.
 - **Points forts** :
   - Draw calls ultra-réduits via l'instanciation de primitives analytiques (squircles, bordures actives 45°).
   - Multi-backend matériel : Vulkan, DirectX 12, Metal, et WebGPU dans le navigateur.
+  - Pont déclaratif Three.js et React Three Fiber (`yolo-3d`) pour importer des scènes 3D web directement dans WGPU 30/29 avec importation glTF 2.0 et Wavefront OBJ.
+  - Conversion de coordonnées Blender automatique (Z-up vers Y-up).
 - **À éviter** : Formulaires de saisie bureautique classiques.
+
+### 7. Three.js & React Three Fiber (Baseline WebGL Browser)
+- **Cas d'usage idéal** : Visualisations 3D web interactives légères dans le navigateur.
+- **Points forts** :
+  - Écosystème gigantesque de shaders et composants Drei.
+  - Prototypage rapide en JavaScript/TypeScript.
+- **Limites vs WGPU 30/29 Natif** :
+  - Consommation mémoire plus élevée (72 MB idle vs 38 MB en WGPU Rust).
+  - Surcharge du Garbage Collector V8/JSC et limitations du pont WebGL monothread.
 
 ---
 

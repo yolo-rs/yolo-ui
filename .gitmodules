@@ -494,3 +494,23 @@
 	path = submodules/oxc
 	url = https://github.com/yolo-rs/oxc.git
 	shallow = true
+[submodule "submodules/three.js"]
+	path = submodules/three.js
+	url = https://github.com/yolo-rs/three.js.git
+	shallow = true
+[submodule "submodules/react-three-fiber"]
+	path = submodules/react-three-fiber
+	url = https://github.com/yolo-rs/react-three-fiber.git
+	shallow = true
+[submodule "submodules/drei"]
+	path = submodules/drei
+	url = https://github.com/yolo-rs/drei.git
+	shallow = true
+[submodule "submodules/gltfjsx"]
+	path = submodules/gltfjsx
+	url = https://github.com/yolo-rs/gltfjsx.git
+	shallow = true
+[submodule "submodules/assimp"]
+	path = submodules/assimp
+	url = https://github.com/yolo-rs/assimp.git
+	shallow = true

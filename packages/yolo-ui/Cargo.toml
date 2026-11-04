@@ -27,6 +27,7 @@ yolo-egui = { workspace = true, optional = true }
 yolo-cosmic = { workspace = true, optional = true }
 yolo-gtk = { workspace = true, optional = true }
 yolo-qt = { workspace = true, optional = true }
+yolo-3d = { path = "../../crates/yolo-3d", optional = true }
 dioxus = { workspace = true, default-features = false }
 dioxus-core = { workspace = true }
 dioxus-signals = { workspace = true }
@@ -131,6 +132,7 @@ egui = ["dep:yolo-egui"]
 cosmic = ["dep:yolo-cosmic"]
 gtk = ["dep:yolo-gtk"]
 qt = ["dep:yolo-qt"]
+three3d = ["dep:yolo-3d"]
 multi-engine = [
     "tokens",
     "contracts",
@@ -148,5 +150,6 @@ multi-engine = [
     "cosmic",
     "gtk",
     "qt",
+    "three3d",
 ]
 all-engines = ["multi-engine", "native"]
