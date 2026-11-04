@@ -3,7 +3,14 @@
 // `next/dynamic`: a lazily loaded component. The loader may resolve to a module (`{ default }`) or to the
 // component itself; `loading` is the Suspense fallback; `ssr: false` renders the fallback until the
 // component is mounted in the browser, so the server never loads the module.
-import { Suspense, lazy, useEffect, useState, type ComponentType, type ReactElement } from "react";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useState,
+  type ComponentType,
+  type ReactElement,
+} from "react";
 
 /** Props the `loading` component receives (the subset Next.js documents). */
 export interface LoadingProps {
@@ -22,7 +29,9 @@ export interface DynamicOptions<P = object> {
   loader?: Loader<P>;
 }
 
-const isModule = <P,>(value: ComponentModule<P>): value is { default: ComponentType<P> } =>
+const isModule = <P,>(
+  value: ComponentModule<P>,
+): value is { default: ComponentType<P> } =>
   typeof value === "object" && value !== null && "default" in value;
 
 function useMounted(): boolean {
@@ -36,7 +45,9 @@ export default function dynamic<P extends object = object>(
   options: DynamicOptions<P> = {},
 ): ComponentType<P> {
   const merged: DynamicOptions<P> =
-    typeof loaderOrOptions === "function" ? { ...options, loader: loaderOrOptions } : { ...loaderOrOptions, ...options };
+    typeof loaderOrOptions === "function"
+      ? { ...options, loader: loaderOrOptions }
+      : { ...loaderOrOptions, ...options };
   const loader = merged.loader;
   if (!loader) throw new Error("@yolo-rs/fullstack: dynamic() needs a loader");
   const Loading = merged.loading;
@@ -45,7 +56,9 @@ export default function dynamic<P extends object = object>(
     const loaded = await loader();
     return { default: isModule(loaded) ? loaded.default : loaded };
   });
-  const fallback = Loading ? <Loading isLoading pastDelay error={null} /> : null;
+  const fallback = Loading ? (
+    <Loading isLoading pastDelay error={null} />
+  ) : null;
 
   function Dynamic(props: P): ReactElement | null {
     // `ssr: false` keeps the server (and the hydration pass) on the fallback; the module loads after mount.

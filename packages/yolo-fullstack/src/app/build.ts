@@ -8,10 +8,19 @@
 import type { BunPlugin } from "bun";
 import { cpSync, existsSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
+import { loadNextConfig, PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type HeaderRule, type Redirect, type ResolvedConfig, type ResolvedImages, type RewriteGroups, type Unsupported } from "../config/next-config";
+import { turbopackPlugin } from "../config/turbopack";
+import type { FontArtifact, FontRewriteContext } from "../font";
+import { imageConfigDefine } from "../image";
 import { appPlugin, moduleDirective, moduleId, registerModule, type ReferenceMap } from "./plugin";
+import { runtimeConfigDefine } from "./runtime-config";
 import { scanApp, type AppTree } from "./scan";
 
 export interface AppBuildOptions {
+  /** The resolved next.config (loaded from `root` when absent). */
+  config?: ResolvedConfig;
+  /** `next/font`: never fetch (fail on cache misses). */
+  offline?: boolean;
   /** Project root (contains `app/`). */
   root: string;
   /** App directory relative to the root (default `app`, or `src/app` when present). */
@@ -33,9 +42,28 @@ export interface AppBuildOptions {
 }
 
 /** `manifest.json` of a build, read by the host. */
+/** Routing rules of next.config carried by the manifest (the host compiles them). */
+export interface ManifestRules {
+  basePath: string;
+  trailingSlash: boolean;
+  skipTrailingSlashRedirect: boolean;
+  poweredByHeader: boolean;
+  rewrites: RewriteGroups;
+  redirects: Redirect[];
+  headers: HeaderRule[];
+}
+
 export interface AppManifest {
-  version: 1;
+  version: 2;
   buildId: string;
+  /** CDN prefix of the client assets (`assetPrefix`), without trailing slash; empty when served by the host. */
+  assetPrefix: string;
+  /** Font files to preload, relative to `client/`. */
+  preloads: string[];
+  rules: ManifestRules;
+  images: ResolvedImages;
+  /** next.config keys the build ignored. */
+  unsupported: Unsupported[];
   /** Browser runtime entry, relative to `client/`. */
   bootstrap: string;
   /** Stylesheets linked by every page, relative to `client/`. */
@@ -171,9 +199,29 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
   const dev = options.dev ?? false;
   const buildId = options.buildId ?? Date.now().toString(36);
   const tree = scanApp(root, appDir);
-  const define = { "process.env.NODE_ENV": js(dev ? "development" : "production"), ...options.define };
+  const config = options.config ?? (await loadNextConfig(root, { phase: dev ? PHASE_DEVELOPMENT_SERVER : PHASE_PRODUCTION_BUILD }));
+  const assetPrefix = config.assetPrefix;
+  const baseDefine = {
+    "process.env.NODE_ENV": js(dev ? "development" : "production"),
+    ...config.define,
+    ...imageConfigDefine(config.images),
+    __YOLO_ASSET_PREFIX__: js(assetPrefix),
+    __YOLO_BASE_PATH__: js(config.basePath),
+    ...options.define,
+  };
+  const layerDefine = (layer: "rsc" | "ssr" | "client") => ({ ...baseDefine, ...runtimeConfigDefine(config.config, layer) });
   const mediaDir = join(outDir, "client", "media");
-  const shared = { root, nextCompat: options.nextCompat, mediaDir, mediaUrl: "/_yolo/media" };
+  const fontRegistry = new Map<string, FontArtifact>();
+  const fonts: FontRewriteContext = {
+    cacheDir: join(root, ".yolo", "fonts"),
+    mode: dev ? "dev" : "build",
+    offline: options.offline,
+    registry: fontRegistry,
+  };
+  const imageLoaderFile = config.images.loaderFile ? join(root, config.images.loaderFile) : undefined;
+  const shared = { root, nextCompat: options.nextCompat, mediaDir, mediaUrl: `${assetPrefix}/_yolo/media`, fonts, imageLoaderFile };
+  const turbo = (layer: "rsc" | "ssr" | "client") => turbopackPlugin(config.turbopack, { root, layer });
+  const unsupported: Unsupported[] = [...config.unsupported];
 
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -195,15 +243,18 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
     naming: { entry: "[name].[ext]", chunk: "[name]-[hash].[ext]", asset: "[name]-[hash].[ext]" },
     sourcemap: dev ? "inline" : "linked",
     minify: !dev,
-    define,
+    define: layerDefine("rsc"),
     plugins: [
       entryPlugin(entries, root),
+      turbo("rsc").plugin,
       appPlugin({ ...shared, layer: "rsc", clientRefs, serverRefs, cssFiles }),
       ...(options.serverPlugins ?? []),
     ],
     throw: false,
   });
   logs(rsc, "rsc");
+  const turboClient = turbo("client");
+  const turboSsr = turbo("ssr");
 
   // 2. client + 3. ssr
   const clientIds = [...clientRefs.keys()];
@@ -223,9 +274,11 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
       naming: { entry: "[name]-[hash].[ext]", chunk: "chunk-[hash].[ext]", asset: "[name]-[hash].[ext]" },
       sourcemap: dev ? "inline" : "linked",
       minify: !dev,
-      define,
+      define: layerDefine("client"),
+      publicPath: assetPrefix ? `${assetPrefix}/_yolo/` : undefined,
       plugins: [
         entryPlugin(clientEntries, root),
+        turboClient.plugin,
         appPlugin({ ...shared, layer: "client", serverRefs }),
         ...(options.clientPlugins ?? []),
       ],
@@ -241,9 +294,10 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
       naming: { entry: "[name].[ext]", chunk: "[name]-[hash].[ext]", asset: "[name]-[hash].[ext]" },
       sourcemap: dev ? "inline" : "linked",
       minify: !dev,
-      define,
+      define: layerDefine("ssr"),
       plugins: [
         entryPlugin(entries, root),
+        turboSsr.plugin,
         appPlugin({ ...shared, layer: "ssr", serverRefs }),
         ...(options.serverPlugins ?? []),
       ],
@@ -252,6 +306,18 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
   ]);
   logs(client, "client");
   logs(ssr, "ssr");
+  for (const m of [turboClient, turboSsr]) for (const u of m.unsupported) if (!unsupported.some(x => x.key === u.key)) unsupported.push(u);
+
+  // Font files to preload: the assets Bun copied for the generated stylesheets.
+  const preloads: string[] = [];
+  for (const artifact of fontRegistry.values()) {
+    for (const file of artifact.preload) {
+      const name = basename(file);
+      const stem = name.replace(/\.[^.]+$/, "");
+      const output = client.outputs.find(o => o.kind === "asset" && basename(o.path).startsWith(`${stem}-`));
+      if (output) preloads.push(toPosix(relative(join(outDir, "client"), output.path)));
+    }
+  }
 
   const clientDir = join(outDir, "client");
   const entryFile = (name: string) => {
@@ -281,8 +347,21 @@ export async function buildApp(options: AppBuildOptions): Promise<AppBuildResult
   }
 
   const manifest: AppManifest = {
-    version: 1,
+    version: 2,
     buildId,
+    assetPrefix,
+    preloads,
+    rules: {
+      basePath: config.basePath,
+      trailingSlash: config.trailingSlash,
+      skipTrailingSlashRedirect: config.skipTrailingSlashRedirect,
+      poweredByHeader: config.poweredByHeader,
+      rewrites: config.rewrites,
+      redirects: config.redirects,
+      headers: config.headers,
+    },
+    images: config.images,
+    unsupported,
     bootstrap: entryFile("boot"),
     css,
     clientModules,

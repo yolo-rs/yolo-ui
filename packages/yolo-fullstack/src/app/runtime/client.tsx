@@ -13,7 +13,9 @@ import { installParcelRequire } from "./registry";
 import { applyPayload, navigate, Router } from "./router";
 import { ACTION_HEADER, ASSET_PREFIX, HMR_PATH, RSC_CONTENT_TYPE, RSC_HEADER, type RscPayload } from "./shared";
 
-installParcelRequire(ASSET_PREFIX, url => import(/* webpackIgnore: true */ `${ASSET_PREFIX}${url}`));
+declare const __YOLO_ASSET_PREFIX__: string | undefined;
+const ASSET_BASE = (typeof __YOLO_ASSET_PREFIX__ === "string" ? __YOLO_ASSET_PREFIX__ : "") + ASSET_PREFIX;
+installParcelRequire(ASSET_BASE, url => import(/* webpackIgnore: true */ `${ASSET_BASE}${url}`));
 
 declare global {
   interface Window {

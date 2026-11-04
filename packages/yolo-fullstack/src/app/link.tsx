@@ -32,9 +32,17 @@ function formatHref(href: string | UrlObject): string {
   return `${href.pathname ?? ""}${query ? `?${query}` : ""}${hash}`;
 }
 
+declare const __YOLO_BASE_PATH__: string | undefined;
+const BASE_PATH = typeof __YOLO_BASE_PATH__ === "string" ? __YOLO_BASE_PATH__ : "";
+/** Prefix `basePath` of next.config to absolute hrefs. */
+export function withBasePath(href: string): string {
+  if (!BASE_PATH || !href.startsWith("/") || href.startsWith("//") || href === BASE_PATH || href.startsWith(`${BASE_PATH}/`)) return href;
+  return BASE_PATH + href;
+}
+
 export default function Link({ href, replace, scroll, prefetch, onClick, onMouseEnter, onFocus, ...rest }: LinkProps) {
   const router = useContext(RouterContext);
-  const url = formatHref(href);
+  const url = withBasePath(formatHref(href));
   const warm = () => {
     if (prefetch !== false) router?.prefetch(url);
   };

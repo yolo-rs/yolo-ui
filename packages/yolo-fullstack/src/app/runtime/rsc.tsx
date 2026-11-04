@@ -58,6 +58,20 @@ export function setStylesheets(urls: string[]): void {
   stylesheets = urls;
 }
 
+/** Font files preloaded on every page (`next/font` with `preload`). */
+let preloads: string[] = [];
+export function setPreloads(urls: string[]): void {
+  preloads = urls;
+}
+
+const FONT_TYPES: Record<string, string> = { woff2: "font/woff2", woff: "font/woff", ttf: "font/ttf", otf: "font/otf" };
+
+function preloadLinks(): ReactNode {
+  return preloads.map(href => (
+    <link key={href} rel="preload" as="font" href={href} type={FONT_TYPES[href.split(".").pop() ?? ""] ?? "font/woff2"} crossOrigin="anonymous" />
+  ));
+}
+
 const definition = (): AppDefinition => {
   if (!app) throw new Error("@yolo-rs/fullstack: the rsc bundle was loaded without its app definition");
   return app;
@@ -338,7 +352,7 @@ function buildTree(
 }
 
 function stylesheetLinks(): ReactNode {
-  return stylesheets.map(href => <link key={href} rel="stylesheet" href={href} precedence="yolo" />);
+  return [preloadLinks(), ...stylesheets.map(href => <link key={href} rel="stylesheet" href={href} precedence="yolo" />)];
 }
 
 async function renderRoute(

@@ -4,14 +4,18 @@
 // The build comes from a directory (`loadApp`) or from files embedded in an executable (`yolo-fullstack compile`).
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { afterRoutes, beforeRoutes, compileRoutes, normalizePath, proxyRewrite, responseHeaders, type RouteRules } from "../config/routes";
+import { createImageOptimizer } from "../image";
 import type { AppManifest } from "./build";
 import type { HandleOptions, HandleResult } from "./runtime/rsc";
 import { aliases, loaders, modules } from "./runtime/registry";
 import { ACTION_HEADER, ASSET_PREFIX, RSC_CONTENT_TYPE, RSC_HEADER } from "./runtime/shared";
+import { findRoute, parsePattern, type AppRoute } from "./scan";
 
 interface RscModule {
   handle(request: Request, options?: HandleOptions): Promise<HandleResult>;
   setStylesheets(urls: string[]): void;
+  setPreloads?(urls: string[]): void;
   prerenderPaths(): Promise<string[]>;
 }
 
@@ -134,8 +138,34 @@ export async function loadAppSource(source: AppSource, options: LoadAppOptions =
   ssr.setClientBundles(manifest.clientModules);
   const rsc = (await source.rsc()) as RscModule & { registerRsc?: () => void };
   rsc.registerRsc?.();
-  rsc.setStylesheets(manifest.css.map(file => ASSET_PREFIX + file));
-  const bootstrap = ASSET_PREFIX + manifest.bootstrap;
+  const assetBase = (manifest.assetPrefix ?? "") + ASSET_PREFIX;
+  rsc.setStylesheets(manifest.css.map(file => assetBase + file));
+  rsc.setPreloads?.((manifest.preloads ?? []).map(file => assetBase + file));
+  const bootstrap = assetBase + manifest.bootstrap;
+  const rules: RouteRules = compileRoutes({
+    basePath: manifest.rules?.basePath ?? "",
+    trailingSlash: manifest.rules?.trailingSlash ?? false,
+    skipTrailingSlashRedirect: manifest.rules?.skipTrailingSlashRedirect ?? false,
+    poweredByHeader: manifest.rules?.poweredByHeader ?? false,
+    rewrites: manifest.rules?.rewrites ?? { beforeFiles: [], afterFiles: [], fallback: [] },
+    redirects: manifest.rules?.redirects ?? [],
+    headers: manifest.rules?.headers ?? [],
+  });
+  const routes: AppRoute[] = manifest.routes.map(r => ({ kind: r.kind, pattern: r.pattern, parts: parsePattern(r.pattern), file: "", segments: [] }));
+  const images = manifest.images
+    ? createImageOptimizer({
+        images: manifest.images,
+        cacheDir: source.location === "embedded" ? undefined : join(source.location, "cache", "images"),
+        local: async pathname => {
+          if (pathname.startsWith(ASSET_PREFIX)) {
+            const path = relativeFile(pathname.slice(ASSET_PREFIX.length));
+            return path ? source.file(`client/${path}`) : undefined;
+          }
+          const path = Object.hasOwn(manifest.static, pathname) ? manifest.static[pathname] : undefined;
+          return path ? source.file(path) : undefined;
+        },
+      })
+    : undefined;
   const prerendered = new Map<string, { html: string; rsc: string }>();
   const prerenderIndex = manifest.middleware ? undefined : await source.file("prerender/index.json");
   if (prerenderIndex)
@@ -190,43 +220,89 @@ export async function loadAppSource(source: AppSource, options: LoadAppOptions =
     return { response, dynamic: result.store.dynamic, rsc: rscBytes };
   };
 
-  const fetch = async (request: Request): Promise<Response> => {
-    const url = new URL(request.url);
-    const pathname = decodePath(url.pathname);
-    if (pathname === undefined) return new Response("Bad Request", { status: 400 });
-
+  /** The app router proper (assets, static files, prerendered pages, rsc), for an already normalized request. */
+  const dispatch = async (request: Request, pathname: string): Promise<{ response: Response; matched: boolean }> => {
     if (pathname.startsWith(ASSET_PREFIX)) {
       const path = relativeFile(pathname.slice(ASSET_PREFIX.length));
       const file = path && (await source.file(`client/${path}`));
-      if (file) return new Response(file, { headers: { "cache-control": "public, max-age=31536000, immutable" } });
-      return new Response("Not Found", { status: 404 });
+      if (file) return { response: new Response(file, { headers: { "cache-control": "public, max-age=31536000, immutable" } }), matched: true };
+      return { response: new Response("Not Found", { status: 404 }), matched: false };
     }
+    if (images?.matches(pathname)) return { response: await images.handle(request), matched: true };
     const readsFile = request.method === "GET" || request.method === "HEAD";
     const staticPath = readsFile && Object.hasOwn(manifest.static, pathname) ? manifest.static[pathname] : undefined;
     const staticFile = staticPath && (await source.file(staticPath));
-    if (staticFile) return new Response(staticFile);
+    if (staticFile) return { response: new Response(staticFile), matched: true };
 
     const isRsc = request.headers.get(RSC_HEADER) === "1" || request.headers.has(ACTION_HEADER);
     const page = readsFile ? prerendered.get(pathname) : undefined;
     const pageFile = page && (await source.file(`prerender/${isRsc ? page.rsc : page.html}`));
     if (pageFile) {
-      return new Response(request.method === "HEAD" ? null : pageFile, {
-        headers: { "content-type": isRsc ? RSC_CONTENT_TYPE : "text/html; charset=utf-8", vary: RSC_HEADER },
-      });
+      return {
+        response: new Response(request.method === "HEAD" ? null : pageFile, {
+          headers: { "content-type": isRsc ? RSC_CONTENT_TYPE : "text/html; charset=utf-8", vary: RSC_HEADER },
+        }),
+        matched: true,
+      };
     }
 
+    const matched = !!findRoute(routes, pathname) || !!manifest.middleware;
     const result = await rsc.handle(request);
     if (result.kind === "response") {
-      if (request.method === "HEAD") return new Response(null, result.response);
-      return result.response;
+      if (request.method === "HEAD") return { response: new Response(null, result.response), matched: true };
+      return { response: result.response, matched: true };
     }
     if (isRsc) {
       const headers = new Headers(result.headers);
       headers.set("content-type", RSC_CONTENT_TYPE);
       headers.set("vary", RSC_HEADER);
-      return new Response(result.stream, { status: result.store.status ?? 200, headers });
+      return { response: new Response(result.stream, { status: result.store.status ?? 200, headers }), matched };
     }
-    return html(result, request.method);
+    return { response: await html(result, request.method), matched };
+  };
+
+  const withRules = (request: Request, url: URL, response: Response): Response => {
+    const extra = responseHeaders(rules, request, url);
+    if (!extra.length) return response;
+    const out = new Response(response.body, response);
+    for (const [key, value] of extra) out.headers.set(key, value);
+    return out;
+  };
+
+  /** Route a request at `url` (after rewrites): the app, then `afterFiles` and `fallback` rewrites. */
+  const route = async (request: Request, url: URL, depth: number): Promise<Response> => {
+    const pathname = decodePath(url.pathname);
+    if (pathname === undefined) return new Response("Bad Request", { status: 400 });
+    const internal = request.url === url.href ? request : new Request(url, request);
+    const { response, matched } = await dispatch(internal, pathname);
+    if (matched || depth > 2) return response;
+    for (const stage of ["afterFiles", "fallback"] as const) {
+      const decision = afterRoutes(rules, request, url, stage);
+      if (decision.kind === "rewrite") {
+        if (decision.external) return proxyRewrite(request, decision.url);
+        const sameOrigin = new URL(decision.url.pathname + decision.url.search, url);
+        return route(request, sameOrigin, depth + 1);
+      }
+    }
+    return response;
+  };
+
+  const fetch = async (request: Request): Promise<Response> => {
+    const url = new URL(request.url);
+    const normalized = normalizePath(rules, url);
+    if (normalized.redirect) return normalized.redirect;
+    const before = beforeRoutes(rules, request, url);
+    if (before.kind === "response") return withRules(request, url, before.response);
+    let target = url;
+    if (before.kind === "rewrite") {
+      if (before.external) return withRules(request, url, await proxyRewrite(request, before.url));
+      target = new URL(before.url.pathname + before.url.search, url);
+    }
+    // basePath and the trailing slash are stripped before routing.
+    const inner = target === url ? normalized : normalizePath({ ...rules, skipTrailingSlashRedirect: true }, target);
+    target = new URL(target);
+    target.pathname = inner.pathname;
+    return withRules(request, url, await route(request, target, 0));
   };
 
   return { manifest, outDir: source.location, fetch, render, prerenderPaths: () => rsc.prerenderPaths() };

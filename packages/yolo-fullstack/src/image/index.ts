@@ -4,7 +4,15 @@
 import type { ResolvedImages } from "../config/next-config";
 
 export { generateImgAttrs, getWidths, imageLoaderUrl } from "./loaders";
-export type { ImageLoaderFn, ImageLoaderProps, ImgAttrs, ImgAttrsOptions, LoaderConfig, SizesConfig, Widths } from "./loaders";
+export type {
+  ImageLoaderFn,
+  ImageLoaderProps,
+  ImgAttrs,
+  ImgAttrsOptions,
+  LoaderConfig,
+  SizesConfig,
+  Widths,
+} from "./loaders";
 export {
   createImageOptimizer,
   defaultResizer,
@@ -57,6 +65,8 @@ export function imageRuntimeConfig(images: ResolvedImages): ImageRuntimeConfig {
 }
 
 /** The `Bun.build` `define` entry of the images config. */
-export function imageConfigDefine(images: ResolvedImages): Record<string, string> {
+export function imageConfigDefine(
+  images: ResolvedImages,
+): Record<string, string> {
   return { [IMAGE_CONFIG_GLOBAL]: JSON.stringify(imageRuntimeConfig(images)) };
 }

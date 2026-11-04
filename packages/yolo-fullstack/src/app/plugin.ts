@@ -179,9 +179,28 @@ export function appPlugin(options: AppPluginOptions): BunPlugin {
     name: `@yolo-rs/fullstack:${layer}`,
     setup(build: PluginBuilder) {
       if (options.nextCompat !== false) {
-        build.onResolve({ filter: /^next\/(link|navigation|headers|server|image|cache)$/ }, args => {
+        build.onResolve({ filter: NEXT_COMPAT_RE }, args => {
           const file = NEXT_COMPAT[args.path]!;
           return { path: join(import.meta.dir, (layer === "rsc" && SERVER_VARIANTS[file]) || file) };
+        });
+      }
+
+      if (options.imageLoaderFile) {
+        // `next/image` imports `./image-loader-default`; `images.loaderFile` replaces it.
+        const loaderFile = options.imageLoaderFile;
+        build.onResolve({ filter: /image-loader-default$/ }, args =>
+          toPosix(args.importer).endsWith("/app/image.tsx") ? { path: loaderFile } : undefined,
+        );
+      }
+
+      if (options.fonts) {
+        const fonts = options.fonts;
+        build.onResolve({ filter: /^yolo-font:/ }, args => ({ path: args.path.slice("yolo-font:".length), namespace: FONT_NAMESPACE }));
+        build.onLoad({ filter: /.*/, namespace: FONT_NAMESPACE }, args => {
+          const artifact = fonts.registry.get(args.path);
+          if (!artifact) throw new Error(`@yolo-rs/fullstack: unknown font ${args.path}`);
+          if (layer === "rsc") options.cssFiles?.add(artifact.cssFile);
+          return { contents: fontVirtualModule(artifact, layer), loader: "js", resolveDir: dirname(artifact.cssFile) };
         });
       }
 
@@ -232,10 +251,20 @@ export function appPlugin(options: AppPluginOptions): BunPlugin {
 
       build.onLoad({ filter: /\.(m|c)?(j|t)sx?$/ }, async args => {
         if (args.namespace !== "file") return undefined;
-        const source = await Bun.file(args.path).text();
-        if (!source.includes("use client") && !source.includes("use server")) return undefined;
-        const directive = moduleDirective(source);
-        if (!directive) return undefined;
+        let source = await Bun.file(args.path).text();
+        let rewritten = false;
+        if (options.fonts && !args.path.includes("node_modules")) {
+          const fonts = await rewriteFonts(source, args.path, options.fonts);
+          if (fonts) {
+            source = fonts.code;
+            rewritten = true;
+          }
+        }
+        const directive = source.includes("use client") || source.includes("use server") ? moduleDirective(source) : undefined;
+        if (!directive) {
+          if (!rewritten) return undefined;
+          return { contents: source, loader: LOADERS[extname(args.path)] ?? "tsx", resolveDir: dirname(args.path) };
+        }
         const id = moduleId(root, args.path);
         const names = exportNames(source, args.path);
         if (directive === "client") {
