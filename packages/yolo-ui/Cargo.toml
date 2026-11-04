@@ -1,0 +1,102 @@
+[package]
+name = "yolo-ui"
+version = { workspace = true }
+authors = ["Aphrody <contact@aphrody.com>", "Dioxus Labs"]
+edition = "2024"
+description = "Aphrody Labs unified fullstack Rust framework for Web (WASM/SSR), Desktop (Wry), Native (Blitz/AnyRender GPU), Mobile (Android/iOS), and LiveView sites and apps."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aphrody-labs/yolo-ui"
+homepage = "https://github.com/aphrody-labs/yolo-ui"
+keywords = ["dioxus", "fullstack", "web", "desktop", "native"]
+rust-version = "1.85.0"
+
+[dependencies]
+dioxus = { workspace = true, default-features = false }
+dioxus-core = { workspace = true }
+dioxus-signals = { workspace = true }
+dioxus-stores = { workspace = true }
+dioxus-hooks = { workspace = true }
+dioxus-html = { workspace = true }
+dioxus-document = { workspace = true }
+dioxus-history = { workspace = true }
+dioxus-router = { workspace = true, optional = true }
+dioxus-fullstack = { workspace = true, optional = true }
+dioxus-server = { workspace = true, optional = true }
+dioxus-web = { workspace = true, optional = true }
+dioxus-desktop = { workspace = true, optional = true }
+dioxus-native = { workspace = true, optional = true }
+dioxus-native-dom = { workspace = true, optional = true }
+dioxus-liveview = { workspace = true, optional = true }
+dioxus-ssr = { workspace = true, optional = true }
+dioxus-logger = { workspace = true, optional = true }
+dioxus-devtools = { workspace = true, optional = true }
+dioxus-cli-config = { workspace = true, optional = true }
+manganis = { workspace = true, optional = true }
+subsecond = { workspace = true }
+warnings = { workspace = true }
+
+# Ecosystem crates in the unified workspace
+dioxus-primitives = { workspace = true, optional = true }
+dioxus-attributes = { workspace = true, optional = true }
+dioxus-sdk = { workspace = true, optional = true }
+dioxus-icons = { workspace = true, optional = true }
+dioxus-code = { workspace = true, optional = true }
+dioxus-html-macro = { workspace = true, optional = true }
+rsrpc = { workspace = true, optional = true }
+
+# Layout & Native Rendering Engine
+blitz-dom = { workspace = true, optional = true }
+blitz-html = { workspace = true, optional = true }
+blitz-paint = { workspace = true, optional = true }
+blitz-traits = { workspace = true, optional = true }
+anyrender = { workspace = true, optional = true }
+taffy = { workspace = true, optional = true }
+
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+[features]
+default = [
+    "lib",
+    "router",
+    "primitives",
+    "sdk",
+    "icons",
+]
+lib = [
+    "dioxus/lib",
+    "dioxus/launch",
+    "dioxus/devtools",
+    "dioxus/logger",
+    "dep:dioxus-logger",
+    "dep:dioxus-devtools",
+    "dep:dioxus-cli-config",
+    "dep:manganis",
+]
+router = ["dioxus/router", "dep:dioxus-router"]
+fullstack = ["dioxus/fullstack", "dep:dioxus-fullstack", "ssr"]
+server = ["dioxus/server", "dep:dioxus-server", "fullstack"]
+web = ["dioxus/web", "dep:dioxus-web"]
+desktop = ["dioxus/desktop", "dep:dioxus-desktop"]
+mobile = ["dioxus/mobile", "dep:dioxus-desktop"]
+native = [
+    "dioxus/native",
+    "dep:dioxus-native",
+    "dep:dioxus-native-dom",
+    "dep:blitz-dom",
+    "dep:blitz-html",
+    "dep:blitz-paint",
+    "dep:blitz-traits",
+    "dep:anyrender",
+    "dep:taffy",
+]
+liveview = ["dioxus/liveview", "dep:dioxus-liveview"]
+ssr = ["dioxus/ssr", "dep:dioxus-ssr"]
+
+# Ecosystem batteries
+primitives = ["dep:dioxus-primitives", "dep:dioxus-attributes"]
+sdk = ["dep:dioxus-sdk"]
+icons = ["dep:dioxus-icons"]
+code = ["dep:dioxus-code"]
+html-macro = ["dep:dioxus-html-macro"]
+rpc = ["dep:rsrpc"]

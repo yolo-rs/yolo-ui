@@ -1,0 +1,5 @@
+[commons]
+mode = "remote"
+remote = "fleet"
+project = "yolo-ui"
+scope = "yolo-ui"

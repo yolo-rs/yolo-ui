@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "packages/yolo-ui",
     "packages/dioxus",
     "packages/core",
     "packages/vdom",
@@ -115,15 +116,114 @@ members = [
     "examples/10-integrations/pwa",
     "examples/10-integrations/wgpu-texture",
     "examples/10-integrations/native-headless",
+
+    # Aphrody Labs / DioxusLabs Unified Ecosystem Submodules
+    "submodules/blitz/packages/accesskit_xplat",
+    "submodules/blitz/packages/debug_timer",
+    "submodules/blitz/packages/blitz-traits",
+    "submodules/blitz/packages/blitz-dom",
+    "submodules/blitz/packages/blitz-html",
+    "submodules/blitz/packages/blitz-net",
+    "submodules/blitz/packages/blitz-paint",
+    "submodules/blitz/packages/blitz-vibey-script",
+    "submodules/blitz/packages/blitz-shell",
+    "submodules/blitz/packages/blitz",
+    "submodules/blitz/packages/stylo_taffy",
+    "submodules/dioxus-taffy",
+    "submodules/anyrender/crates/anyrender",
+    "submodules/anyrender/crates/anyrender_serialize",
+    "submodules/anyrender/crates/anyrender_skia",
+    "submodules/anyrender/crates/anyrender_vello",
+    "submodules/anyrender/crates/anyrender_vello_cpu",
+    "submodules/anyrender/crates/anyrender_vello_hybrid",
+    "submodules/anyrender/crates/anyrender_svg",
+    "submodules/anyrender/crates/wgpu_context",
+    "submodules/anyrender/crates/pixels_window_renderer",
+    "submodules/anyrender/crates/softbuffer_window_renderer",
+    "submodules/dioxus-components/primitives",
+    "submodules/dioxus-components/dioxus-attributes",
+    "submodules/sdk/packages/sdk",
+    "submodules/sdk/packages/time",
+    "submodules/sdk/packages/storage",
+    "submodules/sdk/packages/geolocation",
+    "submodules/sdk/packages/notification",
+    "submodules/sdk/packages/sync",
+    "submodules/sdk/packages/util",
+    "submodules/sdk/packages/window",
+    "submodules/dioxus-icons/crates/dioxus-icons",
+    "submodules/dioxus-icons/crates/dioxus-icons-codegen",
+    "submodules/dioxus-code",
+    "submodules/dioxus-code/code-editor",
+    "submodules/dioxus-code/dioxus-code-macro",
+    "submodules/dioxus-html-macro",
+    "submodules/markdown",
+    "submodules/rsrpc/packages/lib",
+    "submodules/rsrpc/packages/macro",
+    "submodules/dioxus-test",
+    "submodules/warnings",
+    "submodules/warnings/warnings-macro",
+    "submodules/prettier-please",
+    "submodules/web-adapters",
+    "submodules/accessibility-cli/packages/accessibility-android-sys",
+    "submodules/accessibility-cli/packages/accessibility-linux-sys",
+    "submodules/accessibility-cli/packages/accessibility-macos-sys",
+    "submodules/accessibility-cli/packages/accessibility-windows-sys",
+    "submodules/accessibility-cli/packages/accessibility-ios-sys",
+    "submodules/accessibility-cli/packages/accessibility-core",
+    "submodules/accessibility-cli/packages/accessibility-serve",
+    "submodules/accessibility-cli/packages/accessibility-cli",
 ]
-exclude = ["packages/stores/tests/visibility-helper"]
+exclude = [
+    "packages/stores/tests/visibility-helper",
+    "submodules/blitz/packages/dioxus-native",
+    "submodules/blitz/packages/dioxus-native-dom",
+    "submodules/blitz/packages/blitz-test-harness",
+    "submodules/blitz/apps",
+    "submodules/blitz/wpt",
+    "submodules/blitz/tests",
+    "submodules/blitz/examples",
+    "submodules/blitz/sites",
+    "submodules/taffy",
+    "submodules/wasm-bindgen-wry",
+    "submodules/bedina",
+    "submodules/dioxus-template",
+    "submodules/dioxus-ai",
+    "submodules/include_mdbook",
+    "submodules/dioxus-search",
+    "submodules/playground",
+    "submodules/rink",
+    "submodules/example-projects",
+    "submodules/awesome-dioxus",
+    "submodules/deploy-action",
+    "submodules/parley",
+    "submodules/vello_svg",
+    "submodules/winkin",
+    "submodules/rustd",
+    "submodules/docsite",
+    "submodules/dioxus-components/preview",
+    "submodules/dioxus-components/test-harness",
+    "submodules/sdk/examples",
+    "submodules/dioxus-code/docsite",
+    "submodules/dioxus-code/examples",
+    "submodules/anyrender/examples",
+    "submodules/rsrpc",
+]
 
 
 [workspace.package]
 version = "0.8.0-alpha.3"
+authors = ["Aphrody <contact@aphrody.com>", "Jonathan Kelley", "Dioxus Labs"]
+edition = "2024"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/aphrody-labs/yolo-ui"
+repository = "https://github.com/aphrody-labs/yolo-ui"
+categories = ["gui", "web-programming", "wasm"]
+keywords = ["dioxus", "fullstack", "gui", "web", "wasm"]
+rust-version = "1.85.0"
 
 # dependencies that are shared across packages
 [workspace.dependencies]
+yolo-ui = { path = "packages/yolo-ui", version = "=0.8.0-alpha.3" }
 dioxus = { path = "packages/dioxus", version = "=0.8.0-alpha.3" }
 dioxus-core = { path = "packages/core", version = "=0.8.0-alpha.3", default-features = false }
 dioxus-vdom = { path = "packages/vdom", version = "=0.8.0-alpha.3" }
@@ -195,29 +295,156 @@ dioxus-const-vec = { path = "packages/dioxus-const-vec", version = "=0.8.0-alpha
 const-serialize = { path = "packages/const-serialize", version = "=0.8.0-alpha.3" }
 const-serialize-macro = { path = "packages/const-serialize-macro", version = "=0.8.0-alpha.3" }
 
-warnings = { version = "0.2.1" }
+warnings = { path = "submodules/warnings", version = "0.2.1" }
+warnings-macro = { path = "submodules/warnings/warnings-macro", version = "0.2.0" }
+
+# Aphrody / DioxusLabs Unified Ecosystem Crates
+dioxus-primitives = { path = "submodules/dioxus-components/primitives", version = "0.0.1" }
+dioxus-attributes = { path = "submodules/dioxus-components/dioxus-attributes", version = "0.0.1" }
+dioxus-sdk = { path = "submodules/sdk/packages/sdk", version = "0.7.0" }
+dioxus-sdk-time = { path = "submodules/sdk/packages/time", version = "0.7.0" }
+dioxus-sdk-storage = { path = "submodules/sdk/packages/storage", version = "0.7.0" }
+dioxus-sdk-geolocation = { path = "submodules/sdk/packages/geolocation", version = "0.7.0" }
+dioxus-sdk-notification = { path = "submodules/sdk/packages/notification", version = "0.7.0" }
+dioxus-sdk-sync = { path = "submodules/sdk/packages/sync", version = "0.7.0" }
+dioxus-sdk-util = { path = "submodules/sdk/packages/util", version = "0.7.0" }
+dioxus-sdk-window = { path = "submodules/sdk/packages/window", version = "0.7.0" }
+dioxus-icons = { path = "submodules/dioxus-icons/crates/dioxus-icons", version = "0.1.0" }
+dioxus-icons-codegen = { path = "submodules/dioxus-icons/crates/dioxus-icons-codegen", version = "0.1.0" }
+dioxus-code = { path = "submodules/dioxus-code", version = "0.1.3" }
+dioxus-code-editor = { path = "submodules/dioxus-code/code-editor", version = "0.1.4", default-features = false }
+dioxus-code-macro = { path = "submodules/dioxus-code/dioxus-code-macro", version = "0.1.0" }
+dioxus-html-macro = { path = "submodules/dioxus-html-macro", version = "0.3.0" }
+dioxus_markdown = { path = "submodules/markdown", version = "0.3.0-alpha.1" }
+rsrpc = { path = "submodules/rsrpc/packages/lib", version = "0.1.0" }
+rsrpc-macro = { path = "submodules/rsrpc/packages/macro", version = "0.1.0" }
+dioxus-test = { path = "submodules/dioxus-test", version = "0.1.0" }
+taffy = { path = "submodules/dioxus-taffy", version = "0.15.0" }
 
 # blitz / native
-blitz-dom = { version = "=0.3.0-beta.4", default-features = false }
-blitz-net = { version = "=0.3.0-beta.4" }
-blitz-html = { version = "=0.3.0-beta.4" }
-blitz-paint = { version = "=0.3.0-beta.4" }
-blitz-traits = { version = "=0.3.0-beta.4" }
-blitz-shell = { version = "=0.3.0-beta.4", default-features = false }
+blitz = { path = "submodules/blitz/packages/blitz", version = "=0.3.0-beta.4" }
+blitz-dom = { path = "submodules/blitz/packages/blitz-dom", version = "=0.3.0-beta.4", default-features = false }
+blitz-net = { path = "submodules/blitz/packages/blitz-net", version = "=0.3.0-beta.4", default-features = false }
+blitz-html = { path = "submodules/blitz/packages/blitz-html", version = "=0.3.0-beta.4", default-features = false }
+blitz-paint = { path = "submodules/blitz/packages/blitz-paint", version = "=0.3.0-beta.4", default-features = false }
+blitz-traits = { path = "submodules/blitz/packages/blitz-traits", version = "=0.3.0-beta.4", default-features = false }
+blitz-shell = { path = "submodules/blitz/packages/blitz-shell", version = "=0.3.0-beta.4", default-features = false }
+blitz-vibey-script = { path = "submodules/blitz/packages/blitz-vibey-script", version = "=0.3.0-beta.4", default-features = false }
+stylo_taffy = { path = "submodules/blitz/packages/stylo_taffy", version = "=0.3.0-beta.4", default-features = false }
+accesskit_xplat = { path = "submodules/blitz/packages/accesskit_xplat", version = "0.2", default-features = false }
+debug_timer = { path = "submodules/blitz/packages/debug_timer", version = "0.1.2" }
+
+# Servo / Stylo / Blitz dependencies
+style = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo" }
+style_traits = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_traits" }
+style_atoms = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_atoms" }
+style_config = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_static_prefs" }
+style_dom = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_dom" }
+selectors = { version = "0.42.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "selectors" }
+cssparser = { version = "0.38.0" }
+markup5ever = "0.40.0"
+html5ever = "0.40.1"
+xml5ever = "0.40.0"
+euclid = { version = "0.22", features = ["serde"] }
+app_units = "0.7.5"
+smallvec = "1"
+thin-vec = "0.2"
+parley = { version = "0.12", default-features = false, features = ["std"] }
+svgtypes = "0.16.1"
+accesskit = "0.25"
+rfd = { version = "0.17.1", default-features = false }
+cursor-icon = "1"
+reqwest-middleware = { version = "0.5.1", default-features = false }
+http-cache-reqwest = { version = "=1.0.0-alpha.6", default-features = false }
+http-cache = { version = "=1.0.0-alpha.6", default-features = false }
+html-escape = "0.2.13"
+png = "0.18"
+directories = "6.0.0"
+tracing-wasm = "0.2.1"
+web-time = "1"
+console_error_panic_hook = "0.1"
+boa_engine = "0.22"
+boa_runtime = "0.22"
+boa_gc = "0.22"
+smol_str = "0.3"
+bitflags = "2.8.0"
+bytemuck = "1"
+test-that = "0.6.0"
+thread_local = "1"
+icu_casemap = { version = "2.3", default-features = false, features = ["compiled_data"] }
+icu_locale_core = { version = "2.3", default-features = false }
+icu_properties = { version = "2.3", default-features = false, features = ["compiled_data"] }
+icu_segmenter = { version = "2.3", default-features = false, features = ["compiled_data"] }
+writeable = { version = "0.6", default-features = false }
+
+# accessibility-cli dependencies
+accessibility-core = { path = "submodules/accessibility-cli/packages/accessibility-core", version = "0.1.0" }
+accessibility-serve = { path = "submodules/accessibility-cli/packages/accessibility-serve", version = "0.1.0" }
+accessibility-cli = { path = "submodules/accessibility-cli/packages/accessibility-cli", version = "0.1.0" }
+accessibility-android-sys = { path = "submodules/accessibility-cli/packages/accessibility-android-sys", version = "0.1.0" }
+accessibility-linux-sys = { path = "submodules/accessibility-cli/packages/accessibility-linux-sys", version = "0.1.0" }
+accessibility-macos-sys = { path = "submodules/accessibility-cli/packages/accessibility-macos-sys", version = "0.1.0" }
+accessibility-windows-sys = { path = "submodules/accessibility-cli/packages/accessibility-windows-sys", version = "0.1.0" }
+accessibility-ios-sys = { path = "submodules/accessibility-cli/packages/accessibility-ios-sys", version = "0.1.0" }
+ab_glyph = "0.2"
+atspi = { version = "0.29", features = ["connection", "proxies"] }
+atspi-common = "0.13"
+block2 = "0.6"
+dispatch2 = "0.3"
+ctrlc = "3"
+futures-lite = "2"
+imageproc = "0.25"
+objc2-av-foundation = { version = "0.3", features = ["AVAssetWriter", "AVAssetWriterInput", "AVMediaFormat", "AVVideoSettings", "objc2-core-media", "objc2-core-video", "block2"] }
+objc2-core-foundation = { version = "0.3", features = ["CFBase", "CFCGTypes"] }
+objc2-core-media = { version = "0.3", features = ["CMSampleBuffer", "CMTime", "CMFormatDescription", "CMBlockBuffer", "objc2-core-video"] }
+objc2-core-video = { version = "0.3", features = ["CVPixelBuffer", "CVPixelBufferPool", "CVImageBuffer", "CVBuffer", "CVReturn", "objc2-io-surface"] }
+objc2-io-surface = { version = "0.3", features = ["IOSurfaceRef"] }
+objc2-video-toolbox = { version = "0.3", features = ["VTCompressionSession", "VTCompressionProperties", "VTSession", "VTErrors", "block2", "objc2-core-media", "objc2-core-video"] }
+quick-xml = "0.37"
+serial_test = { version = "3", features = ["file_locks"] }
+viuer = "0.9"
+webrtc = "0.14"
+x11rb = { version = "0.13", features = ["randr"] }
+zbus = { version = "5", features = ["tokio"] }
+
 peniko = { version = "0.6.1", default-features = false }
-anyrender = { version = "0.14.0" }
-anyrender_vello = { version = "0.15.0" }
-anyrender_vello_cpu = { version = "0.18.0" }
-anyrender_vello_hybrid = { version = "0.11.0" }
-anyrender_skia = { version = "0.12.0" }
-wgpu_context = { version = "0.10.0" }
+anyrender = { path = "submodules/anyrender/crates/anyrender", version = "0.14.0" }
+anyrender_serialize = { path = "submodules/anyrender/crates/anyrender_serialize", version = "0.8.0" }
+anyrender_vello = { path = "submodules/anyrender/crates/anyrender_vello", version = "0.15.0" }
+anyrender_vello_cpu = { path = "submodules/anyrender/crates/anyrender_vello_cpu", version = "0.18.0" }
+anyrender_vello_hybrid = { path = "submodules/anyrender/crates/anyrender_vello_hybrid", version = "0.11.0" }
+anyrender_skia = { path = "submodules/anyrender/crates/anyrender_skia", version = "0.12.0" }
+anyrender_svg = { path = "submodules/anyrender/crates/anyrender_svg", version = "0.15.0" }
+wgpu_context = { path = "submodules/anyrender/crates/wgpu_context", version = "0.10.0" }
+pixels_window_renderer = { path = "submodules/anyrender/crates/pixels_window_renderer", version = "0.9.0" }
+softbuffer_window_renderer = { path = "submodules/anyrender/crates/softbuffer_window_renderer", version = "0.9.0" }
 wgpu = { version = "30.0.1" }
 vello = "0.11"
+vello_cpu = { version = "0.3", default-features = false, features = ["std", "text", "u8_pipeline"] }
+vello_gpu = "0.3"
+vello_common = "0.3"
+glifo = "0.4"
+kurbo = "0.13.1"
+color = "0.3"
+linebender_resource_handle = "0.1"
+usvg = { version = "0.48.1", default-features = false }
+skera = "=0.4.0"
+read-fonts = "0.41"
+skrifa = { version = "0.44", default-features = false, features = ["std"] }
+ttf2woff2 = "0.11"
+wuff = "0.2"
+raw-window-handle = "0.6.0"
+softbuffer = "0.4"
+pixels = "0.17"
+futures-intrusive = "0.5.0"
+pollster = "0.4"
+cfg-if = "1.0.0"
+ureq = "3.1.2"
 winit = { version = "=0.31.0-beta.3" }
 atomic_refcell = "0.1.13"
 
 # a fork of pretty please for tests - let's get off of this if we can!
-prettier-please = { version = "0.3.0", features = ["verbatim"] }
+prettier-please = { path = "submodules/prettier-please", version = "0.3.0", features = ["verbatim"] }
 anyhow = "1.0.102"
 clap = { version = "4.6.0" }
 askama_escape = "0.13.0"

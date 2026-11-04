@@ -1,0 +1,128 @@
+[submodule "submodules/blitz"]
+	path = submodules/blitz
+	url = https://github.com/aphrody-labs/blitz.git
+	shallow = true
+[submodule "submodules/dioxus-taffy"]
+	path = submodules/dioxus-taffy
+	url = https://github.com/aphrody-labs/dioxus-taffy.git
+	shallow = true
+[submodule "submodules/taffy"]
+	path = submodules/taffy
+	url = https://github.com/aphrody-labs/taffy.git
+	shallow = true
+[submodule "submodules/anyrender"]
+	path = submodules/anyrender
+	url = https://github.com/aphrody-labs/anyrender.git
+	shallow = true
+[submodule "submodules/dioxus-components"]
+	path = submodules/dioxus-components
+	url = https://github.com/aphrody-labs/dioxus-components.git
+	shallow = true
+[submodule "submodules/sdk"]
+	path = submodules/sdk
+	url = https://github.com/aphrody-labs/sdk.git
+	shallow = true
+[submodule "submodules/dioxus-icons"]
+	path = submodules/dioxus-icons
+	url = https://github.com/aphrody-labs/dioxus-icons.git
+	shallow = true
+[submodule "submodules/dioxus-code"]
+	path = submodules/dioxus-code
+	url = https://github.com/aphrody-labs/dioxus-code.git
+	shallow = true
+[submodule "submodules/dioxus-html-macro"]
+	path = submodules/dioxus-html-macro
+	url = https://github.com/aphrody-labs/dioxus-html-macro.git
+	shallow = true
+[submodule "submodules/markdown"]
+	path = submodules/markdown
+	url = https://github.com/aphrody-labs/markdown.git
+	shallow = true
+[submodule "submodules/rsrpc"]
+	path = submodules/rsrpc
+	url = https://github.com/aphrody-labs/rsrpc.git
+	shallow = true
+[submodule "submodules/dioxus-test"]
+	path = submodules/dioxus-test
+	url = https://github.com/aphrody-labs/dioxus-test.git
+	shallow = true
+[submodule "submodules/warnings"]
+	path = submodules/warnings
+	url = https://github.com/aphrody-labs/warnings.git
+	shallow = true
+[submodule "submodules/prettier-please"]
+	path = submodules/prettier-please
+	url = https://github.com/aphrody-labs/prettier-please.git
+	shallow = true
+[submodule "submodules/accessibility-cli"]
+	path = submodules/accessibility-cli
+	url = https://github.com/aphrody-labs/accessibility-cli.git
+	shallow = true
+[submodule "submodules/wasm-bindgen-wry"]
+	path = submodules/wasm-bindgen-wry
+	url = https://github.com/aphrody-labs/wasm-bindgen-wry.git
+	shallow = true
+[submodule "submodules/bedina"]
+	path = submodules/bedina
+	url = https://github.com/aphrody-labs/bedina.git
+	shallow = true
+[submodule "submodules/web-adapters"]
+	path = submodules/web-adapters
+	url = https://github.com/aphrody-labs/web-adapters.git
+	shallow = true
+[submodule "submodules/dioxus-template"]
+	path = submodules/dioxus-template
+	url = https://github.com/aphrody-labs/dioxus-template.git
+	shallow = true
+[submodule "submodules/dioxus-ai"]
+	path = submodules/dioxus-ai
+	url = https://github.com/aphrody-labs/dioxus-ai.git
+	shallow = true
+[submodule "submodules/include_mdbook"]
+	path = submodules/include_mdbook
+	url = https://github.com/aphrody-labs/include_mdbook.git
+	shallow = true
+[submodule "submodules/dioxus-search"]
+	path = submodules/dioxus-search
+	url = https://github.com/aphrody-labs/dioxus-search.git
+	shallow = true
+[submodule "submodules/playground"]
+	path = submodules/playground
+	url = https://github.com/aphrody-labs/playground.git
+	shallow = true
+[submodule "submodules/rink"]
+	path = submodules/rink
+	url = https://github.com/aphrody-labs/rink.git
+	shallow = true
+[submodule "submodules/example-projects"]
+	path = submodules/example-projects
+	url = https://github.com/aphrody-labs/example-projects.git
+	shallow = true
+[submodule "submodules/awesome-dioxus"]
+	path = submodules/awesome-dioxus
+	url = https://github.com/aphrody-labs/awesome-dioxus.git
+	shallow = true
+[submodule "submodules/deploy-action"]
+	path = submodules/deploy-action
+	url = https://github.com/aphrody-labs/deploy-action.git
+	shallow = true
+[submodule "submodules/parley"]
+	path = submodules/parley
+	url = https://github.com/aphrody-labs/parley.git
+	shallow = true
+[submodule "submodules/vello_svg"]
+	path = submodules/vello_svg
+	url = https://github.com/aphrody-labs/vello_svg.git
+	shallow = true
+[submodule "submodules/winkin"]
+	path = submodules/winkin
+	url = https://github.com/aphrody-labs/winkin.git
+	shallow = true
+[submodule "submodules/rustd"]
+	path = submodules/rustd
+	url = https://github.com/aphrody-labs/rustd.git
+	shallow = true
+[submodule "submodules/docsite"]
+	path = submodules/docsite
+	url = https://github.com/aphrody-labs/docsite.git
+	shallow = true
