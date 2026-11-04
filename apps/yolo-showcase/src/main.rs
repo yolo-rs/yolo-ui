@@ -179,7 +179,7 @@ mod tests {
     #[test]
     fn test_unified_multi_engine_and_seven_theme_parity() {
         assert_eq!(YoloManifest::default().theme_preset, YoloThemePreset::Neutral);
-        assert_eq!(YoloThemePreset::ALL.len(), 7);
+        assert_eq!(YoloThemePreset::ALL.len(), 8);
         assert_eq!(OMARCHY_THEMES.len(), 23);
         assert_eq!(BYRON_LOVE_PALETTE.len(), 10);
         assert_eq!(all_workbenches().len(), 13);

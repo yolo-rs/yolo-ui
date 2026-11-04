@@ -87,7 +87,7 @@ impl CosmicCornerRadii {
                 radius_l: [16.0; 4],
                 radius_xl: [20.0; 4],
             },
-            YoloThemePreset::Neutral | YoloThemePreset::M3 | YoloThemePreset::Aphrody => Self::M3,
+            YoloThemePreset::Neutral | YoloThemePreset::M3 | YoloThemePreset::Aphrody | YoloThemePreset::Chromium => Self::M3,
         }
     }
 }

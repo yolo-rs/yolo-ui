@@ -1,6 +1,6 @@
 # Yolo UI (`yolo-rs/yolo-ui`) — Unified Multi-Engine Fullstack Rust & Bun v1.4.4+ Framework Guide
 
-Yolo UI (`yolo-rs/yolo-ui`) is a **vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo**. It unifies **124 `yolo-rs/*` Git submodules (`submodules/*`)** across **31 upstream UI & compiler ecosystems**, **9 Rust UI toolkits**, **7 built-in theme presets (`YoloThemePreset`)**, a **Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`)**, a **Full-Bun + Rust React 19 & React Native/Expo engine (`yolo-react`)**, and **one unified CLI/Plugin/MCP (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`)**.
+Yolo UI (`yolo-rs/yolo-ui`) is a **vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo**. It unifies **124 `yolo-rs/*` Git submodules (`submodules/*`)** across **31 upstream UI & compiler ecosystems**, **9 Rust UI toolkits**, **8 built-in theme presets (`YoloThemePreset`)**, a **Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`)**, a **Full-Bun + Rust React 19 & React Native/Expo engine (`yolo-react`)**, and **one unified CLI/Plugin/MCP (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`)**.
 
 ## 1. The 7 First-Class Theme Presets (`YoloThemePreset`)
 

@@ -322,6 +322,7 @@ impl Palette {
             Some(YoloThemePreset::Apple | YoloThemePreset::Hyprland) => Radius::new(10.0),
             Some(YoloThemePreset::Neutral) => Radius::new(8.0),
             Some(YoloThemePreset::M3 | YoloThemePreset::Aphrody) | None => shapes::FULL,
+            Some(YoloThemePreset::Chromium) => Radius::new(8.0),
         }
     }
 }

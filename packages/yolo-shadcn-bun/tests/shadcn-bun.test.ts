@@ -10,7 +10,7 @@ import {
 } from "../src/index.ts";
 
 describe("@yolo-rs/shadcn-bun", () => {
-  test("supports all 6 Rust targets and all 7 YoloThemePresets", () => {
+  test("supports all 6 Rust targets and all 8 YoloThemePresets", () => {
     expect(YOLO_MIGRATION_TARGETS).toEqual([
       "dioxus",
       "wgpu",

@@ -244,6 +244,7 @@ pub fn preset_stylesheet(preset: YoloThemePreset) -> String {
         YoloThemePreset::Neutral => 8,
         YoloThemePreset::M3 => 12,
         YoloThemePreset::Aphrody => 12,
+        YoloThemePreset::Chromium => 8,
     };
     let _ = writeln!(
         css,

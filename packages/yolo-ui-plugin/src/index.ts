@@ -9,16 +9,18 @@ export type YoloPresetId =
   | "omarchy"
   | "hyprland"
   | "aphrody"
+  | "chromium"
   | "yolo-neutral"
   | "yolo-m3"
   | "yolo-fluent"
   | "yolo-apple"
   | "yolo-omarchy"
   | "yolo-hyprland"
-  | "yolo-aphrody";
+  | "yolo-aphrody"
+  | "yolo-chromium";
 
 export type NormalizedPresetId =
-  "neutral" | "m3" | "fluent" | "apple" | "omarchy" | "hyprland" | "aphrody";
+  "neutral" | "m3" | "fluent" | "apple" | "omarchy" | "hyprland" | "aphrody" | "chromium";
 
 export type EmitTarget =
   | "css"
@@ -493,6 +495,27 @@ export const YOLO_THEME_PRESETS: Record<NormalizedPresetId, YoloThemeTokens> = {
     fontSans: "'Cinzel', 'Plus Jakarta Sans', serif",
     fontMono: "'JetBrains Mono', monospace",
   },
+  chromium: {
+    id: "chromium",
+    brandId: "yolo-chromium",
+    name: "Chromium Views + WebUI",
+    backgroundPrimary: "#202124",
+    backgroundSecondary: "#292a2d",
+    surfaceElevated: "#35363a",
+    textPrimary: "#e8eaed",
+    textMuted: "#9aa0a6",
+    accentPrimary: "#8ab4f8",
+    accentSecondary: "#a8c7fa",
+    accentSuccess: "#81c995",
+    accentWarning: "#fdd663",
+    accentDanger: "#f28b82",
+    borderSubtle: "rgba(255, 255, 255, 0.10)",
+    radiusPx: 8,
+    borderWidthPx: 1,
+    blurRadiusPx: 0,
+    fontSans: "Arial, system-ui, sans-serif",
+    fontMono: "'Roboto Mono', ui-monospace, monospace",
+  },
 };
 
 /* @__PURE__ */
@@ -510,6 +533,7 @@ export function normalizePresetId(preset?: string): NormalizedPresetId {
     cleaned === "omarchy" ||
     cleaned === "hyprland" ||
     cleaned === "aphrody"
+    || cleaned === "chromium"
   ) {
     return cleaned;
   }

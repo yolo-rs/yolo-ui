@@ -18,7 +18,7 @@
 
 ## 1. Overview
 
-**Yolo UI ([`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui))** unifies **124 forked repositories** in [`submodules/`](./submodules) across **31 upstream ecosystems** into **one flattened Cargo workspace**, **one Bun v1.4.4+ workspace (`@yolo-rs/*`)**, **7 first-class theme presets** (neutral by default via `YoloManifest::default()`), and **one unified CLI/Plugin/MCP (`bun ui`)**.
+**Yolo UI ([`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui))** unifies **124 forked repositories** in [`submodules/`](./submodules) across **31 upstream ecosystems** into **one flattened Cargo workspace**, **one Bun v1.4.4+ workspace (`@yolo-rs/*`)**, **8 first-class theme presets** (neutral by default via `YoloManifest::default()`), and **one unified CLI/Plugin/MCP (`bun ui`)**.
 
 ### The 7 Built-in Theme Presets (`YoloThemePreset`)
 
@@ -33,6 +33,7 @@
 | **`yolo-omarchy`** | `YoloThemePreset::Omarchy` | `0xFF7AA2F7` (`#7AA2F7`) | Omacom Omarchy Linux & `omarchy-site` TUI-modern design system + **all 23 official subthemes** (`Tokyo Night`, `Catppuccin`, `Osaka Jade`, `Lumon`, `Kanagawa`, `Gruvbox`, `Nord`, etc.) |
 | **`yolo-hyprland`** | `YoloThemePreset::Hyprland` | `0xFF33CCFF` (`#33CCFF`) | Hyprwm / Hyprland Wayland Compositor (`#33CCFF -> #00FF99` `45deg` active border, `8×3` dual-pass Kawase blur, `hyprtoolkit`, `hyprqt6engine`) |
 | **`yolo-aphrody`** | `YoloThemePreset::Aphrody` | `0xFF17335C` (`#17335C`) | Byron Love (Afuro Terumi / Aphrody) pet & brand theme (10 measured Oklch sprite-atlas colors `#F7F3F0`..`#131420`, `#FFD700` celestial gold, `#7C5CFF` divine violet, `8×11` `ByronLovePetSpec`) |
+| **`yolo-chromium`** | `YoloThemePreset::Chromium` | `0xFF1A73E8` (`#1A73E8`) | Chromium Views + WebUI surfaces, browser-frame geometry and HCT-customizable Chrome blue seed; see [`docs/CHROMIUM_UI_DESIGN_SYSTEM.md`](docs/CHROMIUM_UI_DESIGN_SYSTEM.md) |
 
 ---
 

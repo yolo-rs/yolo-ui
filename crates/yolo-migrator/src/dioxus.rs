@@ -59,6 +59,7 @@ fn preset_variant(theme: YoloThemePreset) -> &'static str {
         YoloThemePreset::Omarchy => "YoloThemePreset::Omarchy",
         YoloThemePreset::Hyprland => "YoloThemePreset::Hyprland",
         YoloThemePreset::Aphrody => "YoloThemePreset::Aphrody",
+        YoloThemePreset::Chromium => "YoloThemePreset::Chromium",
     }
 }
 

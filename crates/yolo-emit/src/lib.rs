@@ -2,7 +2,7 @@
 //! Multi-preset theme emitters for every Yolo UI host.
 //!
 //! `yolo-tokens` resolves the scheme (HCT, dynamic color, contrast) and `yolo-shared` provides
-//! the 7 first-class `YoloThemePreset`s (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy`, `Hyprland`, `Aphrody`).
+//! the 8 first-class `YoloThemePreset`s (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy`, `Hyprland`, `Aphrody`, `Chromium`).
 //! This crate maps the resolved roles and preset tokens to each host's native theme format,
 //! following `catalog/conversion.toml`.
 
@@ -75,7 +75,7 @@ impl Default for Theme {
 }
 
 impl Theme {
-    /// Constructs a [`Theme`] from any of the 7 built-in [`YoloThemePreset`]s.
+    /// Constructs a [`Theme`] from any built-in [`YoloThemePreset`].
     #[must_use]
     pub const fn from_preset(preset: YoloThemePreset) -> Self {
         Self {
@@ -213,7 +213,7 @@ pub fn emit_omarchy_subtheme(subtheme: OmarchySubTheme) -> String {
     omarchy(&dark, subtheme)
 }
 
-/// Emits any of the 7 built-in [`YoloThemePreset`]s (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy`, `Hyprland`, `Aphrody`)
+/// Emits any of the 8 built-in [`YoloThemePreset`]s (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy`, `Hyprland`, `Aphrody`, `Chromium`)
 /// in the requested [`Target`] format, including preset-specific CSS/XAML/SwiftUI/Omarchy/Hyprland/Byron-Love metadata.
 #[must_use]
 pub fn emit_preset(preset: YoloThemePreset, target: Target) -> String {
@@ -793,7 +793,7 @@ mod tests {
     #[test]
     fn all_targets_and_presets_emit_non_empty_output() {
         assert_eq!(Target::ALL.len(), 11);
-        assert_eq!(YoloThemePreset::ALL.len(), 7);
+        assert_eq!(YoloThemePreset::ALL.len(), 8);
         for preset in YoloThemePreset::ALL {
             for &target in Target::ALL {
                 let output = emit_preset(preset, target);

@@ -55,6 +55,7 @@ impl CraftBrand {
             YoloThemePreset::Omarchy => ("Yolo Craft Omarchy", "Yolo UI"),
             YoloThemePreset::Hyprland => ("Yolo Craft Hyprland", "Yolo UI"),
             YoloThemePreset::Aphrody => ("Aphrody Craft", "Byron Love Studio"),
+            YoloThemePreset::Chromium => ("Yolo Craft Chromium", "Chromium Project"),
         };
         Self {
             product: product.to_owned(),

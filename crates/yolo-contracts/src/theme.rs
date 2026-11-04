@@ -39,7 +39,7 @@ impl Theme {
         Self::preset_request(YoloThemePreset::Neutral)
     }
 
-    /// Returns the validated [`ThemeRequest`] for any of the 7 built-in [`YoloThemePreset`]s:
+    /// Returns the validated [`ThemeRequest`] for any built-in [`YoloThemePreset`]:
     /// - `YoloThemePreset::Neutral` (`#6366F1`)
     /// - `YoloThemePreset::M3` (`#6750A4`)
     /// - `YoloThemePreset::Fluent` (`#0078D4`)

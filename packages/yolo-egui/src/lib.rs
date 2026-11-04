@@ -242,6 +242,7 @@ enum PresetShapeProfile {
     Omarchy,
     Hyprland,
     Aphrody,
+    Chromium,
 }
 
 impl PresetShapeProfile {
@@ -254,6 +255,7 @@ impl PresetShapeProfile {
             YoloThemePreset::Omarchy => Self::Omarchy,
             YoloThemePreset::Hyprland => Self::Hyprland,
             YoloThemePreset::Aphrody => Self::Aphrody,
+            YoloThemePreset::Chromium => Self::Chromium,
         }
     }
 
@@ -265,6 +267,7 @@ impl PresetShapeProfile {
             Self::M3 => shapes::SMALL,
             Self::Apple | Self::Hyprland => CornerRadius::same(10),
             Self::Aphrody => CornerRadius::same(12),
+            Self::Chromium => CornerRadius::same(4),
         }
     }
 
@@ -276,6 +279,7 @@ impl PresetShapeProfile {
             Self::M3 => shapes::LARGE,
             Self::Apple => CornerRadius::same(14),
             Self::Aphrody => CornerRadius::same(16),
+            Self::Chromium => CornerRadius::same(12),
         }
     }
 
@@ -287,6 +291,7 @@ impl PresetShapeProfile {
             Self::M3 => shapes::EXTRA_SMALL,
             Self::Apple | Self::Hyprland => CornerRadius::same(10),
             Self::Aphrody => CornerRadius::same(12),
+            Self::Chromium => CornerRadius::same(8),
         }
     }
 }

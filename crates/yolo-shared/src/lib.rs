@@ -165,7 +165,7 @@ impl fmt::Display for RgbaColor {
 // 7 First-Class Built-In Theme Presets (`YoloThemePreset`)
 // ============================================================================
 
-/// The 7 first-class built-in theme presets of `yolo-ui`.
+/// The 8 first-class built-in theme presets of `yolo-ui`.
 ///
 /// By default, `yolo-ui` uses [`YoloThemePreset::Neutral`] (`"yolo-neutral"`), ensuring
 /// zero vendor lock-in while allowing instant switching to M3, Fluent 2, Apple HIG Liquid Glass,
@@ -189,11 +189,13 @@ pub enum YoloThemePreset {
     Hyprland,
     /// `"yolo-aphrody"` — Signature Byron Love (Afuro Terumi / Aphrody) pet & brand theme (10 sprite-atlas colors, `#17335C` azur seed, `#FFD700` gold, `#7C5CFF` violet).
     Aphrody,
+    /// `"yolo-chromium"` — Chromium Views and WebUI design language with editable HCT accent and light/dark surfaces.
+    Chromium,
 }
 
 impl YoloThemePreset {
-    /// All 7 built-in theme presets in canonical order.
-    pub const ALL: [Self; 7] = [
+    /// All 8 built-in theme presets in canonical order.
+    pub const ALL: [Self; 8] = [
         Self::Neutral,
         Self::M3,
         Self::Fluent,
@@ -201,6 +203,7 @@ impl YoloThemePreset {
         Self::Omarchy,
         Self::Hyprland,
         Self::Aphrody,
+        Self::Chromium,
     ];
 
     /// Canonical kebab-case preset identifier (`"yolo-neutral"`, `"yolo-m3"`, `"yolo-fluent"`, `"yolo-apple"`, `"yolo-omarchy"`, `"yolo-hyprland"`, `"yolo-aphrody"`).
@@ -213,6 +216,7 @@ impl YoloThemePreset {
             Self::Omarchy => "yolo-omarchy",
             Self::Hyprland => "yolo-hyprland",
             Self::Aphrody => "yolo-aphrody",
+            Self::Chromium => "yolo-chromium",
         }
     }
 
@@ -226,6 +230,7 @@ impl YoloThemePreset {
             Self::Omarchy => "Omacom Omarchy (Tokyo Night & 23 TUI-Modern Subthemes)",
             Self::Hyprland => "Hyprland Wayland Compositor (Cyan-Mint 45deg Border & Kawase Blur)",
             Self::Aphrody => "Aphrody Byron Love (10-Teinte Sprite Atlas & Celestial Gold)",
+            Self::Chromium => "Chromium Views + WebUI (customizable HCT)",
         }
     }
 
@@ -239,6 +244,7 @@ impl YoloThemePreset {
             Self::Omarchy => 0xFF7A_A2F7,
             Self::Hyprland => 0xFF33_CCFF,
             Self::Aphrody => 0xFF17_335C,
+            Self::Chromium => 0xFF1A_73E8,
         }
     }
 
@@ -252,6 +258,7 @@ impl YoloThemePreset {
             Self::Omarchy => "#7AA2F7",
             Self::Hyprland => "#33CCFF",
             Self::Aphrody => "#17335C",
+            Self::Chromium => "#1A73E8",
         }
     }
 
@@ -267,6 +274,7 @@ impl YoloThemePreset {
             "yolo-omarchy" | "omarchy" | "omacom" | "tokyo-night" => Some(Self::Omarchy),
             "yolo-hyprland" | "hyprland" | "hyprwm" | "hypr" => Some(Self::Hyprland),
             "yolo-aphrody" | "aphrody" | "byron-love" | "byron" => Some(Self::Aphrody),
+            "yolo-chromium" | "chromium" | "chrome" | "chrome-webui" => Some(Self::Chromium),
             _ => None,
         }
     }
@@ -288,6 +296,8 @@ impl YoloThemePreset {
             (Self::Hyprland, false) => YOLO_HYPRLAND_LIGHT_THEME,
             (Self::Aphrody, true) => YOLO_APHRODY_DARK_THEME,
             (Self::Aphrody, false) => YOLO_APHRODY_LIGHT_THEME,
+            (Self::Chromium, true) => YOLO_CHROMIUM_DARK_THEME,
+            (Self::Chromium, false) => YOLO_CHROMIUM_LIGHT_THEME,
         }
     }
 
@@ -1415,6 +1425,32 @@ pub const YOLO_APHRODY_LIGHT_THEME: YoloThemeTokens = YoloThemeTokens {
     border_subtle: "rgba(23, 51, 92, 0.14)",
 };
 
+/// Chromium WebUI dark surfaces from `ui/webui/resources/css/md_colors.css` and `cr_shared_vars.css`.
+pub const YOLO_CHROMIUM_DARK_THEME: YoloThemeTokens = YoloThemeTokens {
+    name: "yolo-chromium-dark",
+    bg_primary: "#202124",
+    bg_surface: "#292a2d",
+    bg_elevated: "#35363a",
+    text_primary: "#e8eaed",
+    text_secondary: "#9aa0a6",
+    accent_primary: "#8ab4f8",
+    accent_secondary: "#a8c7fa",
+    border_subtle: "rgba(255, 255, 255, 0.10)",
+};
+
+/// Chromium WebUI light surfaces from `ui/webui/resources/css/md_colors.css` and `cr_shared_vars.css`.
+pub const YOLO_CHROMIUM_LIGHT_THEME: YoloThemeTokens = YoloThemeTokens {
+    name: "yolo-chromium-light",
+    bg_primary: "#f8f9fa",
+    bg_surface: "#ffffff",
+    bg_elevated: "#f1f3f4",
+    text_primary: "#202124",
+    text_secondary: "#5f6368",
+    accent_primary: "#1a73e8",
+    accent_secondary: "#1967d2",
+    border_subtle: "#dadce0",
+};
+
 /// Backwards-compatible canonical Aphrody Material 3 Dark-Glass token constant.
 pub const APHRODY_DARK_THEME: AphrodyThemeTokens = YOLO_APHRODY_DARK_THEME;
 
@@ -1537,6 +1573,20 @@ impl YoloStyle {
                 border_width_px: 1.0,
                 window_vibrancy: "acrylic-dark-glass",
             },
+            YoloThemePreset::Chromium => Self {
+                preset,
+                radius_sm_px: 4.0,
+                radius_md_px: 8.0,
+                radius_lg_px: 12.0,
+                radius_pill_px: 9999.0,
+                spacing_grid_px: 8.0,
+                font_family_ui: "Arial, system-ui, sans-serif",
+                font_family_mono: "'Roboto Mono', ui-monospace, monospace",
+                backdrop_blur_px: 0.0,
+                elevation_level: 1,
+                border_width_px: 1.0,
+                window_vibrancy: "none",
+            },
         }
     }
 }
@@ -1601,7 +1651,7 @@ impl YoloManifest {
         }
     }
 
-    /// Switches the manifest to one of the 7 built-in [`YoloThemePreset`]s and updates default vibrancy.
+    /// Switches the manifest to one of the built-in [`YoloThemePreset`]s and updates default vibrancy.
     pub fn with_preset(mut self, preset: YoloThemePreset) -> Self {
         self.theme_preset = preset;
         self.window_vibrancy = preset.style().window_vibrancy.to_string();

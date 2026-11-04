@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Ready-to-use `DynamicScheme` and `ThemeRequest` builders for the 7 built-in `YoloThemePreset`s:
+//! Ready-to-use `DynamicScheme` and `ThemeRequest` builders for the 8 built-in `YoloThemePreset`s:
 //!
 //! 1. [`yolo_neutral`] (`0xFF63_66F1` — neutral customizable default)
 //! 2. [`yolo_m3`] (`0xFF67_50A4` — Google Material Design 3 / Jetpack Compose)
@@ -37,6 +37,9 @@ pub const HYPRLAND_SEED: u32 = 0xFF33_CCFF;
 
 /// Canonical opaque ARGB seed for `YoloThemePreset::Aphrody` (`#17335C` Byron Love Royal Azur).
 pub const APHRODY_SEED: u32 = 0xFF17_335C;
+
+/// Canonical opaque ARGB seed for `YoloThemePreset::Chromium` (`#1A73E8` Chrome blue).
+pub const CHROMIUM_SEED: u32 = 0xFF1A_73E8;
 
 /// Builds the neutral default [`DynamicScheme`] (`0xFF63_66F1`, `Variant::Neutral`).
 #[must_use]
@@ -87,6 +90,12 @@ pub fn yolo_aphrody(dark: bool) -> DynamicScheme {
     DynamicScheme::from_argb(APHRODY_SEED, Variant::TonalSpot, dark, 0.0)
 }
 
+/// Builds the Chromium Views/WebUI [`DynamicScheme`] from the customizable Chrome blue HCT seed.
+#[must_use]
+pub fn yolo_chromium(dark: bool) -> DynamicScheme {
+    DynamicScheme::from_argb(CHROMIUM_SEED, Variant::Content, dark, 0.0)
+}
+
 /// Returns the canonical [`Variant`] associated with each [`YoloThemePreset`].
 #[must_use]
 pub const fn variant_for_preset(preset: YoloThemePreset) -> Variant {
@@ -98,6 +107,7 @@ pub const fn variant_for_preset(preset: YoloThemePreset) -> Variant {
         YoloThemePreset::Omarchy => Variant::Content,
         YoloThemePreset::Hyprland => Variant::Vibrant,
         YoloThemePreset::Aphrody => Variant::TonalSpot,
+        YoloThemePreset::Chromium => Variant::Content,
     }
 }
 
@@ -119,6 +129,7 @@ pub fn scheme_for_preset(preset: YoloThemePreset, dark: bool) -> DynamicScheme {
         YoloThemePreset::Omarchy => yolo_omarchy(dark),
         YoloThemePreset::Hyprland => yolo_hyprland(dark),
         YoloThemePreset::Aphrody => yolo_aphrody(dark),
+        YoloThemePreset::Chromium => yolo_chromium(dark),
     }
 }
 
@@ -129,7 +140,7 @@ mod tests {
 
     #[test]
     fn all_seven_presets_and_twenty_three_omarchy_subthemes_resolve() {
-        assert_eq!(YoloThemePreset::ALL.len(), 7);
+        assert_eq!(YoloThemePreset::ALL.len(), 8);
         assert_eq!(OmarchySubTheme::ALL.len(), 23);
 
         for preset in YoloThemePreset::ALL {

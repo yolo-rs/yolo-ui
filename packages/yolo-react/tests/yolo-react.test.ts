@@ -35,7 +35,7 @@ import {
 } from "../../../scripts/react-bun.ts";
 
 describe("@yolo-rs/react — Core 7-Preset Theme Engine", () => {
-  test("defaults to neutral ('yolo-neutral') and resolves all 7 built-in presets + 23 Omarchy subthemes", () => {
+  test("defaults to neutral ('yolo-neutral') and resolves all 8 built-in presets + 23 Omarchy subthemes", () => {
     expect(YOLO_PRESET_IDS).toEqual([
       "neutral",
       "m3",

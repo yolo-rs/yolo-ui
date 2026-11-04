@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! `yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody] [--seed '#6750a4'] [--variant tonal-spot] [--contrast 0] [--target gtk|fluent|apple|omarchy|hyprland|all] [--out DIR]`
+//! `yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#6750a4'] [--variant tonal-spot] [--contrast 0] [--target gtk|fluent|apple|omarchy|hyprland|all] [--out DIR]`
 
 use std::path::PathBuf;
 use std::process::ExitCode;
@@ -53,7 +53,7 @@ fn main() -> ExitCode {
             _ => false,
         };
         if !ok {
-            eprintln!("usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|all] [--out DIR]");
+            eprintln!("usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|all] [--out DIR]");
             return ExitCode::from(2);
         }
     }

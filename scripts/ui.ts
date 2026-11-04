@@ -25,7 +25,7 @@ One Command • One Plugin (@yolo-rs/ui-plugin) • One MCP (@yolo-rs/ui-mcp) �
 
 Usage:
   bun ui search <query> [--domain <d>] [--stack <s>] [-n <max>]
-  bun ui system <query> [-p "Project Name"] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody] [--format ascii|markdown|json]
+  bun ui system <query> [-p "Project Name"] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--format ascii|markdown|json]
   bun ui theme [--preset <p>] [--omarchy <subtheme>] [--target css|gtk|kde|cosmic|qml|winui|fluent|apple|omarchy|hyprland|dtcg]
   bun ui migrate <file.tsx|snippet> [--target dioxus|wgpu|egui|cosmic|gtk|qml|all] [--preset <p>]
   bun ui contrast <fg-hex> <bg-hex>

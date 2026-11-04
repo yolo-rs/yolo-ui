@@ -51,6 +51,7 @@ pub fn qml_singleton_for_preset(preset: YoloThemePreset) -> String {
         YoloThemePreset::Hyprland => (10, 12, 16),
         YoloThemePreset::Neutral => (8, 12, 16),
         YoloThemePreset::M3 | YoloThemePreset::Aphrody => (8, 12, 16),
+        YoloThemePreset::Chromium => (4, 8, 12),
     };
 
     let mut out = String::from(

@@ -83,8 +83,8 @@ describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
     expect(brandSearch.count).toBeGreaterThan(0);
   });
 
-  test("2. @yolo-rs/ui-plugin emits all 7 presets, 23 Omarchy subthemes, 11 targets, and 6 Rust migration targets", () => {
-    expect(Object.keys(YOLO_THEME_PRESETS)).toHaveLength(7);
+  test("2. @yolo-rs/ui-plugin emits all 8 presets, 23 Omarchy subthemes, 11 targets, and 6 Rust migration targets", () => {
+    expect(Object.keys(YOLO_THEME_PRESETS)).toHaveLength(8);
     expect(Object.keys(OMARCHY_SUBTHEMES)).toHaveLength(23);
     expect(Object.keys(DEVTOOLS_REGISTRY)).toHaveLength(10);
 
