@@ -2,12 +2,12 @@
 name = "yolo-ui"
 version = { workspace = true }
 authors = ["Yolo UI Contributors <contact@aphrody.com>", "Dioxus Labs"]
-edition = "2024"
+edition.workspace = true
 description = "Yolo UI unified fullstack Rust framework for Web (WASM/SSR), Desktop (Wry/Tauri v3), Native (Blitz/AnyRender/WGPU), GPUI, Iced/Cosmic, Egui/Craft, GTK4, Qt6, and React 19/Expo."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/yolo-rs/yolo-ui"
 keywords = ["yolo-ui", "dioxus", "fullstack", "web", "desktop"]
-rust-version = "1.85.0"
+rust-version.workspace = true
 
 [dependencies]
 yolo-shared = { workspace = true }
@@ -20,14 +20,8 @@ yolo-shell = { workspace = true, optional = true }
 yolo-craft = { workspace = true, optional = true }
 yolo-storyteller = { workspace = true, optional = true }
 yolo-react = { workspace = true, optional = true }
-yolo-gpui = { workspace = true, optional = true }
-yolo-iced = { workspace = true, optional = true }
-yolo-tauri = { workspace = true, optional = true }
-yolo-egui = { workspace = true, optional = true }
-yolo-cosmic = { workspace = true, optional = true }
-yolo-gtk = { workspace = true, optional = true }
-yolo-qt = { workspace = true, optional = true }
-yolo-3d = { path = "../../crates/yolo-3d", optional = true }
+yolo-engines = { workspace = true, optional = true, default-features = false }
+yolo-3d = { workspace = true, optional = true }
 dioxus = { workspace = true, default-features = false }
 dioxus-core = { workspace = true }
 dioxus-signals = { workspace = true }
@@ -73,9 +67,6 @@ taffy = { workspace = true, optional = true }
 default = [
     "lib",
     "router",
-    "primitives",
-    "sdk",
-    "icons",
 ]
 lib = [
     "dioxus/lib",
@@ -125,13 +116,14 @@ shell-lifecycle = ["dep:yolo-shell"]
 craft = ["dep:yolo-craft"]
 storyteller = ["dep:yolo-storyteller"]
 react = ["dep:yolo-react"]
-gpui = ["dep:yolo-gpui"]
-iced = ["dep:yolo-iced"]
-tauri = ["dep:yolo-tauri"]
-egui = ["dep:yolo-egui"]
-cosmic = ["dep:yolo-cosmic"]
-gtk = ["dep:yolo-gtk"]
-qt = ["dep:yolo-qt"]
+gpui = ["dep:yolo-engines", "yolo-engines/gpui"]
+iced = ["dep:yolo-engines", "yolo-engines/iced"]
+tauri = ["dep:yolo-engines", "yolo-engines/tauri"]
+tauri-desktop-shell = ["tauri", "yolo-engines/desktop-shell"]
+egui = ["dep:yolo-engines", "yolo-engines/egui"]
+cosmic = ["dep:yolo-engines", "yolo-engines/cosmic"]
+gtk = ["dep:yolo-engines", "yolo-engines/gtk"]
+qt = ["dep:yolo-engines", "yolo-engines/qt"]
 three3d = ["dep:yolo-3d"]
 multi-engine = [
     "tokens",

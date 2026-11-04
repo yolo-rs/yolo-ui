@@ -351,7 +351,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
     },
     YoloStarterTemplate {
         id: "tauri-v3-hybrid",
-        title: "Tauri v3 Alpha Multi-Webview (Wry 0.57 + CEF) Shell",
+        title: "Tauri v3 Alpha Wry Desktop Shell",
         pillar: MigrationPillar::SitesToDioxus,
         stack: "yolo-tauri + wry 0.57 + tao 0.37 + acl v3",
         command: "bun run ui devtools tauri",
@@ -411,7 +411,7 @@ pub const AWESOME_HUB_CATEGORIES: &[AwesomeHubCategory] = &[
         title: "Tauri v3 Alpha, Wry 0.57, Tao 0.37 & Mobile Plugins",
         upstream_repo: "yolo-rs/tauri & yolo-rs/tauri-workspace",
         submodule_count: 17,
-        highlights: "Tauri v3 Alpha ACL, Wry 0.57, CEF backend, muda, tray-icon, global-hotkey, window-vibrancy",
+        highlights: "Tauri v3 Alpha ACL, Wry 0.57, muda, tray-icon, global-hotkey, window-vibrancy",
     },
     AwesomeHubCategory {
         id: "awesome-design-systems",

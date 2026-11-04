@@ -1,0 +1,237 @@
+<!-- LU-CLOUD-FACTS:START -->
+## Current cloud offer (2026-09-14)
+Hosted includes 11 Flash models; Pro and Max include 12. In app sessions they cost no credits, up to a daily limit per account. GLM 5.3 Flash uses credits on Hosted and joins the daily allowance on Pro and Max. API keys always use credits.
+Hosted EUR 19/month: 900,000 shared credits, up to 900 uncensored images OR 90 five-second uncensored image-to-video clips. Each maximum spends the entire shared monthly wallet on one model. These are alternatives, not separate allowances. Input-image generation, character training, LoRA routes and additional operations cost extra. Uncensored video uses an input image and five-second clips. Failed jobs and changing catalog prices can affect results.
+https://locallyuncensored.com/cloud-facts.json
+Uncensored AI chat online: 48 chat models, all of them in every plan and every pack, and no moderation layer from us on text. https://locallyuncensored.com/uncensored-ai-chat-online/
+Uncensored AI image generator online: uncensored models from 1,000 credits per image, only after the account switches its own content policy setting. https://locallyuncensored.com/uncensored-ai-image-generator-online/
+Uncensored AI video generator online: image-to-video only, clips are five seconds, the input image is not included. https://locallyuncensored.com/uncensored-ai-video-generator-online/
+Uncensored AI API: the desktop app serves an OpenAI-compatible API for every local model at http://127.0.0.1:8129/v1 (token required, Settings, Voice & Remote, Local API); the hosted endpoint is https://lu-labs.ai/api/inference/v1, keys start with lu_ and always spend credits. https://locallyuncensored.com/uncensored-ai-api/
+Venice AI alternatives: Venice Pro is 18 USD per month with 100 credits (read 2026-09-22); our credit packs start at 15 EUR and need no subscription. https://locallyuncensored.com/vs/venice/
+https://lu-labs.ai/product-facts
+<!-- LU-CLOUD-FACTS:END -->
+# Locally Uncensored
+
+> Plug-and-play local AI studio: uncensored chat, image generation, video generation, and a coding agent in one desktop app. One installer, no command line, no Docker.
+
+Locally Uncensored is a free, open-source (AGPL-3.0) local AI studio for the desktop. It combines AI chat, image generation, video creation, and a coding agent in one interface, and installs like a normal program: no command line, no Docker, no config files. It runs locally on your machine: chats, models and files stay there. The app has no analytics kit and sends no crash reports. On its own it checks GitHub Releases for updates and counts each press of the Cloud switch. Nothing goes to a cloud model unless you enable a cloud route. There are two: BYOK with your own provider API key, and the paid LU Labs Cloud service, where inference runs on our infrastructure partners.
+
+## Key Facts
+- Name: Locally Uncensored
+- Current Version: v3.0.8
+- Type: Desktop AI Application (local AI studio)
+- License: AGPL-3.0 (free and open source)
+- Platforms: Windows 10/11, Linux (deb, rpm, AppImage), macOS 14 or newer on Apple Silicon (dmg, since v3.0.6). Intel Macs are not supported.
+- Tech Stack: React 19, TypeScript, Tailwind CSS 4, Vite 8, Tauri v2 (Rust backend)
+- AI Backends: 12 auto-detected (Ollama, LM Studio, vLLM, KoboldCpp, llama.cpp, LocalAI, Jan, TabbyAPI, GPT4All, Aphrodite, SGLang, text-generation-webui) plus ComfyUI for images/video
+- Cloud Providers: optional, BYOK (OpenAI, Anthropic, OpenRouter, Groq, Together, DeepSeek, Mistral)
+- GitHub: https://github.com/PurpleDoubleD/locally-uncensored
+- Website: https://locallyuncensored.com
+- Discord: https://locallyuncensored.com/discord
+- Author: PurpleDoubleD
+
+## What Makes It Unique
+- Qwen-Image 2.1 runs locally on Windows and Linux and does both jobs: text to image, and editing a reference image from a prompt with no mask; about 16 GB of files, ComfyUI 0.37.0 or newer, research license without commercial use (v3.0.1)
+- Models has a dedicated LoRAs tab on Windows and Linux: CivitAI search and download into the ComfyUI loras folder, an installed list with sizes and trigger words, and deletion (v3.0.1)
+- Only local AI app combining chat + coding agent + image generation + video generation + mobile remote in one interface
+- Talking Character, Music, Extend Video and Motion Control run as full local ComfyUI lanes on your own GPU; Enhance Image runs locally on ComfyUI since v3.0.7, Erase Object stays cloud-only; Character Studio trains locally since v2.6.0, with a Low VRAM setting for cards under 12 GB and local training on Apple Silicon Macs since v3.0.7
+- Per-lane frame count, resolution and step controls on every Create lane, so low-VRAM runs are practical (v2.5.8)
+- Surgical file_edit tool in the Coding Agent: it changes the lines you asked for instead of rewriting whole files, and num_ctx follows the model instead of being pinned to 8192 (v2.5.9)
+- Remote access works with non-Ollama backends: LM Studio, Lemonade and llama.cpp are translated to and from the phone's request shape, including streaming, tool calls, vision and reasoning (v2.5.9)
+- Command-injection hardening in the Coding Agent: shell quoting follows the shell that actually runs, and PR links are validated against the characters GitHub permits (v2.5.9)
+- Cloud renders are retained for seven days; the limit is stated in-app once with a download reminder, and trained characters on the user shelf are exempt (v2.5.9); on the paid service, prompt prefixes can be cached briefly at the inference partner to speed up requests and are not stored permanently
+- Plug-and-play: install like a normal app, no command line, no Docker, no config files; the setup wizard handles engines and models
+- Uses abliterated/uncensored models by default (no content restrictions)
+- 25+ built-in AI personas plus Caveman Mode (lite/full/ultra terseness levels)
+- Plug & Play setup wizard auto-detects 12 local backends
+- One-click in-app installer for Ollama and ComfyUI
+- Configurable HuggingFace GGUF download path (v2.4.0)
+- Built-in Coding Agent with live tool-call streaming, file tree, AUTONOMY contract
+- Agent Mode with 14 tools, MCP integration, sub-agent delegation, budget caps
+- Mobile remote access via LAN or Cloudflare Tunnel with 6-digit passcode + QR setup
+- A/B Model Compare and Local Benchmark built in
+- Memory system and Document Chat (RAG): local embeddings, no cloud
+- Voice (v3.0.6, beta): a spoken conversation with the selected chat model. Speech recognition (Whisper base.en), the voice (Pocket TTS, 15 English voices) and turn taking run locally. The model can use the agent tools by voice. English only.
+- Computer control (v3.0.6, beta): a model uses mouse, keyboard and screenshots in apps the user approves. Off by default, per-app approval, confirmation before every action unless a session is set to autonomous, fixed list of apps that are off limits (terminals, password managers, system sign-in and security dialogs).
+- Dictation (Whisper) and read aloud (Piper)
+- Auto-update over signed NSIS channel for Windows
+- Single-instance lock (v2.4.0): double-launch focuses existing window
+- In-app Privacy section (v2.4.0): explicit data-handling statement
+- Re-run Onboarding button (v2.4.0): restart the first-launch wizard on demand
+- Chat and memory persistence moved to IndexedDB, removing the old 5 MB storage cap (v2.5.0)
+- Editable memory with a user-settable injected-memory limit (v2.5.0)
+- Import existing ChatGPT, Claude, and Gemini conversations into the app (v2.5.0)
+- Small-model mode: a tool-calling reliability profile tuned for 3B to 8B local models (v2.5.0)
+- Repo-Map with Aider-style PageRank for repository-aware coding (v2.5.0)
+- Streaming local voice: Whisper STT plus Piper neural TTS with one-click in-app install (v2.5.0)
+- Document Chat (RAG) with one-click nomic-embed-text install; embedding chunks survive NSIS auto-updates (v2.4.9)
+- VRAM tier filter (Lightweight ≤10 GB / Mid-Range 10 to 16 GB / High-End >16 GB) across text, image, and video models in Discover (v2.4.9)
+- Detects the ComfyUI Desktop App layout, not just classic main.py installs (v2.4.9)
+- Configurable image/video generation timeouts (1 to 480 min) for CPU/iGPU users (v2.4.7)
+- Inline "Start LM Studio Server" button when LM Studio is installed but its server is off (v2.4.7)
+- Linux installer auto-detects deb/rpm/AppImage family; ComfyUI CPU mode + Arch venv auto-create (v2.4.5)
+
+## Supported Chat Models
+- Qwen 3.8: 27B dense with vision through a separate mmproj file, plus a 9B distill for small cards (text only); official, abliterated and uncensored builds (v2.6.6)
+- Qwen 3-Coder: 30B + Next 80B
+- Gemma 4: 31B / 26B MoE / E4B / E2B (native vision + tools)
+- GPT-OSS: 120B and 20B
+- GLM 4.7 Flash: 30B (IQ2 to Q8 variants)
+- GLM 5.1: 754B MoE (IQ2_M, multi-file)
+- DeepSeek R1: distilled 8B / 14B / 32B / Llama 70B
+- Llama 4 Scout (16x17B MoE)
+- Mistral Small 3, Phi 4
+- Hermes 3, Llama 3.1 Abliterated, Qwen 3 14B Abliterated
+
+## Supported Image Models (via ComfyUI)
+- FLUX 2 Klein, FLUX.1
+- Qwen-Image 2.1 (generates and edits with one model; Qwen Research License, non-commercial)
+- Z-Image Turbo (uncensored)
+- Juggernaut XL, Dreamshaper, RealVis
+- ERNIE-Image (Baidu, Turbo + Base)
+- Stable Diffusion XL, SD 3.5
+
+## Supported Video Models (via ComfyUI)
+- Wan 2.1 (1.3B + 14B), Wan 2.2
+- HunyuanVideo 1.5
+- LTX 2.3
+- FramePack F1 (image-to-video on 6 GB VRAM)
+- AnimateDiff Lightning
+- Mochi, Cosmos
+- SVD (Stable Video Diffusion)
+- Removed in v2.5.9 because they could never run: CogVideoX (both bundles) and Pyramid Flow
+
+## Comparison
+- vs Open WebUI: LU adds image + video gen, agent mode, mobile remote, A/B compare. Open WebUI is chat-only.
+- vs LM Studio: LU is open source AGPL-3.0 and adds image + video + coding agent + mobile. LM Studio is closed-source chat-only with limited extensibility.
+- vs SillyTavern: LU has modern Tauri UI, built-in image/video gen, simpler setup, 12-backend auto-detect.
+- vs ComfyUI: LU bundles ComfyUI as the image/video backend but provides a simple chat-style UI on top.
+- vs Jan, GPT4All, KoboldCpp, Msty: LU offers all-in-one (chat + image + video + coding agent + mobile).
+
+## Hardware Requirements
+- Minimum: 8 GB RAM for text chat with small models (Llama 3.2 1B, Qwen 2.5 3B)
+- Recommended: 8 GB+ VRAM NVIDIA GPU for FLUX, Juggernaut XL image gen
+- Video generation: 10-12 GB VRAM (Wan 1.3B, LTX 2.3)
+- Image-to-video: 6 GB VRAM minimum (FramePack F1)
+- Best in class: 24 GB+ VRAM for 35B MoE and 35B+ chat models
+
+## Privacy
+- Local by default: chats, models and files stay on your machine
+- No analytics kit and no crash reports
+- On its own the app uses the network for two things: an update check against GitHub Releases shortly after start and at most every six hours after that, and a count of each press of the Cloud switch (which way, platform, app version, no identifier)
+- A new version downloads in the background unless you switch that off under Settings, General, Updates; installing always needs a click
+- While you are signed in to LU Cloud, in local mode too: an account check at lu-labs.ai every five minutes, and a press of the Cloud switch is counted for the account as well
+- Everything else that goes online you start yourself: model and engine downloads, providers with your own API keys, web search in agent runs, and Remote Access
+- Remote Access over the internet: Cloudflare relays the traffic, encrypted to and from Cloudflare, not end to end
+- Cloud optional, two routes: BYOK (your own API keys, your data), and the paid LU Labs Cloud service, where inference runs on our infrastructure partners
+- App data and logs live in %LOCALAPPDATA%\lu-labs on Windows and ~/.local/share/lu-labs on Linux; the LU Engine chat models in %APPDATA%\Locally Uncensored\models and ~/.local/share/Locally Uncensored/models. Details: https://locallyuncensored.com/guide/storage/
+
+## Key Pages
+- Homepage: https://locallyuncensored.com/
+- Handbook (install, first start, chat, agent, Code tab, Create, LU Cloud, settings, troubleshooting, FAQ): https://locallyuncensored.com/guide/
+  - Handbook chapter, What it is: https://locallyuncensored.com/guide/what-it-is/
+  - Handbook chapter, Install and update: https://locallyuncensored.com/guide/install/
+  - Handbook chapter, First start (setup wizard): https://locallyuncensored.com/guide/first-start/
+  - Handbook chapter, Chat: https://locallyuncensored.com/guide/chat/
+  - Handbook chapter, Agent mode: https://locallyuncensored.com/guide/agent/
+  - Handbook chapter, The Code tab: https://locallyuncensored.com/guide/code/
+  - Handbook chapter, Create (images, video, audio, Character Studio): https://locallyuncensored.com/guide/create/
+  - Handbook chapter, LU Cloud: https://locallyuncensored.com/guide/cloud/
+  - Handbook chapter, Settings and troubleshooting: https://locallyuncensored.com/guide/settings-and-troubleshooting/
+  - Handbook chapter, FAQ and glossary: https://locallyuncensored.com/guide/faq-and-glossary/
+- Blog (guides, comparisons, release notes): https://locallyuncensored.com/blog/
+- Qwen-Image 2.1 uncensored (local setup, community builds, GGUF sizes, LoRAs, research licence): https://locallyuncensored.com/qwen-image-2-1/
+- Qwen 3.8 uncensored (abliterated and heretic builds of Qwen 3.8 27B, GGUF sizes by VRAM): https://locallyuncensored.com/qwen-3-8-uncensored/
+- Locally Uncensored for Mac (Apple Silicon, macOS 14 or newer, beta): https://locallyuncensored.com/mac/
+- All Qwen guides: https://locallyuncensored.com/qwen/
+- All DeepSeek guides: https://locallyuncensored.com/deepseek/
+- All Kimi guides: https://locallyuncensored.com/kimi/
+- Security (what runs locally, which data leaves the machine and where to, the checks every release passes: tests, CodeQL, npm/cargo dependency audit, OpenSSF Scorecard; signed updates, SHA256SUMS and CycloneDX SBOM from 3.0.8; no independent audit yet, one is planned; how to report a vulnerability): https://locallyuncensored.com/security/
+- Is Locally Uncensored safe? (unsigned Windows installer, antivirus false positives, how to verify the download): https://locallyuncensored.com/is-locally-uncensored-safe/
+- IA sem censura local (Portuguese guide): https://locallyuncensored.com/blog/ia-sem-censura-local.html
+- IA sin censura en local (Spanish guide): https://locallyuncensored.com/blog/ia-sin-censura-local.html
+- v3.0.7 Release Notes (a trained character in every part of Create and in chat, ComfyUI workflows in the format ComfyUI saves with their node packs and all their settings, Edit with up to ten images, chats you can duplicate and branch, and training, Talking Character and Motion Control on the Mac in beta): https://locallyuncensored.com/blog/locally-uncensored-v3-0-7-release.html
+- New Uncensored Chat Models in LU Cloud ((Guide: the ten new Uncensored (Beta) chat models in LU Cloud since 3.0.6, the four named ones, Limited capacity, the difference to the No Filter mark, local or online per model, desktop Cloud switch and browser)): https://locallyuncensored.com/blog/new-uncensored-chat-models-lu-cloud.html
+- Local AI Computer Use: Let an Agent Control Your PC ((Guide: computer control in LU 3.0.6, switching it on, the per-chat card, per-app and per-action questions, sensitive actions, blocked apps, pause and stop shortcuts, screen model choice, platform status, beta)): https://locallyuncensored.com/blog/local-ai-computer-control.html
+- Voice Plus Computer Control: A Note in Notepad ((Guide: Voice plus computer control in LU 3.0.6 on one measured example, a note in Notepad by voice in 11 to 22 seconds with a local 9B model on Windows, per-chat card needs a click, spoken yes and no, pause words, beta and English only)): https://locallyuncensored.com/blog/voice-and-computer-control-showcase.html
+- REA Plugin ((Guide: the REA plugin in LU 3.0.7, Reverse Engineer Anything, MIT, rea-agents 6.5.0 checked against the npm checksum, needs Node.js 22.19+, 24.11+ or 26+, tools for Agent and Code behind the confirmation of external tools, 207 tools with only the ones a turn points at, reads JavaScript, Electron, .NET, Go, Rust, Flutter, SQLite and WebAssembly, uses Ghidra, Hopper, JADX and Frida if installed, best with a 27B model and 64K context, tried on one Mac with Qwen 3.8 27B on Ollama)): https://locallyuncensored.com/blog/rea-plugin-reverse-engineering.html
+- Generate Images in Chat ((Guide: generating images in chat, Create in chat (Beta) on LU Cloud with the Plugins switch and the order card, account-by-account release, not yet run against the live service, local alternative with Agent mode image_generate and the Create tab)): https://locallyuncensored.com/blog/create-images-in-chat.html
+- Run Vision Models Locally (Run Vision Models Locally (why a GGUF vision model needs its mmproj image part, the one-download flow in LU 3.0.6, Add image input, starter models, what happens when graphics memory is short, and the naming rule for image parts placed by hand)): https://locallyuncensored.com/blog/run-vision-models-locally.html
+- Is Local Voice AI Private? (Is Local Voice AI Private? (what Voice in LU keeps on the machine: Whisper base.en and Pocket TTS run locally, the one-time download and its hosts, where the text goes with a local model or a provider, agent tools, what the app sends on its own, what is stored, and why approvals take a click)): https://locallyuncensored.com/blog/is-local-voice-ai-private.html
+- Branch and Duplicate AI Chats ((Tutorial: chat features of LU 3.0.7, Duplicate chat, Branch from here, kept answer versions, edit with Save or Save & resend, sampling per persona and group member, persona from Plugins, group chat fixes, character cards v1 to v3 as personas with greetings and v2 export, ChatGPT export as real chats, test limits)): https://locallyuncensored.com/blog/branch-and-duplicate-ai-chats.html
+- Create on a Mac ((Guide: Create on Apple Silicon in LU 3.0.7 without ComfyUI, character training on the Mac, Talking Character and Motion Control with LTX-2.3, Edit with up to ten images, ACE-Step 1.5 music, SeedVR2 enhance, masked Edit, prompt enhancer, video LoRAs and Extend, real runs on one M5 Pro 48 GB, beta limits)): https://locallyuncensored.com/blog/create-on-a-mac.html
+- Import a ComfyUI Workflow ((Tutorial: import ComfyUI workflows into LU 3.0.7 in the regular save format or from a folder, subgraphs unpacked, missing node packs installed from LU, Workflow parameters in Create, own workflow in Motion Control with Wan Animate, LoRA from a CivitAI or Hugging Face link, Check files and Repair, Windows and Linux only, limits)): https://locallyuncensored.com/blog/import-comfyui-workflow-into-lu.html
+- Several Local LLM Backends ((Guide: several OpenAI-compatible local backends at the same time in LU 3.0.7, KoboldCpp next to LM Studio or the LU Engine, preset ports, Add all side by side and Run side by side, model IDs a server does not list, context from each server without the 4K cap, LM Studio context per model, reasoning effort for local models, think budget, chat reply timeout, automated tests only for the multi-backend part)): https://locallyuncensored.com/blog/run-several-local-llm-backends.html
+- Train a Character LoRA on a Mac ((Tutorial: local character training on Apple Silicon in LU 3.0.7, Z-Image Turbo base, 24 GB minimum, 340 MB adapter, 4 to 100 photos, text field per photo, Quick/Standard/Thorough, about 7 s per step on an M5 Pro, Use character, two step character video, Talking Character and Motion Control with LTX-2.3 4-bit, beta limits)): https://locallyuncensored.com/blog/train-a-character-on-a-mac.html
+- Consistent Characters with Local AI ((Tutorial: Character Studio in LU 3.0.7, local Z Image training on Windows, Linux and now the Mac, Low VRAM mode for cards under 12 GB, a note per photo for changing clothes, cloud training and Use locally, character in Image, Edit, every video tab and the chat tools, open test limits)): https://locallyuncensored.com/blog/train-a-character-once-use-it-everywhere.html
+- Local AI Reverse Engineering ((Article: reverse engineering with REA and a local model in LU 3.0.7, why the analysis and the model both stay on your machine, uncensored Qwen 3.8 27B builds in the catalog (Abliterated, HauhauCS Aggressive), the tested run with stock Qwen 3.8 27B on Ollama, 64K context, REA as a plugin for Agent and Code, untested combinations named)): https://locallyuncensored.com/blog/local-ai-reverse-engineering.html
+- REA Step by Step ((Guide: REA in LU 3.0.7 step by step, Node.js 22.19+, 24.11+ or 26+, Qwen 3.8 27B or its uncensored builds, Context window 64K in the composer, Plugins menu in Agent or Code, phases Getting the official REA package, Starting REA, 207 reverse engineering tools, first question, tool confirmations, what to check in the answer, troubleshooting)): https://locallyuncensored.com/blog/reverse-engineer-an-app-with-a-local-model.html
+- Kimi K3.1 Pro Step by Step (Guide: Kimi K3.1 Pro in LU step by step, LU Cloud account in Settings, General, the Cloud switch in the header, no app update needed in 3.0.7, Think and effort Low Medium High, Agent toggle and workspace folder, Code tab with Ask permissions and diffs, lu-labs.ai in the browser, LU app on Android, API base URL https://lu-labs.ai/api/inference/v1 with model id moonshotai/Kimi-K3.1-Pro, 0.3 and 1.5 credits per token, troubleshooting): https://locallyuncensored.com/blog/how-to-use-kimi-k3-1-pro-in-lu.html
+- Kimi K3.1 Pro (Kimi K3.1 Pro by Moonshot, October 23 2026, 2.8T MoE with about 104B active, 1M context, text and image input, native tool calls, Artificial Analysis Intelligence Index 55 and fourth, Terminal-Bench 4.0 67 percent, in LU Cloud since October 24 in Chat, Agent and Code on desktop, web and Android, 0.3 and 1.5 credits per input and output token, open weights promised by November 4, local hardware math from the Kimi K3 GGUFs 466 GB to 1.5 TB): https://locallyuncensored.com/blog/kimi-k3-1-pro.html
+- DeepSeek V4.1 Flash Uncensored (DeepSeek V4.1 Flash Uncensored by dealignai, weight-level abliteration of DeepSeek V4.1 Flash 552B MoE, in LU Cloud since October 24 2026 in the Uncensored group (Beta), 1M context, 131,072 output, Think on or off, effort Low Medium High, native tool calls, text only in LU Cloud, HarmBench 100 percent answered, MMLU 82.7 against 87.0, about 22,500 and 90,000 credits per million input and output tokens, not reachable with personal API keys, plus Abliterated Large Flash with images and Limited capacity): https://locallyuncensored.com/blog/deepseek-v4-1-flash-uncensored.html
+- DeepSeek V4.1 Flash Uncensored Step by Step (Guide: DeepSeek V4.1 Flash Uncensored in LU step by step, LU Cloud account in Settings, General, the Cloud switch, the Uncensored group (Beta) in the desktop picker, in the browser the Unrestricted group and the name DeepSeek V4.1 Flash Dealigned, Think and effort Low Medium High, Agent toggle and workspace folder, Code tab with Ask permissions and diffs, Android app, text only, no personal API keys, troubleshooting): https://locallyuncensored.com/blog/how-to-use-deepseek-v4-1-flash-uncensored.html
+- v3.0.6 Release Notes (Voice, computer control, Create in chat and ten more cloud chat models in beta, image input for local models in one download, Mac build for Apple Silicon): https://locallyuncensored.com/blog/locally-uncensored-v3-0-6-release.html
+- Talk to a Local LLM (Voice guide: setup, fifteen voices, the four switches, limits; English only, beta): https://locallyuncensored.com/blog/talk-to-local-llm-voice-chat.html
+- v3.0.2 Release Notes (hotfix: the Code tab scrolls again, issue 138, and the corrected count of open cloud models): https://locallyuncensored.com/blog/locally-uncensored-v3-0-2-hotfix.html
+- Full text for LLMs: https://locallyuncensored.com/llms-full.txt
+- How to Run AI Locally (5-minute beginner guide): https://locallyuncensored.com/blog/how-to-run-ai-locally.html
+- LM Studio Alternatives 2026: https://locallyuncensored.com/blog/lm-studio-alternatives.html
+- Easiest Local AI Image Generator (no ComfyUI node graphs): https://locallyuncensored.com/blog/easiest-local-ai-image-generator.html
+- Run an LLM and Stable Diffusion Together on One GPU (VRAM math + pairings): https://locallyuncensored.com/blog/run-llm-and-stable-diffusion-together.html
+- Character LoRA Training, Locally (dataset, kohya_ss vs ai-toolkit, honest settings): https://locallyuncensored.com/blog/character-lora-training-local.html
+- Local AI Music Generation (ACE-Step on your own GPU, honest hardware notes): https://locallyuncensored.com/blog/local-ai-music-generation.html
+- AI Lipsync and Video Extend, Locally (Talking Character + Extend Video lanes): https://locallyuncensored.com/blog/ai-lipsync-and-video-extend-local.html
+- Local AI on Your Phone: https://locallyuncensored.com/blog/local-ai-on-your-phone.html
+- Best Local AI Apps 2026 (comparison): https://locallyuncensored.com/blog/best-local-ai-apps-2026.html
+- Best Uncensored AI Models 2026: https://locallyuncensored.com/blog/best-uncensored-ai-models-2026.html
+- How to Run Qwen 3.8 27B Locally: https://locallyuncensored.com/blog/how-to-run-qwen-3-8-27b-locally.html
+- Plug and Play Local AI (what zero-setup means): https://locallyuncensored.com/blog/plug-and-play-local-ai.html
+- Local AI Image and Video Generator in One App: https://locallyuncensored.com/blog/local-ai-image-and-video-generator.html
+- Unzensierte KI lokal nutzen (German guide): https://locallyuncensored.com/blog/unzensierte-ki-lokal.html
+- Kimi K3 Explained (2.8T open weight flagship): https://locallyuncensored.com/blog/kimi-k3-explained.html
+- How to Run Kimi K3 (API, OpenRouter, local): https://locallyuncensored.com/blog/how-to-run-kimi-k3.html
+- Can You Run Kimi K3 Locally (hardware math): https://locallyuncensored.com/blog/can-you-run-kimi-k3-locally.html
+- Kimi K3 vs Kimi K2.6: https://locallyuncensored.com/blog/kimi-k3-vs-kimi-k2-6.html
+- Ling 3.0 Flash Explained (124B MoE, 5.1B active, MIT): https://locallyuncensored.com/blog/ling-3-0-flash-explained.html
+- Can You Run GLM-5.3 Locally (hardware math for the 754B flagship and 321B Flash): https://locallyuncensored.com/blog/run-glm-5-3-locally.html
+- GLM-5.3 lokal nutzen (German guide): https://locallyuncensored.com/blog/glm-5-3-lokal-nutzen.html
+- Можно ли запустить GLM-5.3 локально (Russian guide): https://locallyuncensored.com/blog/glm-5-3-lokalno.html
+- How to Run Ling 3.0 Flash Locally (GGUF sizes, hardware): https://locallyuncensored.com/blog/how-to-run-ling-3-0-flash-locally.html
+- How to Run Qwen 3.8 27B Locally (Apache 2.0, real GGUF sizes, template trap): https://locallyuncensored.com/blog/how-to-run-qwen-3-8-27b-locally.html
+- Qwen 3.8 Max Explained (2.4T flagship, weights out since Aug 12, custom licence): https://locallyuncensored.com/blog/qwen-3-8-max-explained.html
+- How to Run Qwen 3.8 Max (API, endpoints, local answer): https://locallyuncensored.com/blog/how-to-run-qwen-3-8.html
+- Can You Run Qwen 3.8 Locally (hardware math + the 27B): https://locallyuncensored.com/blog/can-you-run-qwen-3-8-locally.html
+- Qwen 3.8 vs Qwen 3.6: https://locallyuncensored.com/blog/qwen-3-8-vs-qwen-3-6.html
+- DeepSeek V4 Flash 0731 Explained (July 31 release): https://locallyuncensored.com/blog/deepseek-v4-flash-0731-explained.html
+- How to Run DeepSeek V4 Flash Locally (GGUF + hardware): https://locallyuncensored.com/blog/how-to-run-deepseek-v4-flash-locally.html
+- DeepSeek V4 Flash in the Cloud (LU Labs, API, OpenRouter): https://locallyuncensored.com/blog/deepseek-v4-flash-cloud.html
+- Can You Run DeepSeek V4 Flash Locally (hardware math): https://locallyuncensored.com/blog/deepseek-v4-flash-hardware-requirements.html
+- DeepSeek V4 Flash Abliterated (uncensored build): https://locallyuncensored.com/blog/deepseek-v4-flash-abliterated.html
+- How to Run DeepSeek V4 Pro: https://locallyuncensored.com/blog/how-to-run-deepseek-v4-pro.html
+- DeepSeek V4 Flash vs V4 Pro: https://locallyuncensored.com/blog/deepseek-v4-flash-vs-v4-pro.html
+- Abliterated Models Guide: https://locallyuncensored.com/blog/abliterated-models-guide.html
+- Kimi K3 online (browser, desktop app and API key): https://locallyuncensored.com/blog/kimi-k3-online-guide.html
+- Kimi K3 vs DeepSeek V4 (price, thinking, vision, and which plan): https://locallyuncensored.com/blog/kimi-k3-vs-deepseek-v4.html
+- How to run Qwen 3.8 without a GPU (hosted Studio, API key, or the 27B at home): https://locallyuncensored.com/blog/run-qwen-3-8-without-gpu.html
+- Qwen 3.8 Max vs Qwen 3.8 A95B (the thinking switch, the price, the licence): https://locallyuncensored.com/blog/qwen-3-8-max-vs-a95b-explained.html
+- How to Run Qwen-Image 2.1 Locally (three files, ComfyUI 0.37.0, maskless editing, research licence): https://locallyuncensored.com/blog/how-to-run-qwen-image-2-1-locally.html
+- Qwen-Image 2.1 Explained (7B image model, alpha channel, ten references, no longer Apache 2.0): https://locallyuncensored.com/blog/qwen-image-2-1-explained.html
+- Flux 2 Online Without a 24 GB Card (browser image generation, credit math): https://locallyuncensored.com/blog/flux-2-online-without-gpu.html
+- Flux 2 Dev vs Flux Dev vs Flux Schnell (cost per image and which to default to): https://locallyuncensored.com/blog/flux-2-dev-vs-flux-dev-vs-schnell.html
+- LM Studio Alternative for Mac (browser Studio setup): https://locallyuncensored.com/blog/lm-studio-alternative-for-mac.html
+- What a Mac Can Run Locally in 2026 (RAM tiers and where the cloud picks up): https://locallyuncensored.com/blog/what-a-mac-can-run-locally-2026.html
+- Uncensored AI Chat Online (browser, desktop Cloud switch, or API key): https://locallyuncensored.com/blog/uncensored-ai-chat-online-guide.html
+- What No Filter Actually Means Here (the honest limits): https://locallyuncensored.com/blog/what-no-filter-means-online.html
+- Uncensored AI chat online, no filter on text (landing page): https://locallyuncensored.com/uncensored-ai-chat-online/
+- Uncensored AI image generator online (seven uncensored models from 1,000 credits per image, content policy setting on the account): https://locallyuncensored.com/uncensored-ai-image-generator-online/
+- Uncensored AI video generator online (seventeen uncensored models, image-to-video only, five-second clips): https://locallyuncensored.com/uncensored-ai-video-generator-online/
+- Uncensored AI API (local: http://127.0.0.1:8129/v1 in the desktop app, free; hosted: https://lu-labs.ai/api/inference/v1, keys spend credits): https://locallyuncensored.com/uncensored-ai-api/
+- Locally Uncensored vs Open WebUI / LM Studio / Jan / GPT4All / Msty / SillyTavern / KoboldCpp: https://locallyuncensored.com/blog/
+
+## Comparisons
+- Alternatives & Comparisons hub (all head-to-heads and roundups): https://locallyuncensored.com/alternatives/
+- Venice AI alternatives (Venice Pro 18 USD per month with 100 credits, read 2026-09-22; our packs start at 15 EUR with no subscription): https://locallyuncensored.com/vs/venice/
+- Locally Uncensored vs LM Studio (all-in-one studio vs polished chat client): https://locallyuncensored.com/vs/lm-studio/
+- Locally Uncensored vs ComfyUI (same engine, workflows built for you): https://locallyuncensored.com/vs/comfyui/
+- Locally Uncensored vs Ollama (engine vs all-in-one desktop app on top): https://locallyuncensored.com/vs/ollama/
+- Locally Uncensored vs Jan (two AGPL-3.0 apps, chat-only vs full studio): https://locallyuncensored.com/vs/jan/

@@ -1,6 +1,6 @@
 ---
 name: yolo-ui-pro-max
-description: "UI/UX design intelligence for web, mobile, and desktop in Yolo UI (yolo-rs/yolo-ui). This skill should be used when designing, building, reviewing, or fixing interfaces, including pages, components, design systems, accessibility, interaction, responsive layout, typography, color, charts, and stack-specific UI implementation across 34 stacks (Dioxus 0.8, GPUI, Egui, Iced/libcosmic, Bevy, Tauri v3, GTK4, Qt6/cxx-qt, Shadcn, Base UI, Tailwind v4, Omarchy, Hyprland, Material 3) and 7 YoloThemePresets (yolo-neutral, yolo-m3, yolo-fluent, yolo-apple, yolo-omarchy, yolo-hyprland, yolo-aphrody)."
+description: "UI/UX design intelligence for web, mobile, and desktop in Yolo UI (yolo-rs/yolo-ui). This skill should be used when designing, building, reviewing, or fixing interfaces, including pages, components, design systems, accessibility, interaction, responsive layout, typography, color, charts, and stack-specific UI implementation across 34 stacks (Dioxus 0.8, GPUI, Egui, Iced/libcosmic, Bevy, Tauri v3, GTK4, Qt6/cxx-qt, Shadcn, Base UI, Tailwind v4, Omarchy, Hyprland, Material 3) and 8 YoloThemePresets (yolo-neutral, yolo-m3, yolo-fluent, yolo-apple, yolo-omarchy, yolo-hyprland, yolo-aphrody, yolo-chromium)."
 ---
 
 # Yolo UI Pro Max - Unified Multi-Engine Design Intelligence (`yolo-rs/yolo-ui`)
@@ -9,9 +9,11 @@ description: "UI/UX design intelligence for web, mobile, and desktop in Yolo UI 
 
 For `yolo-rs/yolo-ui` product and framework engineering, apply this guidance through the unified
 multi-engine architecture (`catalog/conversion.toml`). Yolo UI defaults to `YoloThemePreset::Neutral`
-(`yolo-neutral`) for zero vendor lock-in while supporting instant switching across all 7 built-in
+(`yolo-neutral`) for zero vendor lock-in while supporting instant switching across all 8 built-in
 presets (`yolo-neutral`, `yolo-m3`, `yolo-fluent`, `yolo-apple`, `yolo-omarchy` + 23 subthemes,
-`yolo-hyprland`, `yolo-aphrody`). The canonical owners are:
+`yolo-hyprland`, `yolo-aphrody`, `yolo-chromium`). The Chromium preset follows the Views/WebUI
+surface, card, toolbar, and browser-frame token contract in `docs/CHROMIUM_UI_DESIGN_SYSTEM.md`.
+The canonical owners are:
 
 - `crates/yolo-shared`: shared foundation (`RgbaColor`, `YoloThemePreset`, `YoloThemeTokens`, `YoloStyle`, `YoloManifest`, `OmarchySubTheme` 23 palettes, `HyprlandDecorationSpec`, `ByronLovePetSpec`);
 - `crates/yolo-tokens`: HCT/CAM16 dynamic color engine, 37+ semantic color roles, contrast and variant solvers;
@@ -28,10 +30,10 @@ presets (`yolo-neutral`, `yolo-m3`, `yolo-fluent`, `yolo-apple`, `yolo-omarchy` 
 Prefer semantic tokens (`--yolo-*`, `--md-sys-color-*`, `YoloThemeTokens`) over raw color values.
 Select the matching stack guidance (`dioxus`, `gpui`, `egui`, `iced-libcosmic`, `bevy`, `tauri-v3`,
 `gtk4-rs`, `cxx-qt`, `shadcn`, `base-ui`, `html-tailwind`, `omarchy`, `hyprland`, `m3`). The `brand`
-domain includes all 7 Yolo theme presets (`yolo-neutral`, `yolo-m3`, `yolo-fluent`, `yolo-apple`,
-`yolo-omarchy`, `yolo-hyprland`, `yolo-aphrody`) plus baseline light/dark palettes.
+domain includes all 8 Yolo theme presets (`yolo-neutral`, `yolo-m3`, `yolo-fluent`, `yolo-apple`,
+`yolo-omarchy`, `yolo-hyprland`, `yolo-aphrody`, `yolo-chromium`) plus baseline light/dark palettes.
 
-UI/UX design intelligence for web, mobile, and desktop. Searchable local data: 79 searchable styles (50 active), 192 product palettes and reasoning profiles, 74 font pairings, 123 UX guidelines, 105 icons, 17 GSAP presets, 25 chart types, 11 brand/preset themes, and 34 stacks.
+UI/UX design intelligence for web, mobile, and desktop. Searchable local data: 79 searchable styles (50 active), 192 product palettes and reasoning profiles, 74 font pairings, 123 UX guidelines, 105 icons, 17 GSAP presets, 25 chart types, 12 brand/preset themes, and 34 stacks.
 
 ## When to Apply
 

@@ -1,0 +1,28 @@
+[package]
+name = "sd-tauri-core"
+version = "2.0.0-alpha.2"
+edition = "2021"
+
+[dependencies]
+# Async runtime
+tokio = { workspace = true, features = ["full"]  }
+
+# Serialization
+serde = { workspace = true, features = ["derive"]  }
+serde_json = "1.0"
+
+# Error handling
+anyhow = { workspace = true }
+thiserror = "1.0"
+
+# Logging
+tracing = { workspace = true }
+
+# Platform directories
+dirs = "5.0"
+yolo-tauri = { path = "../../../../../packages/yolo-tauri" }
+
+[lib]
+crate-type = ["lib"]
+
+[build-dependencies]

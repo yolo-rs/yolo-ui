@@ -3,6 +3,7 @@ name = "yolo-showcase"
 version = { workspace = true }
 authors = ["Yolo UI Contributors <contact@aphrody.com>"]
 edition = "2024"
+rust-version.workspace = true
 description = "Unified multi-engine & 7-theme showcase app for Yolo UI (Dioxus 0.8, GPUI, Iced, Cosmic, Egui, GTK4, Qt6, Tauri v3, Craft, Storyteller, Migrator & React 19/Expo)."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/yolo-rs/yolo-ui"
@@ -10,7 +11,7 @@ publish = false
 
 [dependencies]
 yolo-shared = { workspace = true }
-yolo-ui = { workspace = true, default-features = false, features = ["lib", "multi-engine"] }
+yolo-ui = { workspace = true, features = ["lib", "multi-engine"] }
 yolo-tokens = { workspace = true }
 yolo-contracts = { workspace = true }
 yolo-emit = { workspace = true }

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Run Gemma 4 Locally: From 4 GB VRAM (E4B) to 31B, Free</title>
+<meta name="description" content="Run Google's Gemma 4 on your own PC — E4B fits 4 GB VRAM, up to 31B dense. Vision, tool calling, 256K context, plus uncensored Heretic GGUF links.">
+<meta name="keywords" content="gemma 4 local, run gemma 4 locally, gemma 4 uncensored, gemma 4 heretic, gemma 4 abliterated, gemma 4 e4b, gemma 4 27b, gemma 4 moe, google gemma 4 guide, gemma 4 ollama, gemma 4 gguf">
+<meta property="og:title" content="Google Gemma 4 — Run It Locally, Uncensored Variants, Full Guide">
+<meta property="og:description" content="Gemma 4 from lightweight E4B to frontier 27B. Vision, tools, 256K context. Uncensored variants available.">
+<meta property="og:image" content="https://raw.githubusercontent.com/PurpleDoubleD/locally-uncensored/master/docs/social-preview.png">
+<meta property="og:url" content="https://locallyuncensored.com/blog/gemma-4-local-guide.html">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-04-10">
+<meta property="article:author" content="PurpleDoubleD">
+<meta property="article:tag" content="Gemma 4">
+<meta property="article:tag" content="Google AI">
+<meta property="article:tag" content="Local AI">
+<meta property="article:tag" content="Uncensored">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Google Gemma 4 — Run Locally, Uncensored Variants">
+<meta name="twitter:description" content="Complete guide to running Gemma 4 locally with uncensored variants.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/PurpleDoubleD/locally-uncensored/master/docs/social-preview.png">
+<link rel="canonical" href="https://locallyuncensored.com/blog/gemma-4-local-guide.html">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="../favicon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Google Gemma 4 — Run It Locally, Uncensored Variants, Full Guide","description":"Complete guide to Google Gemma 4 running locally. All sizes, uncensored variants, VRAM requirements.","image":"https://raw.githubusercontent.com/PurpleDoubleD/locally-uncensored/master/docs/social-preview.png","datePublished":"2026-04-10","dateModified":"2026-04-10","author":{"@type":"Person","name":"PurpleDoubleD","url":"https://github.com/PurpleDoubleD"},"publisher":{"@type":"Organization","name":"Locally Uncensored","url":"https://locallyuncensored.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://locallyuncensored.com/blog/gemma-4-local-guide.html"},"keywords":"gemma 4 local, run gemma 4 locally, gemma 4 uncensored, gemma 4 heretic, gemma 4 abliterated"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://locallyuncensored.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://locallyuncensored.com/blog/"},{"@type":"ListItem","position":3,"name":"Google Gemma 4: Run It Locally","item":"https://locallyuncensored.com/blog/gemma-4-local-guide.html"}]}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/lu.css">
+<script defer src="/assets/lu.js"></script>
+  <script data-goatcounter="https://purple47.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<nav class="lu-nav">
+  <a class="lu-nav-brand" href="/" aria-label="Locally Uncensored">
+    <span class="lu-mono" data-mono="nav" data-size="40" aria-hidden="true"></span>
+    <span class="lu-nav-word">Locally <span class="accent">Uncensored</span></span>
+  </a>
+  <div class="lu-nav-links" id="lu-nav-links">
+    <a class="lu-nav-link" href="/">Home</a>
+    <a class="lu-nav-link" href="/pricing/">Pricing</a>
+    <a class="lu-nav-link" href="/blog/">Blog</a>
+    <a class="lu-nav-link" href="/guide/">Guide</a>
+    <a class="lu-nav-link" href="/remote-access/">Remote</a>
+  </div>
+  <div class="lu-nav-right">
+    <a class="lu-nav-icon" href="https://github.com/PurpleDoubleD/locally-uncensored" title="GitHub" aria-label="GitHub"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.05-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.21.7.82.58A12.01 12.01 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/></svg><span class="lu-nav-badge">2000+&#8202;⭐</span></a>
+    <a class="lu-nav-icon discord" href="https://locallyuncensored.com/discord" target="_blank" rel="noopener" title="Discord" aria-label="Discord"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.32 4.37A19.8 19.8 0 0 0 15.45 3c-.2.36-.44.85-.6 1.23a18.3 18.3 0 0 0-5.7 0c-.16-.38-.4-.87-.6-1.23a19.7 19.7 0 0 0-4.87 1.37C.55 8.9-.32 13.3.11 17.63a19.9 19.9 0 0 0 6 3.03c.48-.66.9-1.36 1.27-2.1-.7-.26-1.36-.58-1.99-.96.17-.12.33-.25.49-.38a14.2 14.2 0 0 0 12.24 0c.16.13.32.26.49.38-.63.38-1.3.7-2 .96.37.74.8 1.44 1.27 2.1a19.8 19.8 0 0 0 6-3.03c.5-5.03-.85-9.39-3.55-13.26ZM8.02 15c-1.18 0-2.15-1.09-2.15-2.42 0-1.34.95-2.43 2.15-2.43 1.2 0 2.17 1.09 2.15 2.43 0 1.33-.95 2.42-2.15 2.42Zm7.96 0c-1.18 0-2.15-1.09-2.15-2.42 0-1.34.95-2.43 2.15-2.43 1.2 0 2.17 1.09 2.15 2.43 0 1.33-.94 2.42-2.15 2.42Z"/></svg><span class="lu-nav-badge">1200+&#8202;<span style="font-size:0.715em">🟢</span></span></a>
+    <span class="lu-nav-sep"></span>
+    <div class="switch" id="theme-switch" role="button" aria-label="Toggle theme"></div>
+    <a class="he-cta" href="/pricing/" aria-label="LU Cloud plans and what they include"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Cloud</a>
+    <a class="lu-nav-dl" href="https://github.com/PurpleDoubleD/locally-uncensored/releases/latest"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a>
+    <button type="button" class="lu-nav-toggle" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</nav>
+<article class="lu-doc">
+<h1>Google Gemma 4 — Run It Locally</h1>
+<div class="meta">Published April 10, 2026 &middot; PurpleDoubleD &middot; 6 min read</div>
+
+<p>Google released Gemma 4 in April 2026 and it immediately became one of the most important open-weight model families for local AI. From the tiny E2B that runs on anything to the frontier 31B dense model, Gemma 4 covers every use case. Native tool calling, vision support, 256K context, and an Apache 2.0 license make it the go-to recommendation for new users.</p>
+
+<p>This guide covers every Gemma 4 variant, how to run them locally, and which uncensored versions exist.</p>
+
+<aside class="lu-cloud-box">
+  <span class="lu-cloud-kicker">No GPU? Run it online</span>
+  <p>The 31B build wants far more memory than the E4B one, so if your card stops short, the hosted side runs <a href="/uncensored-ai-chat-online/">48 chat models online</a> on any machine with a browser, paid from credit packs that start at 15 EUR and do not expire. <a href="/pricing/">See what it costs</a>.</p>
+</aside>
+
+<h2>The Gemma 4 Family</h2>
+
+<table>
+<thead><tr><th>Model</th><th>Parameters</th><th>VRAM</th><th>Context</th><th>Best For</th></tr></thead>
+<tbody>
+<tr><td>Gemma 4 E2B</td><td>2.3B</td><td>2-3 GB</td><td>32K</td><td>Ultra-lightweight. Runs on any machine.</td></tr>
+<tr><td>Gemma 4 E4B</td><td>4.5B</td><td>4 GB</td><td>128K</td><td>Best small model. Fast, capable, low VRAM.</td></tr>
+<tr><td>Gemma 4 31B</td><td>31B dense</td><td>17-20 GB</td><td>256K</td><td>Frontier quality. Native tools + vision.</td></tr>
+<tr><td>Gemma 4 26B MoE</td><td>26B (4B active)</td><td>16 GB</td><td>128K</td><td>26B brain at 4B speed. Tools + vision.</td></tr>
+</tbody>
+</table>
+
+<h2>Why Gemma 4 Matters</h2>
+
+<h3>Native Tool Calling</h3>
+<p>Gemma 4 supports structured tool calling out of the box. In Locally Uncensored, this means Agent Mode works without any workarounds. The model can search the web, read and write files, execute code, and interact with your system using the 13 built-in MCP tools.</p>
+
+<h3>Vision</h3>
+<p>Attach images to your messages and Gemma 4 analyzes them. Describe what is in a photo, extract text from screenshots, explain diagrams. This works across all Gemma 4 sizes except E2B.</p>
+
+<h3>Apache 2.0 License</h3>
+<p>Unlike Meta's Llama models (which have usage restrictions above 700M monthly users) or Qwen (which requires attribution), Gemma 4 uses Apache 2.0. You can use it for anything, commercial or personal, with no restrictions.</p>
+
+<h3>256K Context Window</h3>
+<p>The 27B model supports 256K tokens of context. That is roughly 500 pages of text in a single conversation. For the Coding Agent, this means analyzing entire codebases without losing context.</p>
+
+<h2>Uncensored Variants</h2>
+
+<p>The official Gemma 4 models have content filters. Google trained them to refuse certain prompts. The community has created uncensored versions:</p>
+
+<h3>Heretic Variants</h3>
+<p>The "heretic" uncensored method produces some of the cleanest unrestricted outputs. Available for 31B dense and 26B MoE. These keep full model quality while removing refusals.</p>
+
+<h3>Abliterated Variants</h3>
+<p>Abliteration removes the refusal direction from the model weights. Available for 27B. Slightly more aggressive uncensoring than heretic.</p>
+
+<table>
+<thead><tr><th>Variant</th><th>Size</th><th>Download</th><th>Method</th></tr></thead>
+<tbody>
+<tr><td>Gemma 4 31B Heretic</td><td>17 GB</td><td>Q4_K_M GGUF</td><td>Heretic uncensor</td></tr>
+<tr><td>Gemma 4 26B MoE Heretic</td><td>16 GB</td><td>Q4_K_M GGUF</td><td>Heretic uncensor</td></tr>
+<tr><td>Gemma 4 31B Uncensored</td><td>17 GB</td><td>Q4_K_M GGUF</td><td>Direct training</td></tr>
+<tr><td>Gemma 4 31B Abliterated</td><td>17 GB</td><td><a href="https://huggingface.co/huihui-ai/Huihui-gemma-4-31B-it-qat-q4_0-unquantized-abliterated-GGUF">huihui-ai GGUF</a></td><td>Abliteration</td></tr>
+</tbody>
+</table>
+
+<p>All of these are available as one-click downloads in Locally Uncensored's Discover page under the Uncensored tab.</p>
+
+<h3>Direct Download Links (Verified GGUF)</h3>
+
+<p>Working abliterated Gemma 4 GGUF repos on Hugging Face, matched to the hardware picks below:</p>
+
+<ul>
+<li><strong>4 GB VRAM &mdash; E4B:</strong> <a href="https://huggingface.co/huihui-ai/Huihui-gemma-4-E4B-it-qat-q4_0-unquantized-abliterated-GGUF">huihui-ai/Huihui-gemma-4-E4B-…-abliterated-GGUF</a> &mdash; Q4_K 5.3 GB</li>
+<li><strong>16 GB VRAM &mdash; 31B dense:</strong> <a href="https://huggingface.co/huihui-ai/Huihui-gemma-4-31B-it-qat-q4_0-unquantized-abliterated-GGUF">huihui-ai/Huihui-gemma-4-31B-…-abliterated-GGUF</a> &mdash; Q4_0 18.7 GB</li>
+<li><strong>Speed &mdash; 26B MoE:</strong> <a href="https://huggingface.co/huihui-ai/Huihui-gemma-4-26B-A4B-it-qat-q4_0-unquantized-abliterated-GGUF">huihui-ai/Huihui-gemma-4-26B-A4B-…-abliterated-GGUF</a> &mdash; Q4_K 16.8 GB</li>
+</ul>
+
+<h2>Which Gemma 4 Should You Pick?</h2>
+
+<div class="verdict">
+<h3>4 GB VRAM or less: Gemma 4 E4B</h3>
+<p>The E4B is remarkably good for its size. It handles general chat, basic coding, and simple tool calling. It is the default recommended model in Locally Uncensored's onboarding for users with smaller GPUs.</p>
+</div>
+
+<div class="verdict">
+<h3>16 GB VRAM: Gemma 4 31B</h3>
+<p>The full 31B dense model is the recommendation. Frontier-level quality with native vision and tool calling. For uncensored use, get the heretic variant.</p>
+</div>
+
+<div class="verdict">
+<h3>Speed over quality: Gemma 4 26B MoE</h3>
+<p>The MoE variant has 26B total parameters but only activates 4B per token. It runs noticeably faster than the 31B dense model while keeping most of the quality. Good for interactive agent sessions where response time matters.</p>
+</div>
+
+<h2>Gemma 4 vs the Competition</h2>
+
+<table>
+<thead><tr><th>Model</th><th>License</th><th>Tools</th><th>Vision</th><th>Context</th></tr></thead>
+<tbody>
+<tr><td>Gemma 4 31B</td><td>Apache 2.0</td><td>Native</td><td>Yes</td><td>256K</td></tr>
+<tr><td>Qwen 3.5 27B</td><td>Apache 2.0</td><td>Native</td><td>No</td><td>256K</td></tr>
+<tr><td>Llama 4 Scout</td><td>Llama 4</td><td>Native</td><td>Yes</td><td>10M</td></tr>
+<tr><td>GPT-OSS 20B</td><td>MIT</td><td>Limited</td><td>No</td><td>128K</td></tr>
+</tbody>
+</table>
+
+<p>Gemma 4 31B has the best overall package: permissive license, native tools and vision, large context window, and strong uncensored variants. Qwen 3.5 edges it out on raw reasoning benchmarks but lacks vision. Llama 4 Scout has a massive context window but requires significantly more VRAM.</p>
+
+<h2>Running Gemma 4 in Locally Uncensored</h2>
+
+<p>If you are starting fresh, install Locally Uncensored and the onboarding wizard will recommend Gemma 4 E4B based on your GPU. For the larger models, go to the Discover page and download with one click. GGUF format, automatic path detection, no manual config.</p>
+
+<p>For existing users: update to v2.3.0, open Discover, and all Gemma 4 variants are there ready to download.</p>
+
+<div class="cta">
+<p style="margin-bottom:24px;color:#888">Run Gemma 4 locally. All sizes, uncensored variants included.</p>
+<a href="https://github.com/PurpleDoubleD/locally-uncensored/releases/latest" class="btn">Download the latest version</a>
+<p style="margin-top:18px;margin-bottom:0;color:#888">No GPU? LU Cloud runs in a browser, paid from credit packs that start at 15 EUR and need no subscription. <a href="/pricing/">See what it costs</a>.</p>
+</div>
+
+    <h2>In the handbook</h2>
+
+    <ul>
+      <li><a href="/guide/install/">Install and update</a>, the SmartScreen warning and how updates arrive</li>
+      <li><a href="/guide/chat/">Chat</a>, the model picker, the context window and thinking mode</li>
+      <li><a href="/guide/faq-and-glossary/">FAQ and glossary</a>, answers to the questions people really ask</li>
+    </ul>
+
+</article>
+<footer>
+  <div class="footer-row footer-meta"><span>&copy; 2026 &middot; Locally Uncensored &middot; AGPL-3.0</span></div>
+  <div class="footer-row footer-links">
+    <a href="https://locallyuncensored.com/blog/">Blog</a>
+    <a href="https://locallyuncensored.com/guide/">Guide</a>
+    <a href="https://locallyuncensored.com/pricing/">Pricing</a>
+    <a href="https://locallyuncensored.com/cloud/">LU Cloud</a>
+    <a href="https://locallyuncensored.com/uncensored-ai-chat-online/">Uncensored AI chat online</a>
+    <a href="https://locallyuncensored.com/uncensored-ai-image-generator-online/">Image generator online</a>
+    <a href="https://locallyuncensored.com/uncensored-ai-video-generator-online/">Video generator online</a>
+    <a href="https://locallyuncensored.com/alternatives/">Alternatives</a>
+    <a href="https://locallyuncensored.com/is-locally-uncensored-safe/">Is it safe?</a>
+    <a href="https://locallyuncensored.com/remote-access/">Remote access</a>
+    <a href="https://locallyuncensored.com/discord" target="_blank" rel="noopener">Discord</a>
+    <a href="https://github.com/PurpleDoubleD/locally-uncensored">GitHub</a>
+    <a href="https://github.com/PurpleDoubleD/locally-uncensored/discussions">Discussions</a>
+    <a href="https://github.com/PurpleDoubleD/locally-uncensored/issues">Issues</a>
+    <a href="https://reddit.com/user/GroundbreakingMall54">Reddit</a>
+    <a href="https://www.linkedin.com/in/david-drobnitza-locallyuncensored/" rel="me noopener" target="_blank">LinkedIn</a>
+    <a href="https://locallyuncensored.com/privacy/">Privacy</a>
+    <a href="https://locallyuncensored.com/terms/">Terms</a>
+    <a href="https://locallyuncensored.com/impressum/">Impressum</a>
+  </div>
+</footer>
+</body>
+</html>

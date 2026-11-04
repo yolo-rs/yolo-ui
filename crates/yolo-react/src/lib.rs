@@ -176,7 +176,7 @@ export function DashboardPanel({ title, initialCount, onSync }) {
     }
 
     #[test]
-    fn theme_bridge_exports_all_seven_presets_and_twenty_three_omarchy_subthemes() {
+    fn theme_bridge_exports_all_eight_presets_and_twenty_three_omarchy_subthemes() {
         for preset in YoloThemePreset::ALL {
             let web_css = export_react_web_css(preset, true);
             assert!(web_css.contains(preset.id()));

@@ -139,7 +139,7 @@ mod tests {
     use crate::role::Role;
 
     #[test]
-    fn all_seven_presets_and_twenty_three_omarchy_subthemes_resolve() {
+    fn all_eight_presets_and_twenty_three_omarchy_subthemes_resolve() {
         assert_eq!(YoloThemePreset::ALL.len(), 8);
         assert_eq!(OmarchySubTheme::ALL.len(), 23);
 

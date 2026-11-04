@@ -6,7 +6,7 @@ This document codifies the architectural standards implemented across `aphrody-l
 
 ```text
 yolo-ui/
-├── Cargo.toml                  # Single unified Cargo workspace (186 members, 349 deduplicated deps)
+├── Cargo.toml                  # Single unified Cargo workspace (237 members; root dependency catalog)
 ├── Cargo.lock                  # Single Cargo lockfile for deterministic builds
 ├── Justfile                    # Unified task runner (just + bun + cargo + sccache + gh)
 ├── package.json                # Root Bun v1.4.4+ workspace manifest (`@aphrody/yolo-ui`)
@@ -24,7 +24,7 @@ yolo-ui/
 │   ├── yolo-ui/                # Umbrella Fullstack Crate (Dioxus 0.8 + Blitz + AnyRender + Taffy)
 │   ├── yolo-gpui/              # Zed GPUI + Longbridge GPUI-Kit + Rust-i18n Bridge
 │   ├── yolo-iced/              # Iced Elm MVU + Iced_AW + Iced_Audio + Comet Bridge
-│   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + CEF + ACL Bridge
+│   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + ACL bridge; browser engines belong to yolo-web
 │   └── ...                     # Core Dioxus, Fullstack, Router, Signals, Web, Desktop, Native, CLI
 ├── scripts/                    # Native Bun v1.4.4+ orchestration (`fleet.ts`, `build.ts`, `test.ts`, `optimize.ts`, `migrate-bun.ts`)
 ├── tests/                      # Automated Bun monorepo integrity tests (`monorepo.test.ts`)

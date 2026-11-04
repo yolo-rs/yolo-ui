@@ -1,7 +1,7 @@
 # =============================================================================
 # Aphrody Labs Yolo UI (`aphrody-labs/yolo-ui`) — Unified Cargo Configuration
 # =============================================================================
-# Optimizes compilation across the 186-member Cargo workspace and 70 submodules
+# Optimizes compilation across the 237-member Cargo workspace and 129 submodules
 # using sccache compiler caching, sparse crates.io index, and workspace aliases.
 
 [build]

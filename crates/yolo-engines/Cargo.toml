@@ -1,0 +1,50 @@
+[package]
+name = "yolo-engines"
+version = { workspace = true }
+edition = { workspace = true }
+rust-version.workspace = true
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yolo-rs/yolo-ui"
+description = "First-party cross-platform engine adapters, capabilities, themes, and native bridge descriptors."
+publish = false
+
+[features]
+default = ["gpui", "iced", "tauri", "egui", "cosmic", "gtk", "qt"]
+gpui = []
+iced = []
+iced-dioxus = ["iced", "dep:dioxus-core", "dep:dioxus-signals"]
+aw = []
+audio = []
+comet = []
+cryoglyph = []
+tauri = []
+desktop-shell = ["tauri", "dep:wry", "dep:tao", "dep:muda", "dep:tray-icon", "dep:global-hotkey"]
+egui = ["dep:egui"]
+cosmic = []
+gtk = []
+system-gtk4 = ["gtk", "dep:gtk", "dep:adw"]
+qt = []
+system-qt6 = ["qt", "dep:cxx", "dep:cxx-qt", "dep:cxx-qt-lib"]
+
+[dependencies]
+yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true }
+yolo-emit = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+url = { workspace = true }
+
+dioxus-core = { workspace = true, optional = true }
+dioxus-signals = { workspace = true, optional = true }
+egui = { workspace = true, optional = true }
+wry = { workspace = true, optional = true, default-features = false, features = ["os-webview"] }
+tao = { workspace = true, optional = true, features = ["rwh_05"] }
+muda = { workspace = true, optional = true }
+tray-icon = { workspace = true, optional = true }
+global-hotkey = { workspace = true, optional = true }
+gtk = { workspace = true, optional = true }
+adw = { workspace = true, optional = true }
+cxx = { workspace = true, optional = true }
+cxx-qt = { workspace = true, optional = true }
+cxx-qt-lib = { workspace = true, optional = true }

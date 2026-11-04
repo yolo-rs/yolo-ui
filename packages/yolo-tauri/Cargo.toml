@@ -6,41 +6,21 @@ authors = [
   "Tauri Programme within The Commons Conservancy",
   "Dioxus Labs",
 ]
-edition = "2024"
-description = "Tauri v3 Alpha / Upstream dev integration, ACL capabilities, CEF/Wry multi-engine configuration, and IPC bridge for Aphrody Labs Yolo UI & Dioxus Fullstack."
+edition.workspace = true
+description = "Tauri v3 Alpha integration using Wry, ACL capabilities, and an IPC bridge for Yolo UI and Dioxus Fullstack."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/aphrody-labs/yolo-ui"
 keywords = ["tauri", "dioxus", "wry", "tao", "desktop"]
 categories = ["gui", "web-programming"]
-rust-version = "1.85.0"
+rust-version.workspace = true
 
 [dependencies]
-yolo-shared = { workspace = true }
-serde = { workspace = true, features = ["derive"] }
-serde_json = { workspace = true }
-thiserror = { workspace = true }
-url = { workspace = true }
-
-# Shared Tauri-Apps / Dioxus Desktop Native Stack (Wry 0.57+, Tao 0.37+, Muda 0.21+, Tray-Icon 0.26+)
-wry = { workspace = true, optional = true, default-features = false, features = ["os-webview"] }
-tao = { workspace = true, optional = true, features = ["rwh_05"] }
-
-[target.'cfg(any(target_os = "windows", target_os = "macos", target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
-muda = { workspace = true, optional = true }
-global-hotkey = { workspace = true, optional = true }
-
-[target.'cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))'.dependencies]
-tray-icon = { workspace = true, optional = true }
+yolo-engines = { workspace = true, default-features = false, features = ["tauri"] }
 
 [features]
-default = ["ACL", "ipc", "cef-config"]
+default = ["ACL", "ipc"]
 ACL = []
 ipc = []
-cef-config = []
 desktop-shell = [
-  "dep:wry",
-  "dep:tao",
-  "dep:muda",
-  "dep:tray-icon",
-  "dep:global-hotkey",
+  "yolo-engines/desktop-shell",
 ]

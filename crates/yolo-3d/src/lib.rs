@@ -8,8 +8,8 @@
 //! 2. **glTF 2.0 (`.gltf`/`.glb`) & Wavefront OBJ Importer** via `gltf` and `tobj` mapping into `Node3d`.
 //! 3. **Blender & Assimp Asset Exchange Pipeline**:
 //!    - Coordinate system normalization (Blender Z-up to Three.js/WGPU Y-up, right-handed coordinates).
-//! 4. **Bevy 0.16 ECS 3D Compatibility Bridge**:
-//!    - Bidirectional transform mapping and mesh buffer sharing with Bevy's spatial hierarchy.
+//! 4. **Bevy 0.20 ECS 3D Compatibility Bridge**:
+//!    - Bidirectional transform mapping between Bevy's spatial hierarchy and the shared scene model.
 //! 5. **Native C/C++ 3D Tooling Interop**:
 //!    - Assimp, meshopt compression, and Draco geometry asset pipelines.
 
@@ -21,6 +21,43 @@ use yolo_render::{
 };
 use yolo_tokens::scheme::Variant;
 
+/// Transform conversion helpers for Bevy 0.20.
+#[cfg(feature = "bevy")]
+pub mod bevy {
+    use bevy_math::{EulerRot, Quat, Vec3};
+    use bevy_transform::components::Transform as BevyTransform;
+
+    use crate::Transform;
+
+    /// Convert the shared 3D scene transform into Bevy's spatial transform.
+    #[must_use]
+    pub fn to_bevy(transform: Transform) -> BevyTransform {
+        let radians = std::f32::consts::PI / 180.0;
+        BevyTransform {
+            translation: Vec3::from_array(transform.translation),
+            rotation: Quat::from_euler(
+                EulerRot::XYZ,
+                transform.rotation_deg[0] * radians,
+                transform.rotation_deg[1] * radians,
+                transform.rotation_deg[2] * radians,
+            ),
+            scale: Vec3::from_array(transform.scale),
+        }
+    }
+
+    /// Convert Bevy's spatial transform into the shared 3D scene model.
+    #[must_use]
+    pub fn from_bevy(transform: &BevyTransform) -> Transform {
+        let (x, y, z) = transform.rotation.to_euler(EulerRot::XYZ);
+        let degrees = 180.0 / std::f32::consts::PI;
+        Transform {
+            translation: transform.translation.to_array(),
+            rotation_deg: [x * degrees, y * degrees, z * degrees],
+            scale: transform.scale.to_array(),
+        }
+    }
+}
+
 /// 3D Geometry Primitives matching Three.js / R3F declarative tags.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ThreeGeometry {
@@ -29,11 +66,21 @@ pub enum ThreeGeometry {
     /// `<sphereGeometry args={[radius, widthSegments, heightSegments]} />`
     Sphere { radius: f32, segments: u32 },
     /// `<cylinderGeometry args={[radiusTop, radiusBottom, height, radialSegments]} />`
-    Cylinder { radius_top: f32, radius_bottom: f32, height: f32, segments: u32 },
+    Cylinder {
+        radius_top: f32,
+        radius_bottom: f32,
+        height: f32,
+        segments: u32,
+    },
     /// `<planeGeometry args={[width, height]} />`
     Plane { width: f32, height: f32 },
     /// `<torusGeometry args={[radius, tube, radialSegments, tubularSegments]} />`
-    Torus { radius: f32, tube: f32, radial_segments: u32, tubular_segments: u32 },
+    Torus {
+        radius: f32,
+        tube: f32,
+        radial_segments: u32,
+        tubular_segments: u32,
+    },
     /// Custom vertex buffer mesh (e.g. from `.gltf` or `.obj`)
     CustomMesh { uri: String, submesh_index: usize },
 }
@@ -93,7 +140,11 @@ impl Default for ThreeMeshNode {
             position: [0.0, 0.0, 0.0],
             rotation_deg: [0.0, 0.0, 0.0],
             scale: [1.0, 1.0, 1.0],
-            geometry: ThreeGeometry::Box { width: 1.0, height: 1.0, depth: 1.0 },
+            geometry: ThreeGeometry::Box {
+                width: 1.0,
+                height: 1.0,
+                depth: 1.0,
+            },
             material: ThreeMaterial::default(),
             cast_shadow: true,
         }
@@ -103,10 +154,27 @@ impl Default for ThreeMeshNode {
 /// Three.js Light source.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ThreeLight {
-    Ambient { color: String, intensity: f32 },
-    Hemisphere { sky: String, ground: String, intensity: f32 },
-    Directional { color: String, intensity: f32, direction: [f32; 3], cast_shadow: bool },
-    Point { color: String, intensity: f32, position: [f32; 3], range: f32 },
+    Ambient {
+        color: String,
+        intensity: f32,
+    },
+    Hemisphere {
+        sky: String,
+        ground: String,
+        intensity: f32,
+    },
+    Directional {
+        color: String,
+        intensity: f32,
+        direction: [f32; 3],
+        cast_shadow: bool,
+    },
+    Point {
+        color: String,
+        intensity: f32,
+        position: [f32; 3],
+        range: f32,
+    },
 }
 
 /// Complete declarative Three.js / React Three Fiber scene definition.
@@ -128,7 +196,10 @@ impl ThreeSceneDocument {
             camera_position: [0.0, 2.5, 6.0],
             camera_target: [0.0, 0.5, 0.0],
             lights: vec![
-                ThreeLight::Ambient { color: "#FFFFFF".to_string(), intensity: 0.35 },
+                ThreeLight::Ambient {
+                    color: "#FFFFFF".to_string(),
+                    intensity: 0.35,
+                },
                 ThreeLight::Directional {
                     color: "#FFFFFF".to_string(),
                     intensity: 1.2,
@@ -148,7 +219,11 @@ impl ThreeSceneDocument {
                     position: [-1.0, 0.5, 0.0],
                     rotation_deg: [0.0, 45.0, 0.0],
                     scale: [1.0, 1.0, 1.0],
-                    geometry: ThreeGeometry::Box { width: 1.0, height: 1.0, depth: 1.0 },
+                    geometry: ThreeGeometry::Box {
+                        width: 1.0,
+                        height: 1.0,
+                        depth: 1.0,
+                    },
                     material: ThreeMaterial {
                         color: "#17335C".to_string(), // Royal Azur
                         roughness: 0.2,
@@ -162,7 +237,10 @@ impl ThreeSceneDocument {
                     position: [1.2, 0.5, 0.0],
                     rotation_deg: [0.0, 0.0, 0.0],
                     scale: [1.0, 1.0, 1.0],
-                    geometry: ThreeGeometry::Sphere { radius: 0.5, segments: 32 },
+                    geometry: ThreeGeometry::Sphere {
+                        radius: 0.5,
+                        segments: 32,
+                    },
                     material: ThreeMaterial {
                         color: "#FFD700".to_string(), // Gold
                         roughness: 0.1,
@@ -176,7 +254,10 @@ impl ThreeSceneDocument {
                     position: [0.0, 0.0, 0.0],
                     rotation_deg: [-90.0, 0.0, 0.0], // -90 deg X
                     scale: [1.0, 1.0, 1.0],
-                    geometry: ThreeGeometry::Plane { width: 10.0, height: 10.0 },
+                    geometry: ThreeGeometry::Plane {
+                        width: 10.0,
+                        height: 10.0,
+                    },
                     material: ThreeMaterial {
                         color: "#18181B".to_string(),
                         roughness: 0.9,
@@ -208,7 +289,12 @@ impl ThreeSceneDocument {
         let mut lights = Vec::new();
         for light in &self.lights {
             match light {
-                ThreeLight::Directional { direction, color, intensity, cast_shadow } => {
+                ThreeLight::Directional {
+                    direction,
+                    color,
+                    intensity,
+                    cast_shadow,
+                } => {
                     let rgba = parse_hex_rgba8(color);
                     lights.push(Light::Directional {
                         direction: *direction,
@@ -217,7 +303,12 @@ impl ThreeSceneDocument {
                         cast_shadow: *cast_shadow,
                     });
                 }
-                ThreeLight::Point { position, color, intensity, range } => {
+                ThreeLight::Point {
+                    position,
+                    color,
+                    intensity,
+                    range,
+                } => {
                     let rgba = parse_hex_rgba8(color);
                     lights.push(Light::Point {
                         position: *position,
@@ -233,7 +324,11 @@ impl ThreeSceneDocument {
                         intensity: *intensity,
                     });
                 }
-                ThreeLight::Hemisphere { sky, ground, intensity } => {
+                ThreeLight::Hemisphere {
+                    sky,
+                    ground,
+                    intensity,
+                } => {
                     let sky_rgba = parse_hex_rgba8(sky);
                     let gnd_rgba = parse_hex_rgba8(ground);
                     lights.push(Light::Hemisphere {
@@ -255,7 +350,11 @@ impl ThreeSceneDocument {
             };
 
             let rgba = parse_hex_rgba8(&mesh.material.color);
-            let emissive = mesh.material.emissive.as_ref().map(|e| Paint::Fixed(parse_hex_rgba8(e)));
+            let emissive = mesh
+                .material
+                .emissive
+                .as_ref()
+                .map(|e| Paint::Fixed(parse_hex_rgba8(e)));
 
             let material = Material {
                 base: Paint::Fixed(rgba),
@@ -270,7 +369,11 @@ impl ThreeSceneDocument {
             };
 
             let geometry = match mesh.geometry {
-                ThreeGeometry::Box { width, height, depth } => Geometry::Box {
+                ThreeGeometry::Box {
+                    width,
+                    height,
+                    depth,
+                } => Geometry::Box {
                     size: [width, height, depth],
                 },
                 ThreeGeometry::Sphere { radius, segments } => Geometry::Sphere {
@@ -278,26 +381,32 @@ impl ThreeSceneDocument {
                     width_segments: segments,
                     height_segments: segments / 2,
                 },
-                ThreeGeometry::Cylinder { radius_top, radius_bottom, height, segments } => {
-                    Geometry::Cylinder {
-                        radius_top,
-                        radius_bottom,
-                        height,
-                        radial_segments: segments,
-                        open_ended: false,
-                    }
-                }
+                ThreeGeometry::Cylinder {
+                    radius_top,
+                    radius_bottom,
+                    height,
+                    segments,
+                } => Geometry::Cylinder {
+                    radius_top,
+                    radius_bottom,
+                    height,
+                    radial_segments: segments,
+                    open_ended: false,
+                },
                 ThreeGeometry::Plane { width, height } => Geometry::Plane {
                     size: [width, height],
                 },
-                ThreeGeometry::Torus { radius, tube, radial_segments, tubular_segments } => {
-                    Geometry::Torus {
-                        radius,
-                        tube,
-                        radial_segments,
-                        tubular_segments,
-                    }
-                }
+                ThreeGeometry::Torus {
+                    radius,
+                    tube,
+                    radial_segments,
+                    tubular_segments,
+                } => Geometry::Torus {
+                    radius,
+                    tube,
+                    radial_segments,
+                    tubular_segments,
+                },
                 ThreeGeometry::CustomMesh { .. } => Geometry::Box {
                     size: [1.0, 1.0, 1.0],
                 },
@@ -317,7 +426,12 @@ impl ThreeSceneDocument {
             variant: Variant::Vibrant,
             is_dark: true,
             contrast_level: 0.0,
-            background: Some(Paint::Fixed(Rgba8 { r: 19, g: 20, b: 32, a: 255 })),
+            background: Some(Paint::Fixed(Rgba8 {
+                r: 19,
+                g: 20,
+                b: 32,
+                a: 255,
+            })),
             samples: 4,
             camera,
             lights,
@@ -351,7 +465,12 @@ fn parse_hex_rgba8(hex: &str) -> Rgba8 {
         let a = u8::from_str_radix(&s[6..8], 16).unwrap_or(255);
         Rgba8 { r, g, b, a }
     } else {
-        Rgba8 { r: 255, g: 255, b: 255, a: 255 }
+        Rgba8 {
+            r: 255,
+            g: 255,
+            b: 255,
+            a: 255,
+        }
     }
 }
 

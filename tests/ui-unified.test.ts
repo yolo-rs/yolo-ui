@@ -28,7 +28,7 @@ import {
 const ROOT = resolve(import.meta.dir, "..");
 
 describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
-  test("1. Skill yolo-ui-pro-max has all 34 stacks, 7 Yolo brand presets, and mirrored SKILL.md", async () => {
+  test("1. Skill yolo-ui-pro-max has all 34 stacks, 8 Yolo brand presets, and mirrored SKILL.md", async () => {
     const skillPath = join(ROOT, "skills/yolo-ui-pro-max/SKILL.md");
     const mirrorPath = join(ROOT, ".agents/skills/yolo-ui-pro-max/SKILL.md");
     const bunOsRefPath = join(
@@ -75,6 +75,7 @@ describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
       "yolo-omarchy",
       "yolo-hyprland",
       "yolo-aphrody",
+      "yolo-chromium",
     ]) {
       expect(brandsText).toContain(preset);
     }

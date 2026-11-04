@@ -1,0 +1,16 @@
+[package]
+edition = "2021"
+name    = "photos-extension"
+version = "1.0.0"
+
+[lib]
+crate-type = ["cdylib"]
+[dependencies]
+chrono = { workspace = true, default-features = false, features = ["alloc", "clock", "serde"]  }
+serde = { workspace = true, features = ["derive"]  }
+serde_json     = "1.0"
+spacedrive-sdk = { path = "../../crates/sdk" }
+thiserror      = "1.0"
+tracing = { workspace = true }
+uuid = { workspace = true, default-features = false, features = ["rng-rand", "serde", "v4"]  }
+

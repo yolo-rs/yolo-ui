@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "yolo-ui ui_theme_emit --target dtcg",
+  "sourceRepository": "https://github.com/yolo-rs/yolo-ui",
+  "sourceCommit": "d315694711fc115993f0b61ffbfd509e38b8b389",
+  "generatedAt": "2026-11-04T13:39:02.790Z",
+  "themes": {
+    "yolo-neutral": {
+      "name": "Yolo Neutral Dark",
+      "colors": {
+        "canvas": "#0A0E17",
+        "panel": "#121826",
+        "raised": "#1A2234",
+        "text": "#F8FAFC",
+        "mutedText": "#94A3B8",
+        "accent": "#6366F1",
+        "accentSecondary": "#06B6D4",
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "danger": "#EF4444",
+        "border": "#1E293B"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "8px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "12px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-m3": {
+      "name": "Material Design 3 Expressive",
+      "colors": {
+        "canvas": "#141218",
+        "panel": "#1D1B20",
+        "raised": "#2B2930",
+        "text": "#E6E0E9",
+        "mutedText": "#CAC4D0",
+        "accent": "#D0BCFF",
+        "accentSecondary": "#CCC2DC",
+        "success": "#A8DAB5",
+        "warning": "#FFD8E4",
+        "danger": "#F2B8B5",
+        "border": "#49454F"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "16px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "0px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-fluent": {
+      "name": "Microsoft Fluent 2 Mica Dark",
+      "colors": {
+        "canvas": "#202020",
+        "panel": "#272727",
+        "raised": "#323232",
+        "text": "#FFFFFF",
+        "mutedText": "#C5C5C5",
+        "accent": "#60CDFF",
+        "accentSecondary": "#0078D4",
+        "success": "#6CCB5F",
+        "warning": "#FCE100",
+        "danger": "#FF99A4",
+        "border": "#3D3D3D"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "8px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "24px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-apple": {
+      "name": "Apple HIG Vibrancy / Liquid Glass",
+      "colors": {
+        "canvas": "#000000",
+        "panel": "#1C1C1E",
+        "raised": "#2C2C2E",
+        "text": "#FFFFFF",
+        "mutedText": "#8E8E93",
+        "accent": "#0A84FF",
+        "accentSecondary": "#5E5CE6",
+        "success": "#30D158",
+        "warning": "#FFD60A",
+        "danger": "#FF453A",
+        "border": "#38383A"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "12px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "30px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-omarchy": {
+      "name": "Omarchy Wayland TUI (Catppuccin Mocha Default)",
+      "colors": {
+        "canvas": "#1E1E2E",
+        "panel": "#181825",
+        "raised": "#313244",
+        "text": "#CDD6F4",
+        "mutedText": "#A6ADC8",
+        "accent": "#89B4FA",
+        "accentSecondary": "#CBA6F7",
+        "success": "#A6E3A1",
+        "warning": "#F9E2AF",
+        "danger": "#F38BA8",
+        "border": "#45475A"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "0px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "2px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "8px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-hyprland": {
+      "name": "Hyprland Wayland Compositor",
+      "colors": {
+        "canvas": "#11111B",
+        "panel": "#181825",
+        "raised": "#1E1E2E",
+        "text": "#CDD6F4",
+        "mutedText": "#9399B2",
+        "accent": "#33CCFF",
+        "accentSecondary": "#00FF99",
+        "success": "#00FF99",
+        "warning": "#F9E2AF",
+        "danger": "#F38BA8",
+        "border": "#595959"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "10px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "2px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "16px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-aphrody": {
+      "name": "Aphrody Byron Love Sanctuary",
+      "colors": {
+        "canvas": "#1C1A17",
+        "panel": "#26231E",
+        "raised": "#332E27",
+        "text": "#FAF7F0",
+        "mutedText": "#EDE6D6",
+        "accent": "#E8C547",
+        "accentSecondary": "#F28B9C",
+        "success": "#10B981",
+        "warning": "#D4AF37",
+        "danger": "#F43F5E",
+        "border": "#4A4236"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "12px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "16px",
+          "$type": "dimension"
+        }
+      }
+    },
+    "yolo-chromium": {
+      "name": "Chromium Views + WebUI",
+      "colors": {
+        "canvas": "#202124",
+        "panel": "#292a2d",
+        "raised": "#35363a",
+        "text": "#e8eaed",
+        "mutedText": "#9aa0a6",
+        "accent": "#8ab4f8",
+        "accentSecondary": "#a8c7fa",
+        "success": "#81c995",
+        "warning": "#fdd663",
+        "danger": "#f28b82",
+        "border": "rgba(255, 255, 255, 0.10)"
+      },
+      "dimensions": {
+        "radius": {
+          "$value": "8px",
+          "$type": "dimension"
+        },
+        "borderWidth": {
+          "$value": "1px",
+          "$type": "dimension"
+        },
+        "blurRadius": {
+          "$value": "0px",
+          "$type": "dimension"
+        }
+      }
+    }
+  }
+}

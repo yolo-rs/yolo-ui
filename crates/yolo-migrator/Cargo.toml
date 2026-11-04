@@ -1,7 +1,8 @@
 [package]
 name = "yolo-migrator"
-version = "0.8.0"
-edition = "2024"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/yolo-rs/yolo-ui"
 description = "Shadcn UI / Radix UI / Base UI / Material 3 / Tailwind CSS TSX-to-Rust migrator targeting Dioxus 0.8, WebGPU/Taffy, Egui, Cosmic/Iced, GTK4, and Qt6 QML."
@@ -17,12 +18,12 @@ name = "yolo-migrate"
 path = "src/main.rs"
 
 [dependencies]
-oxc_allocator = "0.155"
-oxc_ast = "0.155"
-oxc_parser = "0.155"
-oxc_span = "0.155"
-lightningcss = "=1.0.0-alpha.72"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-yolo-layout = { path = "../yolo-layout", version = "0.8.0" }
-yolo-shared = { path = "../yolo-shared" }
+oxc_allocator = { workspace = true }
+oxc_ast = { workspace = true }
+oxc_parser = { workspace = true }
+oxc_span = { workspace = true }
+lightningcss = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+yolo-layout = { workspace = true }
+yolo-shared = { workspace = true }

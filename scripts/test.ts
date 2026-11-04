@@ -1,104 +1,12 @@
-import { join, resolve } from "node:path";
+import { resolve } from "node:path";
 
 const ROOT_DIR = resolve(import.meta.dir, "..");
+const args = ["cargo", "test", "--workspace", ...Bun.argv.slice(2)];
+console.log(`Executing: ${args.join(" ")}`);
 
-export const UMBRELLA_TEST_CRATES = [
-  "yolo-shared",
-  "yolo-tokens",
-  "yolo-contracts",
-  "yolo-emit",
-  "yolo-layout",
-  "yolo-migrator",
-  "yolo-shell",
-  "yolo-craft",
-  "yolo-storyteller",
-  "yolo-react",
-  "yolo-ui",
-  "yolo-gpui",
-  "yolo-iced",
-  "yolo-tauri",
-  "yolo-egui",
-  "yolo-cosmic",
-  "yolo-gtk",
-  "yolo-qt",
-  "yolo-showcase",
-] as const;
-
-const TEST_CRATE_REL_PATHS: Record<
-  (typeof UMBRELLA_TEST_CRATES)[number],
-  string
-> = {
-  "yolo-shared": "crates/yolo-shared",
-  "yolo-tokens": "crates/yolo-tokens",
-  "yolo-contracts": "crates/yolo-contracts",
-  "yolo-emit": "crates/yolo-emit",
-  "yolo-layout": "crates/yolo-layout",
-  "yolo-migrator": "crates/yolo-migrator",
-  "yolo-shell": "crates/yolo-shell",
-  "yolo-craft": "crates/yolo-craft",
-  "yolo-storyteller": "crates/yolo-storyteller",
-  "yolo-react": "crates/yolo-react",
-  "yolo-ui": "packages/yolo-ui",
-  "yolo-gpui": "packages/yolo-gpui",
-  "yolo-iced": "packages/yolo-iced",
-  "yolo-tauri": "packages/yolo-tauri",
-  "yolo-egui": "packages/yolo-egui",
-  "yolo-cosmic": "packages/yolo-cosmic",
-  "yolo-gtk": "packages/yolo-gtk",
-  "yolo-qt": "packages/yolo-qt",
-  "yolo-showcase": "apps/yolo-showcase",
-};
-
-export async function getTestableUmbrellaCrates(): Promise<string[]> {
-  const cargoTomlText = await Bun.file(join(ROOT_DIR, "Cargo.toml")).text();
-  const parsed = Bun.TOML.parse(cargoTomlText) as {
-    workspace?: { members?: string[] };
-  };
-  const members = new Set(parsed.workspace?.members ?? []);
-
-  const testable: string[] = [];
-  for (const crateName of UMBRELLA_TEST_CRATES) {
-    const pkgPath = TEST_CRATE_REL_PATHS[crateName];
-    const manifestExists = await Bun.file(
-      join(ROOT_DIR, pkgPath, "Cargo.toml"),
-    ).exists();
-    if (manifestExists && members.has(pkgPath)) {
-      testable.push(crateName);
-    }
-  }
-  return testable;
-}
-
-export async function runRustUmbrellaTests(): Promise<number> {
-  const crates = await getTestableUmbrellaCrates();
-  if (crates.length === 0) {
-    console.error("No umbrella crates found in workspace.");
-    return 1;
-  }
-
-  const pkgArgs: string[] = [];
-  for (const c of crates) {
-    pkgArgs.push("-p", c);
-  }
-
-  const cmd = [
-    "cargo",
-    "test",
-    ...pkgArgs,
-    "--no-default-features",
-    "--features",
-    "yolo-ui/gpui,yolo-ui/iced,yolo-ui/tauri,yolo-gpui/default,yolo-iced/default,yolo-tauri/default",
-  ];
-  console.log(`Running umbrella Rust unit tests: ${cmd.join(" ")}`);
-  const proc = Bun.spawn(cmd, {
-    cwd: ROOT_DIR,
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-  return await proc.exited;
-}
-
-if (import.meta.main) {
-  const code = await runRustUmbrellaTests();
-  process.exit(code);
-}
+const proc = Bun.spawn(args, {
+  cwd: ROOT_DIR,
+  stdout: "inherit",
+  stderr: "inherit",
+});
+process.exit(await proc.exited);

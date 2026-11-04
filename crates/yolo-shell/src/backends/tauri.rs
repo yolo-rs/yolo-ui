@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Tauri 2 backend: the [`Menu`] model as `tauri::menu`, and window state for
+//! Tauri 3 backend: the [`Menu`] model as `tauri::menu`, and window state for
 //! `tauri::WebviewWindow`.
 //!
 //! Forward `RunEvent::MenuEvent` / `App::on_menu_event` ids to

@@ -1,0 +1,12 @@
+[package]
+name    = "sd-imageio"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/spacedriveapp/spacedrive"
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.10"
+
+[lib]
+path = "src/lib.rs"

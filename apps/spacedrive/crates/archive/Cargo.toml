@@ -1,0 +1,25 @@
+[package]
+name    = "sd-archive"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sd-store = { path = "../store" }
+
+sqlx       = { workspace = true, features = ["sqlite", "runtime-tokio", "derive"] }
+# "process": adapters are subprocesses speaking JSONL over stdio.
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"]  }
+serde = { workspace = true  }
+serde_json = { version = "1.0.133" }
+uuid = { workspace = true, features = ["v4", "v7"]  }
+blake3     = { workspace = true }
+toml = { version = "0.8" }
+chrono = { workspace = true  }
+thiserror = { workspace = true }
+tracing = { workspace = true  }
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio    = { workspace = true, features = ["macros", "rt-multi-thread"] }
+
+[features]
+default = []

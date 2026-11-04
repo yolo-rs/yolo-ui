@@ -45,7 +45,7 @@ yolo-ui/
 │   ├── yolo-egui/              # Egui 0.36 immediate-mode bridge + Puffin profiler hook
 │   ├── yolo-gtk/               # GTK 4.16 + libadwaita 1.6 + Relm4 bridge
 │   ├── yolo-qt/                # KDAB cxx-qt 0.8 + Qt6 Quick / Kirigami QML singleton bridge
-│   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + CEF + ACL bridge
+│   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + ACL bridge; browser engines belong to yolo-web
 │   ├── yolo-shadcn-bun/        # @yolo-rs/shadcn-bun Full-Bun TSX/Tailwind -> Rust CLI & SDK
 │   ├── yolo-react/             # @yolo-rs/react Full-Bun + Rust React 19 & Expo runtime package
 │   ├── yolo-ui-plugin/         # @yolo-rs/ui-plugin Single Bun.plugin for .yolo.toml, .shadcn.tsx, .tailwind.css
@@ -55,18 +55,18 @@ yolo-ui/
 ├── scripts/
 │   ├── ui.ts                   # Single unified UI command (`bun run ui <subcommand>`)
 │   ├── react-bun.ts            # Full-Bun React 19 & Expo patcher, node-purger & bundler
-│   ├── fleet.ts                # 124-submodule `yolo-rs/*` inventory & shallow sync generator
+│   ├── fleet.ts                # `yolo-rs/*` inventory & shallow sync generator
 │   ├── build.ts                # Multi-engine Cargo check/release builder
 │   ├── test.ts                 # Multi-engine Rust unit test runner
 │   ├── optimize.ts             # Cargo dependency deduplication & profile auditor
 │   └── migrate-bun.ts          # Node.js -> Bun v1.4.4+ (n2b) workspace auditor
-└── submodules/                 # 124 shallow-cloned `yolo-rs/*` forks across 31 ecosystems
+└── submodules/                 # Pinned `yolo-rs/*` forks and upstream source inputs
 ```
 
 ## 3. Core Toolchain Commands (`bun ui` + `just` + `cargo` + `sccache`)
 
 ```bash
-bun run ui doctor     # Verify all 124 submodules, 7 theme presets, 34 UI/UX Pro Max stacks, and toolchains
+bun run ui doctor     # Verify the submodule fleet, 7 theme presets, 34 UI/UX Pro Max stacks, and toolchains
 bun run ui search <q> # Query the 13-domain UI/UX Pro Max BM25 engine across 34 stacks
 bun run ui theme      # Emit any of the 7 YoloThemePresets to 11 targets (css, gtk, cosmic, qml, fluent, apple, omarchy, hyprland, dtcg)
 bun run ui migrate    # Compile Shadcn/Tailwind/Radix/BaseUI TSX into Dioxus, WGPU, Egui, Cosmic, GTK4, or QML

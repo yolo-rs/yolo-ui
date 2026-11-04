@@ -33,12 +33,12 @@ futures-util = { workspace = true, features = ["std", "async-await", "async-awai
 futures-channel = { workspace = true }
 serde_json = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
-serde-wasm-bindgen = { version = "0.6.5", optional = true }
+serde-wasm-bindgen = { workspace = true, optional = true }
 
 ciborium = { workspace = true, optional = true }
 gloo-timers = { workspace = true, optional = true, features = ["futures"] }
 send_wrapper = { workspace = true, features = ["futures"] }
-wasm-streams = "0.5.0"
+wasm-streams = { workspace = true }
 
 [dependencies.web-sys]
 workspace = true

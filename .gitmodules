@@ -514,3 +514,84 @@
 	path = submodules/assimp
 	url = https://github.com/yolo-rs/assimp.git
 	shallow = true
+[submodule "upstreams/anomalyco/rune"]
+	path = upstreams/anomalyco/rune
+	url = https://github.com/yolo-rs/rune.git
+[submodule "upstreams/anomalyco/opentui"]
+	path = upstreams/anomalyco/opentui
+	url = https://github.com/yolo-rs/opentui.git
+[submodule "upstreams/anomalyco/opentui-index"]
+	path = upstreams/anomalyco/opentui-index
+	url = https://github.com/yolo-rs/opentui-index.git
+[submodule "upstreams/anomalyco/textjs"]
+	path = upstreams/anomalyco/textjs
+	url = https://github.com/yolo-rs/textjs.git
+[submodule "upstreams/anomalyco/justice"]
+	path = upstreams/anomalyco/justice
+	url = https://github.com/yolo-rs/justice.git
+[submodule "upstreams/anomalyco/oc-plugin-rainbow"]
+	path = upstreams/anomalyco/oc-plugin-rainbow
+	url = https://github.com/yolo-rs/oc-plugin-rainbow.git
+[submodule "upstreams/anomalyco/opencode"]
+	path = upstreams/anomalyco/opencode
+	url = https://github.com/yolo-rs/opencode.git
+[submodule "upstreams/anomalyco/opencode-beta"]
+	path = upstreams/anomalyco/opencode-beta
+	url = https://github.com/yolo-rs/opencode-beta.git
+[submodule "upstreams/anomalyco/opencode-zed-extension"]
+	path = upstreams/anomalyco/opencode-zed-extension
+	url = https://github.com/yolo-rs/opencode-zed-extension.git
+[submodule "upstreams/anomalyco/ghostty-web"]
+	path = upstreams/anomalyco/ghostty-web
+	url = https://github.com/yolo-rs/ghostty-web.git
+[submodule "upstreams/anomalyco/terminal-control"]
+	path = upstreams/anomalyco/terminal-control
+	url = https://github.com/yolo-rs/terminal-control.git
+[submodule "upstreams/anomalyco/hokum"]
+	path = upstreams/anomalyco/hokum
+	url = https://github.com/yolo-rs/hokum.git
+[submodule "upstreams/anomalyco/hokum-bluetooth"]
+	path = upstreams/anomalyco/hokum-bluetooth
+	url = https://github.com/yolo-rs/hokum-bluetooth.git
+[submodule "upstreams/anomalyco/hokum-sound"]
+	path = upstreams/anomalyco/hokum-sound
+	url = https://github.com/yolo-rs/hokum-sound.git
+[submodule "upstreams/anomalyco/clip"]
+	path = upstreams/anomalyco/clip
+	url = https://github.com/yolo-rs/clip.git
+[submodule "upstreams/anomalyco/zed-extensions"]
+	path = upstreams/anomalyco/zed-extensions
+	url = https://github.com/yolo-rs/zed-extensions.git
+[submodule "upstreams/anomalyco/rift"]
+	path = upstreams/anomalyco/rift
+	url = https://github.com/yolo-rs/rift.git
+[submodule "upstreams/anomalyco/browser-control"]
+	path = upstreams/anomalyco/browser-control
+	url = https://github.com/yolo-rs/browser-control.git
+[submodule "upstreams/anomalyco/computer-use"]
+	path = upstreams/anomalyco/computer-use
+	url = https://github.com/yolo-rs/computer-use.git
+[submodule "upstreams/anomalyco/flicks"]
+	path = upstreams/anomalyco/flicks
+	url = https://github.com/yolo-rs/flicks.git
+[submodule "upstreams/anomalyco/isocast"]
+	path = upstreams/anomalyco/isocast
+	url = https://github.com/yolo-rs/isocast.git
+[submodule "upstreams/anomalyco/hex"]
+	path = upstreams/anomalyco/hex
+	url = https://github.com/yolo-rs/hex.git
+[submodule "upstreams/anomalyco/demo-ai-app"]
+	path = upstreams/anomalyco/demo-ai-app
+	url = https://github.com/yolo-rs/demo-ai-app.git
+[submodule "upstreams/anomalyco/blackout"]
+	path = upstreams/anomalyco/blackout
+	url = https://github.com/yolo-rs/blackout.git
+[submodule "upstreams/anomalyco/bellhop"]
+	path = upstreams/anomalyco/bellhop
+	url = https://github.com/yolo-rs/bellhop.git
+[submodule "upstreams/anomalyco/identity"]
+	path = upstreams/anomalyco/identity
+	url = https://github.com/yolo-rs/identity.git
+[submodule "upstreams/anomalyco/social-cards"]
+	path = upstreams/anomalyco/social-cards
+	url = https://github.com/yolo-rs/social-cards.git

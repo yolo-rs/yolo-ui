@@ -10,7 +10,7 @@
   <h1>⚡ Yolo UI (<code>yolo-rs/yolo-ui</code>)</h1>
   <p>
     <strong>Vendor-Neutral, Multi-Engine Fullstack Rust &amp; Bun v1.4.4+ UI Framework Monorepo</strong><br />
-    <em>7 Theme Presets &bull; 124 Forked Submodules &bull; 9 Rust UI Toolkits &bull; Shadcn/Tailwind-to-Rust Migrator &bull; Full-Bun + Rust React 19 &amp; Expo Engine &bull; Unified <code>bun ui</code> CLI, Plugin &amp; MCP</em>
+    <em>7 Theme Presets &bull; 151 Forked Submodules &bull; 2 Absorbed Apps (AGPL + Apache) &bull; 9 Rust UI Toolkits &bull; Shadcn/Tailwind-to-Rust Migrator &bull; Full-Bun + Rust React 19 &amp; Expo Engine &bull; Unified <code>bun ui</code> CLI, Plugin &amp; MCP</em>
   </p>
 </div>
 
@@ -18,7 +18,13 @@
 
 ## 1. Overview
 
-**Yolo UI ([`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui))** unifies **124 forked repositories** in [`submodules/`](./submodules) across **31 upstream ecosystems** into **one flattened Cargo workspace**, **one Bun v1.4.4+ workspace (`@yolo-rs/*`)**, **8 first-class theme presets** (neutral by default via `YoloManifest::default()`), and **one unified CLI/Plugin/MCP (`bun ui`)**.
+**Yolo UI ([`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui))** provides one Cargo workspace for its framework crates, toolkit adapters, showcases and integrated applications, one Bun v1.4.4+ workspace (`@yolo-rs/*`), eight first-class theme presets, and one developer CLI/plugin/MCP entry point (`bun ui`). Spacedrive V2's 39 application/backend packages and two extensions now join the root Cargo workspace; Apache-2.0 notices remain with the imported source. The framework API is unified; some engine implementations still come from maintained upstream forks under [`submodules/`](./submodules), with their original licenses and provenance retained.
+
+AnomalyCo's native, terminal, design, and application UI sources are forked into `yolo-rs` and pinned under [`upstreams/anomalyco/`](./upstreams/anomalyco).
+
+The [Locally Uncensored](https://github.com/yolo-rs/locally-uncensored) local AI desktop studio is absorbed into [`apps/locally-uncensored/`](./apps/locally-uncensored), with its AGPL-3.0-only license preserved.
+
+[Spacedrive](https://github.com/yolo-rs/spacedrive) V2 is absorbed into [`apps/spacedrive/`](./apps/spacedrive/) with its Apache-2.0 license, Rust daemon/core, CLI, React packages, and Tauri desktop app. See the [integration notes](./apps/spacedrive/YOLO-INTEGRATION.md) for Cargo workspace and Tauri migration status.
 
 ### The 7 Built-in Theme Presets (`YoloThemePreset`)
 
@@ -59,7 +65,7 @@
 - **[`packages/yolo-egui`](./packages/yolo-egui)**: Immediate-mode `egui` 0.36 bridge (`apply_preset`, `Visuals`, `Style`, `puffin` profiler integration).
 - **[`packages/yolo-gtk`](./packages/yolo-gtk)**: `gtk4-rs` 0.11 + `libadwaita` 0.9 + `Relm4` bridge with live CSS provider generation.
 - **[`packages/yolo-qt`](./packages/yolo-qt)**: KDAB `cxx-qt` 0.8 + Qt6 Quick / Kirigami `YoloTheme.qml` singleton bridge.
-- **[`packages/yolo-tauri`](./packages/yolo-tauri)**: Tauri v3 Alpha (`3.0.0-alpha.5`, `Wry` 0.57.1 + `Cef` dual runtime, `Tao` 0.37.2, ACL capabilities, v2->v3 auditor).
+- **[`packages/yolo-tauri`](./packages/yolo-tauri)**: Tauri v3 Alpha (`3.0.0-alpha.5`) with the Wry runtime, `Tao` 0.37.2, ACL capabilities, and the v2-to-v3 auditor. Browser engines such as Chromium and CEF belong to `yolo-web`; no CEF Tauri adapter is currently integrated.
 - **[`packages/yolo-shadcn-bun`](./packages/yolo-shadcn-bun)** (`@yolo-rs/shadcn-bun`): Full-Bun CLI & programmatic API converting Shadcn/BaseUI/Radix/Tailwind TSX into Rust.
 - **[`packages/yolo-react`](./packages/yolo-react)** (`@yolo-rs/react`): Full-Bun + Rust React 19 & React Native / Expo runtime (`useYoloTheme`, `YoloThemeProvider`, `createYoloStyleSheet`, `renderRscStream`, `m3-react`/`m3-baseui`/`m3-primitives`/`m3-forms`/`m3-motion` unified).
 - **[`packages/yolo-ui-plugin`](./packages/yolo-ui-plugin)** (`@yolo-rs/ui-plugin`): Single `Bun.plugin` bundler & runtime loader for `.yolo.toml`, `.shadcn.tsx`, `.tailwind.css`, and `.omarchy.toml`.
@@ -79,10 +85,15 @@ bun run ui migrate --target dioxus --preset yolo-m3
 # 2. Full-Bun + Rust React 19 & Expo CLI
 bun run react:status
 
-# 3. Run the unified 9-engine & 7-theme showcase binary
+# 3. Spacedrive desktop, daemon, CLI, and Rust backend
+bun run sd:tauri:dev
+bun run sd:daemon
+bun run sd:cli -- --help
+
+# 4. Run the unified 9-engine & 7-theme showcase binary
 just showcase
 
-# 4. Run all Bun v1.4.4+ & Rust unit tests (cached via sccache)
+# 5. Run all Bun v1.4.4+ & Rust unit tests (cached via sccache)
 just test
 ```
 
@@ -93,6 +104,7 @@ just test
 - **[Documentation Hub (`docs/README.md`)](./docs/README.md)**
 - **[Yolo React 19 & Expo Full-Bun + Rust Architecture (`docs/YOLO-REACT-AND-EXPO-BUN-RUST.md`)](./docs/YOLO-REACT-AND-EXPO-BUN-RUST.md)**
 - **[Flattened Monorepo Best Practices (`docs/MONOREPO-BEST-PRACTICES.md`)](./docs/MONOREPO-BEST-PRACTICES.md)**
+- **[Spacedrive Integration Notes (`apps/spacedrive/YOLO-INTEGRATION.md`)](./apps/spacedrive/YOLO-INTEGRATION.md)**
 - **[Node.js -> Bun v1.4.4+ (`n2b`) Migration Report (`docs/BUN-N2B-MIGRATION.md`)](./docs/BUN-N2B-MIGRATION.md)**
 - **[UI/UX Pro Max Skill (`skills/yolo-ui-pro-max/SKILL.md`)](./skills/yolo-ui-pro-max/SKILL.md)**
 

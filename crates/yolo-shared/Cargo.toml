@@ -2,12 +2,12 @@
 name = "yolo-shared"
 version = { workspace = true }
 authors = ["Yolo UI Contributors"]
-edition = "2024"
+edition.workspace = true
 description = "Shared zero-overhead foundation crate for the Yolo UI monorepo: neutral customizable manifest, 5 built-in theme presets (Neutral, M3, Fluent 2, Apple HIG Liquid Glass, Aphrody Byron Love), CSS/GPU color parsers, and multi-engine fleet metadata."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/yolo-rs/yolo-ui"
 keywords = ["dioxus", "gpui", "iced", "tauri", "design-tokens"]
-rust-version = "1.85.0"
+rust-version.workspace = true
 
 [dependencies]
 serde = { workspace = true, features = ["derive"] }

@@ -7,12 +7,12 @@ import {
   REPO_ROOT,
   runToolHostCli,
   startMcpStdioServer,
-} from "../packages/yolo-ui-mcp/src/index";
+} from "@yolo-rs/ui-mcp";
 import {
   DEVTOOLS_REGISTRY,
   OMARCHY_SUBTHEMES,
   YOLO_THEME_PRESETS,
-} from "../packages/yolo-ui-plugin/src/index";
+} from "@yolo-rs/ui-plugin";
 import {
   AVAILABLE_STACKS,
   CSV_CONFIG,

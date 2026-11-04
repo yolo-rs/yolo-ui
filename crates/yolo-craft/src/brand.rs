@@ -5,8 +5,8 @@
 //! presets for `Neutral`, `M3`, `Fluent`, `Apple`, and `Aphrody` (Byron Love).
 
 pub use yolo_shared::{
-    ByronLoveColorTeinte, ByronLovePetSpec, YoloManifest, YoloStyle, YoloThemePreset,
-    YoloThemeTokens, BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC,
+    BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC, ByronLoveColorTeinte, ByronLovePetSpec, YoloManifest,
+    YoloStyle, YoloThemePreset, YoloThemeTokens,
 };
 
 /// Canonical default product family name.
