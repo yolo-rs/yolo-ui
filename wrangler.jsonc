@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yolo-aphrody-com",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./dist/yolo-aphrody-com" },
+  "routes": [{ "pattern": "yolo.aphrody.com", "custom_domain": true }]
+}
