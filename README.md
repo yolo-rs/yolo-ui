@@ -1,4 +1,12 @@
 <div align="center">
+
+## Install as an agent plugin
+
+```
+/plugin marketplace add yolo-rs/yolo-ui
+/plugin install yolo-ui --marketplace yolo-rs/yolo-ui
+```
+
   <h1>⚡ Yolo UI (<code>yolo-rs/yolo-ui</code>)</h1>
   <p>
     <strong>Vendor-Neutral, Multi-Engine Fullstack Rust &amp; Bun v1.4.4+ UI Framework Monorepo</strong><br />
