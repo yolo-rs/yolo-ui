@@ -8,10 +8,10 @@
 //!    Egui Workbench, Zed GPUI DevTool, WGPUI 3D Viewport, Taffy Layout, Native Rust CLI, Tauri v3).
 //! 4. **6-Pillar Master Migration Matrix (`/migration`)**:
 //!    - Sites Web -> **Dioxus 0.8 (`yolo-ui`)**
-//!    - Apps Desktop -> **Iced 0.14 (`yolo-iced`/`yolo-cosmic`)** or **Egui 0.36 (`yolo-egui`/`yolo-craft`)**
+//!    - Apps Desktop -> **Iced 0.14 / libcosmic (`yolo-engines::iced` / `yolo-engines::cosmic`)** or **Egui 0.36 (`yolo-engines::egui` / `yolo-craft`)**
 //!    - CSS / Tailwind -> **Taffy 0.15 (`yolo-layout`)**
-//!    - 3D & GPU Rendering -> **GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui` + Bevy 0.16)**
-//!    - Dev UIs & Agent IDEs -> **Zed & GPUI (`yolo-gpui` + `gpui-component`)**
+//!    - 3D & GPU Rendering -> **GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-engines::gpui` + Bevy 0.16)**
+//!    - Dev UIs & Agent IDEs -> **Zed & GPUI (`yolo-engines::gpui` + `gpui-component`)**
 //!    - Tools & CLIs -> **Native Rust (`crates/*` binaries)**
 
 use yolo_ui::craft::workbenches::all_workbenches;
@@ -35,7 +35,7 @@ pub enum MigrationPillar {
     CssToTaffy,
     /// Pillar 4: 3D scenes, shaders & viewports -> GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` / `yolo-render`).
     Render3dToWgpui,
-    /// Pillar 5: Developer UIs, IDEs, MCP inspectors & agent cockpits -> Zed & GPUI (`yolo-gpui`).
+    /// Pillar 5: Developer UIs, IDEs, MCP inspectors & agent cockpits -> Zed & GPUI (`yolo-engines::gpui`).
     DevUiToZedGpui,
     /// Pillar 6: CLIs, build scripts & data tools -> Native Rust binaries (`crates/*`).
     ToolsToNativeRust,
@@ -68,10 +68,16 @@ impl MigrationPillar {
         match self {
             Self::SitesToDioxus => "1. Sites Web & Fullstack -> Dioxus 0.8 (SSR + WASM + Blitz)",
             Self::DesktopToIced => "2A. Apps Desktop Retained MVU -> Iced 0.14 & libcosmic",
-            Self::DesktopToEgui => "2B. Apps Desktop Workbenches & Emulateurs -> Egui 0.36 (Craft & Storyteller)",
+            Self::DesktopToEgui => {
+                "2B. Apps Desktop Workbenches & Emulateurs -> Egui 0.36 (Craft & Storyteller)"
+            }
             Self::CssToTaffy => "3. CSS & Tailwind v4 -> Taffy 0.15 Layout Engine (yolo-layout)",
-            Self::Render3dToWgpui => "4. Rendu 3D & Shaders -> GPUI + WGPU 30/29 + WGPUI (yolo-gpu & Bevy 0.16)",
-            Self::DevUiToZedGpui => "5. UI de Dev, IDE & Cockpits Agents -> Zed & GPUI (yolo-gpui)",
+            Self::Render3dToWgpui => {
+                "4. Rendu 3D & Shaders -> GPUI + WGPU 30/29 + WGPUI (yolo-gpu & Bevy 0.16)"
+            }
+            Self::DevUiToZedGpui => {
+                "5. UI de Dev, IDE & Cockpits Agents -> Zed & GPUI (yolo-engines::gpui)"
+            }
             Self::ToolsToNativeRust => "6. Outils, CLIs & Pipelines -> Rust Natif (Cargo Binaries)",
         }
     }
@@ -79,11 +85,13 @@ impl MigrationPillar {
     pub const fn target_crate(self) -> &'static str {
         match self {
             Self::SitesToDioxus => "packages/yolo-ui (dioxus 0.8 + blitz + subsecond)",
-            Self::DesktopToIced => "packages/yolo-iced + packages/yolo-cosmic",
-            Self::DesktopToEgui => "packages/yolo-egui + crates/yolo-craft + crates/yolo-storyteller",
+            Self::DesktopToIced => "crates/yolo-engines (iced + cosmic)",
+            Self::DesktopToEgui => {
+                "crates/yolo-engines + crates/yolo-craft + crates/yolo-storyteller"
+            }
             Self::CssToTaffy => "crates/yolo-layout (taffy 0.15 + TailwindStyleResolver)",
-            Self::Render3dToWgpui => "crates/yolo-gpu + crates/yolo-render + packages/yolo-gpui",
-            Self::DevUiToZedGpui => "packages/yolo-gpui (zed gpui + longbridge gpui-component)",
+            Self::Render3dToWgpui => "crates/yolo-gpu + crates/yolo-render + crates/yolo-engines",
+            Self::DevUiToZedGpui => "crates/yolo-engines (zed gpui + longbridge gpui-component)",
             Self::ToolsToNativeRust => "crates/yolo-migrator + apps/yolo-showcase",
         }
     }
@@ -168,13 +176,13 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         target_stack: "Dioxus 0.8 Component Docs integrated into yolo.aphrody.com",
         theme_preset: YoloThemePreset::Apple,
     },
-    // Pillar 2A: Desktop Retained MVU -> Iced 0.14 & libcosmic (`yolo-iced` / `yolo-cosmic`)
+    // Pillar 2A: Desktop Retained MVU -> Iced 0.14 & libcosmic (`yolo-engines::iced` / `::cosmic`)
     MigrationTargetEntry {
         name: "bunos-win11-chrome & desktop shell",
         source_repo: "bun-os/crates/bunos-win11-chrome & apps/desktop",
         legacy_stack: "Win32 / WebView hybrid shell",
         pillar: MigrationPillar::DesktopToIced,
-        target_stack: "Iced 0.14 + libcosmic (`yolo-iced` / `yolo-cosmic`) + yolo-fluent Mica",
+        target_stack: "Iced 0.14 + libcosmic (`yolo-engines::iced` / `::cosmic`) + yolo-fluent Mica",
         theme_preset: YoloThemePreset::Fluent,
     },
     MigrationTargetEntry {
@@ -182,7 +190,7 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         source_repo: "bun-os/apps/craft-hub & bunos-flutter-store",
         legacy_stack: "Flutter / Tauri launcher",
         pillar: MigrationPillar::DesktopToIced,
-        target_stack: "Iced 0.14 Elm MVU App Store & Creative Suite Launcher (`yolo-iced`)",
+        target_stack: "Iced 0.14 Elm MVU App Store & Creative Suite Launcher (`yolo-engines::iced`)",
         theme_preset: YoloThemePreset::M3,
     },
     MigrationTargetEntry {
@@ -190,7 +198,7 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         source_repo: "bun-os/apps/spacedrive & spotcraft",
         legacy_stack: "React + Tauri + Audio WebView",
         pillar: MigrationPillar::DesktopToIced,
-        target_stack: "Iced 0.14 + `iced_audio` DSP Faders/Knobs + Comet (`yolo-iced`)",
+        target_stack: "Iced 0.14 + `iced_audio` DSP Faders/Knobs + Comet (`yolo-engines::iced`)",
         theme_preset: YoloThemePreset::Apple,
     },
     MigrationTargetEntry {
@@ -198,16 +206,16 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         source_repo: "wii-os/apps/menu-native & auto/apps/desktop",
         legacy_stack: "GTK / Electron / Tauri",
         pillar: MigrationPillar::DesktopToIced,
-        target_stack: "Iced 0.14 Multi-Window + WGPU Custom Shader Pass (`yolo-iced`)",
+        target_stack: "Iced 0.14 Multi-Window + WGPU Custom Shader Pass (`yolo-engines::iced`)",
         theme_preset: YoloThemePreset::Hyprland,
     },
-    // Pillar 2B: Desktop Immediate-Mode Workbenches -> Egui 0.36 (`yolo-egui` / `yolo-craft` / `yolo-storyteller`)
+    // Pillar 2B: Desktop Immediate-Mode Workbenches -> Egui 0.36 (`yolo-engines::egui` / `yolo-craft` / `yolo-storyteller`)
     MigrationTargetEntry {
         name: "13 Craft Creative Desktop Workbenches (Word, Grid, Deck, Pdf, Photo, Vector, Light, Film, Effect, Sound, Design, Fig, Cad)",
         source_repo: "bun-os/apps/*craft & crates/yolo-craft",
         legacy_stack: "Mixed Egui 0.31 / Tauri / Web wrappers",
         pillar: MigrationPillar::DesktopToEgui,
-        target_stack: "Egui 0.36 Unified (`yolo-egui` + `yolo-craft` DockArea + Puffin Profiler)",
+        target_stack: "Egui 0.36 Unified (`yolo-engines::egui` + `yolo-craft` DockArea + Puffin Profiler)",
         theme_preset: YoloThemePreset::Neutral,
     },
     MigrationTargetEntry {
@@ -223,7 +231,7 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         source_repo: "wii-os/crates/gecko-debugger & bun-os/crates/aphrody-ctr-desktop",
         legacy_stack: "Custom C++/Qt/legacy egui",
         pillar: MigrationPillar::DesktopToEgui,
-        target_stack: "Egui 0.36 Immediate-Mode Telemetry + WGPU Framebuffer (`yolo-egui`)",
+        target_stack: "Egui 0.36 Immediate-Mode Telemetry + WGPU Framebuffer (`yolo-engines::egui`)",
         theme_preset: YoloThemePreset::Omarchy,
     },
     // Pillar 3: CSS / Tailwind v4 -> Taffy 0.15 (`yolo-layout`)
@@ -235,13 +243,13 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         target_stack: "`yolo-layout` Taffy 0.15 (`TailwindStyleResolver` + 4px/8px grid snap + 48px WCAG)",
         theme_preset: YoloThemePreset::Neutral,
     },
-    // Pillar 4: 3D & GPU Rendering -> GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui`)
+    // Pillar 4: 3D & GPU Rendering -> GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-engines::gpui`)
     MigrationTargetEntry {
         name: "aphrody-model-view, aphrody-nie-render3d & aphrody-tauri-3d",
         source_repo: "bun-os/apps/aphrody-model-view & crates/aphrody-nie-render3d",
         legacy_stack: "Three.js / WebGL / standalone wgpu 0.20",
         pillar: MigrationPillar::Render3dToWgpui,
-        target_stack: "WGPU 30/29 + WGPUI (`yolo-gpu` Instanced SDF + `yolo-gpui` GPU Canvas + Bevy 0.16)",
+        target_stack: "WGPU 30/29 + WGPUI (`yolo-gpu` Instanced SDF + `yolo-engines::gpui` GPU Canvas + Bevy 0.16)",
         theme_preset: YoloThemePreset::Aphrody,
     },
     MigrationTargetEntry {
@@ -252,13 +260,13 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         target_stack: "Unified `yolo-gpu` + `yolo-render` (Analytical SDF, 8x3 Kawase blur, Glyph Atlas)",
         theme_preset: YoloThemePreset::Hyprland,
     },
-    // Pillar 5: Dev UIs, IDEs & Agent Cockpits -> Zed & GPUI (`yolo-gpui`)
+    // Pillar 5: Dev UIs, IDEs & Agent Cockpits -> Zed & GPUI (`yolo-engines::gpui`)
     MigrationTargetEntry {
         name: "aphrody-agent-home, ai-agent-runner & shenron-cockpit",
         source_repo: "bun-os/crates/aphrody-agent-home & yolo-web/apps/ai-agent-runner",
         legacy_stack: "React / Electron / TUI dashboards",
         pillar: MigrationPillar::DevUiToZedGpui,
-        target_stack: "Zed GPUI + Longbridge `gpui-component` (`yolo-gpui` 120 FPS Dock + VirtualList)",
+        target_stack: "Zed GPUI + Longbridge `gpui-component` (`yolo-engines::gpui` 120 FPS Dock + VirtualList)",
         theme_preset: YoloThemePreset::Omarchy,
     },
     MigrationTargetEntry {
@@ -266,7 +274,7 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         source_repo: "bun-os/crates/aphrody-code-graph, aphrody-term & FCMCP",
         legacy_stack: "xterm.js / React Flow / Node MCP inspector",
         pillar: MigrationPillar::DevUiToZedGpui,
-        target_stack: "Zed GPUI Workspace (`yolo-gpui` TreeDiff + CommandPalette + GPUI Terminal)",
+        target_stack: "Zed GPUI Workspace (`yolo-engines::gpui` TreeDiff + CommandPalette + GPUI Terminal)",
         theme_preset: YoloThemePreset::Neutral,
     },
     // Pillar 6: Tools & CLIs -> Native Rust (`crates/*`)
@@ -305,7 +313,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
         id: "iced-desktop-mvu",
         title: "Iced 0.14 & libcosmic Desktop MVU App",
         pillar: MigrationPillar::DesktopToIced,
-        stack: "yolo-iced + yolo-cosmic + iced_aw + iced_audio",
+        stack: "yolo-engines::iced + yolo-engines::cosmic + iced_aw + iced_audio",
         command: "bun run ui migrate ./src/Shell.tsx --target cosmic --preset fluent",
         description: "Retained-mode Elm MVU desktop application with Wayland/Win11 vibrancy and audio DSP widgets.",
     },
@@ -313,7 +321,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
         id: "egui-craft-workbench",
         title: "Egui 0.36 Creative Workbench & Storyteller Studio",
         pillar: MigrationPillar::DesktopToEgui,
-        stack: "yolo-egui + yolo-craft + yolo-storyteller + puffin",
+        stack: "yolo-engines::egui + yolo-craft + yolo-storyteller + puffin",
         command: "bun run ui migrate ./src/Workbench.tsx --target egui --preset aphrody",
         description: "60/120 FPS immediate-mode creative workbench with multi-surface docking and Byron Love palette.",
     },
@@ -321,7 +329,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
         id: "zed-gpui-devtool",
         title: "Zed GPUI & Longbridge GPUI-Component DevTool / IDE",
         pillar: MigrationPillar::DevUiToZedGpui,
-        stack: "yolo-gpui + gpui-component + zed blade renderer",
+        stack: "yolo-engines::gpui + gpui-component + zed blade renderer",
         command: "bun run ui devtools gpui",
         description: "Hardware-accelerated 120 FPS developer cockpit with DockArea, VirtualList, CommandPalette, and TreeDiff.",
     },
@@ -329,7 +337,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
         id: "wgpui-3d-viewport",
         title: "GPUI + WGPU 30/29 + WGPUI 3D & Analytical SDF Viewport",
         pillar: MigrationPillar::Render3dToWgpui,
-        stack: "yolo-gpu + yolo-render + yolo-gpui + bevy 0.16",
+        stack: "yolo-gpu + yolo-render + yolo-engines::gpui + bevy 0.16",
         command: "bun run ui migrate ./src/Viewport.tsx --target wgpu --preset hyprland",
         description: "Zero-DOM instanced SDF primitives, 8x3 Kawase dual-filter blur, and 3D WGPU scene surface inside GPUI.",
     },
@@ -351,9 +359,9 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
     },
     YoloStarterTemplate {
         id: "tauri-v3-hybrid",
-        title: "Tauri v3 Alpha Multi-Webview (Wry 0.57 + CEF) Shell",
+        title: "Tauri v3 Alpha Wry Desktop Shell",
         pillar: MigrationPillar::SitesToDioxus,
-        stack: "yolo-tauri + wry 0.57 + tao 0.37 + acl v3",
+        stack: "yolo-engines::tauri + wry 0.57 + tao 0.37 + acl v3",
         command: "bun run ui devtools tauri",
         description: "Capability-hardened Tauri v3 Alpha desktop/mobile host bridging Dioxus Webviews and WGPU surfaces.",
     },
@@ -411,7 +419,7 @@ pub const AWESOME_HUB_CATEGORIES: &[AwesomeHubCategory] = &[
         title: "Tauri v3 Alpha, Wry 0.57, Tao 0.37 & Mobile Plugins",
         upstream_repo: "yolo-rs/tauri & yolo-rs/tauri-workspace",
         submodule_count: 17,
-        highlights: "Tauri v3 Alpha ACL, Wry 0.57, CEF backend, muda, tray-icon, global-hotkey, window-vibrancy",
+        highlights: "Tauri v3 Alpha ACL, Wry 0.57, muda, tray-icon, global-hotkey, window-vibrancy",
     },
     AwesomeHubCategory {
         id: "awesome-design-systems",

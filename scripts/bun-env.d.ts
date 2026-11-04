@@ -211,6 +211,7 @@ interface ImportMeta {
 declare const process: {
   readonly argv: string[];
   readonly pid: number;
+  readonly execPath: string;
   readonly env: Record<string, string | undefined>;
   cwd(): string;
   exit(code?: number): never;

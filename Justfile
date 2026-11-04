@@ -28,13 +28,13 @@ lint:
     bun fmt --check scripts tests
     bun lint scripts tests
     bun check
-    cargo clippy -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase -- -D warnings
+    cargo clippy --workspace -- -D warnings
 
 # Run fast typecheck and metadata validation across Bun & Cargo
 check:
     bun check
     cargo metadata --no-deps --format-version 1 > $null
-    cargo check -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-render -p yolo-gpu -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase
+    cargo check
 
 # Run all Bun and Rust unit tests
 test: test-bun test-rust
@@ -45,19 +45,15 @@ test-bun:
 
 # Run Rust unit tests across core and multi-engine crates
 test-rust:
-    cargo test -p yolo-shared -p yolo-tokens -p yolo-contracts -p yolo-emit -p yolo-layout -p yolo-migrator -p yolo-shell -p yolo-craft -p yolo-storyteller -p yolo-react -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-egui -p yolo-cosmic -p yolo-gtk -p yolo-qt -p yolo-showcase
+    cargo test --workspace
 
-# Build core crates and showcase app
+# Build core crates
 build:
     bun scripts/build.ts
 
 # Build release artifacts
 build-release:
     bun scripts/build.ts --release
-
-# Run the unified multi-engine showcase binary (`apps/yolo-showcase`)
-showcase:
-    cargo run -p yolo-showcase
 
 # Unified UI CLI (search, system, theme, migrate, contrast, devtools, awesome, catalog, mcp, doctor)
 ui *ARGS:
@@ -67,15 +63,15 @@ ui *ARGS:
 react *ARGS:
     bun scripts/react-bun.ts {{ARGS}}
 
-# Inspect status of all 124 submodules across the upstream ecosystems
+# Inspect status of the configured source submodule fleet
 fleet-status:
     bun scripts/fleet.ts status
 
-# Shallow-sync all 124 submodules (`--depth 1`)
+# Shallow-sync the configured source submodule fleet (`--depth 1`)
 fleet-sync:
     bun scripts/fleet.ts sync
 
-# Generate `fleet.json` inventory for all 124 submodules
+# Generate `fleet.json` inventory for the configured source submodule fleet
 fleet-inventory:
     bun scripts/fleet.ts inventory
 

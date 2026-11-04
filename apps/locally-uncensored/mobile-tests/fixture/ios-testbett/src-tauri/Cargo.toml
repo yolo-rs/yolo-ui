@@ -1,0 +1,22 @@
+[package]
+name = "testbett"
+version = "0.1.0"
+description = "Testbett fuer den iOS-Treiber von LU Mobile"
+edition = "2021"
+
+[lib]
+name = "testbett_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "3.0.0-alpha.4", path = "../../../../../../submodules/tauri/crates/tauri-build", features = [] }
+
+[dependencies]
+tauri = { version = "3.0.0-alpha.5", path = "../../../../../../submodules/tauri/crates/tauri", features = [] }
+tauri-plugin-deep-link = { version = "3.0.0-alpha.3", path = "../../../../../../submodules/plugins-workspace/plugins/deep-link" }
+serde_json = { workspace = true }
+tauri-plugin-luharness = { version = "0.1.0", path = "../plugin" }
+
+[features]
+# Macht die WKWebView auch im Release-Bau inspizierbar. Nie in einem Store-Bau.
+abnahme = ["tauri/devtools"]

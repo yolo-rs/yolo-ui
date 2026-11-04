@@ -1,0 +1,40 @@
+[package]
+name = "sd-fs-watcher"
+version = "0.1.0"
+
+authors = ["Spacedrive Technology Inc. <engineering@spacedrive.com>"]
+description = """
+Platform-agnostic filesystem watcher that emits normalized events.
+Handles platform-specific quirks like macOS rename detection and event buffering.
+"""
+
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/spacedriveapp/spacedrive"
+rust-version = "1.95"
+[features]
+default = []
+# Enable detailed debug logging
+debug = []
+
+[dependencies]
+# Workspace dependencies
+async-trait = { workspace = true  }
+futures = { workspace = true  }
+serde = { workspace = true, features = ["derive"]  }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"]  }
+tracing = { workspace = true  }
+# External dependencies
+notify = "8.0.0"
+
+# Platform-specific dependencies
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = { workspace = true }
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+tracing-subscriber = { version = "0.3.19" }
+tracing-test = { workspace = true }
+
+

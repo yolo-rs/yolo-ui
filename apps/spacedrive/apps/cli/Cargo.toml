@@ -1,0 +1,43 @@
+[package]
+edition = "2021"
+name    = "sd-cli"
+version = "2.0.0-alpha.2"
+
+[features]
+default = []
+heif = ["sd-core/heif"]
+ffmpeg = ["sd-core/ffmpeg"]
+whisper = ["sd-core/whisper"]
+speech-to-text = ["sd-core/speech-to-text"]
+ai = ["sd-core/ai"]
+
+[dependencies]
+anyhow = { workspace = true }
+bincode     = { workspace = true }
+chrono = { workspace = true, features = ["serde"]  }
+clap        = { version = "4", features = ["derive"] }
+comfy-table = { workspace = true }
+crossterm   = "0.27"
+dirs        = "5.0"
+indicatif   = { workspace = true }
+inquire     = "0.7"
+qr2term     = "0.3"
+ratatui     = "0.26"
+reqwest     = { version = "0.12", features = ["json"] }
+rmcp        = { version = "3", default-features = false, features = ["server", "transport-io"] }
+sd-client   = { path = "../../crates/sd-client" }
+sd-core     = { path = "../../core", features = ["cli"] }
+semver      = "1"
+serde = { workspace = true, features = ["derive"]  }
+serde_json  = { workspace = true }
+sha2        = { workspace = true }
+tokio = { workspace = true, features = ["full"]  }
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+uuid = { workspace = true, features = ["serde", "v4"]  }
+
+[dev-dependencies]
+rmcp     = { version = "3", default-features = false, features = ["client", "transport-child-process"] }
+tempfile = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = { workspace = true }

@@ -1843,7 +1843,7 @@ mod tests {
     }
 
     #[test]
-    fn test_neutral_by_default_and_seven_theme_presets() {
+    fn test_neutral_by_default_and_eight_theme_presets() {
         assert_eq!(YoloThemePreset::default(), YoloThemePreset::Neutral);
         let manifest = YoloManifest::default();
         assert_eq!(manifest.theme_preset, YoloThemePreset::Neutral);
@@ -1860,7 +1860,8 @@ mod tests {
                 "yolo-apple",
                 "yolo-omarchy",
                 "yolo-hyprland",
-                "yolo-aphrody"
+                "yolo-aphrody",
+                "yolo-chromium"
             ]
         );
 

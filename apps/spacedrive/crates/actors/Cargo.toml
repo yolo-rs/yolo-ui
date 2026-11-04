@@ -1,0 +1,14 @@
+[package]
+name    = "sd-actors"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/spacedriveapp/spacedrive"
+[dependencies]
+async-channel    = { workspace = true }
+async-trait = { workspace = true  }
+futures = { workspace = true  }
+pin-project-lite = { workspace = true }
+tokio = { workspace = true  }
+tracing = { workspace = true  }

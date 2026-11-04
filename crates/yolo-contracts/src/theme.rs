@@ -146,7 +146,7 @@ mod tests {
     }
 
     #[test]
-    fn default_theme_is_neutral_and_all_seven_presets_resolve() {
+    fn default_theme_is_neutral_and_all_eight_presets_resolve() {
         let default_theme = Theme::default();
         assert_eq!(default_theme.preset, YoloThemePreset::Neutral);
 

@@ -1,9 +1,7 @@
 //! Unified multi-engine & 7-theme showcase binary (`apps/yolo-showcase`) verifying that
 //! `yolo-shared` (Neutral default + 7 presets: Neutral, M3, Fluent, Apple, Omarchy + 23 subthemes,
-//! Hyprland, and Aphrody Byron Love), `yolo-ui` (Dioxus 0.8), `yolo-gpui` (Zed + Longbridge GPUI),
-//! `yolo-iced` (Iced Elm MVU + Audio DSP + Comet), `yolo-cosmic` (System76 libcosmic),
-//! `yolo-egui` (Egui 0.36), `yolo-gtk` (GTK 4.16 + libadwaita 1.6 + Relm4),
-//! `yolo-qt` (Qt 6 + cxx-qt + QML), `yolo-tauri` (Tauri v3 Alpha),
+//! Hyprland, and Aphrody Byron Love), `yolo-ui` (Dioxus 0.8), and `yolo-engines` adapters for
+//! GPUI, Iced/Cosmic, Egui, GTK, Qt, and Tauri,
 //! `yolo-craft` (13 Creative Workbenches), `yolo-storyteller` (10 Storyteller Modules),
 //! `yolo-migrator` (Shadcn/Tailwind/Radix/BaseUI TSX -> 6 Rust targets), and
 //! `yolo-react` (Full-Bun + Rust React 19 RSC & React Native Taffy Layout) compile and work together!
@@ -11,12 +9,12 @@
 pub mod benchmarks;
 pub mod site_hub;
 
-use std::fs;
-use std::path::Path;
 use site_hub::{
     AWESOME_HUB_CATEGORIES, MASTER_MIGRATION_ENTRIES, MigrationPillar, YOLO_STARTER_TEMPLATES,
     render_yolo_aphrody_com_html,
 };
+use std::fs;
+use std::path::Path;
 use yolo_ui::craft::workbenches::all_workbenches;
 use yolo_ui::emit::{Target as EmitTarget, emit_preset};
 use yolo_ui::gpui::{DockArea, DockPosition, GpuiTheme, I18nContext, PanelDescriptor, TabItem};
@@ -44,13 +42,25 @@ fn main() {
     );
 
     let mut i18n = I18nContext::new("fr", "en");
-    i18n.catalog.insert("en", "app.title", "Yolo UI Unified Multi-Engine & 7-Theme Monorepo");
-    i18n.catalog.insert("fr", "app.title", "Monorepo Unifié Multi-Moteur & 7 Thèmes Yolo UI");
+    i18n.catalog.insert(
+        "en",
+        "app.title",
+        "Yolo UI Unified Multi-Engine & 7-Theme Monorepo",
+    );
+    i18n.catalog.insert(
+        "fr",
+        "app.title",
+        "Monorepo Unifié Multi-Moteur & 7 Thèmes Yolo UI",
+    );
 
     let freq = FreqRange::audible_spectrum();
     let fader = FaderConfig::channel_strip("Master Bus", 0.85);
     let workbenches = all_workbenches();
-    let storyteller = StorytellerProject::new("yolo-demo", "Yolo Storyteller Suite", YoloThemePreset::Neutral);
+    let storyteller = StorytellerProject::new(
+        "yolo-demo",
+        "Yolo Storyteller Suite",
+        YoloThemePreset::Neutral,
+    );
 
     let sample_shadcn_tsx = r#"
         export function HeroCard() {
@@ -66,9 +76,12 @@ fn main() {
             );
         }
     "#;
-    let migrated_dioxus =
-        migrate_tsx(sample_shadcn_tsx, MigrationTarget::Dioxus, YoloThemePreset::Neutral)
-            .expect("Shadcn TSX should migrate to Dioxus RSX");
+    let migrated_dioxus = migrate_tsx(
+        sample_shadcn_tsx,
+        MigrationTarget::Dioxus,
+        YoloThemePreset::Neutral,
+    )
+    .expect("Shadcn TSX should migrate to Dioxus RSX");
     let rn_theme = build_react_native_theme(
         YoloThemePreset::Omarchy,
         true,
@@ -178,7 +191,10 @@ mod tests {
 
     #[test]
     fn test_unified_multi_engine_and_seven_theme_parity() {
-        assert_eq!(YoloManifest::default().theme_preset, YoloThemePreset::Neutral);
+        assert_eq!(
+            YoloManifest::default().theme_preset,
+            YoloThemePreset::Neutral
+        );
         assert_eq!(YoloThemePreset::ALL.len(), 8);
         assert_eq!(OMARCHY_THEMES.len(), 23);
         assert_eq!(BYRON_LOVE_PALETTE.len(), 10);
@@ -188,7 +204,10 @@ mod tests {
         let iced = IcedTheme::aphrody_dark();
         assert_eq!(gpui.accent_primary, iced.palette.primary);
         assert_eq!(gpui.bg_primary, iced.palette.background);
-        assert_eq!(gpui.accent_primary.to_css_string(), APHRODY_DARK_THEME.accent_primary);
+        assert_eq!(
+            gpui.accent_primary.to_css_string(),
+            APHRODY_DARK_THEME.accent_primary
+        );
     }
 
     #[test]

@@ -48,7 +48,7 @@ pub struct FrameworkBenchmark {
 
 pub const ALL_BENCHMARKS: &[FrameworkBenchmark] = &[
     FrameworkBenchmark {
-        name: "Zed GPUI (yolo-gpui)",
+        name: "Zed GPUI (yolo-engines::gpui)",
         ecosystem: "zed-industries / longbridge",
         category: BenchmarkCategory::DesktopGuil,
         startup_time_ms: 18.0,
@@ -80,7 +80,7 @@ pub const ALL_BENCHMARKS: &[FrameworkBenchmark] = &[
         anti_patterns: "Raw low-level DSP audio pipelines or headless microcontrollers",
     },
     FrameworkBenchmark {
-        name: "Iced 0.14 & libcosmic (yolo-iced)",
+        name: "Iced 0.14 & libcosmic (yolo-engines::iced / ::cosmic)",
         ecosystem: "iced-rs / pop-os",
         category: BenchmarkCategory::DesktopGuil,
         startup_time_ms: 22.0,
@@ -96,7 +96,7 @@ pub const ALL_BENCHMARKS: &[FrameworkBenchmark] = &[
         anti_patterns: "High-frequency immediate-mode debug gizmos with thousands of ad-hoc mutables",
     },
     FrameworkBenchmark {
-        name: "Egui 0.36 (yolo-egui / yolo-craft)",
+        name: "Egui 0.36 (yolo-engines::egui / yolo-craft)",
         ecosystem: "emilk / rerun-io",
         category: BenchmarkCategory::DesktopGuil,
         startup_time_ms: 12.0,
@@ -112,7 +112,7 @@ pub const ALL_BENCHMARKS: &[FrameworkBenchmark] = &[
         anti_patterns: "Complex animated semantic web documents requiring native screen-reader DOM tree",
     },
     FrameworkBenchmark {
-        name: "Tauri v3 Alpha (yolo-tauri)",
+        name: "Tauri v3 Alpha (yolo-engines::tauri)",
         ecosystem: "tauri-apps",
         category: BenchmarkCategory::DesktopGuil,
         startup_time_ms: 110.0,
@@ -231,7 +231,11 @@ pub fn render_benchmark_section_html() -> String {
     let mut table_rows = String::new();
     for b in ALL_BENCHMARKS {
         let is_baseline = b.name.contains("Baseline");
-        let highlight_class = if is_baseline { "baseline-row" } else { "rust-row" };
+        let highlight_class = if is_baseline {
+            "baseline-row"
+        } else {
+            "rust-row"
+        };
         table_rows.push_str(&format!(
             r##"<tr class="{highlight_class}">
                 <td><strong>{name}</strong><br><small><code>{eco}</code></small></td>

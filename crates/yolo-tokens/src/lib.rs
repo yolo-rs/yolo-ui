@@ -95,7 +95,7 @@ pub mod shape;
 #[cfg(feature = "std")]
 pub mod sheets;
 /// SpaceUI → M3 fusion: the SpaceUI semantic vocabulary mapped onto M3 roles and state layers,
-/// and its seven themes as M3 dynamic-scheme seeds.
+/// and its seven dedicated SpaceUI themes as M3 dynamic-scheme seeds.
 pub mod spaceui;
 pub mod state;
 /// Validated, versioned native/Bun/WASM theme exports over the canonical color engine.

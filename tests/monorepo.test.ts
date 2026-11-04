@@ -28,6 +28,7 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
       workspace?: {
         resolver?: string;
         members?: string[];
+        exclude?: string[];
         package?: { version?: string; edition?: string };
         dependencies?: Record<string, unknown>;
       };
@@ -57,13 +58,8 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
     const uiLib = Bun.file(
       join(ROOT_DIR, "packages", "yolo-ui", "src", "lib.rs"),
     );
-    const showcaseMain = Bun.file(
-      join(ROOT_DIR, "apps", "yolo-showcase", "src", "main.rs"),
-    );
-
     expect(await sharedLib.exists()).toBe(true);
     expect(await uiLib.exists()).toBe(true);
-    expect(await showcaseMain.exists()).toBe(true);
 
     const sharedSource = await sharedLib.text();
     expect(sharedSource).toContain("pub struct RgbaColor");

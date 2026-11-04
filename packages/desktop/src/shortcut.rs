@@ -91,7 +91,7 @@ impl ShortcutRegistry {
 
         self.manager.register(hotkey).map_err(|e| match e {
             HotkeyError::HotKeyParseError(shortcut) => {
-                ShortcutRegistryError::InvalidShortcut(shortcut)
+                ShortcutRegistryError::InvalidShortcut(shortcut.to_string())
             }
             err => ShortcutRegistryError::Other(Rc::new(err)),
         })?;

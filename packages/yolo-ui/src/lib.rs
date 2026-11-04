@@ -32,25 +32,36 @@ pub use yolo_storyteller as storyteller;
 pub use yolo_react as react;
 
 #[cfg(feature = "gpui")]
-pub use yolo_gpui as gpui;
+pub use yolo_engines::gpui;
 
 #[cfg(feature = "iced")]
-pub use yolo_iced as iced;
+pub use yolo_engines::iced;
 
 #[cfg(feature = "tauri")]
-pub use yolo_tauri as tauri;
+pub use yolo_engines::tauri;
 
 #[cfg(feature = "egui")]
-pub use yolo_egui as egui;
+pub use yolo_engines::egui;
 
 #[cfg(feature = "cosmic")]
-pub use yolo_cosmic as cosmic;
+pub use yolo_engines::cosmic;
 
 #[cfg(feature = "gtk")]
-pub use yolo_gtk as gtk;
+pub use yolo_engines::gtk;
 
 #[cfg(feature = "qt")]
-pub use yolo_qt as qt;
+pub use yolo_engines::qt;
+
+#[cfg(any(
+    feature = "gpui",
+    feature = "iced",
+    feature = "tauri",
+    feature = "egui",
+    feature = "cosmic",
+    feature = "gtk",
+    feature = "qt"
+))]
+pub use yolo_engines as engines;
 
 #[cfg(feature = "three3d")]
 pub use yolo_3d as three3d;

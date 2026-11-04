@@ -13,4 +13,3 @@ dioxus = { path = "../../dioxus", features = ["fullstack"] }
 web = ["dioxus/web"]
 server = ["dioxus/server"]
 
-[workspace]

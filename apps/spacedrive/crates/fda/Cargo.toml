@@ -1,0 +1,10 @@
+[package]
+name    = "sd-fda"
+version = "0.1.0"
+
+authors              = ["Jake Robinson <jake@spacedrive.com>"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/spacedriveapp/spacedrive"
+[dependencies]
+thiserror = { workspace = true }

@@ -28,7 +28,7 @@ serde_json = { workspace = true, optional = true }
 tracing = { workspace = true }
 rustversion = { workspace = true }
 euclid = "0.22.14"
-enumset = "1.1.6"
+enumset = { workspace = true }
 bytes = { workspace = true }
 
 [build-dependencies]

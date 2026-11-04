@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 [package]
 name = "yolo-contracts"
-version = "0.8.0"
-edition = "2024"
-rust-version = "1.85.0"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
 authors = ["Yolo UI Contributors"]
 repository = "https://github.com/yolo-rs/yolo-ui"
 license = "MIT OR Apache-2.0"
@@ -21,7 +21,7 @@ native-render = []
 wasm = []
 
 [dependencies]
-yolo-shared = { path = "../yolo-shared" }
-yolo-tokens = { path = "../yolo-tokens", features = ["serde"] }
+yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true, features = ["serde"] }
 taffy = { workspace = true }
 serde = { workspace = true, features = ["derive"] }

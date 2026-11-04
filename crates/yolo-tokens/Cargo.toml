@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 [package]
 name = "yolo-tokens"
-version = "0.8.0"
-edition = "2024"
-rust-version = "1.85.0"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
 authors = ["Yolo UI Contributors"]
 repository = "https://github.com/yolo-rs/yolo-ui"
 license = "MIT OR Apache-2.0"
@@ -30,7 +30,7 @@ serde   = ["dep:serde"]
 base64 = { workspace = true, optional = true }
 image = { workspace = true, optional = true, features = ["png", "jpeg"] }
 serde = { workspace = true, optional = true, features = ["derive"] }
-yolo-shared = { path = "../yolo-shared", optional = true }
+yolo-shared = { workspace = true, optional = true }
 
 [dev-dependencies]
 serde = { workspace = true, features = ["derive"] }

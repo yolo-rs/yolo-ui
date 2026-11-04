@@ -117,14 +117,14 @@ webbrowser = { workspace = true }
 tracing = { workspace = true, optional = true }
 rustc-hash = { workspace = true }
 futures-util = { workspace = true }
-cfg-if = "1.0.4"
+cfg-if = { workspace = true }
 slotmap = { workspace = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { workspace = true, features = ["rt-multi-thread"], optional = true }
 
 [target.'cfg(target_os = "android")'.dependencies]
-android-activity = { version = "0.6", default-features = false }
+android-activity = { workspace = true }
 
 [target.'cfg(all(target_os = "ios", target_abi = "sim"))'.dependencies]
 anyrender_vello_cpu = { workspace = true, features = ["pixels_window_renderer"]}

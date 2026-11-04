@@ -8,7 +8,7 @@ Both **Dioxus Desktop/Mobile** and **Tauri v3 Alpha** are built on top of the ex
 
 | Crate               | Workspace Version     | Submodule Path                 | Role in `yolo-ui` & `yolo-tauri`                                                           |
 | :------------------ | :-------------------- | :----------------------------- | :----------------------------------------------------------------------------------------- |
-| `tauri`             | `3.0.0-alpha` (`dev`) | `submodules/tauri`             | Full Tauri v3 runtime, ACL capabilities, CEF & Wry engines, mobile plugins                 |
+| `tauri`             | `3.0.0-alpha` (`dev`) | `submodules/tauri`             | Tauri v3 runtime with the Wry host, ACL capabilities, and mobile plugins                   |
 | `wry`               | `0.57.0+`             | `submodules/wry`               | Cross-platform WebView rendering engine (WebView2, WKWebView, WebKitGTK, Android/iOS)      |
 | `tao`               | `0.37.1+`             | `submodules/tao`               | Cross-platform window creation and event loop (`rwh_05` / `rwh_06`)                        |
 | `muda`              | `0.21.2+`             | `submodules/muda`              | Native application menu bar and context menus (Windows, macOS, GTK3)                       |
@@ -22,8 +22,8 @@ Both **Dioxus Desktop/Mobile** and **Tauri v3 Alpha** are built on top of the ex
 
 1. **Tauri v3 Access Control List (ACL) & Capability Manifest Builder**:
    - Construct strongly-typed Tauri v3 `capabilities/*.json` manifests (`CapabilityManifest`, `PermissionEntry`, `WindowAclScope`) with scoped filesystem/network permissions and multi-webview targets.
-2. **Tauri v3 Multi-Engine Shell Configuration (`Wry` + `CEF`)**:
-   - Configure Tauri v3's new **Chromium Embedded Framework (`WebviewEngine::Cef`)** alongside native OS WebViews (`WebviewEngine::Wry`), native window vibrancy (`VibrancyEffect`), system tray (`SystemTrayConfig`), and global hotkeys (`GlobalHotkeyBinding`).
+2. **Tauri v3 Wry Shell Configuration**:
+   - Configure the Wry native OS webview with native window vibrancy (`VibrancyEffect`), system tray (`SystemTrayConfig`), and global hotkeys (`GlobalHotkeyBinding`). Chromium and CEF browser integrations belong to `yolo-web`; a CEF Tauri runtime adapter is planned there and is not currently integrated by this package.
 3. **Unified IPC Command & Streaming Channel Bridge**:
    - Zero-boilerplate JSON/binary IPC envelopes (`IpcRequest`, `IpcResponse`, `TauriChannelMsg`) that interoperate cleanly between `tauri::ipc::Channel`, `dioxus-desktop` custom protocols (`dioxus://`), and `dioxus-fullstack` `#[server]` functions.
 4. **Tauri v2 -> v3 Alpha Migration Helpers**:

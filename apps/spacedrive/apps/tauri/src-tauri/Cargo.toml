@@ -1,0 +1,71 @@
+[package]
+name = "spacedrive"
+version = "2.0.0-alpha.2"
+edition = "2021"
+
+[[bin]]
+name = "Spacedrive"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { path = "../../../../../submodules/tauri/crates/tauri-build", default-features = false , features = [] }
+serde_json = { workspace = true }
+yolo-tauri = { path = "../../../../../packages/yolo-tauri" }
+
+[dependencies]
+# Tauri
+tauri = { path = "../../../../../submodules/tauri/crates/tauri", default-features = false, features = ["common-controls-v6", "compression", "dynamic-acl", "protocol-asset"] }
+tauri-runtime-wry = { path = "../../../../../submodules/tauri/crates/tauri-runtime-wry", features = ["devtools"] }
+tauri-plugin-dialog = { path = "../../../../../submodules/plugins-workspace/plugins/dialog" }
+tauri-plugin-fs = { path = "../../../../../submodules/plugins-workspace/plugins/fs" }
+tauri-plugin-opener = { path = "../../../../../submodules/plugins-workspace/plugins/opener" }
+tauri-plugin-clipboard-manager = { path = "../../../../../submodules/plugins-workspace/plugins/clipboard-manager" }
+tauri-plugin-os = { path = "../../../../../submodules/plugins-workspace/plugins/os" }
+tauri-plugin-updater = { path = "../../../../../submodules/plugins-workspace/plugins/updater" }
+
+# Core bridge
+sd-tauri-core = { path = "../sd-tauri-core" }
+
+# Sidecar tree layout (shared with the daemon)
+sd-sidecar-path = { path = "../../../crates/sidecar-path" }
+sd-extension-ui = { path = "../../../crates/extension-ui" }
+sd-pvcache = { path = "../../../crates/pvcache" }
+image = { version = "0.25.5" }
+# File opening
+file-opening = { path = "../crates/file-opening" }
+
+# Async runtime
+tokio = { workspace = true, features = ["full"]  }
+tokio-util = { version = "0.7", features = ["io"] }
+
+# HTTP server
+axum = "0.7"
+
+# Serialization
+serde = { workspace = true, features = ["derive"]  }
+serde_json = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Drag and drop
+uuid = { workspace = true, features = ["v4", "serde"]  }
+parking_lot = "0.12"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+sd-desktop-macos = { path = "../crates/macos" }
+file-opening-macos = { path = "../crates/file-opening-macos" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+file-opening-windows = { path = "../crates/file-opening-windows" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+file-opening-linux = { path = "../crates/file-opening-linux" }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[dev-dependencies]
+tempfile = { workspace = true }

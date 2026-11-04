@@ -3,9 +3,11 @@
 Welcome to the documentation hub for **[`yolo-rs/yolo-ui`](https://github.com/yolo-rs/yolo-ui)**, the vendor-neutral, multi-engine Rust + Bun v1.4.4+ fullstack UI monorepo fleet.
 
 ## 1. Monorepo, React/Expo & Toolchain Guides (`docs/`)
-- **[Plan Directeur de Migration 6 Piliers & Portail Unifié `yolo.aphrody.com` (`docs/YOLO-MASTER-MIGRATION-AND-SITE-PLAN.md`)](./YOLO-MASTER-MIGRATION-AND-SITE-PLAN.md)**
+- **[Workspace consolidation and ownership boundaries](./WORKSPACE-CONSOLIDATION.md)**
+- **[Migration scope and excluded product work](./MIGRATION-SCOPE.md)**
 - **[Yolo React 19 & Expo Full-Bun + Rust Architecture (`docs/YOLO-REACT-AND-EXPO-BUN-RUST.md`)](./YOLO-REACT-AND-EXPO-BUN-RUST.md)**
-- **[Monorepo Best Practices (`crates/`, `apps/`, `packages/`, `scripts/`, `docs/`, `just`, `sccache`, `bun`, `gh`)](./MONOREPO-BEST-PRACTICES.md)**
+- **[Migration scope and exclusions](./MIGRATION-SCOPE.md)**
+- **[Spacedrive Integration Notes (Apache-2.0, React/Bun workspaces, Rust backend, Tauri migration)](../apps/spacedrive/YOLO-INTEGRATION.md)**
 - **[Node.js -> Bun v1.4.4+ & `n2b` Migration Guide](./BUN-N2B-MIGRATION.md)**
 - **[UI/UX Pro Max Skill (`skills/yolo-ui-pro-max/SKILL.md`)](../skills/yolo-ui-pro-max/SKILL.md)**
 
@@ -23,4 +25,4 @@ Welcome to the documentation hub for **[`yolo-rs/yolo-ui`](https://github.com/yo
 - **[10 — WASM Code Splitting](../notes/architecture/10-WASM-SPLIT.md)**
 - **[11 — Longbridge & Zed GPUI Stack (`yolo-gpui`, `gpui-kit`, `gpui-fast`, `rust-i18n`, `nsh`)](../notes/architecture/11-GPUI-LONGBRIDGE.md)**
 - **[12 — Iced Stack (`yolo-iced`, `iced`, `iced_aw`, `iced_audio`, `cryoglyph`, `comet`)](../notes/architecture/12-ICED.md)**
-- **[13 — Tauri v3 Alpha Stack (`yolo-tauri`, `tauri` v3, `wry` 0.57, `tao` 0.37, CEF, ACL)](../notes/architecture/13-TAURI-V3.md)**
+- **[13 — Tauri v3 Alpha Stack (`yolo-tauri`, `tauri` v3, `wry` 0.57, `tao` 0.37, ACL)](../notes/architecture/13-TAURI-V3.md)**

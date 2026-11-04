@@ -1,0 +1,17 @@
+[package]
+name    = "sd-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+sd-core    = { path = "../../core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = ["fs", "io-util", "macros", "net", "rt", "sync", "time"]  }
+tracing = { workspace = true }
+uuid = { workspace = true, features = ["serde", "v4"]  }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread"]  }

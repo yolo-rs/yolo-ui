@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-simulate-memory-warning"
+description = "Enables the simulate_memory_warning command without any pre-configured scope."
+commands.allow = ["simulate_memory_warning"]
+
+[[permission]]
+identifier = "deny-simulate-memory-warning"
+description = "Denies the simulate_memory_warning command without any pre-configured scope."
+commands.deny = ["simulate_memory_warning"]

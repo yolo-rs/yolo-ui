@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import {
   AVAILABLE_STACKS,
   CSV_CONFIG,
@@ -22,9 +22,28 @@ import {
   OMARCHY_SUBTHEMES,
   resolveThemeTokens,
   YOLO_THEME_PRESETS,
-} from "../../yolo-ui-plugin/src/index";
+} from "@yolo-rs/ui-plugin";
 
-export const REPO_ROOT = resolve(import.meta.dir, "../../..");
+function findWorkspaceRoot(start: string): string | undefined {
+  let current = resolve(start);
+  for (let depth = 0; depth < 8; depth++) {
+    if (
+      existsSync(join(current, "Cargo.toml")) &&
+      existsSync(join(current, "packages/yolo-ui-mcp/src/index.ts"))
+    ) {
+      return current;
+    }
+    const parent = resolve(current, "..");
+    if (parent === current) break;
+    current = parent;
+  }
+  return undefined;
+}
+
+export const REPO_ROOT =
+  findWorkspaceRoot(process.cwd()) ??
+  findWorkspaceRoot(dirname(process.execPath)) ??
+  resolve(import.meta.dir, "../../..");
 
 export interface McpToolDefinition {
   name: string;
@@ -394,7 +413,7 @@ export const MCP_TOOL_DEFINITIONS: McpToolDefinition[] = [
   {
     name: "ui_design_system",
     description:
-      "Generate a complete UI/UX Pro Max Design System (pattern, style, colors, typography, key effects, anti-patterns, checklist, and dials) bound to any of the 7 YoloThemePresets (neutral, m3, fluent, apple, omarchy, hyprland, aphrody).",
+      "Generate a complete UI/UX Pro Max Design System (pattern, style, colors, typography, key effects, anti-patterns, checklist, and dials) bound to any of the 8 YoloThemePresets (neutral, m3, fluent, apple, omarchy, hyprland, aphrody, chromium).",
     inputSchema: {
       type: "object",
       properties: {
@@ -426,7 +445,7 @@ export const MCP_TOOL_DEFINITIONS: McpToolDefinition[] = [
   {
     name: "ui_theme_emit",
     description:
-      "Emit native theme code for any of the 7 YoloThemePresets (and any of the 23 Omarchy sub-themes) targeting css, gtk, kde, cosmic, qml, winui, fluent, apple, omarchy, hyprland, or dtcg.",
+      "Emit native theme code for any of the 8 YoloThemePresets (and any of the 23 Omarchy sub-themes) targeting css, gtk, kde, cosmic, qml, winui, fluent, apple, omarchy, hyprland, or dtcg.",
     inputSchema: {
       type: "object",
       properties: {

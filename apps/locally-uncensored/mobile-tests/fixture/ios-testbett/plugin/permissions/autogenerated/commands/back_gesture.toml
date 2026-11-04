@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-back-gesture"
+description = "Enables the back_gesture command without any pre-configured scope."
+commands.allow = ["back_gesture"]
+
+[[permission]]
+identifier = "deny-back-gesture"
+description = "Denies the back_gesture command without any pre-configured scope."
+commands.deny = ["back_gesture"]

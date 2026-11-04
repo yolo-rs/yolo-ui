@@ -13,7 +13,7 @@ dioxus-vdom = { workspace = true }
 dioxus-vdom-template = { workspace = true }
 dioxus-renderer-oracle = { workspace = true }
 dioxus-ssr = { workspace = true }
-mutatis = { version = "0.5.2", features = ["alloc", "derive"] }
+mutatis = { workspace = true, features = ["alloc", "derive"] }
 postcard = { workspace = true, features = ["alloc"] }
 serde = { workspace = true, features = ["derive"] }
 

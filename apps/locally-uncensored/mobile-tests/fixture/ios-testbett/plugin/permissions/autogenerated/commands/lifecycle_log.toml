@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-lifecycle-log"
+description = "Enables the lifecycle_log command without any pre-configured scope."
+commands.allow = ["lifecycle_log"]
+
+[[permission]]
+identifier = "deny-lifecycle-log"
+description = "Denies the lifecycle_log command without any pre-configured scope."
+commands.deny = ["lifecycle_log"]

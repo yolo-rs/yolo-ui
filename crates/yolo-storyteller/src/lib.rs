@@ -18,8 +18,8 @@
 
 use serde::{Deserialize, Serialize};
 pub use yolo_shared::{
-    ByronLoveColorTeinte, ByronLovePetSpec, RgbaColor, YoloManifest, YoloStyle, YoloThemePreset,
-    YoloThemeTokens, BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC,
+    BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC, ByronLoveColorTeinte, ByronLovePetSpec, RgbaColor,
+    YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens,
 };
 
 /// Enumeration of all 10 Storyteller creative suite modules.
@@ -173,7 +173,12 @@ impl PromptBox {
     }
 
     /// Attaches a [`MentionChip`] to the prompt.
-    pub fn add_mention(&mut self, id: impl Into<String>, handle: impl Into<String>, category: impl Into<String>) {
+    pub fn add_mention(
+        &mut self,
+        id: impl Into<String>,
+        handle: impl Into<String>,
+        category: impl Into<String>,
+    ) {
         self.mentions.push(MentionChip {
             id: id.into(),
             handle: handle.into(),
@@ -664,7 +669,11 @@ impl CharacterSheet {
 
     /// Creates a custom neutral [`CharacterSheet`].
     #[must_use]
-    pub fn custom(id: impl Into<String>, display_name: impl Into<String>, archetype: impl Into<String>) -> Self {
+    pub fn custom(
+        id: impl Into<String>,
+        display_name: impl Into<String>,
+        archetype: impl Into<String>,
+    ) -> Self {
         Self {
             id: id.into(),
             display_name: display_name.into(),
@@ -729,7 +738,11 @@ impl Default for StorytellerProject {
 impl StorytellerProject {
     /// Creates a new [`StorytellerProject`] with custom `app_id`, `title`, and [`YoloThemePreset`].
     #[must_use]
-    pub fn new(app_id: impl Into<String>, title: impl Into<String>, preset: YoloThemePreset) -> Self {
+    pub fn new(
+        app_id: impl Into<String>,
+        title: impl Into<String>,
+        preset: YoloThemePreset,
+    ) -> Self {
         let mut proj = Self::for_preset(preset);
         proj.manifest = YoloManifest::new(app_id, title).with_preset(preset);
         proj

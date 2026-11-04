@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    # Flattened Core Crates & Apps
+    # Framework, runtime, integration, tooling, and app crates owned in this repository.
     "crates/yolo-shared",
     "crates/yolo-tokens",
     "crates/yolo-contracts",
@@ -14,10 +14,9 @@ members = [
     "crates/yolo-craft",
     "crates/yolo-storyteller",
     "crates/yolo-react",
+    "crates/yolo-engines",
     "crates/yolo-3d",
     "apps/yolo-showcase",
-
-    # Umbrella & Multi-Engine Packages
     "packages/yolo-ui",
     "packages/yolo-gpui",
     "packages/yolo-iced",
@@ -32,6 +31,7 @@ members = [
     "packages/vdom-template",
     "packages/oracle",
     "packages/fuzz",
+    "packages/fuzz/fuzz",
     "packages/dx",
     "packages/cli-config",
     "packages/dx-env",
@@ -77,11 +77,7 @@ members = [
     "packages/asset-resolver",
     "packages/depinfo",
     "packages/component-manifest",
-
-    # CLI harnesses, all included
     "packages/cli-harnesses/*",
-
-    # Playwright tests
     "packages/playwright-tests/liveview",
     "packages/playwright-tests/web",
     "packages/playwright-tests/web-routing",
@@ -101,47 +97,22 @@ members = [
     "packages/playwright-tests/default-features-disabled",
     "packages/playwright-tests/fullstack-error-codes",
     "packages/playwright-tests/windows-headless",
-
-    # manganis
-    "packages/manganis/manganis",
-    "packages/manganis/manganis-core",
-    "packages/manganis/manganis-macro",
-
-    # wasm-split
-    "packages/wasm-split/wasm-split",
-    "packages/wasm-split/wasm-split-macro",
-    "packages/wasm-split/wasm-split-cli",
-    "packages/wasm-split/wasm-used",
-
-    # subsecond
-    "packages/subsecond/subsecond",
-    "packages/subsecond/subsecond-types",
-    "packages/subsecond/subsecond-tests/cross-tls-crate",
-    "packages/subsecond/subsecond-tests/cross-tls-crate-dylib",
-    "packages/subsecond/subsecond-tests/cross-tls-test",
-
-    # Full project examples
-    "examples/01-app-demos/hackernews",
-    "examples/01-app-demos/ecommerce-site",
-    "examples/01-app-demos/bluetooth-scanner",
-    "examples/01-app-demos/file-explorer",
-    "examples/01-app-demos/hotdog",
-    "examples/01-app-demos/geolocation-native-plugin",
-
-    # Fullstack examples
-    "examples/07-fullstack/hello-world",
-    "examples/07-fullstack/router",
-    "examples/07-fullstack/desktop",
-    "examples/07-fullstack/auth",
-    "examples/07-fullstack/ssr-only",
-
-    # Integrations
-    "examples/10-integrations/tailwind",
-    "examples/10-integrations/pwa",
-    "examples/10-integrations/wgpu-texture",
-    "examples/10-integrations/native-headless",
-
-    # Aphrody Labs / DioxusLabs Unified Ecosystem Submodules
+    "packages/playwright-tests/windows-hotpatch-fullstack",
+    "packages/playwright-tests/web-hot-patch",
+    "packages/playwright-tests/web-hot-patch-fullstack",
+    "packages/manganis",
+    "packages/manganis-core",
+    "packages/manganis-macro",
+    "packages/wasm-splitter",
+    "packages/wasm-split-macro",
+    "packages/wasm-split-cli",
+    "packages/wasm-used",
+    "packages/subsecond",
+    "packages/subsecond-types",
+    "packages/subsecond-tests/cross-tls-crate",
+    "packages/subsecond-tests/cross-tls-crate-dylib",
+    "packages/subsecond-tests/cross-tls-test",
+    # Engine, framework, and platform crates required by local path dependencies.
     "submodules/blitz/packages/accesskit_xplat",
     "submodules/blitz/packages/debug_timer",
     "submodules/blitz/packages/blitz-traits",
@@ -196,15 +167,48 @@ members = [
     "submodules/accessibility-cli/packages/accessibility-core",
     "submodules/accessibility-cli/packages/accessibility-serve",
     "submodules/accessibility-cli/packages/accessibility-cli",
-
-    # Zed / GPUI / Tauri v3 Unified Submodule Crates
     "submodules/async-dispatcher",
     "submodules/async-dispatcher/macros",
     "submodules/font-kit",
-    "submodules/scap",
     "submodules/window-vibrancy",
     "submodules/global-hotkey",
     "submodules/tray-icon",
+    # Absorbed AGPL desktop/mobile product and its native tooling/test harnesses.
+    "apps/locally-uncensored/src-tauri",
+    "apps/locally-uncensored/src-tauri/plugins/lu-native",
+    "apps/locally-uncensored/scripts/linux-mic-probe",
+    "apps/locally-uncensored/mobile-tests/fixture/ios-testbett/src-tauri",
+    "apps/locally-uncensored/mobile-tests/fixture/ios-testbett/plugin",
+    "apps/spacedrive/extensions/test-extension",
+    "apps/spacedrive/extensions/photos",
+    "apps/spacedrive/xtask",
+    "apps/spacedrive/crates/*",
+    "apps/spacedrive/core/benchmarks",
+    "apps/spacedrive/core",
+    "apps/spacedrive/apps/tauri/crates/*",
+    "apps/spacedrive/apps/tauri/sd-tauri-core",
+    "apps/spacedrive/apps/tauri/src-tauri",
+    "apps/spacedrive/apps/mobile/modules/sd-mobile-core/core",
+    "apps/spacedrive/apps/server",
+    "apps/spacedrive/apps/native",
+    "apps/spacedrive/apps/cli",
+]
+default-members = [
+    "crates/yolo-shared",
+    "crates/yolo-tokens",
+    "crates/yolo-contracts",
+    "crates/yolo-emit",
+    "crates/yolo-layout",
+    "crates/yolo-migrator",
+    "crates/yolo-render",
+    "crates/yolo-gpu",
+    "crates/yolo-shell",
+    "crates/yolo-craft",
+    "crates/yolo-storyteller",
+    "crates/yolo-react",
+    "crates/yolo-engines",
+    "crates/yolo-3d",
+    "packages/yolo-ui",
 ]
 exclude = [
     "packages/stores/tests/visibility-helper",
@@ -346,30 +350,39 @@ homepage = "https://aphrody.com"
 repository = "https://github.com/yolo-rs/yolo-ui"
 categories = ["gui", "web-programming", "wasm"]
 keywords = ["yolo-ui", "dioxus", "fullstack", "gui", "web", "wasm"]
-rust-version = "1.85.0"
+rust-version = "1.95"
 
 # dependencies that are shared across packages
 [workspace.dependencies]
+libfuzzer-sys = "0.4.7"
+cmov = "0.5.4"
+bincode = { version = "2.0.1", features = ["alloc", "derive", "serde"] }
+comfy-table = "7.1"
+aead = { version = "0.6.1", default-features = false }
+chacha20poly1305 = { version = "0.11.0", default-features = false, features = ["alloc", "rand_core"] }
 yolo-shared = { path = "crates/yolo-shared", version = "=0.8.0-alpha.3" }
-yolo-tokens = { path = "crates/yolo-tokens", version = "0.8.0" }
-yolo-contracts = { path = "crates/yolo-contracts", version = "0.8.0" }
-yolo-emit = { path = "crates/yolo-emit", version = "0.8.0" }
-yolo-layout = { path = "crates/yolo-layout", version = "0.8.0" }
-yolo-migrator = { path = "crates/yolo-migrator", version = "0.8.0" }
-yolo-render = { path = "crates/yolo-render", version = "0.8.0" }
-yolo-gpu = { path = "crates/yolo-gpu", version = "0.8.0" }
-yolo-shell = { path = "crates/yolo-shell", version = "0.8.0" }
-yolo-craft = { path = "crates/yolo-craft", version = "0.8.0" }
-yolo-storyteller = { path = "crates/yolo-storyteller", version = "0.8.0" }
-yolo-react = { path = "crates/yolo-react", version = "0.8.0" }
+yolo-tokens = { path = "crates/yolo-tokens", version = "=0.8.0-alpha.3" }
+yolo-contracts = { path = "crates/yolo-contracts", version = "=0.8.0-alpha.3" }
+yolo-emit = { path = "crates/yolo-emit", version = "=0.8.0-alpha.3" }
+yolo-layout = { path = "crates/yolo-layout", version = "=0.8.0-alpha.3" }
+yolo-migrator = { path = "crates/yolo-migrator", version = "=0.8.0-alpha.3" }
+yolo-render = { path = "crates/yolo-render", version = "=0.8.0-alpha.3" }
+yolo-gpu = { path = "crates/yolo-gpu", version = "=0.8.0-alpha.3" }
+yolo-shell = { path = "crates/yolo-shell", version = "=0.8.0-alpha.3" }
+yolo-craft = { path = "crates/yolo-craft", version = "=0.8.0-alpha.3" }
+yolo-storyteller = { path = "crates/yolo-storyteller", version = "=0.8.0-alpha.3" }
+aphrody-m3-tokens = { package = "yolo-tokens", path = "crates/yolo-tokens", version = "=0.8.0-alpha.3", features = ["serde"] }
+yolo-react = { path = "crates/yolo-react", version = "=0.8.0-alpha.3" }
+yolo-engines = { path = "crates/yolo-engines", version = "=0.8.0-alpha.3" }
+yolo-3d = { path = "crates/yolo-3d", version = "=0.8.0-alpha.3" }
 yolo-ui = { path = "packages/yolo-ui", version = "=0.8.0-alpha.3" }
 yolo-gpui = { path = "packages/yolo-gpui", version = "=0.8.0-alpha.3" }
 yolo-iced = { path = "packages/yolo-iced", version = "=0.8.0-alpha.3" }
 yolo-tauri = { path = "packages/yolo-tauri", version = "=0.8.0-alpha.3" }
-yolo-egui = { path = "packages/yolo-egui", version = "0.8.0" }
-yolo-cosmic = { path = "packages/yolo-cosmic", version = "0.8.0" }
-yolo-gtk = { path = "packages/yolo-gtk", version = "0.8.0" }
-yolo-qt = { path = "packages/yolo-qt", version = "0.8.0" }
+yolo-egui = { path = "packages/yolo-egui", version = "=0.8.0-alpha.3" }
+yolo-cosmic = { path = "packages/yolo-cosmic", version = "=0.8.0-alpha.3" }
+yolo-gtk = { path = "packages/yolo-gtk", version = "=0.8.0-alpha.3" }
+yolo-qt = { path = "packages/yolo-qt", version = "=0.8.0-alpha.3" }
 dioxus = { path = "packages/dioxus", version = "=0.8.0-alpha.3" }
 dioxus-core = { path = "packages/core", version = "=0.8.0-alpha.3", default-features = false }
 dioxus-vdom = { path = "packages/vdom", version = "=0.8.0-alpha.3" }
@@ -419,22 +432,22 @@ dx-env = { path = "packages/dx-env", version = "=0.8.0-alpha.3" }
 dioxus-cli-config = { path = "packages/cli-config", version = "=0.8.0-alpha.3" }
 
 # subsecond
-subsecond-types = { path = "packages/subsecond/subsecond-types", version = "=0.8.0-alpha.3" }
-subsecond = { path = "packages/subsecond/subsecond", version = "=0.8.0-alpha.3" }
+subsecond-types = { path = "packages/subsecond-types", version = "=0.8.0-alpha.3" }
+subsecond = { path = "packages/subsecond", version = "=0.8.0-alpha.3" }
 
 # wasm-split
-wasm-splitter = { path = "packages/wasm-split/wasm-split", version = "=0.8.0-alpha.3" }
-wasm-split-macro = { path = "packages/wasm-split/wasm-split-macro", version = "=0.8.0-alpha.3" }
-wasm-split-cli = { path = "packages/wasm-split/wasm-split-cli", version = "=0.8.0-alpha.3" }
-wasm-used = { path = "packages/wasm-split/wasm-used", version = "=0.8.0-alpha.3" }
+wasm-splitter = { path = "packages/wasm-splitter", version = "=0.8.0-alpha.3" }
+wasm-split-macro = { path = "packages/wasm-split-macro", version = "=0.8.0-alpha.3" }
+wasm-split-cli = { path = "packages/wasm-split-cli", version = "=0.8.0-alpha.3" }
+wasm-used = { path = "packages/wasm-used", version = "=0.8.0-alpha.3" }
 
 # our dep-info parsing crate
 depinfo = { path = "packages/depinfo", version = "=0.8.0-alpha.3" }
 
 # manganis
-manganis = { path = "packages/manganis/manganis", version = "=0.8.0-alpha.3" }
-manganis-core = { path = "packages/manganis/manganis-core", version = "=0.8.0-alpha.3" }
-manganis-macro = { path = "packages/manganis/manganis-macro", version = "=0.8.0-alpha.3" }
+manganis = { path = "packages/manganis", version = "=0.8.0-alpha.3" }
+manganis-core = { path = "packages/manganis-core", version = "=0.8.0-alpha.3" }
+manganis-macro = { path = "packages/manganis-macro", version = "=0.8.0-alpha.3" }
 
 # const-serialize
 dioxus-const-vec = { path = "packages/dioxus-const-vec", version = "=0.8.0-alpha.3" }
@@ -499,7 +512,7 @@ thin-vec = "0.2"
 parley = { version = "0.12", default-features = false, features = ["std"] }
 svgtypes = "0.16.1"
 accesskit = "0.25"
-rfd = { version = "0.17.1", default-features = false }
+rfd = { version = "0.17.2", default-features = false }
 cursor-icon = "1"
 reqwest-middleware = { version = "0.5.1", default-features = false }
 http-cache-reqwest = { version = "=1.0.0-alpha.6", default-features = false }
@@ -507,6 +520,14 @@ http-cache = { version = "=1.0.0-alpha.6", default-features = false }
 html-escape = "0.2.13"
 png = "0.18"
 directories = "6.0.0"
+roxmltree = "0.21"
+resvg = "0.48.1"
+fontdue = "0.9"
+oxc_allocator = "0.155"
+oxc_ast = "0.155"
+oxc_parser = "0.155"
+oxc_span = "0.155"
+lightningcss = { version = "=1.0.0-alpha.72", default-features = false }
 tracing-wasm = "0.2.1"
 web-time = "1"
 console_error_panic_hook = "0.1"
@@ -566,6 +587,39 @@ wgpu_context = { path = "submodules/anyrender/crates/wgpu_context", version = "0
 pixels_window_renderer = { path = "submodules/anyrender/crates/pixels_window_renderer", version = "0.9.0" }
 softbuffer_window_renderer = { path = "submodules/anyrender/crates/softbuffer_window_renderer", version = "0.9.0" }
 wgpu = { version = "30.0.1" }
+naga = { version = "30.0.0", features = ["spv-in", "wgsl-out"] }
+egui = { version = "0.36.2", default-features = false, features = ["default_fonts"] }
+eframe = { version = "0.36.2", default-features = false }
+bevy = { version = "0.20.0", default-features = false }
+bevy_window = { version = "0.20.0", default-features = false }
+bevy_app = { version = "0.20.0", default-features = false }
+bevy_ecs = { version = "0.20.0", default-features = false }
+bevy_math = { version = "0.20.0", default-features = false }
+bevy_transform = { version = "0.20.0", default-features = false }
+gltf = { version = "1.4.1", default-features = false }
+tobj = { version = "4.0.3", default-features = false }
+derive_more = { version = "2.0.1" }
+tower-layer = { version = "0.3.3" }
+rmp-serde = { version = "1.3" }
+subtle = { version = "2.6" }
+ndk = { version = "0.9.0" }
+ndk-sys = { version = "0.6.0" }
+ndk-context = { version = "0.1.1" }
+jni = { version = "0.21.1" }
+http-range = { version = "0.1.5" }
+git2 = { version = "0.21.0" }
+which = { version = "8.0.0" }
+mozjpeg = { version = "0.10.13", default-features = false }
+console-subscriber = { version = "0.5.0" }
+log = { version = "0.4.29" }
+target-lexicon = { version = "0.13.2" }
+self_update = { version = "1.3.0", default-features = false }
+clap_complete = { version = "4.5.65" }
+sledgehammer_bindgen = { version = "0.6.0", default-features = false }
+sledgehammer_utils = { version = "0.3.1" }
+mutatis = { version = "0.5.2" }
+android-activity = { version = "0.6", default-features = false }
+serde-wasm-bindgen = { version = "0.6.5" }
 vello = "0.11"
 vello_cpu = { version = "0.3", default-features = false, features = ["std", "text", "u8_pipeline"] }
 vello_gpu = "0.3"
@@ -585,7 +639,15 @@ softbuffer = "0.4"
 pixels = "0.17"
 futures-intrusive = "0.5.0"
 pollster = "0.4"
-cfg-if = "1.0.0"
+cfg-if = "1.0.4"
+enumset = "1.1.6"
+http-body-util = "0.1.3"
+regex = "1.12.3"
+wasm-streams = "0.5.0"
+async-stream = "0.3.6"
+gloo-net = "0.7.0"
+mime = "0.3.17"
+woff2 = { package = "woff2-patched", version = "0.4.0" }
 ureq = "3.1.2"
 winit = { version = "=0.31.0-beta.3" }
 atomic_refcell = "0.1.13"
@@ -601,12 +663,15 @@ tracing-subscriber = { version = "0.3.20", default-features = false }
 toml = "1.1.2"
 tokio = "1.52.1"
 tokio-util = { version = "0.7.15" }
+indicatif = "0.17"
+tar = "0.4.45"
 tokio-stream = { version = "0.1.17" }
 slab = "0.4.10"
 slotmap = { version = "1.0.7", features = ["serde"] }
 futures = "0.3.32"
 futures-channel = "0.3.32"
 futures-util = { version = "0.3.32", default-features = false }
+futures-timer = { version = "3.0.4", features = ["wasm-bindgen"] }
 rustc-hash = "2.1.1"
 wasm-bindgen = "0.2.127"
 wasm-bindgen-futures = "0.4.77"
@@ -710,7 +775,7 @@ serde_repr = "0.1.19"
 hyper-util = "0.1.18"
 krates = { version = "0.17.5" }
 libloading = "0.8.8"
-libc = "0.2.186"
+libc = "=0.2.186"
 memmap2 = "0.9.11"
 memfd = "0.6.4"
 xxhash-rust = { version = "0.8.15", default-features = false }
@@ -733,16 +798,26 @@ dunce = "1.0.5"
 percent-encoding = "2.3.2"
 # `gtk3` is what actually renders menus and tray icons on Linux.
 muda = { version = "0.21.2", default-features = false, features = ["gtk3"] }
+notify-rust = { version = "4" }
+arboard = { version = "3.6" }
+ed25519-dalek = { version = "2.2.0" }
+semver = { version = "1.0.28" }
+tauri = { version = "3.0.0-alpha.5", default-features = false }
+windows-sys = { version = "0.61" }
 objc2 = { version = "0.6.5", features = ["exception"] }
 objc2-foundation = { version = "0.3.2", default-features = false }
 objc2-ui-kit = { version = "0.3.2", default-features = false }
 objc2-app-kit = { version = "0.3.2", default-features = false }
 tray-icon = { path = "submodules/tray-icon", version = "0.26.1", default-features = false, features = ["libappindicator"] }
+gtk = { version = "0.11", package = "gtk4", features = ["v4_16"] }
+adw = { version = "0.9", package = "libadwaita", features = ["v1_6"] }
+cxx = "1.0"
+cxx-qt = "0.8"
+cxx-qt-lib = { version = "0.8", features = ["qt_gui", "qt_qml"] }
 window-vibrancy = { path = "submodules/window-vibrancy", version = "0.8.1" }
 global-hotkey = { path = "submodules/global-hotkey", version = "0.9.0" }
 async-dispatcher = { path = "submodules/async-dispatcher", version = "0.1.2" }
 font-kit = { path = "submodules/font-kit", version = "0.14.2" }
-zed-scap = { path = "submodules/scap", version = "0.0.8-zed" }
 cryoglyph = { path = "submodules/cryoglyph", version = "0.1.0" }
 iced_aw = { path = "submodules/iced_aw", version = "0.14.1" }
 iced_audio = { path = "submodules/iced_audio", version = "0.17.1" }
@@ -767,6 +842,87 @@ keyboard-types = { version = "0.8", default-features = false }
 
 # reduce debug symbols to line tables only - speeds up compiles and shrinks artifacts
 # backtraces still show file:line, but debugger can't inspect variables
+# Imported Spacedrive dependencies without an existing root catalog entry.
+gpui = { version = "0.2.2", git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5" }
+gpui_platform = { git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5", features = ["font-kit"] }
+gpui_macros = { git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5" }
+gpui-component = { git = "https://github.com/longbridge/gpui-component", rev = "7acfc184382d30864a688fdaa6c9ff719efc53ae" }
+async-channel = "2.3"
+blake3 = "1.5.5"
+flume = "0.11.0"
+futures-concurrency = "7.6.2"
+globset = "0.4.15"
+iroh = "1.4.1"
+iroh-relay = { version = "1.4.1", features = ["server"] }
+iroh-mdns-address-lookup = "0.6.1"
+lending-stream = "1.0"
+mimalloc = "0.1.43"
+normpath = "1.3"
+pin-project-lite = "0.2.15"
+quic-rpc = "0.17.3"
+rmp = "0.8.14"
+rmpv = { version = "1.3", features = ["with-serde"] }
+specta = { git = "https://github.com/jamiepine/specta", branch = "main" }
+strum = "0.26"
+strum_macros = "0.26"
+tracing-test = "0.2.5"
+uhlc = "0.8.0"
+webp = "0.3.0"
+zeroize = "1.8"
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
+lancedb = "0.15"
+fastembed = "4"
+arrow-array = "53.3"
+arrow-schema = "53.3"
+indexmap = "2.7"
+unicode-normalization = "0.1"
+dashmap = "6.1"
+ort = { version = "2.0.0-rc.9", default-features = false, features = ["download-binaries", "tls-native"] }
+[profile.dev-debug]
+inherits = "dev"
+codegen-units = 256
+debug = "full"
+incremental = true
+lto = "off"
+opt-level = 0
+strip = "none"
+
+[profile.dev-debug.package."*"]
+debug = "full"
+incremental = false
+opt-level = 3
+
+[profile.spacedrive-dev]
+inherits = "dev"
+codegen-units = 256
+debug = 0
+incremental = true
+lto = false
+opt-level = 0
+split-debuginfo = "unpacked"
+strip = "none"
+
+[profile.spacedrive-dev.build-override]
+opt-level = 3
+
+[profile.spacedrive-dev.package."*"]
+incremental = false
+opt-level = 3
+
+[profile.mobile-dev]
+inherits = "release"
+codegen-units = 16
+lto = false
+opt-level = 2
+strip = true
+
+[profile.extension-release]
+inherits = "release"
+opt-level = "z"
+codegen-units = 1
+lto = true
+strip = true
+
 [profile.dev]
 debug = "line-tables-only"
 
@@ -774,6 +930,11 @@ debug = "line-tables-only"
 # when we ship our CI builds, we turn on LTO which improves perf leftover by turning on incremental
 [profile.release]
 incremental = true
+panic = "unwind"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
 
 # crank up the opt level for wasm-split-cli in dev mode
 # important here that lto is on and the debug symbols are present (since they're used by wasm-opt)
@@ -795,8 +956,11 @@ opt-level = 3
 
 # Keep debug assertions for fuzzing, but compile the reusable fuzzer crate
 # with release-style optimizations. (The libFuzzer binary `dioxus-fuzz` lives
-# in its own sub-workspace under packages/fuzz/fuzz and sets its own profile.)
+# as a member of this workspace with its profile declared here.
 [profile.dev.package.dioxus-vdom-fuzz]
+opt-level = 3
+
+[profile.dev.package.dioxus-fuzz]
 opt-level = 3
 
 # ensure we have adversarial setup for tls
@@ -846,22 +1010,20 @@ version = "0.7.5"
 reqwest = { workspace = true, features = ["json"] }
 ciborium = { workspace = true, optional = true }
 base64 = { workspace = true, optional = true }
-http-range = { version = "0.1.5" }
+http-range = { workspace = true }
 wgpu = { workspace = true, optional = true }
 winit = { workspace = true, optional = true }
 ouroboros = { version = "*", optional = true }
 wasm-splitter = { workspace = true }
 
-sqlx = { version = "0.9.0", features = [
+sqlx = { workspace = true, features = [
     "macros",
     "migrate",
     "postgres",
-    "sqlite",
     "_unstable-all-types",
     "tls-native-tls",
-    "runtime-tokio",
 ], optional = true }
-wasm-streams = "0.5.0"
+wasm-streams = { workspace = true }
 
 [dev-dependencies]
 dioxus = { workspace = true, features = ["router", "fullstack"] }
@@ -1514,3 +1676,12 @@ doc-scrape-examples = true
 [[example]]
 name = "__scrape_example_list"
 path = "examples/scripts/scrape_examples.rs"
+
+[patch."https://github.com/zed-industries/zed"]
+gpui = { version = "=0.2.2", git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5" }
+gpui_platform = { git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5" }
+gpui_macros = { git = "https://github.com/spacedriveapp/zed", rev = "e0931d5a9dbf4f781b336fdf448739e74a2ac0b5" }
+
+[patch.crates-io]
+rc4 = { path = "apps/spacedrive/crates/rc4-shim" }
+tauri = { path = "submodules/tauri/crates/tauri" }

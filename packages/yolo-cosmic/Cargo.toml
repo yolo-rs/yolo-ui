@@ -1,7 +1,8 @@
 [package]
 name = "yolo-cosmic"
-version = "0.8.0"
-edition = "2024"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
 license = "Apache-2.0"
 description = "Iced 0.14 & System76 libcosmic / cosmic-theme adapter for Yolo UI: 5-preset palettes (Neutral, M3, Fluent, Apple, Aphrody), RON builders, and widget styles"
 repository = "https://github.com/yolo-rs/yolo-ui"
@@ -11,7 +12,4 @@ default = []
 iced-core = []
 
 [dependencies]
-yolo-shared = { path = "../../crates/yolo-shared" }
-yolo-tokens = { path = "../../crates/yolo-tokens" }
-yolo-emit = { path = "../../crates/yolo-emit" }
-serde = { version = "1.0.228", features = ["derive"] }
+yolo-engines = { workspace = true, features = ["cosmic"] }

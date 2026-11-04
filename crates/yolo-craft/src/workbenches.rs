@@ -7,7 +7,8 @@
 //! [`YoloManifest`] integration.
 
 use crate::brand::CraftBrand;
-use crate::docking::Zone as Side;
+use crate::docking::{DockError, Floating, Layout, Node, StackEntry, Zone as Side};
+use crate::layout::{SplitAxis, SplitSize};
 use yolo_shared::{YoloManifest, YoloThemePreset};
 
 /// Enumeration of the 13 canonical Craft domain workbenches.
@@ -131,7 +132,10 @@ impl CraftWorkbenchKind {
                 capability: "CAD",
                 description: "Parametric 3D CAD, sketch constraints, and B-Rep solid modeling workbench",
                 extensions: &["step", "stp", "iges", "stl", "obj", "cadcraft"],
-                tools: &["Select", "Sketch", "Extrude", "Revolve", "Fillet", "Chamfer", "Boolean", "Measure"],
+                tools: &[
+                    "Select", "Sketch", "Extrude", "Revolve", "Fillet", "Chamfer", "Boolean",
+                    "Measure",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("feature-tree", "Feature Tree", Side::Left, 260.0),
@@ -148,7 +152,15 @@ impl CraftWorkbenchKind {
                 capability: "Deck",
                 description: "Slide presentation authoring, speaker notes, and motion transitions workbench",
                 extensions: &["deckcraft", "pptx", "pdf", "md"],
-                tools: &["Select", "TextBox", "Shape", "Image", "Chart", "CodeBlock", "Transition"],
+                tools: &[
+                    "Select",
+                    "TextBox",
+                    "Shape",
+                    "Image",
+                    "Chart",
+                    "CodeBlock",
+                    "Transition",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("slides", "Slide Navigator", Side::Left, 220.0),
@@ -164,11 +176,24 @@ impl CraftWorkbenchKind {
                 capability: "Design",
                 description: "UI/UX component design, auto-layout frames, and design token workbench",
                 extensions: &["designcraft", "fig", "svg", "json"],
-                tools: &["Select", "Frame", "AutoLayout", "Component", "Text", "Pen", "Prototype"],
+                tools: &[
+                    "Select",
+                    "Frame",
+                    "AutoLayout",
+                    "Component",
+                    "Text",
+                    "Pen",
+                    "Prototype",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("layers", "Layers & Assets", Side::Left, 260.0),
-                        DockPanelSpec::new("design-inspector", "Design & Tokens", Side::Right, 300.0),
+                        DockPanelSpec::new(
+                            "design-inspector",
+                            "Design & Tokens",
+                            Side::Right,
+                            300.0,
+                        ),
                     ]
                 },
             },
@@ -179,12 +204,25 @@ impl CraftWorkbenchKind {
                 capability: "Effects",
                 description: "Node-based VFX compositing, shader graph, and motion keyframes workbench",
                 extensions: &["effectcraft", "exr", "nk", "wgsl"],
-                tools: &["Select", "Transform", "RotoBezier", "Tracker", "ColorCorrect", "Blur", "ShaderNode"],
+                tools: &[
+                    "Select",
+                    "Transform",
+                    "RotoBezier",
+                    "Tracker",
+                    "ColorCorrect",
+                    "Blur",
+                    "ShaderNode",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("nodes", "Node Library", Side::Left, 240.0),
                         DockPanelSpec::new("parameters", "Node Inspector", Side::Right, 300.0),
-                        DockPanelSpec::new("node-graph", "Compositing Graph & Dope Sheet", Side::Bottom, 260.0),
+                        DockPanelSpec::new(
+                            "node-graph",
+                            "Compositing Graph & Dope Sheet",
+                            Side::Bottom,
+                            260.0,
+                        ),
                     ]
                 },
             },
@@ -195,7 +233,15 @@ impl CraftWorkbenchKind {
                 capability: "Whiteboard",
                 description: "Infinite collaborative whiteboard, sticky notes, and architecture diagramming",
                 extensions: &["figcraft", "svg", "png", "json"],
-                tools: &["Select", "Hand", "StickyNote", "Connector", "Shape", "Marker", "Stamp"],
+                tools: &[
+                    "Select",
+                    "Hand",
+                    "StickyNote",
+                    "Connector",
+                    "Shape",
+                    "Marker",
+                    "Stamp",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("stencils", "Stencils & Stickers", Side::Left, 220.0),
@@ -210,7 +256,15 @@ impl CraftWorkbenchKind {
                 capability: "Film",
                 description: "Non-linear multi-track video editing, color scopes, and audio sync workbench",
                 extensions: &["filmcraft", "mp4", "mov", "mkv", "fcpxml", "edl"],
-                tools: &["Select", "Blade", "Trim", "Slip", "Slide", "ColorWheels", "Title"],
+                tools: &[
+                    "Select",
+                    "Blade",
+                    "Trim",
+                    "Slip",
+                    "Slide",
+                    "ColorWheels",
+                    "Title",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("media-pool", "Media Pool", Side::Left, 280.0),
@@ -226,11 +280,24 @@ impl CraftWorkbenchKind {
                 capability: "Spreadsheet",
                 description: "High-density reactive spreadsheet, pivot tables, and formula evaluation grid",
                 extensions: &["gridcraft", "csv", "tsv", "xlsx", "parquet", "json"],
-                tools: &["SelectCell", "Formula", "Sort", "Filter", "Pivot", "Chart", "ConditionalFormat"],
+                tools: &[
+                    "SelectCell",
+                    "Formula",
+                    "Sort",
+                    "Filter",
+                    "Pivot",
+                    "Chart",
+                    "ConditionalFormat",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("sheets", "Sheets & Named Ranges", Side::Left, 220.0),
-                        DockPanelSpec::new("formula-inspector", "Cell & Chart Inspector", Side::Right, 280.0),
+                        DockPanelSpec::new(
+                            "formula-inspector",
+                            "Cell & Chart Inspector",
+                            Side::Right,
+                            280.0,
+                        ),
                     ]
                 },
             },
@@ -241,10 +308,22 @@ impl CraftWorkbenchKind {
                 capability: "Darkroom",
                 description: "RAW photography catalog, histogram, tone curves, and non-destructive developing",
                 extensions: &["lightcraft", "dng", "cr3", "nef", "arw", "jpg", "tiff"],
-                tools: &["Crop", "SpotHeal", "MaskGradient", "MaskRadial", "WhiteBalance", "ToneCurve"],
+                tools: &[
+                    "Crop",
+                    "SpotHeal",
+                    "MaskGradient",
+                    "MaskRadial",
+                    "WhiteBalance",
+                    "ToneCurve",
+                ],
                 default_panels: const {
                     &[
-                        DockPanelSpec::new("presets-navigator", "Navigator & Presets", Side::Left, 250.0),
+                        DockPanelSpec::new(
+                            "presets-navigator",
+                            "Navigator & Presets",
+                            Side::Left,
+                            250.0,
+                        ),
                         DockPanelSpec::new("develop", "Histogram & Develop", Side::Right, 320.0),
                         DockPanelSpec::new("filmstrip", "Filmstrip", Side::Bottom, 140.0),
                     ]
@@ -257,11 +336,24 @@ impl CraftWorkbenchKind {
                 capability: "PDF",
                 description: "PDF viewing, vector redaction, form authoring, and print preflight workbench",
                 extensions: &["pdf", "pdfcraft"],
-                tools: &["Pan", "SelectText", "Highlight", "Note", "Redact", "Signature", "Measure"],
+                tools: &[
+                    "Pan",
+                    "SelectText",
+                    "Highlight",
+                    "Note",
+                    "Redact",
+                    "Signature",
+                    "Measure",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("thumbnails", "Pages & Bookmarks", Side::Left, 240.0),
-                        DockPanelSpec::new("preflight", "Annotations & Preflight", Side::Right, 280.0),
+                        DockPanelSpec::new(
+                            "preflight",
+                            "Annotations & Preflight",
+                            Side::Right,
+                            280.0,
+                        ),
                     ]
                 },
             },
@@ -272,11 +364,25 @@ impl CraftWorkbenchKind {
                 capability: "Photo",
                 description: "Multi-layer raster image editing, brush engine, channels, and blend modes",
                 extensions: &["photocraft", "psd", "png", "jpg", "webp", "avif", "ora"],
-                tools: &["Move", "Marquee", "Lasso", "Brush", "Eraser", "CloneStamp", "Gradient", "Text"],
+                tools: &[
+                    "Move",
+                    "Marquee",
+                    "Lasso",
+                    "Brush",
+                    "Eraser",
+                    "CloneStamp",
+                    "Gradient",
+                    "Text",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("brushes", "Tools & Brushes", Side::Left, 220.0),
-                        DockPanelSpec::new("layers-channels", "Layers & Channels", Side::Right, 300.0),
+                        DockPanelSpec::new(
+                            "layers-channels",
+                            "Layers & Channels",
+                            Side::Right,
+                            300.0,
+                        ),
                         DockPanelSpec::new("history", "History & Swatches", Side::Bottom, 160.0),
                     ]
                 },
@@ -288,11 +394,24 @@ impl CraftWorkbenchKind {
                 capability: "Audio DAW",
                 description: "Digital audio workstation, multi-track arrangement, MIDI piano roll, and DSP mixer",
                 extensions: &["soundcraft", "wav", "flac", "ogg", "mp3", "mid"],
-                tools: &["Pointer", "Range", "Split", "Pencil", "Mute", "Automation", "TimeStretch"],
+                tools: &[
+                    "Pointer",
+                    "Range",
+                    "Split",
+                    "Pencil",
+                    "Mute",
+                    "Automation",
+                    "TimeStretch",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("browser", "Instruments & Samples", Side::Left, 260.0),
-                        DockPanelSpec::new("channel-strip", "Channel Strip & FX", Side::Right, 280.0),
+                        DockPanelSpec::new(
+                            "channel-strip",
+                            "Channel Strip & FX",
+                            Side::Right,
+                            280.0,
+                        ),
                         DockPanelSpec::new("mixer", "Mixer & Piano Roll", Side::Bottom, 260.0),
                     ]
                 },
@@ -304,11 +423,24 @@ impl CraftWorkbenchKind {
                 capability: "Vector",
                 description: "Precision Bézier vector illustration, boolean pathfinders, and print artboards",
                 extensions: &["vectorcraft", "svg", "eps", "pdf", "ai"],
-                tools: &["Select", "DirectSelect", "Pen", "Curvature", "ShapeBuilder", "Type", "Artboard"],
+                tools: &[
+                    "Select",
+                    "DirectSelect",
+                    "Pen",
+                    "Curvature",
+                    "ShapeBuilder",
+                    "Type",
+                    "Artboard",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("artboards", "Artboards & Symbols", Side::Left, 240.0),
-                        DockPanelSpec::new("stroke-fill", "Appearance, Stroke & Pathfinder", Side::Right, 300.0),
+                        DockPanelSpec::new(
+                            "stroke-fill",
+                            "Appearance, Stroke & Pathfinder",
+                            Side::Right,
+                            300.0,
+                        ),
                     ]
                 },
             },
@@ -319,7 +451,15 @@ impl CraftWorkbenchKind {
                 capability: "Document",
                 description: "Structured long-form publishing, styles, bibliography, and print pagination",
                 extensions: &["wordcraft", "docx", "odt", "md", "typ", "tex"],
-                tools: &["Cursor", "Heading", "ParagraphStyle", "Table", "Figure", "Citation", "Footnote"],
+                tools: &[
+                    "Cursor",
+                    "Heading",
+                    "ParagraphStyle",
+                    "Table",
+                    "Figure",
+                    "Citation",
+                    "Footnote",
+                ],
                 default_panels: const {
                     &[
                         DockPanelSpec::new("outline", "Document Outline", Side::Left, 240.0),
@@ -340,14 +480,19 @@ pub struct DockPanelSpec {
     pub title: &'static str,
     /// Default dock side (`Left`, `Right`, `Bottom`).
     pub side: Side,
-    /// Default extent in logical points.
+    /// Default extent in logical points: width for left/right panels, height for top/bottom panels.
     pub default_extent: f32,
 }
 
 impl DockPanelSpec {
     /// Creates a new [`DockPanelSpec`].
     #[must_use]
-    pub const fn new(id: &'static str, title: &'static str, side: Side, default_extent: f32) -> Self {
+    pub const fn new(
+        id: &'static str,
+        title: &'static str,
+        side: Side,
+        default_extent: f32,
+    ) -> Self {
         Self {
             id,
             title,
@@ -383,10 +528,102 @@ impl CraftWorkbenchContract {
     #[must_use]
     pub fn manifest(&self, preset: YoloThemePreset) -> YoloManifest {
         let brand = CraftBrand::for_preset(preset);
-        brand.to_manifest(
-            &format!("org.yolo.craft.{}", self.id),
-            self.capability,
-        )
+        brand.to_manifest(&format!("org.yolo.craft.{}", self.id), self.capability)
+    }
+
+    /// Builds the initial dock tree declared by this workbench contract.
+    ///
+    /// The stable `"canvas"` panel occupies the center. Panels on each edge form an accordion
+    /// stack in catalog order. Left/right extents set side width; top/bottom extents set initial
+    /// stack heights. This gives hosts a usable starting workspace while leaving the document
+    /// model and panel contents app-owned.
+    /// The returned tree is validated before it is exposed, so a malformed static contract fails
+    /// with the same structured error used by interactive docking operations.
+    pub fn default_layout(&self) -> Result<Layout<&'static str>, DockError> {
+        let mut edges: [Vec<&DockPanelSpec>; 4] = std::array::from_fn(|_| Vec::new());
+        for panel in self.default_panels {
+            let edge = match panel.side {
+                Side::Left => 0,
+                Side::Right => 1,
+                Side::Top => 2,
+                Side::Bottom => 3,
+                Side::Center => return Err(DockError::InvalidPlacement),
+            };
+            edges[edge].push(panel);
+        }
+
+        let mut root = Node::Tabs {
+            panels: vec!["canvas"],
+            active: 0,
+        };
+        for (edge, side) in [Side::Left, Side::Right, Side::Top, Side::Bottom]
+            .into_iter()
+            .enumerate()
+        {
+            if edges[edge].is_empty() {
+                continue;
+            }
+            let extent = match side {
+                Side::Left | Side::Right => edges[edge]
+                    .iter()
+                    .map(|panel| panel.default_extent)
+                    .fold(0.0_f32, f32::max),
+                Side::Top | Side::Bottom => edges[edge]
+                    .iter()
+                    .map(|panel| panel.default_extent)
+                    .sum::<f32>(),
+                Side::Center => return Err(DockError::InvalidPlacement),
+            };
+            let panels = Node::Stack {
+                entries: edges[edge]
+                    .iter()
+                    .map(|panel| StackEntry {
+                        panel: panel.id,
+                        open: true,
+                        height: matches!(side, Side::Top | Side::Bottom)
+                            .then_some(panel.default_extent),
+                    })
+                    .collect(),
+            };
+            let (axis, size, first) = match side {
+                Side::Left => (SplitAxis::Horizontal, SplitSize::FixedFirst(extent), true),
+                Side::Right => (SplitAxis::Horizontal, SplitSize::FixedSecond(extent), false),
+                Side::Top => (SplitAxis::Vertical, SplitSize::FixedFirst(extent), true),
+                Side::Bottom => (SplitAxis::Vertical, SplitSize::FixedSecond(extent), false),
+                Side::Center => return Err(DockError::InvalidPlacement),
+            };
+            let (first, second) = if first {
+                (panels, root)
+            } else {
+                (root, panels)
+            };
+            root = Node::Split {
+                axis,
+                size,
+                first: Box::new(first),
+                second: Box::new(second),
+            };
+        }
+
+        let layout = Layout {
+            root: Some(root),
+            floating: Vec::<Floating<&'static str>>::new(),
+        };
+        layout.validate()?;
+        Ok(layout)
+    }
+
+    /// Returns whether this workbench accepts a file extension, with or without a leading dot.
+    /// Matching is ASCII case-insensitive; ambiguous formats intentionally match every capable
+    /// workbench so a host can present a choice instead of silently opening the wrong editor.
+    #[must_use]
+    pub fn supports_extension(&self, extension: &str) -> bool {
+        let extension = extension.trim().trim_start_matches('.');
+        !extension.is_empty()
+            && self
+                .extensions
+                .iter()
+                .any(|supported| supported.eq_ignore_ascii_case(extension))
     }
 }
 
@@ -394,6 +631,32 @@ impl CraftWorkbenchContract {
 #[must_use]
 pub fn all_workbenches() -> [CraftWorkbenchContract; 13] {
     CraftWorkbenchKind::ALL.map(CraftWorkbenchKind::contract)
+}
+
+/// Looks up a workbench by its stable ID, ignoring ASCII letter case.
+#[must_use]
+pub fn workbench_by_id(id: &str) -> Option<CraftWorkbenchContract> {
+    CraftWorkbenchKind::ALL
+        .into_iter()
+        .find(|kind| kind.id().eq_ignore_ascii_case(id.trim()))
+        .map(CraftWorkbenchKind::contract)
+}
+
+/// Returns every workbench that accepts an extension, with or without a leading dot.
+///
+/// This returns an iterator over the static catalog and does not allocate. Common formats such
+/// as `pdf`, `svg`, `jpg`, and `json` can intentionally match multiple workbenches.
+pub fn workbenches_for_extension(
+    extension: &str,
+) -> impl Iterator<Item = CraftWorkbenchContract> + '_ {
+    let extension = extension.trim().trim_start_matches('.');
+    all_workbenches().into_iter().filter(move |workbench| {
+        !extension.is_empty()
+            && workbench
+                .extensions
+                .iter()
+                .any(|supported| supported.eq_ignore_ascii_case(extension))
+    })
 }
 
 #[cfg(test)]

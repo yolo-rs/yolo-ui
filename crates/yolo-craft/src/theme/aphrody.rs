@@ -11,7 +11,7 @@ use yolo_tokens::presets::scheme_for_preset;
 pub use yolo_tokens::role::Role;
 use yolo_tokens::scheme::DynamicScheme;
 
-use super::{shape, WidgetPalette};
+use super::{WidgetPalette, shape};
 
 /// Resolved M3 / Yolo color palette for an egui frame.
 #[derive(Clone, Copy, Debug)]

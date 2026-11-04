@@ -1,6 +1,8 @@
 import type { BunPlugin } from "bun";
 import { readFileSync } from "node:fs";
 
+export * as shadcnBun from "./shadcn-bun";
+
 export type YoloPresetId =
   | "neutral"
   | "m3"

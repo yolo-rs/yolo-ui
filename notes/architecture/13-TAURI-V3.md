@@ -1,5 +1,12 @@
 # 13 — Tauri v3 Alpha (`dev` / `v3`) & Wry/Tao Native Desktop/Mobile Stack
 
+> **Current integration boundary (2026-11-04):** Yolo UI currently integrates
+> Tauri with Wry. The selected Tauri source tree contains upstream CEF-related
+> code, but Yolo UI does not expose or qualify a CEF runtime. Chromium, CEF,
+> and browser-engine adapters belong to `yolo-web`; a Tauri-to-CEF adapter is
+> future work there. Treat the CEF examples below as upstream architecture
+> notes only, not available Yolo UI features.
+
 `yolo-ui` integrates the **Tauri v3 Alpha (`3.0.0-alpha.5`)** ecosystem alongside **Dioxus 0.8 (`dioxus-desktop` / `dioxus-mobile`)** via the `yolo-tauri` crate (`packages/yolo-tauri`) and 15 forked/synced `aphrody-labs/*` submodules under `submodules/*`.
 
 ---
@@ -10,7 +17,7 @@ Both `dioxus-desktop` and `tauri` v3 share the exact same underlying windowing, 
 
 | Submodule Path | Upstream & Fork (`aphrody-labs/*`) | Branch | Crate Version | Role in `yolo-ui` |
 | :--- | :--- | :--- | :--- | :--- |
-| `submodules/tauri` | `aphrody-labs/tauri` | `v3` (`dev`) | `3.0.0-alpha.5` | Tauri v3 core (`tauri`, `tauri-runtime`, `tauri-runtime-wry` `3.0.0-alpha.5`, `tauri-runtime-cef` `3.0.0-alpha.6`, `tauri-bundler`, `tauri-cli`) |
+| `submodules/tauri` | `aphrody-labs/tauri` | `v3` (`dev`) | `3.0.0-alpha.5` | Selected Tauri source (`tauri`, `tauri-runtime`, `tauri-runtime-wry`, bundler, CLI); CEF source is not integrated by Yolo UI |
 | `submodules/wry` | `aphrody-labs/wry` | `dev` | `0.57.1` | Cross-platform WebView rendering library (WebView2, WKWebView, WebKitGTK, Android/iOS) |
 | `submodules/tao` | `aphrody-labs/tao` | `dev` | `0.37.2` | Cross-platform application windowing and event loop (`rwh_05` / `rwh_06`) |
 | `submodules/muda` | `aphrody-labs/muda` | `dev` | `0.21.2` | Native desktop application menu bars and context menus (Win32, AppKit, GTK3/GTK4) |
@@ -58,7 +65,7 @@ Both `dioxus-desktop` and `tauri` v3 share the exact same underlying windowing, 
 
 ## 3. Tauri 2.0 -> 3.0 Alpha Migration Reference (`https://v3.tauri.app/start/migrate/from-tauri-2/`)
 
-### 3.1 Decoupled Webview Runtimes (`tauri-runtime-wry` & `tauri-runtime-cef`)
+### 3.1 Decoupled Webview Runtimes (Upstream reference)
 In Tauri 3.0 Alpha, the webview runtime is **no longer selected via Cargo features (`wry` / `cef`) on the `tauri` crate**. Instead, applications depend directly on a runtime crate and pass its attributes to `tauri::Builder::runtime(...)`:
 
 ```toml

@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 [package]
 name = "yolo-render"
-version = "0.8.0"
-edition = "2024"
-rust-version = "1.85.0"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
 authors = ["Yolo UI Contributors"]
 repository = "https://github.com/yolo-rs/yolo-ui"
 license = "MIT OR Apache-2.0"
@@ -36,16 +36,16 @@ correctness = { level = "warn", priority = -1 }
 perf = { level = "warn", priority = -1 }
 
 [dependencies]
-aphrody-m3-tokens = { package = "yolo-tokens", path = "../yolo-tokens", version = "0.8.0", features = ["serde"] }
-yolo-shared = { path = "../yolo-shared" }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-png = "0.18"
-fontdue = "0.9"
-rayon = { version = "1.11.0", optional = true }
-base64 = "0.22.1"
-gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "KHR_materials_emissive_strength", "KHR_materials_unlit"] }
-tobj = { version = "4.0.3", default-features = false }
-wgpu = { version = "30.0.1", default-features = false, optional = true, features = ["wgsl", "dx12", "vulkan", "metal", "webgpu", "webgl"] }
-pollster = { version = "0.4", optional = true }
-bytemuck = { version = "1", features = ["derive"], optional = true }
+aphrody-m3-tokens = { workspace = true }
+yolo-shared = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+png = { workspace = true }
+fontdue = { workspace = true }
+rayon = { workspace = true, optional = true }
+base64 = { workspace = true }
+gltf = { workspace = true, features = ["utils", "names", "KHR_materials_emissive_strength", "KHR_materials_unlit"] }
+tobj = { workspace = true }
+wgpu = { workspace = true, optional = true, features = ["wgsl", "dx12", "vulkan", "metal", "webgpu", "webgl"] }
+pollster = { workspace = true, optional = true }
+bytemuck = { workspace = true, features = ["derive"], optional = true }
