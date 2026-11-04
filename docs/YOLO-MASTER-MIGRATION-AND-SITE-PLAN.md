@@ -30,7 +30,7 @@ flowchart TD
         Taffy["crates/yolo-layout\nTailwindStyleResolver -> taffy::Style Flexbox/Grid\nSnap 4px/8px • WCAG AAA 48x48px"]
     end
 
-    subgraph P4["Pilier 4 : Tous nos Rendus 3D & GPU -> GPUI + WGPU 24 + WGPUI"]
+    subgraph P4["Pilier 4 : Tous nos Rendus 3D & GPU -> GPUI + WGPU 30/29 + WGPUI"]
         Wgpui["crates/yolo-gpu + crates/yolo-render + Bevy 0.16\nSDF Instancié • Kawase Blur 8x3 • Atlas Glyphes • Scènes 3D"]
     end
 
@@ -98,15 +98,15 @@ Plus aucun moteur CSS navigateur ni pipeline PostCSS/Node.js n'est requis pour c
 
 ---
 
-## 5. Pilier 4 — Migration de Tous nos Rendus 3D & Shaders vers GPUI + WGPU 24 + WGPUI
+## 5. Pilier 4 — Migration de Tous nos Rendus 3D & Shaders vers GPUI + WGPU 30/29 + WGPUI
 
-Tous les moteurs de rendu 3D/2D disparates (`Three.js`, `WebGL`, anciens `wgpu 0.19/0.20`) convergent vers la pile **GPUI + WGPU 24 + WGPUI ([`crates/yolo-gpu`](file:///C:/src/yolo-ui/crates/yolo-gpu/src/lib.rs) + [`crates/yolo-render`](file:///C:/src/yolo-ui/crates/yolo-render/src/lib.rs) + [`packages/yolo-gpui`](file:///C:/src/yolo-ui/packages/yolo-gpui/src/lib.rs) + `submodules/bevy` 0.16)** :
+Tous les moteurs de rendu 3D/2D disparates (`Three.js`, `WebGL`, anciens `wgpu 0.19/0.20`) convergent vers la pile **GPUI + WGPU 30/29 + WGPUI ([`crates/yolo-gpu`](file:///C:/src/yolo-ui/crates/yolo-gpu/src/lib.rs) + [`crates/yolo-render`](file:///C:/src/yolo-ui/crates/yolo-render/src/lib.rs) + [`packages/yolo-gpui`](file:///C:/src/yolo-ui/packages/yolo-gpui/src/lib.rs) + `submodules/bevy` 0.16)** :
 
 - **Primitives SDF Analytiques Instanciées (`yolo-render` + `yolo-gpu`)** : Rendu GPU anti-aliasé en un seul draw call pour les squircles Apple (`radius=10px`), les bordures actives Hyprland (`#33CCFF -> #00FF99` à `45deg`), les ombres portées et l'atlas de glyphes (`cosmic-text` + `etagere`).
 - **Effets de Verre & Flou Kawase (`8×3` passes)** : Implémentation native dans [`crates/yolo-render`](file:///C:/src/yolo-ui/crates/yolo-render/src/lib.rs) pour `Liquid Glass` (Apple), `Mica/Acrylic` (Fluent) et `Kawase Dual-Filter` (Hyprland).
 - **Scènes 3D & Viewports Embarqués (`WGPUI`)** :
-  - `aphrody-model-view`, `aphrody-nie-render3d` (modèles 3D Level-5 / Inazuma Eleven) et `aphrody-tauri-3d` -> surface WGPU 24 intégrée dans un panneau `yolo-gpui` / `yolo-egui`.
-  - `gecko-backend-wgpu` (Wii/GameCube GX -> WGPU 24) & `aphrody-dust-wgpu` (NDS 3D -> WGPU 24) -> pipeline `yolo-gpu` partagé.
+  - `aphrody-model-view`, `aphrody-nie-render3d` (modèles 3D Level-5 / Inazuma Eleven) et `aphrody-tauri-3d` -> surface WGPU 30/29 intégrée dans un panneau `yolo-gpui` / `yolo-egui`.
+  - `gecko-backend-wgpu` (Wii/GameCube GX -> WGPU 30/29) & `aphrody-dust-wgpu` (NDS 3D -> WGPU 30/29) -> pipeline `yolo-gpu` partagé.
   - `vectorcraft-three-d` & **Byron Love 8×11 Sprite/3D Stage** (`192×208` cellules, 10 teintes Oklch `#F7F3F0`..`#131420`) -> rendu direct `yolo-gpu`.
 
 ---

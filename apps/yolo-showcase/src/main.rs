@@ -204,7 +204,7 @@ mod tests {
         assert!(html.contains("Iced 0.14"));
         assert!(html.contains("Egui 0.36"));
         assert!(html.contains("Taffy 0.15"));
-        assert!(html.contains("WGPUI 24"));
+        assert!(html.contains("WGPUI 30/29"));
         assert!(html.contains("Zed GPUI"));
         assert!(html.contains("Benchmarks &amp; Comparatifs"));
         assert!(html.contains("Cold Startup"));

@@ -30,7 +30,7 @@ yolo-ui/
 │   ├── yolo-layout/            # Taffy 0.15 Flexbox/Grid layout engine with 4px/8px snapping & WCAG tap targets
 │   ├── yolo-migrator/          # OXC TSX/JSX + Tailwind v4 + Shadcn/Radix/BaseUI -> 6 Rust targets compiler
 │   ├── yolo-render/            # Analytical SDF primitives, damage tracking, Kawase blur, spring physics
-│   ├── yolo-gpu/               # WGPU 24 instanced SDF GPU pipeline & glyph atlas
+│   ├── yolo-gpu/               # WGPU 30/29 instanced SDF GPU pipeline & glyph atlas
 │   ├── yolo-shell/             # Desktop lifecycle, muda menus, tray-icon, global-hotkey, window-vibrancy
 │   ├── yolo-craft/             # 13 Creative Workbenches (Writer, Screenplay, Storyboard, Comic, etc.)
 │   ├── yolo-storyteller/       # 10 Storyteller narrative studio modules

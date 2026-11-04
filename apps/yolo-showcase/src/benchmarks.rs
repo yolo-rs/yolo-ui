@@ -10,7 +10,7 @@
 //! 3. **Iced 0.14 & libcosmic** (Elm MVU, iced_audio, Wayland/Win11)
 //! 4. **Egui 0.36** (Immediate-mode 120+ FPS, Craft workbenches, Puffin)
 //! 5. **Tauri v3 Alpha** (Wry 0.57, Tao 0.37, CEF, capability ACL)
-//! 6. **WGPU 24 & Bevy 0.16** (Analytical SDF, WGSL, 3D Canvas)
+//! 6. **WGPU 30/29 & Bevy 0.16** (Analytical SDF, WGSL, 3D Canvas)
 //! 7. **Taffy 0.15** (Flexbox/Grid engine, TailwindStyleResolver)
 //! 8. **Servo / Stylo & Obscura** (CSS3 selector engine, html5ever, V8/JSC)
 //! 9. **React 19 & React Native / Expo** (V8/Hermes vs Full-Bun + Rust)
@@ -128,7 +128,7 @@ pub const ALL_BENCHMARKS: &[FrameworkBenchmark] = &[
         anti_patterns: "Ultra low-latency 120 FPS text editing requiring raw GPU glyph rasterization",
     },
     FrameworkBenchmark {
-        name: "WGPU 24 & Bevy 0.16 (yolo-gpu)",
+        name: "WGPU 30/29 & Bevy 0.16 (yolo-gpu)",
         ecosystem: "gfx-rs / bevyengine",
         category: BenchmarkCategory::GpuRendering,
         startup_time_ms: 25.0,
@@ -289,7 +289,7 @@ pub fn render_benchmark_section_html() -> String {
                     <div class="bar-row"><span class="bar-label">Egui 0.36</span><div class="bar-track"><div class="bar-fill" style="width: 2.5%; background:#10B981">12 ms</div></div></div>
                     <div class="bar-row"><span class="bar-label">Zed GPUI</span><div class="bar-track"><div class="bar-fill" style="width: 3.7%; background:#10B981">18 ms</div></div></div>
                     <div class="bar-row"><span class="bar-label">Iced 0.14</span><div class="bar-track"><div class="bar-fill" style="width: 4.5%; background:#10B981">22 ms</div></div></div>
-                    <div class="bar-row"><span class="bar-label">WGPU 24</span><div class="bar-track"><div class="bar-fill" style="width: 5.2%; background:#10B981">25 ms</div></div></div>
+                    <div class="bar-row"><span class="bar-label">WGPU 30/29</span><div class="bar-track"><div class="bar-fill" style="width: 5.2%; background:#10B981">25 ms</div></div></div>
                     <div class="bar-row"><span class="bar-label">Dioxus 0.8</span><div class="bar-track"><div class="bar-fill" style="width: 6.6%; background:#10B981">32 ms</div></div></div>
                     <div class="bar-row"><span class="bar-label">Tauri v3</span><div class="bar-track"><div class="bar-fill" style="width: 22.9%; background:#F59E0B">110 ms</div></div></div>
                     <div class="bar-row"><span class="bar-label">React/Expo</span><div class="bar-track"><div class="bar-fill" style="width: 25.0%; background:#F59E0B">120 ms</div></div></div>
@@ -303,7 +303,8 @@ pub fn render_benchmark_section_html() -> String {
                     <div class="bar-row"><span class="bar-label">Iced 0.14</span><div class="bar-track"><div class="bar-fill" style="width: 14.5%; background:#10B981">24 MB</div></div></div>
                     <div class="bar-row"><span class="bar-label">Zed GPUI</span><div class="bar-track"><div class="bar-fill" style="width: 17.2%; background:#10B981">28.5 MB</div></div></div>
                     <div class="bar-row"><span class="bar-label">Dioxus 0.8</span><div class="bar-track"><div class="bar-fill" style="width: 20.6%; background:#10B981">34 MB</div></div></div>
-                    <div class="bar-row"><span class="bar-label">Tauri v3</span><div class="bar-track"><div class="bar-fill" style="width: 27.2%; background:#F59E0B">45 MB</div></div></div>
+                    <div class="bar-row"><span class="bar-label">WGPU 30/29</span><div class="bar-track"><div class="bar-fill" style="width: 23.0%; background:#10B981">38 MB</div></div></div>
+                    <div class="bar-row"><span class="bar-label">React/Expo</span><div class="bar-track"><div class="bar-fill" style="width: 25.4%; background:#10B981">42 MB</div></div></div>
                     <div class="bar-row"><span class="bar-label">Electron (Legacy)</span><div class="bar-track"><div class="bar-fill" style="width: 100%; background:#EF4444">165 MB (x10 plus lourd)</div></div></div>
                 </div>
             </div>

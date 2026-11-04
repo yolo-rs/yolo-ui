@@ -333,7 +333,7 @@ export async function runUnifiedUiCli(
           id: "render3d-to-wgpui",
           short: "wgpui",
           title:
-            "4. Rendu 3D & Shaders -> GPUI + WGPU 24 + WGPUI (yolo-gpu & Bevy 0.16)",
+            "4. Rendu 3D & Shaders -> GPUI + WGPU 30/29 + WGPUI (yolo-gpu & Bevy 0.16)",
           targetCrate:
             "crates/yolo-gpu + crates/yolo-render + packages/yolo-gpui",
           targets: [
@@ -527,7 +527,7 @@ export async function runUnifiedUiCli(
             "Lightweight alternative to Electron leveraging OS native Webview (Wry 0.57 / Tao 0.37)",
         },
         {
-          name: "WGPU 24 & Bevy 0.16 (yolo-gpu)",
+          name: "WGPU 30/29 & Bevy 0.16 (yolo-gpu)",
           ecosystem: "gfx-rs / bevyengine",
           category: "GpuRendering",
           startup_ms: 25.0,

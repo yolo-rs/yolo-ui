@@ -10,7 +10,7 @@
 //!    - Sites Web -> **Dioxus 0.8 (`yolo-ui`)**
 //!    - Apps Desktop -> **Iced 0.14 (`yolo-iced`/`yolo-cosmic`)** or **Egui 0.36 (`yolo-egui`/`yolo-craft`)**
 //!    - CSS / Tailwind -> **Taffy 0.15 (`yolo-layout`)**
-//!    - 3D & GPU Rendering -> **GPUI + WGPU 24 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui` + Bevy 0.16)**
+//!    - 3D & GPU Rendering -> **GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui` + Bevy 0.16)**
 //!    - Dev UIs & Agent IDEs -> **Zed & GPUI (`yolo-gpui` + `gpui-component`)**
 //!    - Tools & CLIs -> **Native Rust (`crates/*` binaries)**
 
@@ -33,7 +33,7 @@ pub enum MigrationPillar {
     DesktopToEgui,
     /// Pillar 3: CSS / Tailwind v4 utilities -> Taffy 0.15 Flexbox/Grid (`yolo-layout`).
     CssToTaffy,
-    /// Pillar 4: 3D scenes, shaders & viewports -> GPUI + WGPU 24 + WGPUI (`yolo-gpu` / `yolo-render`).
+    /// Pillar 4: 3D scenes, shaders & viewports -> GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` / `yolo-render`).
     Render3dToWgpui,
     /// Pillar 5: Developer UIs, IDEs, MCP inspectors & agent cockpits -> Zed & GPUI (`yolo-gpui`).
     DevUiToZedGpui,
@@ -70,7 +70,7 @@ impl MigrationPillar {
             Self::DesktopToIced => "2A. Apps Desktop Retained MVU -> Iced 0.14 & libcosmic",
             Self::DesktopToEgui => "2B. Apps Desktop Workbenches & Emulateurs -> Egui 0.36 (Craft & Storyteller)",
             Self::CssToTaffy => "3. CSS & Tailwind v4 -> Taffy 0.15 Layout Engine (yolo-layout)",
-            Self::Render3dToWgpui => "4. Rendu 3D & Shaders -> GPUI + WGPU 24 + WGPUI (yolo-gpu & Bevy 0.16)",
+            Self::Render3dToWgpui => "4. Rendu 3D & Shaders -> GPUI + WGPU 30/29 + WGPUI (yolo-gpu & Bevy 0.16)",
             Self::DevUiToZedGpui => "5. UI de Dev, IDE & Cockpits Agents -> Zed & GPUI (yolo-gpui)",
             Self::ToolsToNativeRust => "6. Outils, CLIs & Pipelines -> Rust Natif (Cargo Binaries)",
         }
@@ -235,13 +235,13 @@ pub const MASTER_MIGRATION_ENTRIES: &[MigrationTargetEntry] = &[
         target_stack: "`yolo-layout` Taffy 0.15 (`TailwindStyleResolver` + 4px/8px grid snap + 48px WCAG)",
         theme_preset: YoloThemePreset::Neutral,
     },
-    // Pillar 4: 3D & GPU Rendering -> GPUI + WGPU 24 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui`)
+    // Pillar 4: 3D & GPU Rendering -> GPUI + WGPU 30/29 + WGPUI (`yolo-gpu` + `yolo-render` + `yolo-gpui`)
     MigrationTargetEntry {
         name: "aphrody-model-view, aphrody-nie-render3d & aphrody-tauri-3d",
         source_repo: "bun-os/apps/aphrody-model-view & crates/aphrody-nie-render3d",
         legacy_stack: "Three.js / WebGL / standalone wgpu 0.20",
         pillar: MigrationPillar::Render3dToWgpui,
-        target_stack: "WGPU 24 + WGPUI (`yolo-gpu` Instanced SDF + `yolo-gpui` GPU Canvas + Bevy 0.16)",
+        target_stack: "WGPU 30/29 + WGPUI (`yolo-gpu` Instanced SDF + `yolo-gpui` GPU Canvas + Bevy 0.16)",
         theme_preset: YoloThemePreset::Aphrody,
     },
     MigrationTargetEntry {
@@ -327,7 +327,7 @@ pub const YOLO_STARTER_TEMPLATES: &[YoloStarterTemplate] = &[
     },
     YoloStarterTemplate {
         id: "wgpui-3d-viewport",
-        title: "GPUI + WGPU 24 + WGPUI 3D & Analytical SDF Viewport",
+        title: "GPUI + WGPU 30/29 + WGPUI 3D & Analytical SDF Viewport",
         pillar: MigrationPillar::Render3dToWgpui,
         stack: "yolo-gpu + yolo-render + yolo-gpui + bevy 0.16",
         command: "bun run ui migrate ./src/Viewport.tsx --target wgpu --preset hyprland",
@@ -401,10 +401,10 @@ pub const AWESOME_HUB_CATEGORIES: &[AwesomeHubCategory] = &[
     },
     AwesomeHubCategory {
         id: "awesome-wgpu-bevy",
-        title: "WGPU 24, WGPUI, Vello & Bevy 0.16 3D Engine",
+        title: "WGPU 30/29, WGPUI, Vello & Bevy 0.16 3D Engine",
         upstream_repo: "yolo-rs/wgpu & yolo-rs/bevy",
         submodule_count: 11,
-        highlights: "WGPU 24, Naga WGSL, Vello compute 2D, Bevy 0.16 ECS, kayak_ui, bevy_egui, Analytical SDF",
+        highlights: "WGPU 30/29, Naga WGSL, Vello compute 2D, Bevy 0.16 ECS, kayak_ui, bevy_egui, Analytical SDF",
     },
     AwesomeHubCategory {
         id: "awesome-tauri",
@@ -658,7 +658,7 @@ pub fn render_yolo_aphrody_com_html() -> String {
         <div class="brand">
             <span class="brand-dot"></span>
             <span>yolo.aphrody.com</span>
-            <span class="badge-outline">Dioxus 0.8 • Iced 0.14 • Egui 0.36 • Taffy 0.15 • WGPUI 24 • Zed GPUI</span>
+            <span class="badge-outline">Dioxus 0.8 • Iced 0.14 • Egui 0.36 • Taffy 0.15 • WGPUI 30/29 • Zed GPUI</span>
         </div>
         <nav>
             <a href="#showcase">Showcase (7 Presets &amp; 9 Engines)</a>
@@ -675,7 +675,7 @@ pub fn render_yolo_aphrody_com_html() -> String {
                 Architecture unifiée : <strong>Sites Web en Dioxus 0.8</strong> •
                 <strong>Apps Desktop en Iced 0.14 ou Egui 0.36</strong> •
                 <strong>CSS/Tailwind en Taffy 0.15</strong> •
-                <strong>Rendu 3D en GPUI + WGPU 24 + WGPUI</strong> •
+                <strong>Rendu 3D en GPUI + WGPU 30/29 + WGPUI</strong> •
                 <strong>UI de Dev en Zed &amp; GPUI</strong> •
                 <strong>Outils en Rust Natif</strong>.
             </p>
