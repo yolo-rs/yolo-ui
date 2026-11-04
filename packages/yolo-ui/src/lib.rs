@@ -2,6 +2,16 @@
 
 pub use dioxus;
 pub use dioxus::*;
+pub use yolo_shared as shared;
+
+#[cfg(feature = "gpui")]
+pub use yolo_gpui as gpui;
+
+#[cfg(feature = "iced")]
+pub use yolo_iced as iced;
+
+#[cfg(feature = "tauri")]
+pub use yolo_tauri as tauri;
 
 pub use dioxus_core as core;
 pub use dioxus_document as document;
@@ -72,57 +82,11 @@ pub mod engine {
 }
 
 /// Aphrody Labs Design System Tokens (Material 3 Dark Glass & Surface Palette)
+/// Re-exported from the shared foundation crate [`yolo_shared`].
 pub mod theme {
-    use serde::{Deserialize, Serialize};
-
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-    pub struct AphrodyThemeTokens {
-        pub name: &'static str,
-        pub bg_primary: &'static str,
-        pub bg_surface: &'static str,
-        pub bg_elevated: &'static str,
-        pub text_primary: &'static str,
-        pub text_secondary: &'static str,
-        pub accent_primary: &'static str,
-        pub accent_secondary: &'static str,
-        pub border_subtle: &'static str,
-    }
-
-    pub const APHRODY_DARK_THEME: AphrodyThemeTokens = AphrodyThemeTokens {
-        name: "aphrody-m3-dark",
-        bg_primary: "#090b10",
-        bg_surface: "#111520",
-        bg_elevated: "#181e2e",
-        text_primary: "#f3f6fc",
-        text_secondary: "#9ba6bf",
-        accent_primary: "#7c5cff",
-        accent_secondary: "#00d4ff",
-        border_subtle: "rgba(255, 255, 255, 0.08)",
+    pub use yolo_shared::{
+        css_variables, AphrodyThemeTokens, RgbaColor, APHRODY_DARK_THEME,
     };
-
-    /// Returns the baseline CSS variables for Aphrody Labs sites and apps.
-    pub fn css_variables(tokens: &AphrodyThemeTokens) -> String {
-        format!(
-            ":root {{ \
-                --yolo-bg-primary: {}; \
-                --yolo-bg-surface: {}; \
-                --yolo-bg-elevated: {}; \
-                --yolo-text-primary: {}; \
-                --yolo-text-secondary: {}; \
-                --yolo-accent-primary: {}; \
-                --yolo-accent-secondary: {}; \
-                --yolo-border-subtle: {}; \
-            }}",
-            tokens.bg_primary,
-            tokens.bg_surface,
-            tokens.bg_elevated,
-            tokens.text_primary,
-            tokens.text_secondary,
-            tokens.accent_primary,
-            tokens.accent_secondary,
-            tokens.border_subtle,
-        )
-    }
 }
 
 /// SEO & Head Metadata helpers for Aphrody Labs fullstack sites
@@ -150,7 +114,7 @@ pub mod seo {
             document::Meta { property: "og:type", content: "website" }
             if let Some(url) = &props.canonical_url {
                 document::Link { rel: "canonical", href: "{url}" }
-                document::Meta { property: "og:url", href: "{url}" }
+                document::Meta { property: "og:url", content: "{url}" }
             }
             if let Some(img) = &props.og_image {
                 document::Meta { property: "og:image", content: "{img}" }
@@ -219,4 +183,16 @@ pub mod prelude {
 
     #[cfg(feature = "icons")]
     pub use dioxus_icons;
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::theme::{css_variables, APHRODY_DARK_THEME};
+
+    #[test]
+    fn test_yolo_ui_theme_reexport() {
+        let css = css_variables(&APHRODY_DARK_THEME);
+        assert!(css.contains("--yolo-bg-primary: #090b10;"));
+        assert!(css.contains("--yolo-accent-secondary: #00d4ff;"));
+    }
 }

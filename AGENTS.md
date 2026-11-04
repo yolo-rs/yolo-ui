@@ -1,109 +1,77 @@
-# Yolo UI (`aphrody-labs/yolo-ui`) — Aphrody Labs Unified Fullstack Framework & Dioxus Monorepo Guide
+# Yolo UI (`aphrody-labs/yolo-ui`) — Aphrody Labs Unified Multi-Engine Fullstack Framework & Monorepo Guide
 
-Yolo UI (`aphrody-labs/yolo-ui`) is the unified fullstack Rust UI framework monorepo for all Aphrody Labs sites and applications. It unifies **Dioxus 0.8**, **Blitz**, **AnyRender**, **Taffy**, **Dioxus Components / Primitives**, **Dioxus SDK**, **Dioxus Icons**, **Dioxus Code**, **RSRPC**, **Accessibility CLI**, and **Aphrody Material 3 Dark-Glass Tokens & App Shell (`packages/yolo-ui`)** into **one Cargo workspace (174 members)** and **32 `aphrody-labs/*` Git submodules (`submodules/*`)**.
+Yolo UI (`aphrody-labs/yolo-ui`) is the unified fullstack Rust + Bun v1.4.4+ UI framework monorepo for all Aphrody Labs sites and applications. It unifies **5 major Rust UI ecosystems** into **one flattened Cargo workspace (186 members, 349 deduplicated dependencies)**, **one Bun v1.4.4+ workspace**, and **70 `aphrody-labs/*` Git submodules (`submodules/*`)**:
 
-## Quick Overview
+1. **DioxusLabs (32 submodules)**: **Dioxus 0.8**, **Blitz**, **AnyRender** (Vello/Skia/WGPU), **Taffy 0.15**, **Dioxus Components / Primitives**, **Dioxus SDK**, **Dioxus Icons**, **Dioxus Code**, **RSRPC**, **Accessibility CLI**.
+2. **Longbridge (9 submodules)**: **GPUI-Kit / GPUI-Component** (60+ GPU widgets, DockArea, VirtualList, Charts, Editors), **NSH** shell, **Rust-i18n**, **GPUI-Mobile**, **WEF**, **AutoCorrect**.
+3. **Zed Industries (4 submodules)**: **GPUI-Fast** (WGPU/Metal/DirectX/Blade/WebGL2 GPU engine), **Awesome-GPUI**, **Create-GPUI-App**, **Zed-Fonts**, **Font-Kit**, **Scap**, **Async-Dispatcher**.
+4. **Iced-rs (10 submodules)**: **Iced** (Elm MVU architecture), **Iced_AW**, **Iced_Audio** (audio DSP knobs/faders/FreqRange), **Cryoglyph** (WGPU text atlas), **Comet** (time-travel MVU debugger), **Iced-OpenGL**, **mdBook-Iced**.
+5. **Tauri-Apps v3 Alpha (15 submodules)**: **Tauri 3.0.0-alpha.5** (`v3`/`dev`), **Wry 0.57.1**, **Tao 0.37.2**, **CEF (`tauri-runtime-cef`)**, **Muda 0.21.2**, **Tray-Icon 0.26.1**, **Window-Vibrancy 0.8.1** (Mica/Acrylic/Liquid Glass), **Global-Hotkey 0.9.0**, **Cargo-Mobile2**, **Plugins-Workspace v3**.
 
-- **Language**: Rust (Edition 2024)
-- **Umbrella Crate**: `yolo-ui` (`packages/yolo-ui`) & `dioxus` (`packages/dioxus`)
-- **UI Model**: React-like VirtualDOM, components, hooks, signals, stores, and Radix/shadcn-style accessible primitives (`dioxus-primitives`)
-- **Syntax**: JSX-like `rsx!` macro for declaring UI + `#[server]` / `#[get]` / `#[post]` for fullstack Axum RPC
-- **Platforms**: Web (WASM + SSR/Hydration), Desktop (Wry/Tao WebView), Native (Blitz + AnyRender Vello/Skia/WGPU + Taffy GPU Engine), Mobile (Android/iOS), LiveView (WebSocket streaming)
+## Flattened Monorepo Structure
 
-## Monorepo & Submodule Fleet Structure
-
-```
+```text
 yolo-ui/
+├── Cargo.toml                  # Unified Cargo workspace (186 members, 349 deduplicated workspace deps)
+├── Justfile                    # Unified task runner (just + bun + cargo + sccache + n2b + gh)
+├── package.json                # Root Bun v1.4.4+ workspace (@aphrody/yolo-ui)
+├── tsconfig.json               # TypeScript 7 (tsgo / bun check) config
+├── bunfig.toml                 # Bun test & workspace config
+├── .cargo/config.toml          # sccache compiler wrapper, sparse crates-io index, Cargo aliases
+├── crates/
+│   └── yolo-shared/            # Zero-duplication shared foundation (RgbaColor, AphrodyThemeTokens)
+├── apps/
+│   └── yolo-showcase/          # Unified 4-engine showcase binary (Dioxus + GPUI + Iced + Tauri v3)
 ├── packages/
-│   ├── yolo-ui/          # Aphrody Labs umbrella fullstack crate (Theme, SEO, AppShell, Dioxus + Ecosystem re-exports)
-│   ├── dioxus/           # Core Dioxus re-export crate
-│   ├── core/             # VirtualDOM, components, diffing, scheduling
-│   ├── rsx/              # RSX macro parsing and code generation
-│   ├── rsx-hotreload/    # Template diffing for hot-reload
-│   ├── signals/          # Reactive state (Signal, Memo, Store)
-│   ├── hooks/            # Built-in hooks (use_signal, use_effect, etc.)
-│   ├── router/           # Type-safe routing with #[derive(Routable)]
-│   ├── fullstack/        # SSR, hydration, #[server] functions (Axum)
-│   ├── dx/               # `dx` build tool, dev server, bundling
-│   ├── web/              # WASM renderer
-│   ├── desktop/          # Wry/Tao webview renderer
-│   ├── native/           # Blitz/Vello GPU renderer
-│   ├── liveview/         # WebSocket streaming renderer
-│   ├── manganis/         # asset!() macro for compile-time assets
-│   ├── subsecond/        # Hot-patching system (jump table indirection)
-│   ├── devtools/         # Dev server communication protocol
-│   ├── interpreter/      # Sledgehammer JS for DOM mutations
-│   └── wasm-split/       # WASM code splitting
-└── submodules/           # Forked DioxusLabs repositories under github.com/aphrody-labs/*
-    ├── blitz/            # Modular HTML/CSS native rendering engine (blitz-dom, blitz-paint, blitz-html, stylo_taffy, ...)
-    ├── anyrender/        # 2D GPU/CPU rendering abstraction (Vello, Vello CPU, Vello Hybrid, Skia, SVG, WGPU)
-    ├── dioxus-taffy/     # High-performance CSS Flexbox & Grid layout library (taffy 0.15)
-    ├── taffy/            # Aphrody Obscura taffy fork
-    ├── dioxus-components/# Accessible unstyled primitives (dioxus-primitives, dioxus-attributes)
-    ├── sdk/              # Platform utilities (storage, time, geolocation, notification, sync, window, util)
-    ├── dioxus-icons/     # Lucide SVG icon components (dioxus-icons, dioxus-icons-codegen)
-    ├── dioxus-code/      # Syntax-highlighted code blocks & code editor (dioxus-code, dioxus-code-editor)
-    ├── dioxus-html-macro/# HTML macro for Dioxus applications
-    ├── markdown/         # Markdown-to-VNode renderer (dioxus_markdown)
-    ├── rsrpc/            # Trait-based Rust-to-Rust RPC (rsrpc, rsrpc-macro)
-    ├── dioxus-test/      # Native-renderer testing library for Dioxus
-    ├── accessibility-cli/# Cross-platform computer-use & accessibility CLI/server (Windows, Linux, macOS, Android, iOS)
-    ├── warnings/         # Runtime warning macros
-    ├── prettier-please/  # Rust AST pretty-printer for autofmt/tests
-    ├── web-adapters/     # Fullstack & LiveView adapters
-    ├── wasm-bindgen-wry/ # Wry native bindings for wasm-bindgen
-    ├── bedina/           # Bevy <-> Dioxus Native integration
-    ├── rustd/            # Rust compiler daemon
-    ├── docsite/          # Fullstack documentation site, playground & search
-    ├── dioxus-ai/        # Component generation & automated QA
-    ├── dioxus-template/  # Starter templates for `dx`
-    └── ...               # Rink, include_mdbook, dioxus-search, playground, parley, vello_svg, winkin, etc.
+│   ├── yolo-ui/                # Aphrody Labs umbrella fullstack crate (re-exports Dioxus, GPUI, Iced, Tauri)
+│   ├── yolo-gpui/              # Zed GPUI + Longbridge GPUI-Kit + Rust-i18n bridge
+│   ├── yolo-iced/              # Iced Elm MVU + Iced_AW + Iced_Audio + Comet bridge
+│   ├── yolo-tauri/             # Tauri v3 Alpha + Wry 0.57 + Tao 0.37 + CEF + ACL bridge
+│   ├── dioxus/                 # Core Dioxus re-export crate
+│   ├── core/, signals/, rsx/, router/, fullstack/, web/, desktop/, native/, liveview/, dx/ ...
+├── scripts/
+│   ├── fleet.ts                # 70-submodule status, shallow sync & fleet.json inventory generator
+│   ├── build.ts                # Fast metadata & multi-engine Cargo check/release builder
+│   ├── test.ts                 # Multi-engine Rust unit test runner
+│   ├── optimize.ts             # Cargo dependency deduplication & profile auditor
+│   └── migrate-bun.ts          # Node.js -> Bun v1.4.4+ (n2b) workspace auditor
+├── tests/
+│   └── monorepo.test.ts        # Bun v1.4.4+ automated monorepo integrity test suite
+├── docs/
+│   ├── README.md               # Documentation index
+│   ├── MONOREPO-BEST-PRACTICES.md
+│   └── BUN-N2B-MIGRATION.md
+└── submodules/                 # 70 shallow-cloned aphrody-labs/* forks across 5 ecosystems
 ```
 
-## Architecture Documentation
+## Architecture Documentation (`notes/architecture/`)
 
-For deeper understanding, see `notes/architecture/`:
+| When working on...                                 | Read...                   |
+| -------------------------------------------------- | ------------------------- |
+| Full 70-submodule fleet & 4-engine overview        | `00-MONOREPO-FLEET.md`    |
+| VirtualDOM, components, diffing, events            | `01-CORE.md`              |
+| CLI (`dx`), build system, bundling, dev server     | `02-CLI.md`               |
+| RSX macro, parsing, formatting                     | `03-RSX.md`               |
+| Signals, state management, reactivity              | `04-SIGNALS.md`           |
+| Server functions, SSR, hydration                   | `05-FULLSTACK.md`         |
+| Web/desktop/native/liveview renderers              | `06-RENDERERS.md`         |
+| Hot-reload, hot-patching (`subsecond`), devtools   | `07-HOTRELOAD.md`         |
+| Asset macro, manganis, const serialization         | `08-ASSETS.md`            |
+| Router, navigation, nested routes                  | `09-ROUTER.md`            |
+| WASM code splitting                                | `10-WASM-SPLIT.md`        |
+| Longbridge GPUI-Kit, Zed GPUI-Fast, NSH, Rust-i18n | `11-GPUI-LONGBRIDGE.md`   |
+| Iced Elm MVU, Iced_AW, Iced_Audio, Cryoglyph, Comet| `12-ICED.md`              |
+| Tauri v3 Alpha, Wry 0.57, Tao 0.37, CEF, ACL       | `13-TAURI-V3.md`          |
 
-| When working on...                         | Read...            |
-| ------------------------------------------ | ------------------ |
-| VirtualDOM, components, diffing, events    | `01-CORE.md`       |
-| CLI, build system, bundling, dev server    | `02-CLI.md`        |
-| RSX macro, parsing, formatting             | `03-RSX.md`        |
-| Signals, state management, reactivity      | `04-SIGNALS.md`    |
-| Server functions, SSR, hydration           | `05-FULLSTACK.md`  |
-| Web/desktop/native/liveview renderers      | `06-RENDERERS.md`  |
-| Hot-reload, hot-patching, devtools         | `07-HOTRELOAD.md`  |
-| Asset macro, manganis, const serialization | `08-ASSETS.md`     |
-| Router, navigation, nested routes          | `09-ROUTER.md`     |
-| WASM code splitting                        | `10-WASM-SPLIT.md` |
+## Core Toolchain Commands (`just` + `bun` + `cargo` + `sccache`)
 
-## Key Concepts
-
-- **VirtualDOM**: Tree of `VNode` with templates, dynamic nodes, and attributes
-- **Signals**: Copy-able reactive primitives via generational-box (generation-based validity)
-- **WriteMutations**: Trait that renderers implement to apply DOM changes
-- **RSX**: Proc macro that compiles JSX-like syntax to `VNode` construction
-- **Server Functions**: `#[server]` macro generates client RPC stubs and server handlers
-- **Subsecond**: Hot-patches Rust code via jump table indirection (no memory modification)
-- **Manganis**: `asset!("/main.css")` macro for including assets by embedding data via linker symbols
-
-## Common Patterns
-
-**Component definition**:
-```rust
-#[component]
-fn MyComponent(name: String) -> Element {
-    let mut count = use_signal(|| 0);
-    rsx! {
-        button { onclick: move |_| count += 1, "{name}: {count}" }
-    }
-}
+```bash
+just doctor           # Verify bun, cargo, rustc, sccache, just, gh
+just check            # Run bun check (tsgo) + cargo metadata + cargo check
+just test             # Run bun test + Rust unit tests across all 4 engines
+just showcase         # Run apps/yolo-showcase unifying Dioxus + GPUI + Iced + Tauri v3
+just fleet-inventory  # Generate fleet.json for all 70 submodules
+just optimize         # Audit Cargo workspace dependencies & profiles
+just n2b-migrate      # Verify zero Node/npm lockfiles and 100% Bun v1.4.4+ scripts
+just sccache-stats    # Inspect sccache compilation cache hit statistics
 ```
-
-## Notes for Agents
-
-1. The `dioxus` crate re-exports from other crates - most implementation is in `packages/vdom`, `packages/signals`, etc.
-2. RSX macro expansion happens in `packages/rsx` - look there for syntax questions
-3. Each renderer implements `WriteMutations` differently - see `06-RENDERERS.md`
-4. Hot-reload has two systems: RSX template diffing (fast) and Subsecond code patching (full Rust)
-5. Assets use link sections and binary patching - the `asset!()` macro creates symbols the CLI processes

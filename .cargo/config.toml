@@ -1,0 +1,27 @@
+# =============================================================================
+# Aphrody Labs Yolo UI (`aphrody-labs/yolo-ui`) — Unified Cargo Configuration
+# =============================================================================
+# Optimizes compilation across the 186-member Cargo workspace and 70 submodules
+# using sccache compiler caching, sparse crates.io index, and workspace aliases.
+
+[build]
+rustc-wrapper = "sccache"
+pipelining = true
+
+[registries.crates-io]
+protocol = "sparse"
+
+[net]
+git-fetch-with-cli = true
+retry = 3
+
+[env]
+# Required by sccache to cache Rust compilations across workspace members
+CARGO_INCREMENTAL = "0"
+
+[alias]
+b = "build -p yolo-shared -p yolo-ui -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase"
+c = "check -p yolo-shared -p yolo-ui -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase"
+t = "test -p yolo-shared -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase"
+showcase = "run -p yolo-showcase"
+clippy-core = "clippy -p yolo-shared -p yolo-gpui -p yolo-iced -p yolo-tauri -p yolo-showcase -- -D warnings"

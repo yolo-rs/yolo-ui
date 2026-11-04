@@ -6,11 +6,14 @@ edition = "2024"
 description = "Aphrody Labs unified fullstack Rust framework for Web (WASM/SSR), Desktop (Wry), Native (Blitz/AnyRender GPU), Mobile (Android/iOS), and LiveView sites and apps."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/aphrody-labs/yolo-ui"
-homepage = "https://github.com/aphrody-labs/yolo-ui"
 keywords = ["dioxus", "fullstack", "web", "desktop", "native"]
 rust-version = "1.85.0"
 
 [dependencies]
+yolo-shared = { workspace = true }
+yolo-gpui = { workspace = true, optional = true }
+yolo-iced = { workspace = true, optional = true }
+yolo-tauri = { workspace = true, optional = true }
 dioxus = { workspace = true, default-features = false }
 dioxus-core = { workspace = true }
 dioxus-signals = { workspace = true }
@@ -51,9 +54,6 @@ blitz-paint = { workspace = true, optional = true }
 blitz-traits = { workspace = true, optional = true }
 anyrender = { workspace = true, optional = true }
 taffy = { workspace = true, optional = true }
-
-serde = { workspace = true, features = ["derive"] }
-serde_json = { workspace = true }
 
 [features]
 default = [
@@ -100,3 +100,9 @@ icons = ["dep:dioxus-icons"]
 code = ["dep:dioxus-code"]
 html-macro = ["dep:dioxus-html-macro"]
 rpc = ["dep:rsrpc"]
+
+# Multi-Engine Stack Bridges (GPUI + Longbridge, Iced Elm MVU, Tauri v3 Alpha)
+gpui = ["dep:yolo-gpui"]
+iced = ["dep:yolo-iced"]
+tauri = ["dep:yolo-tauri"]
+all-engines = ["gpui", "iced", "tauri", "native"]

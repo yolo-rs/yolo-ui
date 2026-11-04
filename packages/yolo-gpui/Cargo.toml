@@ -1,0 +1,21 @@
+[package]
+name = "yolo-gpui"
+version = { workspace = true }
+authors = ["Aphrody <contact@aphrody.com>", "Longbridge", "Zed Industries"]
+edition = "2024"
+description = "Aphrody Labs GPUI & Longbridge integration bridge for Yolo UI: GPU-accelerated theme tokens, dock/panel workspace layouts, and rust-i18n localization primitives."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aphrody-labs/yolo-ui"
+keywords = ["gpui", "dioxus", "yolo-ui", "longbridge", "zed"]
+rust-version = "1.85.0"
+
+[dependencies]
+yolo-shared = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+[features]
+default = ["dock", "i18n", "theme"]
+theme = []
+dock = []
+i18n = []

@@ -11,8 +11,8 @@
 // was read at all, or reading an unread one does not update its atime (e.g. a `noatime` mount),
 // nothing is deleted.
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const UNIT_RE = /^.+-([0-9a-f]{16})(\..*)?$/;
 const UNIT_DIRS = ["deps", "build", ".fingerprint", "examples"];

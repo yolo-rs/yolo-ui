@@ -1,0 +1,15 @@
+[package]
+name = "yolo-showcase"
+version = { workspace = true }
+authors = ["Aphrody <contact@aphrody.com>"]
+edition = "2024"
+description = "Unified multi-engine showcase app for Aphrody Labs Yolo UI (Dioxus 0.8 + Longbridge/Zed GPUI + Iced Elm MVU + Tauri v3 Alpha)."
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dependencies]
+yolo-shared = { workspace = true }
+yolo-ui = { workspace = true, default-features = false, features = ["lib", "gpui", "iced", "tauri"] }
+yolo-gpui = { workspace = true }
+yolo-iced = { workspace = true }
+yolo-tauri = { workspace = true }

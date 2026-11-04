@@ -1,0 +1,36 @@
+{
+  "name": "@aphrody/yolo-ui",
+  "version": "0.8.0-alpha.3",
+  "description": "Aphrody Labs Unified Multi-Engine Fullstack Rust UI Framework Monorepo (Dioxus 0.8 + Blitz + GPUI + Iced + Tauri v3)",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "packageManager": "bun@1.4.4",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aphrody-labs/yolo-ui.git"
+  },
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "workspaces": [
+    "packages/extension",
+    "packages/playwright-tests"
+  ],
+  "scripts": {
+    "fleet:status": "bun scripts/fleet.ts status",
+    "fleet:sync": "bun scripts/fleet.ts sync",
+    "fleet:inventory": "bun scripts/fleet.ts inventory",
+    "build": "bun scripts/build.ts check",
+    "build:release": "bun scripts/build.ts release",
+    "showcase": "cargo run -p yolo-showcase",
+    "test": "bun test && bun scripts/test.ts",
+    "test:rust": "bun scripts/test.ts",
+    "optimize": "bun scripts/optimize.ts",
+    "n2b:audit": "bun scripts/migrate-bun.ts",
+    "fmt": "bun fmt scripts tests",
+    "lint": "bun lint scripts tests",
+    "check": "bun check"
+  }
+}

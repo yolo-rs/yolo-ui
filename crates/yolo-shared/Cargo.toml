@@ -1,0 +1,13 @@
+[package]
+name = "yolo-shared"
+version = { workspace = true }
+authors = ["Aphrody <contact@aphrody.com>"]
+edition = "2024"
+description = "Shared zero-overhead foundation crate for the Yolo UI monorepo: unified Aphrody Material 3 Dark-Glass color/theme engine, CSS/GPU color parsers, window geometry, and 5-stack fleet metadata shared across Dioxus, GPUI, Iced, and Tauri v3."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aphrody-labs/yolo-ui"
+keywords = ["dioxus", "gpui", "iced", "tauri", "design-tokens"]
+rust-version = "1.85.0"
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }

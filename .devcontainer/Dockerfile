@@ -22,6 +22,6 @@ RUN apt-get update -qq \
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # Temporarily install Playwright globally to install the browsers and their dependencies
-RUN npm install -g @playwright/test && \
-    npx playwright install --with-deps && \
-    npm uninstall -g @playwright/test
+RUN bun install @playwright/test && \
+    bunx playwright install --with-deps && \
+    bun remove -g @playwright/test

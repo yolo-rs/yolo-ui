@@ -6,22 +6,22 @@ const hotPatchTimeout = {
 };
 
 test("button click", async ({ page }) => {
-  const fs = require("fs");
+  const fs = require("node:fs");
   const mainPath = "web-hot-patch-temp/src/main.rs";
-  var mainContent = fs.readFileSync(mainPath, "utf8");
+  var mainContent = await Bun.file(mainPath).text();
   const stylePath = "web-hot-patch-temp/assets/style.css";
-  var styleContent = fs.readFileSync(stylePath, "utf8");
+  var styleContent = await Bun.file(stylePath).text();
 
   // Reset any changes made to the main.rs and style.css files.
   mainContent = mainContent.replace(/num \+= 2;/g, "num += 1;");
   mainContent = mainContent.replace("Click button! Count:", "Click me! Count:");
   mainContent = mainContent.replace("asset!('/assets/alternative-style.css')", "asset!('/assets/style.css')");
-  fs.writeFileSync(mainPath, mainContent);
+  await Bun.write(mainPath, mainContent);
   styleContent = styleContent.replace(
     "background-color: blue;",
     "background-color: red;"
   );
-  fs.writeFileSync(stylePath, styleContent);
+  await Bun.write(stylePath, styleContent);
 
   await page.goto("http://localhost:9980");
 
@@ -53,7 +53,7 @@ test("button click", async ({ page }) => {
     "Click me! Count:",
     "Click button! Count:"
   );
-  fs.writeFileSync(mainPath, updatedContentWithText);
+  await Bun.write(mainPath, updatedContentWithText);
 
   // Wait for the page to update and show the new text.
   await expect(main).toContainText("Click button! Count: 1", hotPatchTimeout);
@@ -69,7 +69,7 @@ test("button click", async ({ page }) => {
     "background-color: red;",
     "background-color: blue;"
   );
-  fs.writeFileSync(stylePath, updatedStyleContent);
+  await Bun.write(stylePath, updatedStyleContent);
 
   // Wait for the page to update the background color.
   await expect(main).toHaveCSS(
@@ -88,7 +88,7 @@ test("button click", async ({ page }) => {
     'asset!("/assets/style.css")',
     'asset!("/assets/alternative-style.css")'
   );
-  fs.writeFileSync(mainPath, updatedContentWithAlternativeStyle);
+  await Bun.write(mainPath, updatedContentWithAlternativeStyle);
 
   // Assert the page has the new alternative style applied.
   const body = page.locator("body");

@@ -126,3 +126,155 @@
 	path = submodules/docsite
 	url = https://github.com/aphrody-labs/docsite.git
 	shallow = true
+[submodule "submodules/async-dispatcher"]
+	path = submodules/async-dispatcher
+	url = https://github.com/aphrody-labs/async-dispatcher.git
+	shallow = true
+[submodule "submodules/autocorrect"]
+	path = submodules/autocorrect
+	url = https://github.com/aphrody-labs/autocorrect.git
+	shallow = true
+[submodule "submodules/awesome-gpui"]
+	path = submodules/awesome-gpui
+	url = https://github.com/aphrody-labs/awesome-gpui.git
+	shallow = true
+[submodule "submodules/awesome-iced"]
+	path = submodules/awesome-iced
+	url = https://github.com/aphrody-labs/awesome-iced.git
+	shallow = true
+[submodule "submodules/awesome-tauri"]
+	path = submodules/awesome-tauri
+	url = https://github.com/aphrody-labs/awesome-tauri.git
+	shallow = true
+[submodule "submodules/cargo-mobile2"]
+	path = submodules/cargo-mobile2
+	url = https://github.com/aphrody-labs/cargo-mobile2.git
+	shallow = true
+[submodule "submodules/comet"]
+	path = submodules/comet
+	url = https://github.com/aphrody-labs/comet.git
+	shallow = true
+[submodule "submodules/create-gpui-app"]
+	path = submodules/create-gpui-app
+	url = https://github.com/aphrody-labs/create-gpui-app.git
+	shallow = true
+[submodule "submodules/create-tauri-app"]
+	path = submodules/create-tauri-app
+	url = https://github.com/aphrody-labs/create-tauri-app.git
+	shallow = true
+[submodule "submodules/cryoglyph"]
+	path = submodules/cryoglyph
+	url = https://github.com/aphrody-labs/cryoglyph.git
+	shallow = true
+[submodule "submodules/font-kit"]
+	path = submodules/font-kit
+	url = https://github.com/aphrody-labs/font-kit.git
+	shallow = true
+[submodule "submodules/global-hotkey"]
+	path = submodules/global-hotkey
+	url = https://github.com/aphrody-labs/global-hotkey.git
+	shallow = true
+[submodule "submodules/gpui-fast"]
+	path = submodules/gpui-fast
+	url = https://github.com/aphrody-labs/gpui-fast.git
+	shallow = true
+[submodule "submodules/gpui-kit"]
+	path = submodules/gpui-kit
+	url = https://github.com/aphrody-labs/gpui-kit.git
+	shallow = true
+[submodule "submodules/gpui-mobile"]
+	path = submodules/gpui-mobile
+	url = https://github.com/aphrody-labs/gpui-mobile.git
+	shallow = true
+[submodule "submodules/iced"]
+	path = submodules/iced
+	url = https://github.com/aphrody-labs/iced.git
+	shallow = true
+[submodule "submodules/iced_audio"]
+	path = submodules/iced_audio
+	url = https://github.com/aphrody-labs/iced_audio.git
+	shallow = true
+[submodule "submodules/iced_aw"]
+	path = submodules/iced_aw
+	url = https://github.com/aphrody-labs/iced_aw.git
+	shallow = true
+[submodule "submodules/iced-book"]
+	path = submodules/iced-book
+	url = https://github.com/aphrody-labs/iced-book.git
+	shallow = true
+[submodule "submodules/iced-opengl"]
+	path = submodules/iced-opengl
+	url = https://github.com/aphrody-labs/iced-opengl.git
+	shallow = true
+[submodule "submodules/iced-rfcs"]
+	path = submodules/iced-rfcs
+	url = https://github.com/aphrody-labs/iced-rfcs.git
+	shallow = true
+[submodule "submodules/mdbook-iced"]
+	path = submodules/mdbook-iced
+	url = https://github.com/aphrody-labs/mdbook-iced.git
+	shallow = true
+[submodule "submodules/muda"]
+	path = submodules/muda
+	url = https://github.com/aphrody-labs/muda.git
+	shallow = true
+[submodule "submodules/nsh"]
+	path = submodules/nsh
+	url = https://github.com/aphrody-labs/nsh.git
+	shallow = true
+[submodule "submodules/plugins-workspace"]
+	path = submodules/plugins-workspace
+	url = https://github.com/aphrody-labs/plugins-workspace.git
+	shallow = true
+[submodule "submodules/rust-i18n"]
+	path = submodules/rust-i18n
+	url = https://github.com/aphrody-labs/rust-i18n.git
+	shallow = true
+[submodule "submodules/scap"]
+	path = submodules/scap
+	url = https://github.com/aphrody-labs/scap.git
+	shallow = true
+[submodule "submodules/tao"]
+	path = submodules/tao
+	url = https://github.com/aphrody-labs/tao.git
+	shallow = true
+[submodule "submodules/tauri"]
+	path = submodules/tauri
+	url = https://github.com/aphrody-labs/tauri.git
+	shallow = true
+[submodule "submodules/tauri-action"]
+	path = submodules/tauri-action
+	url = https://github.com/aphrody-labs/tauri-action.git
+	shallow = true
+[submodule "submodules/tauri-bindgen"]
+	path = submodules/tauri-bindgen
+	url = https://github.com/aphrody-labs/tauri-bindgen.git
+	shallow = true
+[submodule "submodules/tauri-docs"]
+	path = submodules/tauri-docs
+	url = https://github.com/aphrody-labs/tauri-docs.git
+	shallow = true
+[submodule "submodules/tauri-vscode"]
+	path = submodules/tauri-vscode
+	url = https://github.com/aphrody-labs/tauri-vscode.git
+	shallow = true
+[submodule "submodules/tray-icon"]
+	path = submodules/tray-icon
+	url = https://github.com/aphrody-labs/tray-icon.git
+	shallow = true
+[submodule "submodules/wef"]
+	path = submodules/wef
+	url = https://github.com/aphrody-labs/wef.git
+	shallow = true
+[submodule "submodules/window-vibrancy"]
+	path = submodules/window-vibrancy
+	url = https://github.com/aphrody-labs/window-vibrancy.git
+	shallow = true
+[submodule "submodules/wry"]
+	path = submodules/wry
+	url = https://github.com/aphrody-labs/wry.git
+	shallow = true
+[submodule "submodules/zed-fonts"]
+	path = submodules/zed-fonts
+	url = https://github.com/aphrody-labs/zed-fonts.git
+	shallow = true

@@ -1,9 +1,9 @@
 const { expect, defineConfig } = require("@playwright/test");
 import { test as base } from '@playwright/test';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import childProcess from 'child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import childProcess from 'node:child_process';
 
 
 export const test = base.extend({

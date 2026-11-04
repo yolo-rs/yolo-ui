@@ -1,0 +1,32 @@
+[package]
+name = "yolo-iced"
+version = { workspace = true }
+authors = [
+  "Aphrody <contact@aphrody.com>",
+  "Héctor Ramón <hector@iced.rs>",
+  "Iced Contributors",
+]
+edition = "2024"
+description = "Aphrody Labs Elm-architecture (MVU) Iced stack integration, Material 3 Dark-Glass theme converter, audio DSP widget descriptors (iced_audio), extended widgets (iced_aw), and Comet debugger telemetry for Yolo UI."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aphrody-labs/yolo-ui"
+keywords = ["iced", "gui", "elm", "mvu", "dioxus"]
+rust-version = "1.85.0"
+
+[dependencies]
+yolo-shared = { workspace = true }
+dioxus-core = { workspace = true, optional = true }
+dioxus-signals = { workspace = true, optional = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+[features]
+default = ["dioxus-bridge", "aw", "audio", "comet", "cryoglyph"]
+dioxus-bridge = ["dep:dioxus-core", "dep:dioxus-signals"]
+wgpu = []
+tiny-skia = []
+opengl = []
+aw = []
+audio = []
+comet = []
+cryoglyph = []

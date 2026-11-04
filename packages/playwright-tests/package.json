@@ -1,17 +1,19 @@
 {
-  "name": "dioxus",
-  "version": "1.0.0",
-  "description": "<p align=\"center\">   <img src=\"./notes/header.svg\"> </p>",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "example": "examples"
+  "name": "@aphrody/yolo-playwright-tests",
+  "version": "0.8.0-alpha.3",
+  "private": true,
+  "description": "End-to-end Playwright test suite for Yolo UI & Dioxus Web/Fullstack/LiveView",
+  "license": "MIT OR Apache-2.0",
+  "engines": {
+    "bun": ">=1.4.4"
   },
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "test": "bunx playwright test",
+    "check": "bun check",
+    "lint": "bun lint .",
+    "fmt": "bun fmt --check ."
+  },
   "devDependencies": {
-    "@playwright/test": "^1.56.1"
+    "@playwright/test": "^1.58.0"
   }
 }

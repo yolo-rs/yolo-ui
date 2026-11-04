@@ -1,8 +1,8 @@
 // @ts-check
 const { defineConfig, devices } = require("@playwright/test");
-const { execSync } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+const { execSync } = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
 
 // Copy a directory to a temp location for tests that modify source files (hot-patch tests).
 // Done in JS so the webServer command is a simple `dx serve` with a `cwd`, which keeps
