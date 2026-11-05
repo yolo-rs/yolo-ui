@@ -105,17 +105,39 @@ impl LayoutTree {
     }
 
     /// Adds a container node.
-    pub fn node(&mut self, name: &str, style: &LayoutStyle, children: &[NodeKey]) -> Result<NodeKey, TreeError> {
-        let id = self.taffy.new_with_children(style.to_taffy(), &children.iter().map(|k| k.0).collect::<Vec<_>>())?;
-        self.taffy.set_node_context(id, Some(NodeData { name: name.to_owned(), text: None }))?;
+    pub fn node(
+        &mut self,
+        name: &str,
+        style: &LayoutStyle,
+        children: &[NodeKey],
+    ) -> Result<NodeKey, TreeError> {
+        let id = self.taffy.new_with_children(
+            style.to_taffy(),
+            &children.iter().map(|k| k.0).collect::<Vec<_>>(),
+        )?;
+        self.taffy.set_node_context(
+            id,
+            Some(NodeData {
+                name: name.to_owned(),
+                text: None,
+            }),
+        )?;
         Ok(NodeKey(id))
     }
 
     /// Adds a text leaf measured by the callback given to [`LayoutTree::compute`].
-    pub fn text(&mut self, name: &str, style: &LayoutStyle, text: &str) -> Result<NodeKey, TreeError> {
+    pub fn text(
+        &mut self,
+        name: &str,
+        style: &LayoutStyle,
+        text: &str,
+    ) -> Result<NodeKey, TreeError> {
         let id = self.taffy.new_leaf_with_context(
             style.to_taffy(),
-            NodeData { name: name.to_owned(), text: Some(text.to_owned()) },
+            NodeData {
+                name: name.to_owned(),
+                text: Some(text.to_owned()),
+            },
         )?;
         Ok(NodeKey(id))
     }
@@ -140,30 +162,50 @@ impl LayoutTree {
         mut measure: impl FnMut(&MeasureRequest<'_>) -> (f32, f32),
     ) -> Result<(), TreeError> {
         let space = |v: Option<f32>| v.map_or(AvailableSpace::MaxContent, AvailableSpace::Definite);
-        let available = taffy::Size { width: space(width), height: space(height) };
-        self.taffy.compute_layout_with_measure(root.0, available, |inputs, id, ctx, style| {
-            let text = ctx.and_then(|c| c.text.as_deref());
-            taffy::compute_leaf_layout(inputs, style, |_, _| 0.0, |known, avail| {
-                let Some(text) = text else {
-                    return taffy::Size { width: known.width.unwrap_or(0.0), height: known.height.unwrap_or(0.0) };
-                };
-                let (w, h) = measure(&MeasureRequest {
-                    key: NodeKey(id),
-                    text,
-                    known_width: known.width,
-                    known_height: known.height,
-                    available_width: avail.width.into(),
-                    available_height: avail.height.into(),
-                });
-                taffy::Size { width: known.width.unwrap_or(w), height: known.height.unwrap_or(h) }
+        let available = taffy::Size {
+            width: space(width),
+            height: space(height),
+        };
+        self.taffy
+            .compute_layout_with_measure(root.0, available, |inputs, id, ctx, style| {
+                let text = ctx.and_then(|c| c.text.as_deref());
+                taffy::compute_leaf_layout(
+                    inputs,
+                    style,
+                    |_, _| 0.0,
+                    |known, avail| {
+                        let Some(text) = text else {
+                            return taffy::Size {
+                                width: known.width.unwrap_or(0.0),
+                                height: known.height.unwrap_or(0.0),
+                            };
+                        };
+                        let (w, h) = measure(&MeasureRequest {
+                            key: NodeKey(id),
+                            text,
+                            known_width: known.width,
+                            known_height: known.height,
+                            available_width: avail.width.into(),
+                            available_height: avail.height.into(),
+                        });
+                        taffy::Size {
+                            width: known.width.unwrap_or(w),
+                            height: known.height.unwrap_or(h),
+                        }
+                    },
+                )
             })
-        })
     }
 
     /// The computed box of `key` relative to its parent.
     pub fn local_rect(&self, key: NodeKey) -> Result<LayoutRect, TreeError> {
         let l = self.taffy.layout(key.0)?;
-        Ok(LayoutRect { x: l.location.x, y: l.location.y, width: l.size.width, height: l.size.height })
+        Ok(LayoutRect {
+            x: l.location.x,
+            y: l.location.y,
+            width: l.size.width,
+            height: l.size.height,
+        })
     }
 
     /// The computed box of `key` relative to the root.
@@ -182,7 +224,9 @@ impl LayoutTree {
     /// The name given to `key`.
     #[must_use]
     pub fn name(&self, key: NodeKey) -> &str {
-        self.taffy.get_node_context(key.0).map_or("", |d| d.name.as_str())
+        self.taffy
+            .get_node_context(key.0)
+            .map_or("", |d| d.name.as_str())
     }
 
     /// Finds the first node named `name` in the subtree of `root` (depth first).
@@ -191,26 +235,43 @@ impl LayoutTree {
         if self.name(root) == name {
             return Some(root);
         }
-        self.taffy.children(root.0).ok()?.into_iter().find_map(|c| self.find(NodeKey(c), name))
+        self.taffy
+            .children(root.0)
+            .ok()?
+            .into_iter()
+            .find_map(|c| self.find(NodeKey(c), name))
     }
 
     /// The computed layout of the subtree of `root`.
     pub fn export(&self, root: NodeKey) -> Result<NodeLayout, TreeError> {
         let origin = self.rect(root)?;
-        let base = LayoutRect { x: origin.x - self.local_rect(root)?.x, y: origin.y - self.local_rect(root)?.y, ..origin };
+        let base = LayoutRect {
+            x: origin.x - self.local_rect(root)?.x,
+            y: origin.y - self.local_rect(root)?.y,
+            ..origin
+        };
         self.export_at(root, base.x, base.y)
     }
 
     fn export_at(&self, key: NodeKey, px: f32, py: f32) -> Result<NodeLayout, TreeError> {
         let local = self.local_rect(key)?;
-        let absolute = LayoutRect { x: px + local.x, y: py + local.y, ..local };
+        let absolute = LayoutRect {
+            x: px + local.x,
+            y: py + local.y,
+            ..local
+        };
         let children = self
             .taffy
             .children(key.0)?
             .into_iter()
             .map(|c| self.export_at(NodeKey(c), absolute.x, absolute.y))
             .collect::<Result<_, _>>()?;
-        Ok(NodeLayout { name: self.name(key).to_owned(), local, absolute, children })
+        Ok(NodeLayout {
+            name: self.name(key).to_owned(),
+            local,
+            absolute,
+            children,
+        })
     }
 
     /// The computed layout of the subtree of `root` as pretty JSON.

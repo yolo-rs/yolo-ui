@@ -13,7 +13,9 @@ fn parse(css: &str) -> LayoutStyle {
 }
 
 fn parse_err(css: &str) -> String {
-    parse_style_in(css, &TokenTable::empty(), &cx()).expect_err(css).to_string()
+    parse_style_in(css, &TokenTable::empty(), &cx())
+        .expect_err(css)
+        .to_string()
 }
 
 // ---- Length helpers ------------------------------------------------------------------------
@@ -23,7 +25,13 @@ fn from_linear_collapses() {
     assert_eq!(Length::from_linear(10.0, 0.0), Length::Px(10.0));
     assert_eq!(Length::from_linear(0.0, 0.5), Length::Percent(0.5));
     assert_eq!(Length::from_linear(0.0, 0.0), Length::Px(0.0));
-    assert_eq!(Length::from_linear(-20.0, 1.0), Length::Calc { px: -20.0, percent: 1.0 });
+    assert_eq!(
+        Length::from_linear(-20.0, 1.0),
+        Length::Calc {
+            px: -20.0,
+            percent: 1.0
+        }
+    );
 }
 
 #[test]
@@ -32,8 +40,22 @@ fn resolve_against_basis() {
     assert_eq!(Length::Px(8.0).resolve(None), Some(8.0));
     assert_eq!(Length::Percent(0.25).resolve(Some(200.0)), Some(50.0));
     assert_eq!(Length::Percent(0.25).resolve(None), None);
-    assert_eq!(Length::Calc { px: -20.0, percent: 1.0 }.resolve(Some(200.0)), Some(180.0));
-    assert_eq!(Length::Calc { px: -20.0, percent: 1.0 }.resolve(None), None);
+    assert_eq!(
+        Length::Calc {
+            px: -20.0,
+            percent: 1.0
+        }
+        .resolve(Some(200.0)),
+        Some(180.0)
+    );
+    assert_eq!(
+        Length::Calc {
+            px: -20.0,
+            percent: 1.0
+        }
+        .resolve(None),
+        None
+    );
 }
 
 // ---- rem, em, vw, vh -----------------------------------------------------------------------
@@ -41,14 +63,24 @@ fn resolve_against_basis() {
 #[test]
 fn rem_uses_root_font_size() {
     assert_eq!(parse("width: 2rem").width, Length::Px(32.0));
-    let s = parse_style_in("width: 2rem", &TokenTable::empty(), &cx().with_root_font_size(10.0)).unwrap();
+    let s = parse_style_in(
+        "width: 2rem",
+        &TokenTable::empty(),
+        &cx().with_root_font_size(10.0),
+    )
+    .unwrap();
     assert_eq!(s.width, Length::Px(20.0));
 }
 
 #[test]
 fn em_uses_parent_font_size_not_root() {
     let c = cx().with_root_font_size(10.0).with_font_size(20.0);
-    let s = parse_style_in("padding-left: 1.5em; margin-top: 1rem", &TokenTable::empty(), &c).unwrap();
+    let s = parse_style_in(
+        "padding-left: 1.5em; margin-top: 1rem",
+        &TokenTable::empty(),
+        &c,
+    )
+    .unwrap();
     assert_eq!(s.padding.left, Length::Px(30.0));
     assert_eq!(s.margin.top, Length::Px(10.0));
 }
@@ -64,7 +96,9 @@ fn viewport_units_resolve_against_viewport() {
 
 #[test]
 fn viewport_unit_without_viewport_fails_closed() {
-    let e = parse_style("width: 50vw", &TokenTable::empty()).unwrap_err().to_string();
+    let e = parse_style("width: 50vw", &TokenTable::empty())
+        .unwrap_err()
+        .to_string();
     assert!(e.contains("viewport"), "{e}");
 }
 
@@ -89,11 +123,18 @@ fn absolute_units_still_work() {
 
 #[test]
 fn stylesheet_style_in_rebinds_context() {
-    let sheet = parse_stylesheet_in(".a { width: 2em; height: 10vh }", &TokenTable::empty(), &cx().with_font_size(10.0))
-        .unwrap();
+    let sheet = parse_stylesheet_in(
+        ".a { width: 2em; height: 10vh }",
+        &TokenTable::empty(),
+        &cx().with_font_size(10.0),
+    )
+    .unwrap();
     let s = sheet.style(&[".a"]);
     assert_eq!((s.width, s.height), (Length::Px(20.0), Length::Px(60.0)));
-    let s = sheet.style_in(&[".a"], &cx().with_font_size(30.0).with_viewport(100.0, 1000.0));
+    let s = sheet.style_in(
+        &[".a"],
+        &cx().with_font_size(30.0).with_viewport(100.0, 1000.0),
+    );
     assert_eq!((s.width, s.height), (Length::Px(60.0), Length::Px(100.0)));
 }
 
@@ -101,8 +142,20 @@ fn stylesheet_style_in_rebinds_context() {
 
 #[test]
 fn calc_mixed_px_and_percent() {
-    assert_eq!(parse("width: calc(100% - 20px)").width, Length::Calc { px: -20.0, percent: 1.0 });
-    assert_eq!(parse("width: calc(20px + 50%)").width, Length::Calc { px: 20.0, percent: 0.5 });
+    assert_eq!(
+        parse("width: calc(100% - 20px)").width,
+        Length::Calc {
+            px: -20.0,
+            percent: 1.0
+        }
+    );
+    assert_eq!(
+        parse("width: calc(20px + 50%)").width,
+        Length::Calc {
+            px: 20.0,
+            percent: 0.5
+        }
+    );
 }
 
 #[test]
@@ -118,27 +171,63 @@ fn calc_multiplication_and_division() {
     assert_eq!(parse("width: calc(100% / 4)").width, Length::Percent(0.25));
     assert_eq!(parse("width: calc(3 * 10px)").width, Length::Px(30.0));
     assert_eq!(parse("width: calc(10px * 3)").width, Length::Px(30.0));
-    assert_eq!(parse("width: calc(2 * (10px + 1rem))").width, Length::Px(52.0));
-    assert_eq!(parse("width: calc((100% - 30px) / 3)").width, Length::Calc { px: -10.0, percent: 1.0 / 3.0 });
+    assert_eq!(
+        parse("width: calc(2 * (10px + 1rem))").width,
+        Length::Px(52.0)
+    );
+    assert_eq!(
+        parse("width: calc((100% - 30px) / 3)").width,
+        Length::Calc {
+            px: -10.0,
+            percent: 1.0 / 3.0
+        }
+    );
 }
 
 #[test]
 fn calc_nested() {
-    assert_eq!(parse("width: calc(100% - calc(2rem + 4px))").width, Length::Calc { px: -36.0, percent: 1.0 });
-    assert_eq!(parse("width: calc(calc(calc(1px + 1px) * 2) + 1px)").width, Length::Px(5.0));
+    assert_eq!(
+        parse("width: calc(100% - calc(2rem + 4px))").width,
+        Length::Calc {
+            px: -36.0,
+            percent: 1.0
+        }
+    );
+    assert_eq!(
+        parse("width: calc(calc(calc(1px + 1px) * 2) + 1px)").width,
+        Length::Px(5.0)
+    );
 }
 
 #[test]
 fn calc_with_relative_units() {
     assert_eq!(parse("width: calc(100vw - 2rem)").width, Length::Px(768.0));
-    assert_eq!(parse("height: calc(100% - 10vh)").height, Length::Calc { px: -60.0, percent: 1.0 });
+    assert_eq!(
+        parse("height: calc(100% - 10vh)").height,
+        Length::Calc {
+            px: -60.0,
+            percent: 1.0
+        }
+    );
 }
 
 #[test]
 fn calc_negative_results() {
-    assert_eq!(parse("margin-left: calc(10px - 20px)").margin.left, Length::Px(-10.0));
-    assert_eq!(parse("margin-left: calc(-1 * 10px)").margin.left, Length::Px(-10.0));
-    assert_eq!(parse("margin-left: calc(-50% + 4px)").margin.left, Length::Calc { px: 4.0, percent: -0.5 });
+    assert_eq!(
+        parse("margin-left: calc(10px - 20px)").margin.left,
+        Length::Px(-10.0)
+    );
+    assert_eq!(
+        parse("margin-left: calc(-1 * 10px)").margin.left,
+        Length::Px(-10.0)
+    );
+    assert_eq!(
+        parse("margin-left: calc(-50% + 4px)").margin.left,
+        Length::Calc {
+            px: 4.0,
+            percent: -0.5
+        }
+    );
 }
 
 #[test]
@@ -174,7 +263,13 @@ fn calc_in_each_length_property() {
     assert_eq!(s.padding, Sides::all(Length::Px(18.0)));
     assert_eq!(s.margin.top, Length::Px(-4.0));
     assert_eq!(s.margin.right, Length::Auto);
-    assert_eq!(s.inset.top, Length::Calc { px: -8.0, percent: 0.5 });
+    assert_eq!(
+        s.inset.top,
+        Length::Calc {
+            px: -8.0,
+            percent: 0.5
+        }
+    );
     assert_eq!(s.row_gap, Length::Px(8.0));
     assert_eq!(s.column_gap, Length::Percent(0.1));
     assert_eq!(s.flex_basis, Length::Percent(1.0 / 3.0));
@@ -231,7 +326,14 @@ fn to_taffy_in_lays_out_a_calc_width() {
     let mut tree = taffy::TaffyTree::<()>::new();
     let c = tree.new_leaf(child.to_taffy_in((200.0, 100.0))).unwrap();
     let r = tree.new_with_children(root.to_taffy(), &[c]).unwrap();
-    tree.compute_layout(r, taffy::Size::MAX_CONTENT).unwrap();
+    tree.compute_layout(
+        r,
+        taffy::Size {
+            width: taffy::AvailableSpace::MaxContent,
+            height: taffy::AvailableSpace::MaxContent,
+        },
+    )
+    .unwrap();
     let l = tree.layout(c).unwrap();
     assert_eq!((l.size.width, l.size.height), (180.0, 60.0));
 }
@@ -250,11 +352,23 @@ fn parses_grid_template_areas() {
     let get = |n: &str| a.areas.iter().find(|x| x.name == n).cloned().unwrap();
     assert_eq!(
         get("header"),
-        GridArea { name: "header".into(), row_start: 1, row_end: 2, column_start: 1, column_end: 3 }
+        GridArea {
+            name: "header".into(),
+            row_start: 1,
+            row_end: 2,
+            column_start: 1,
+            column_end: 3
+        }
     );
     assert_eq!(
         get("main"),
-        GridArea { name: "main".into(), row_start: 2, row_end: 3, column_start: 2, column_end: 3 }
+        GridArea {
+            name: "main".into(),
+            row_start: 2,
+            row_end: 3,
+            column_start: 2,
+            column_end: 3
+        }
     );
     assert_eq!(a.areas.len(), 3);
 }
@@ -262,7 +376,9 @@ fn parses_grid_template_areas() {
 #[test]
 fn grid_template_areas_none_and_dots() {
     assert_eq!(parse("grid-template-areas: none").grid_template_areas, None);
-    let a = parse("grid-template-areas: \"a .\" \". b\"").grid_template_areas.unwrap();
+    let a = parse("grid-template-areas: \"a .\" \". b\"")
+        .grid_template_areas
+        .unwrap();
     assert_eq!((a.rows, a.columns, a.areas.len()), (2, 2, 2));
 }
 
@@ -284,11 +400,36 @@ fn grid_area_places_items_through_taffy() {
     let sidebar = tree.node("sidebar", &place("sidebar"), &[]).unwrap();
     let main = tree.node("main", &place("main"), &[]).unwrap();
     let root = tree.node("page", &page, &[header, sidebar, main]).unwrap();
-    tree.compute(root, Some(300.0), Some(200.0), monospace_measure(8.0, 16.0)).unwrap();
+    tree.compute(root, Some(300.0), Some(200.0), monospace_measure(8.0, 16.0))
+        .unwrap();
     let r = |k| tree.local_rect(k).unwrap();
-    assert_eq!(r(header), LayoutRect { x: 0.0, y: 0.0, width: 300.0, height: 40.0 });
-    assert_eq!(r(sidebar), LayoutRect { x: 0.0, y: 40.0, width: 100.0, height: 160.0 });
-    assert_eq!(r(main), LayoutRect { x: 100.0, y: 40.0, width: 200.0, height: 160.0 });
+    assert_eq!(
+        r(header),
+        LayoutRect {
+            x: 0.0,
+            y: 0.0,
+            width: 300.0,
+            height: 40.0
+        }
+    );
+    assert_eq!(
+        r(sidebar),
+        LayoutRect {
+            x: 0.0,
+            y: 40.0,
+            width: 100.0,
+            height: 160.0
+        }
+    );
+    assert_eq!(
+        r(main),
+        LayoutRect {
+            x: 100.0,
+            y: 40.0,
+            width: 200.0,
+            height: 160.0
+        }
+    );
 }
 
 #[test]
@@ -301,7 +442,9 @@ fn grid_template_shorthand_sets_areas_and_tracks() {
 
 #[test]
 fn parses_named_grid_lines() {
-    let s = parse("grid-template-columns: [full-start] 100px [content-start] 1fr [content-end full-end]");
+    let s = parse(
+        "grid-template-columns: [full-start] 100px [content-start] 1fr [content-end full-end]",
+    );
     assert_eq!(
         s.grid_template_column_names,
         vec![
@@ -310,7 +453,11 @@ fn parses_named_grid_lines() {
             vec!["content-end".to_string(), "full-end".to_string()],
         ]
     );
-    assert!(parse("grid-template-columns: 100px 1fr").grid_template_column_names.is_empty());
+    assert!(
+        parse("grid-template-columns: 100px 1fr")
+            .grid_template_column_names
+            .is_empty()
+    );
 }
 
 #[test]
@@ -325,7 +472,10 @@ fn parses_named_line_placements() {
     );
     assert_eq!(
         s.grid_row,
-        GridPlacement { start: GridLine::Named("band".into(), 2), end: GridLine::NamedSpan("band".into(), 3) }
+        GridPlacement {
+            start: GridLine::Named("band".into(), 2),
+            end: GridLine::NamedSpan("band".into(), 3)
+        }
     );
 }
 
@@ -346,13 +496,28 @@ fn named_lines_place_items_through_taffy() {
     let mut tree = LayoutTree::new();
     let k = tree.node("item", &item, &[]).unwrap();
     let root = tree.node("page", &page, &[k]).unwrap();
-    tree.compute(root, Some(300.0), Some(50.0), monospace_measure(8.0, 16.0)).unwrap();
-    assert_eq!(tree.local_rect(k).unwrap(), LayoutRect { x: 100.0, y: 0.0, width: 200.0, height: 50.0 });
+    tree.compute(root, Some(300.0), Some(50.0), monospace_measure(8.0, 16.0))
+        .unwrap();
+    assert_eq!(
+        tree.local_rect(k).unwrap(),
+        LayoutRect {
+            x: 100.0,
+            y: 0.0,
+            width: 200.0,
+            height: 50.0
+        }
+    );
 }
 
 #[test]
 fn numeric_lines_are_unchanged() {
     let s = parse("grid-column: 1 / span 2; grid-row: -1");
-    assert_eq!(s.grid_column, GridPlacement { start: GridLine::Line(1), end: GridLine::Span(2) });
+    assert_eq!(
+        s.grid_column,
+        GridPlacement {
+            start: GridLine::Line(1),
+            end: GridLine::Span(2)
+        }
+    );
     assert_eq!(s.grid_row.start, GridLine::Line(-1));
 }

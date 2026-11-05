@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //! [`LayoutStyle`] -> `taffy::Style` (Taffy 0.15).
 
-use taffy::style_helpers::{TaffyGridLine, TaffyGridSpan};
 use taffy::style::{
     AlignContentKeyword, AlignItemsKeyword, AlignmentSafety, GridTemplateComponent,
     MaxTrackSizingFunction, MinTrackSizingFunction, RepetitionCount, TrackSizingFunction,
 };
+use taffy::style_helpers::{TaffyGridLine, TaffyGridSpan};
 use taffy::{Dimension, LengthPercentage, LengthPercentageAuto, MinMax, Point, Rect, Size};
 
 use crate::style::*;
@@ -28,7 +28,9 @@ impl Conv {
     fn flat(self, l: Length, axis: Axis) -> Length {
         match l {
             Length::Calc { px, percent } => match self.container {
-                Some((w, h)) => Length::Px(px + percent * if matches!(axis, Axis::X) { w } else { h }),
+                Some((w, h)) => {
+                    Length::Px(px + percent * if matches!(axis, Axis::X) { w } else { h })
+                }
                 // No container: TaffyTree cannot resolve a mixed calc(), so keep the px term.
                 None => Length::Px(px),
             },
@@ -111,7 +113,10 @@ fn items(a: ItemAlign) -> taffy::AlignItems {
         ItemKeyword::Baseline => AlignItemsKeyword::Baseline,
         ItemKeyword::Stretch => AlignItemsKeyword::Stretch,
     };
-    taffy::AlignItems { keyword, safety: safety(a.safety) }
+    taffy::AlignItems {
+        keyword,
+        safety: safety(a.safety),
+    }
 }
 
 fn content(a: ContentAlign) -> taffy::AlignContent {
@@ -127,7 +132,10 @@ fn content(a: ContentAlign) -> taffy::AlignContent {
         ContentKeyword::SpaceEvenly => AlignContentKeyword::SpaceEvenly,
         ContentKeyword::SpaceAround => AlignContentKeyword::SpaceAround,
     };
-    taffy::AlignContent { keyword, safety: safety(a.safety) }
+    taffy::AlignContent {
+        keyword,
+        safety: safety(a.safety),
+    }
 }
 
 fn min_track(b: TrackBreadth) -> MinTrackSizingFunction {
@@ -154,11 +162,18 @@ fn max_track(b: TrackBreadth) -> MaxTrackSizingFunction {
 
 fn track(t: Track) -> TrackSizingFunction {
     match t {
-        Track::Single(b) => MinMax { min: min_track(b), max: max_track(b) },
-        Track::MinMax(min, max) => MinMax { min: min_track(min), max: max_track(max) },
-        Track::FitContentPx(v) => {
-            MinMax { min: MinTrackSizingFunction::auto(), max: MaxTrackSizingFunction::fit_content_px(v) }
-        }
+        Track::Single(b) => MinMax {
+            min: min_track(b),
+            max: max_track(b),
+        },
+        Track::MinMax(min, max) => MinMax {
+            min: min_track(min),
+            max: max_track(max),
+        },
+        Track::FitContentPx(v) => MinMax {
+            min: MinTrackSizingFunction::auto(),
+            max: MaxTrackSizingFunction::fit_content_px(v),
+        },
         Track::FitContentPercent(v) => MinMax {
             min: MinTrackSizingFunction::auto(),
             max: MaxTrackSizingFunction::fit_content_percent(v),
@@ -194,7 +209,10 @@ fn placement(line: &GridLine) -> taffy::GridPlacement<String> {
 }
 
 fn placements(p: &GridPlacement) -> taffy::Line<taffy::GridPlacement<String>> {
-    taffy::Line { start: placement(&p.start), end: placement(&p.end) }
+    taffy::Line {
+        start: placement(&p.start),
+        end: placement(&p.end),
+    }
 }
 
 fn overflow(o: Overflow) -> taffy::Overflow {
@@ -219,11 +237,16 @@ impl LayoutStyle {
     /// against the width, heights, vertical insets and row gaps against the height.
     #[must_use]
     pub fn to_taffy_in(&self, container: (f32, f32)) -> taffy::Style {
-        self.convert(Conv { container: Some(container) })
+        self.convert(Conv {
+            container: Some(container),
+        })
     }
 
     fn convert(&self, c: Conv) -> taffy::Style {
-        let basis_axis = if matches!(self.flex_direction, FlexDirection::Row | FlexDirection::RowReverse) {
+        let basis_axis = if matches!(
+            self.flex_direction,
+            FlexDirection::Row | FlexDirection::RowReverse
+        ) {
             Axis::X
         } else {
             Axis::Y
@@ -245,11 +268,23 @@ impl LayoutStyle {
                 BoxSizing::BorderBox => taffy::BoxSizing::BorderBox,
                 BoxSizing::ContentBox => taffy::BoxSizing::ContentBox,
             },
-            overflow: Point { x: overflow(self.overflow_x), y: overflow(self.overflow_y) },
+            overflow: Point {
+                x: overflow(self.overflow_x),
+                y: overflow(self.overflow_y),
+            },
             inset: c.inset(self.inset),
-            size: Size { width: c.dim(self.width, Axis::X), height: c.dim(self.height, Axis::Y) },
-            min_size: Size { width: c.lpa(self.min_width, Axis::X), height: c.lpa(self.min_height, Axis::Y) },
-            max_size: Size { width: c.lpa(self.max_width, Axis::X), height: c.lpa(self.max_height, Axis::Y) },
+            size: Size {
+                width: c.dim(self.width, Axis::X),
+                height: c.dim(self.height, Axis::Y),
+            },
+            min_size: Size {
+                width: c.lpa(self.min_width, Axis::X),
+                height: c.lpa(self.min_height, Axis::Y),
+            },
+            max_size: Size {
+                width: c.lpa(self.max_width, Axis::X),
+                height: c.lpa(self.max_height, Axis::Y),
+            },
             aspect_ratio: self.aspect_ratio,
             margin: c.margin(self.margin),
             padding: c.padding(self.padding),
@@ -273,7 +308,10 @@ impl LayoutStyle {
             justify_self: self.justify_self.map(items),
             align_content: content(self.align_content),
             justify_content: content(self.justify_content),
-            gap: Size { width: c.lp(self.column_gap, Axis::X), height: c.lp(self.row_gap, Axis::Y) },
+            gap: Size {
+                width: c.lp(self.column_gap, Axis::X),
+                height: c.lp(self.row_gap, Axis::Y),
+            },
             grid_template_rows: template(&self.grid_template_rows),
             grid_template_columns: template(&self.grid_template_columns),
             grid_auto_rows: self.grid_auto_rows.iter().copied().map(track).collect(),

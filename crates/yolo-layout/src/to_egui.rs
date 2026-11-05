@@ -17,7 +17,12 @@ impl LayoutTree {
     }
 
     /// Places `widget` in the box of `key`, relative to the top-left of `ui`.
-    pub fn put(&self, ui: &mut egui::Ui, key: NodeKey, widget: impl egui::Widget) -> Result<egui::Response, TreeError> {
+    pub fn put(
+        &self,
+        ui: &mut egui::Ui,
+        key: NodeKey,
+        widget: impl egui::Widget,
+    ) -> Result<egui::Response, TreeError> {
         let rect = self.egui_rect(key, ui.max_rect().min)?;
         Ok(ui.put(rect, widget))
     }

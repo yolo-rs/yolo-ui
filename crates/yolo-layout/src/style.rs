@@ -137,7 +137,11 @@ pub struct LengthContext {
 
 impl Default for LengthContext {
     fn default() -> Self {
-        Self { root_font_size: 16.0, font_size: 16.0, viewport: None }
+        Self {
+            root_font_size: 16.0,
+            font_size: 16.0,
+            viewport: None,
+        }
     }
 }
 
@@ -177,7 +181,12 @@ pub struct Sides<T> {
 impl<T: Copy> Sides<T> {
     /// The same value on every side.
     pub const fn all(v: T) -> Self {
-        Self { top: v, right: v, bottom: v, left: v }
+        Self {
+            top: v,
+            right: v,
+            bottom: v,
+            left: v,
+        }
     }
 }
 

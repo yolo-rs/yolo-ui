@@ -22,7 +22,12 @@ fn val(l: Length) -> Val {
 }
 
 fn ui_rect(s: Sides<Length>) -> UiRect {
-    UiRect { left: val(s.left), right: val(s.right), top: val(s.top), bottom: val(s.bottom) }
+    UiRect {
+        left: val(s.left),
+        right: val(s.right),
+        top: val(s.top),
+        bottom: val(s.bottom),
+    }
 }
 
 fn axis(o: Overflow) -> OverflowAxis {
@@ -53,7 +58,11 @@ macro_rules! item_align {
                 ItemKeyword::Baseline => $ty::Baseline,
                 ItemKeyword::Stretch => $ty::Stretch,
                 ItemKeyword::SelfStart | ItemKeyword::SelfEnd => {
-                    return Err(concat!("`self-start`/`self-end` have no Bevy equivalent in ", $what).into());
+                    return Err(concat!(
+                        "`self-start`/`self-end` have no Bevy equivalent in ",
+                        $what
+                    )
+                    .into());
                 }
             })
         }
@@ -72,7 +81,11 @@ macro_rules! item_align {
                 ItemKeyword::Baseline => $ty::Baseline,
                 ItemKeyword::Stretch => $ty::Stretch,
                 ItemKeyword::SelfStart | ItemKeyword::SelfEnd => {
-                    return Err(concat!("`self-start`/`self-end` have no Bevy equivalent in ", $what).into());
+                    return Err(concat!(
+                        "`self-start`/`self-end` have no Bevy equivalent in ",
+                        $what
+                    )
+                    .into());
                 }
             })
         }
@@ -173,9 +186,8 @@ fn placement(p: &GridPlacement) -> BGridPlacement {
         (GridLine::Line(s), GridLine::Line(e)) => BGridPlacement::start_end(s, e),
         (GridLine::Line(s), GridLine::Span(n)) => BGridPlacement::start_span(s, n),
         (GridLine::Span(n), GridLine::Line(e)) => BGridPlacement::end_span(e, n),
-        (GridLine::Span(n), GridLine::Auto | GridLine::Span(_)) | (GridLine::Auto, GridLine::Span(n)) => {
-            BGridPlacement::span(n)
-        }
+        (GridLine::Span(n), GridLine::Auto | GridLine::Span(_))
+        | (GridLine::Auto, GridLine::Span(n)) => BGridPlacement::span(n),
         _ => BGridPlacement::auto(),
     }
 }
@@ -204,7 +216,10 @@ impl LayoutStyle {
                 BoxSizing::ContentBox => BBoxSizing::ContentBox,
             },
             position_type,
-            overflow: BOverflow { x: axis(self.overflow_x), y: axis(self.overflow_y) },
+            overflow: BOverflow {
+                x: axis(self.overflow_x),
+                y: axis(self.overflow_y),
+            },
             left: val(inset.left),
             right: val(inset.right),
             top: val(inset.top),
@@ -219,7 +234,9 @@ impl LayoutStyle {
             align_items: align_items(self.align_items)?,
             justify_items: justify_items(self.justify_items)?,
             align_self: self.align_self.map_or(Ok(AlignSelf::Auto), align_self_kw)?,
-            justify_self: self.justify_self.map_or(Ok(JustifySelf::Auto), justify_self_kw)?,
+            justify_self: self
+                .justify_self
+                .map_or(Ok(JustifySelf::Auto), justify_self_kw)?,
             align_content: align_content(self.align_content),
             justify_content: justify_content(self.justify_content),
             margin: ui_rect(self.margin),
@@ -261,6 +278,11 @@ impl LayoutStyle {
 pub fn css_to_bevy_node(css: &str, tokens: &crate::TokenTable) -> Result<Node, crate::Diagnostics> {
     let style = crate::parse_style(css, tokens)?;
     style.to_bevy_node().map_err(|message| {
-        crate::Diagnostics(vec![crate::Diagnostic { line: 1, column: 1, property: None, message }])
+        crate::Diagnostics(vec![crate::Diagnostic {
+            line: 1,
+            column: 1,
+            property: None,
+            message,
+        }])
     })
 }

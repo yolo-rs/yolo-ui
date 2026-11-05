@@ -203,49 +203,82 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
 
         // Align items
         "items-start" => {
-            s.align_items = ItemAlign { keyword: ItemKeyword::FlexStart, safety: Safety::Default };
+            s.align_items = ItemAlign {
+                keyword: ItemKeyword::FlexStart,
+                safety: Safety::Default,
+            };
             decl("align-items", "flex-start");
         }
         "items-end" => {
-            s.align_items = ItemAlign { keyword: ItemKeyword::FlexEnd, safety: Safety::Default };
+            s.align_items = ItemAlign {
+                keyword: ItemKeyword::FlexEnd,
+                safety: Safety::Default,
+            };
             decl("align-items", "flex-end");
         }
         "items-center" => {
-            s.align_items = ItemAlign { keyword: ItemKeyword::Center, safety: Safety::Default };
+            s.align_items = ItemAlign {
+                keyword: ItemKeyword::Center,
+                safety: Safety::Default,
+            };
             decl("align-items", "center");
         }
         "items-baseline" => {
-            s.align_items = ItemAlign { keyword: ItemKeyword::Baseline, safety: Safety::Default };
+            s.align_items = ItemAlign {
+                keyword: ItemKeyword::Baseline,
+                safety: Safety::Default,
+            };
             decl("align-items", "baseline");
         }
         "items-stretch" => {
-            s.align_items = ItemAlign { keyword: ItemKeyword::Stretch, safety: Safety::Default };
+            s.align_items = ItemAlign {
+                keyword: ItemKeyword::Stretch,
+                safety: Safety::Default,
+            };
             decl("align-items", "stretch");
         }
 
         // Justify content
         "justify-start" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::FlexStart, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::FlexStart,
+                safety: Safety::Default,
+            };
             decl("justify-content", "flex-start");
         }
         "justify-end" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::FlexEnd, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::FlexEnd,
+                safety: Safety::Default,
+            };
             decl("justify-content", "flex-end");
         }
         "justify-center" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::Center, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::Center,
+                safety: Safety::Default,
+            };
             decl("justify-content", "center");
         }
         "justify-between" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::SpaceBetween, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::SpaceBetween,
+                safety: Safety::Default,
+            };
             decl("justify-content", "space-between");
         }
         "justify-around" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::SpaceAround, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::SpaceAround,
+                safety: Safety::Default,
+            };
             decl("justify-content", "space-around");
         }
         "justify-evenly" => {
-            s.justify_content = ContentAlign { keyword: ContentKeyword::SpaceEvenly, safety: Safety::Default };
+            s.justify_content = ContentAlign {
+                keyword: ContentKeyword::SpaceEvenly,
+                safety: Safety::Default,
+            };
             decl("justify-content", "space-evenly");
         }
 
@@ -255,19 +288,31 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
             decl("align-self", "auto");
         }
         "self-start" => {
-            s.align_self = Some(ItemAlign { keyword: ItemKeyword::FlexStart, safety: Safety::Default });
+            s.align_self = Some(ItemAlign {
+                keyword: ItemKeyword::FlexStart,
+                safety: Safety::Default,
+            });
             decl("align-self", "flex-start");
         }
         "self-end" => {
-            s.align_self = Some(ItemAlign { keyword: ItemKeyword::FlexEnd, safety: Safety::Default });
+            s.align_self = Some(ItemAlign {
+                keyword: ItemKeyword::FlexEnd,
+                safety: Safety::Default,
+            });
             decl("align-self", "flex-end");
         }
         "self-center" => {
-            s.align_self = Some(ItemAlign { keyword: ItemKeyword::Center, safety: Safety::Default });
+            s.align_self = Some(ItemAlign {
+                keyword: ItemKeyword::Center,
+                safety: Safety::Default,
+            });
             decl("align-self", "center");
         }
         "self-stretch" => {
-            s.align_self = Some(ItemAlign { keyword: ItemKeyword::Stretch, safety: Safety::Default });
+            s.align_self = Some(ItemAlign {
+                keyword: ItemKeyword::Stretch,
+                safety: Safety::Default,
+            });
             decl("align-self", "stretch");
         }
 
@@ -482,7 +527,10 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
         }
         "bg-secondary" => {
             res.bg_token = Some("secondary-container".into());
-            decl("background-color", "var(--md-sys-color-secondary-container)");
+            decl(
+                "background-color",
+                "var(--md-sys-color-secondary-container)",
+            );
         }
         "bg-card" => {
             res.bg_token = Some("surface-container".into());
@@ -490,7 +538,10 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
         }
         "bg-popover" => {
             res.bg_token = Some("surface-container-high".into());
-            decl("background-color", "var(--md-sys-color-surface-container-high)");
+            decl(
+                "background-color",
+                "var(--md-sys-color-surface-container-high)",
+            );
         }
         "bg-background" | "bg-surface" => {
             res.bg_token = Some("surface".into());
@@ -586,8 +637,8 @@ pub fn apply_tailwind_token(res: &mut TailwindResolution, token: &str) -> bool {
         }
         "font-normal" | "font-medium" | "font-semibold" | "font-bold" | "tracking-tight"
         | "tracking-wide" | "leading-none" | "leading-tight" | "leading-normal"
-        | "leading-relaxed" | "antialiased" | "select-none" | "cursor-pointer"
-        | "transition" | "transition-colors" | "transition-all" => {
+        | "leading-relaxed" | "antialiased" | "select-none" | "cursor-pointer" | "transition"
+        | "transition-colors" | "transition-all" => {
             // Accepted cosmetic/typographic utilities
         }
 
@@ -636,7 +687,10 @@ fn apply_parametric_token(res: &mut TailwindResolution, token: &str) -> bool {
         && let Ok(n) = span.parse::<u16>()
         && n > 0
     {
-        s.grid_column = GridPlacement { start: GridLine::Span(n), end: GridLine::Auto };
+        s.grid_column = GridPlacement {
+            start: GridLine::Span(n),
+            end: GridLine::Auto,
+        };
         decl("grid-column", format!("span {n}"));
         return true;
     }
@@ -644,20 +698,27 @@ fn apply_parametric_token(res: &mut TailwindResolution, token: &str) -> bool {
         && let Ok(n) = span.parse::<u16>()
         && n > 0
     {
-        s.grid_row = GridPlacement { start: GridLine::Span(n), end: GridLine::Auto };
+        s.grid_row = GridPlacement {
+            start: GridLine::Span(n),
+            end: GridLine::Auto,
+        };
         decl("grid-row", format!("span {n}"));
         return true;
     }
 
     // Gap: `gap-*`, `gap-x-*`, `gap-y-*`, `space-y-*`, `space-x-*`
-    if let Some(rest) = token.strip_prefix("gap-x-").or_else(|| token.strip_prefix("space-x-"))
+    if let Some(rest) = token
+        .strip_prefix("gap-x-")
+        .or_else(|| token.strip_prefix("space-x-"))
         && let Some(px) = parse_spacing_scale(rest)
     {
         s.column_gap = Length::Px(px);
         decl("column-gap", format!("{px}px"));
         return true;
     }
-    if let Some(rest) = token.strip_prefix("gap-y-").or_else(|| token.strip_prefix("space-y-"))
+    if let Some(rest) = token
+        .strip_prefix("gap-y-")
+        .or_else(|| token.strip_prefix("space-y-"))
         && let Some(px) = parse_spacing_scale(rest)
     {
         s.row_gap = Length::Px(px);
@@ -908,8 +969,12 @@ fn map_palette_to_role(color: &str, is_bg: bool) -> Option<&'static str> {
             "on-surface-variant"
         }),
         "red" | "rose" => Some(if is_bg { "error-container" } else { "error" }),
-        "indigo" | "violet" | "purple" | "blue" => Some(if is_bg { "primary" } else { "primary" }),
-        "cyan" | "teal" | "emerald" | "green" => Some(if is_bg { "secondary-container" } else { "secondary" }),
+        "indigo" | "violet" | "purple" | "blue" => Some("primary"),
+        "cyan" | "teal" | "emerald" | "green" => Some(if is_bg {
+            "secondary-container"
+        } else {
+            "secondary"
+        }),
         _ => None,
     }
 }
@@ -925,11 +990,18 @@ mod tests {
         let res = resolve_tailwind(
             "flex flex-col items-center justify-between gap-4 p-4 px-6 py-2 m-2 w-full min-h-screen rounded-lg shadow-md border bg-primary text-primary-foreground",
         );
-        assert!(res.unknown_classes.is_empty(), "unknown: {:?}", res.unknown_classes);
+        assert!(
+            res.unknown_classes.is_empty(),
+            "unknown: {:?}",
+            res.unknown_classes
+        );
         assert_eq!(res.layout.display, Display::Flex);
         assert_eq!(res.layout.flex_direction, FlexDirection::Column);
         assert_eq!(res.layout.align_items.keyword, ItemKeyword::Center);
-        assert_eq!(res.layout.justify_content.keyword, ContentKeyword::SpaceBetween);
+        assert_eq!(
+            res.layout.justify_content.keyword,
+            ContentKeyword::SpaceBetween
+        );
         assert_eq!(res.layout.row_gap, Length::Px(16.0));
         assert_eq!(res.layout.column_gap, Length::Px(16.0));
         assert_eq!(res.layout.padding.left, Length::Px(24.0));
@@ -951,13 +1023,16 @@ mod tests {
     #[test]
     fn resolves_grid_cols_and_computes_taffy_layout() {
         let grid_style = tailwind_to_layout_style("grid grid-cols-3 gap-4 p-4 w-full");
-        let card_style = tailwind_to_layout_style("flex flex-col gap-2 p-4 h-24 rounded-xl bg-card text-muted-foreground");
+        let card_style = tailwind_to_layout_style(
+            "flex flex-col gap-2 p-4 h-24 rounded-xl bg-card text-muted-foreground",
+        );
         let mut tree = LayoutTree::new();
         let c1 = tree.node("c1", &card_style, &[]).unwrap();
         let c2 = tree.node("c2", &card_style, &[]).unwrap();
         let c3 = tree.node("c3", &card_style, &[]).unwrap();
         let root = tree.node("grid", &grid_style, &[c1, c2, c3]).unwrap();
-        tree.compute(root, Some(640.0), Some(480.0), monospace_measure(8.0, 20.0)).unwrap();
+        tree.compute(root, Some(640.0), Some(480.0), monospace_measure(8.0, 20.0))
+            .unwrap();
 
         let r1 = tree.rect(c1).unwrap();
         let r2 = tree.rect(c2).unwrap();

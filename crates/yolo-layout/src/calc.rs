@@ -54,13 +54,18 @@ pub(crate) fn dimension_px(d: &LengthValue, cx: &LengthContext) -> R<f32> {
 }
 
 /// A `<length-percentage>` to a [`Length`].
-pub(crate) fn length_percentage(v: &DimensionPercentage<LengthValue>, cx: &LengthContext) -> R<Length> {
+pub(crate) fn length_percentage(
+    v: &DimensionPercentage<LengthValue>,
+    cx: &LengthContext,
+) -> R<Length> {
     match v {
         DimensionPercentage::Dimension(d) => finite(dimension_px(d, cx)?, 0.0),
         DimensionPercentage::Percentage(p) => finite(0.0, p.0),
         DimensionPercentage::Calc(c) => match eval(c, cx)? {
             Term::Len { px, pct } => finite(px, pct),
-            Term::Num(_) => Err("calc() must produce a length or a percentage, not a number".into()),
+            Term::Num(_) => {
+                Err("calc() must produce a length or a percentage, not a number".into())
+            }
         },
     }
 }
@@ -76,25 +81,35 @@ fn finite(px: f32, pct: f32) -> R<Length> {
 fn eval(c: &Calc<DimensionPercentage<LengthValue>>, cx: &LengthContext) -> R<Term> {
     match c {
         Calc::Value(v) => match &**v {
-            DimensionPercentage::Dimension(d) => Ok(Term::Len { px: dimension_px(d, cx)?, pct: 0.0 }),
+            DimensionPercentage::Dimension(d) => Ok(Term::Len {
+                px: dimension_px(d, cx)?,
+                pct: 0.0,
+            }),
             DimensionPercentage::Percentage(p) => Ok(Term::Len { px: 0.0, pct: p.0 }),
             DimensionPercentage::Calc(inner) => eval(inner, cx),
         },
         Calc::Number(n) => Ok(Term::Num(*n)),
         Calc::Sum(a, b) => match (eval(a, cx)?, eval(b, cx)?) {
             (Term::Num(x), Term::Num(y)) => Ok(Term::Num(x + y)),
-            (Term::Len { px: ax, pct: ap }, Term::Len { px: bx, pct: bp }) => {
-                Ok(Term::Len { px: ax + bx, pct: ap + bp })
-            }
+            (Term::Len { px: ax, pct: ap }, Term::Len { px: bx, pct: bp }) => Ok(Term::Len {
+                px: ax + bx,
+                pct: ap + bp,
+            }),
             _ => Err("calc() cannot add a number to a length".into()),
         },
         Calc::Product(k, inner) => Ok(match eval(inner, cx)? {
             Term::Num(x) => Term::Num(x * k),
-            Term::Len { px, pct } => Term::Len { px: px * k, pct: pct * k },
+            Term::Len { px, pct } => Term::Len {
+                px: px * k,
+                pct: pct * k,
+            },
         }),
         Calc::Function(f) => match &**f {
             MathFunction::Calc(inner) => eval(inner, cx),
-            _ => Err("min(), max(), clamp() and the other math functions are not supported; use calc()".into()),
+            _ => Err(
+                "min(), max(), clamp() and the other math functions are not supported; use calc()"
+                    .into(),
+            ),
         },
     }
 }

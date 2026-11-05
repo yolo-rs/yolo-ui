@@ -55,7 +55,11 @@ pub fn snap_to_grid(px: f32, grid: f32) -> f32 {
 #[must_use]
 pub fn ensure_tap_target(size: f32, guideline: TapTarget) -> f32 {
     let min = min_tap_target(guideline);
-    if size.is_nan() || size < min { min } else { size }
+    if size.is_nan() || size < min {
+        min
+    } else {
+        size
+    }
 }
 
 impl LayoutRect {
@@ -67,7 +71,12 @@ impl LayoutRect {
         let y = snap_to_grid(self.y, grid);
         let right = snap_to_grid(self.x + self.width, grid);
         let bottom = snap_to_grid(self.y + self.height, grid);
-        Self { x, y, width: (right - x).max(0.0), height: (bottom - y).max(0.0) }
+        Self {
+            x,
+            y,
+            width: (right - x).max(0.0),
+            height: (bottom - y).max(0.0),
+        }
     }
 
     /// The rect grown about its center to at least the guideline minimum on each axis.
@@ -108,7 +117,11 @@ mod tests {
     #[test]
     fn snap_negative_and_zero() {
         assert_eq!(snap_to_grid(-5.0, GRID_4), -4.0);
-        assert_eq!(snap_to_grid(-6.0, GRID_4), -8.0, "halves round away from zero");
+        assert_eq!(
+            snap_to_grid(-6.0, GRID_4),
+            -8.0,
+            "halves round away from zero"
+        );
         let z = snap_to_grid(-0.2, GRID_4);
         assert_eq!(z, 0.0);
         assert!(z.is_sign_positive(), "no negative zero");
@@ -142,18 +155,43 @@ mod tests {
 
     #[test]
     fn rect_snapped_keeps_shared_edges() {
-        let a = LayoutRect { x: 0.0, y: 0.0, width: 101.0, height: 30.0 }.snapped(GRID_8);
-        let b = LayoutRect { x: 101.0, y: 0.0, width: 50.0, height: 30.0 }.snapped(GRID_8);
+        let a = LayoutRect {
+            x: 0.0,
+            y: 0.0,
+            width: 101.0,
+            height: 30.0,
+        }
+        .snapped(GRID_8);
+        let b = LayoutRect {
+            x: 101.0,
+            y: 0.0,
+            width: 50.0,
+            height: 30.0,
+        }
+        .snapped(GRID_8);
         assert_eq!(a.x + a.width, b.x, "adjacent boxes still touch");
         assert_eq!(a.height, 32.0);
     }
 
     #[test]
     fn rect_tap_target_grows_about_center() {
-        let r = LayoutRect { x: 10.0, y: 10.0, width: 20.0, height: 100.0 };
+        let r = LayoutRect {
+            x: 10.0,
+            y: 10.0,
+            width: 20.0,
+            height: 100.0,
+        };
         assert!(!r.meets_tap_target(TapTarget::WcagAa));
         let g = r.with_min_tap_target(TapTarget::WcagAa);
         assert!(g.meets_tap_target(TapTarget::WcagAa));
-        assert_eq!(g, LayoutRect { x: 8.0, y: 10.0, width: 24.0, height: 100.0 });
+        assert_eq!(
+            g,
+            LayoutRect {
+                x: 8.0,
+                y: 10.0,
+                width: 24.0,
+                height: 100.0
+            }
+        );
     }
 }

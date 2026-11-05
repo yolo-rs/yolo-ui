@@ -9,12 +9,14 @@ use lightningcss::properties::align::{
     AlignContent, AlignItems, AlignSelf, BaselinePosition, ContentDistribution, ContentPosition,
     GapValue, JustifyContent, JustifyItems, JustifySelf, OverflowPosition, SelfPosition,
 };
-use lightningcss::properties::display::{Display as CssDisplay, DisplayInside, DisplayKeyword, DisplayOutside};
+use lightningcss::properties::display::{
+    Display as CssDisplay, DisplayInside, DisplayKeyword, DisplayOutside,
+};
 use lightningcss::properties::flex::{FlexDirection as CssFlexDirection, FlexWrap as CssFlexWrap};
 use lightningcss::properties::grid::{
-    GridAutoFlow as CssGridAutoFlow, GridLine as CssGridLine, RepeatCount as CssRepeatCount,
-    GridTemplateAreas as CssGridTemplateAreas, TrackBreadth as CssTrackBreadth, TrackListItem,
-    TrackSize, TrackSizing,
+    GridAutoFlow as CssGridAutoFlow, GridLine as CssGridLine,
+    GridTemplateAreas as CssGridTemplateAreas, RepeatCount as CssRepeatCount,
+    TrackBreadth as CssTrackBreadth, TrackListItem, TrackSize, TrackSizing,
 };
 use lightningcss::properties::overflow::OverflowKeyword;
 use lightningcss::properties::position::Position as CssPosition;
@@ -22,7 +24,6 @@ use lightningcss::properties::size::{BoxSizing as CssBoxSizing, MaxSize, Size};
 use lightningcss::properties::{Property, PropertyId};
 use lightningcss::stylesheet::{ParserOptions, StyleAttribute, StyleSheet as CssStyleSheet};
 use lightningcss::values::length::{LengthPercentage, LengthPercentageOrAuto};
-use lightningcss::values::percentage::DimensionPercentage;
 
 use crate::style::*;
 use crate::tokens::TokenTable;
@@ -106,7 +107,11 @@ impl StyleSheet {
     pub fn style_in(&self, selectors: &[&str], cx: &LengthContext) -> LayoutStyle {
         let mut style = LayoutStyle::default();
         for rule in &self.rules {
-            if rule.selectors.iter().any(|s| selectors.contains(&s.as_str())) {
+            if rule
+                .selectors
+                .iter()
+                .any(|s| selectors.contains(&s.as_str()))
+            {
                 for d in &rule.declarations {
                     // Validated at parse time; re-applying cannot fail.
                     let _ = apply(&mut style, &d.name, &d.value, cx);
@@ -119,7 +124,9 @@ impl StyleSheet {
     /// Whether any rule names `selector`.
     #[must_use]
     pub fn has(&self, selector: &str) -> bool {
-        self.rules.iter().any(|r| r.selectors.iter().any(|s| s == selector))
+        self.rules
+            .iter()
+            .any(|r| r.selectors.iter().any(|s| s == selector))
     }
 }
 
@@ -145,7 +152,11 @@ pub fn parse_style_in(
     for d in declarations(&src, 0, src.len(), &lines, tokens, cx, &mut diags) {
         let _ = apply(&mut style, &d.name, &d.value, cx);
     }
-    if diags.is_empty() { Ok(style) } else { Err(Diagnostics(diags)) }
+    if diags.is_empty() {
+        Ok(style)
+    } else {
+        Err(Diagnostics(diags))
+    }
 }
 
 /// Parses a stylesheet of simple-selector rules (`.page { display: grid; }`).
@@ -229,15 +240,30 @@ pub fn parse_stylesheet_in(
             });
         }
         let declarations = declarations(&src, open + 1, close, &lines, tokens, cx, &mut diags);
-        rules.push(Rule { selectors, declarations });
+        rules.push(Rule {
+            selectors,
+            declarations,
+        });
         i = close + 1;
     }
-    if diags.is_empty() { Ok(StyleSheet { rules, context: *cx }) } else { Err(Diagnostics(diags)) }
+    if diags.is_empty() {
+        Ok(StyleSheet {
+            rules,
+            context: *cx,
+        })
+    } else {
+        Err(Diagnostics(diags))
+    }
 }
 
 fn css_error(e: &CssError<lightningcss::error::ParserError<'_>>) -> Diagnostic {
     let (line, column) = e.loc.as_ref().map_or((1, 1), |l| (l.line + 1, l.column));
-    Diagnostic { line, column, property: None, message: format!("invalid CSS: {}", e.kind) }
+    Diagnostic {
+        line,
+        column,
+        property: None,
+        message: format!("invalid CSS: {}", e.kind),
+    }
 }
 
 fn is_simple_selector(sel: &str) -> bool {
@@ -253,7 +279,9 @@ fn blank_comments(css: &str) -> String {
     let mut i = 0;
     while i + 1 < bytes.len() {
         if bytes[i] == b'/' && bytes[i + 1] == b'*' {
-            let end = css[i + 2..].find("*/").map_or(bytes.len(), |e| i + 2 + e + 2);
+            let end = css[i + 2..]
+                .find("*/")
+                .map_or(bytes.len(), |e| i + 2 + e + 2);
             for b in &mut bytes[i..end] {
                 if *b != b'\n' {
                     *b = b' ';
@@ -280,7 +308,10 @@ impl LineIndex {
     fn at(&self, offset: usize) -> (u32, u32) {
         let line = self.0.partition_point(|&s| s <= offset).saturating_sub(1);
         let col = offset - self.0[line] + 1;
-        (u32::try_from(line + 1).unwrap_or(u32::MAX), u32::try_from(col).unwrap_or(u32::MAX))
+        (
+            u32::try_from(line + 1).unwrap_or(u32::MAX),
+            u32::try_from(col).unwrap_or(u32::MAX),
+        )
     }
 }
 
@@ -347,22 +378,38 @@ fn declarations(
         }
         let (line, column) = lines.at(at);
         let Some(colon) = decl.find(':') else {
-            diags.push(Diagnostic { line, column, property: None, message: format!("expected `name: value`, found `{decl}`") });
+            diags.push(Diagnostic {
+                line,
+                column,
+                property: None,
+                message: format!("expected `name: value`, found `{decl}`"),
+            });
             continue;
         };
         let name = decl[..colon].trim().to_ascii_lowercase();
         let value_offset = at + colon + 1;
         let mut value = decl[colon + 1..].trim().to_owned();
-        let err = |message: String| Diagnostic { line, column, property: Some(name.clone()), message };
+        let err = |message: String| Diagnostic {
+            line,
+            column,
+            property: Some(name.clone()),
+            message,
+        };
         if value.to_ascii_lowercase().ends_with("!important") {
-            diags.push(err("`!important` is not supported; layout CSS has no importance levels".into()));
+            diags.push(err(
+                "`!important` is not supported; layout CSS has no importance levels".into(),
+            ));
             continue;
         }
         if !SUPPORTED.contains(&name.as_str()) {
             diags.push(err(if name.starts_with("--") {
-                "custom property declarations are not supported; declare tokens in the TokenTable".into()
+                "custom property declarations are not supported; declare tokens in the TokenTable"
+                    .into()
             } else {
-                format!("property is not in the Yolo UI layout subset (supported: {})", SUPPORTED.join(", "))
+                format!(
+                    "property is not in the Yolo UI layout subset (supported: {})",
+                    SUPPORTED.join(", ")
+                )
             }));
             continue;
         }
@@ -371,7 +418,12 @@ fn declarations(
             Err((rel, message)) => {
                 let lead = src[value_offset..].len() - src[value_offset..].trim_start().len();
                 let (l, c) = lines.at(value_offset + lead + rel);
-                diags.push(Diagnostic { line: l, column: c, property: Some(name.clone()), message });
+                diags.push(Diagnostic {
+                    line: l,
+                    column: c,
+                    property: Some(name.clone()),
+                    message,
+                });
                 continue;
             }
         }
@@ -416,12 +468,20 @@ fn substitute_vars(value: &str, tokens: &TokenTable) -> Result<String, (usize, S
         }
         match (tokens.get(name), fallback) {
             (Some(px), _) => out.push_str(&format!("{px}px")),
-            (None, Some(fb)) => out.push_str(&substitute_vars(fb, tokens).map_err(|(r, m)| (base + pos + r, m))?),
+            (None, Some(fb)) => {
+                out.push_str(&substitute_vars(fb, tokens).map_err(|(r, m)| (base + pos + r, m))?)
+            }
             (None, None) => {
-                let known: Vec<&str> = tokens.names().filter(|n| n.starts_with(crate::tokens::SPACING_PREFIX)).collect();
+                let known: Vec<&str> = tokens
+                    .names()
+                    .filter(|n| n.starts_with(crate::tokens::SPACING_PREFIX))
+                    .collect();
                 return Err((
                     base + pos,
-                    format!("unknown token `{name}` and no fallback (known spacing tokens: {})", known.join(", ")),
+                    format!(
+                        "unknown token `{name}` and no fallback (known spacing tokens: {})",
+                        known.join(", ")
+                    ),
                 ));
             }
         }
@@ -434,18 +494,67 @@ fn substitute_vars(value: &str, tokens: &TokenTable) -> Result<String, (usize, S
 
 /// The properties of the Yolo UI layout subset.
 pub const SUPPORTED: &[&str] = &[
-    "display", "position", "box-sizing", "overflow", "overflow-x", "overflow-y",
-    "inset", "top", "right", "bottom", "left",
-    "width", "height", "min-width", "min-height", "max-width", "max-height", "aspect-ratio",
-    "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
-    "padding", "padding-top", "padding-right", "padding-bottom", "padding-left",
-    "flex", "flex-direction", "flex-wrap", "flex-flow", "flex-grow", "flex-shrink", "flex-basis",
-    "justify-content", "align-content", "align-items", "align-self", "justify-items",
-    "justify-self", "place-content", "place-items", "place-self",
-    "gap", "row-gap", "column-gap",
-    "grid-template", "grid-template-areas", "grid-template-columns", "grid-template-rows", "grid-auto-columns", "grid-auto-rows",
-    "grid-auto-flow", "grid-row", "grid-column", "grid-area", "grid-row-start", "grid-row-end",
-    "grid-column-start", "grid-column-end",
+    "display",
+    "position",
+    "box-sizing",
+    "overflow",
+    "overflow-x",
+    "overflow-y",
+    "inset",
+    "top",
+    "right",
+    "bottom",
+    "left",
+    "width",
+    "height",
+    "min-width",
+    "min-height",
+    "max-width",
+    "max-height",
+    "aspect-ratio",
+    "margin",
+    "margin-top",
+    "margin-right",
+    "margin-bottom",
+    "margin-left",
+    "padding",
+    "padding-top",
+    "padding-right",
+    "padding-bottom",
+    "padding-left",
+    "flex",
+    "flex-direction",
+    "flex-wrap",
+    "flex-flow",
+    "flex-grow",
+    "flex-shrink",
+    "flex-basis",
+    "justify-content",
+    "align-content",
+    "align-items",
+    "align-self",
+    "justify-items",
+    "justify-self",
+    "place-content",
+    "place-items",
+    "place-self",
+    "gap",
+    "row-gap",
+    "column-gap",
+    "grid-template",
+    "grid-template-areas",
+    "grid-template-columns",
+    "grid-template-rows",
+    "grid-auto-columns",
+    "grid-auto-rows",
+    "grid-auto-flow",
+    "grid-row",
+    "grid-column",
+    "grid-area",
+    "grid-row-start",
+    "grid-row-end",
+    "grid-column-start",
+    "grid-column-end",
 ];
 
 type R<T> = Result<T, String>;
@@ -472,7 +581,9 @@ fn size(v: &Size, cx: &LengthContext) -> R<Length> {
     match v {
         Size::Auto => Ok(Length::Auto),
         Size::LengthPercentage(l) => lp(l, cx),
-        other => Err(format!("sizing keyword `{other:?}` is not supported; use px, % or auto")),
+        other => Err(format!(
+            "sizing keyword `{other:?}` is not supported; use px, % or auto"
+        )),
     }
 }
 
@@ -480,7 +591,9 @@ fn max_size(v: &MaxSize, cx: &LengthContext) -> R<Length> {
     match v {
         MaxSize::None => Ok(Length::Auto),
         MaxSize::LengthPercentage(l) => lp(l, cx),
-        other => Err(format!("sizing keyword `{other:?}` is not supported; use px, % or none")),
+        other => Err(format!(
+            "sizing keyword `{other:?}` is not supported; use px, % or none"
+        )),
     }
 }
 
@@ -506,13 +619,19 @@ fn self_position(v: &SelfPosition) -> ItemKeyword {
 
 fn baseline(b: &BaselinePosition) -> R<ItemAlign> {
     match b {
-        BaselinePosition::First => Ok(ItemAlign { keyword: ItemKeyword::Baseline, safety: Safety::Default }),
+        BaselinePosition::First => Ok(ItemAlign {
+            keyword: ItemKeyword::Baseline,
+            safety: Safety::Default,
+        }),
         BaselinePosition::Last => Err("`last baseline` is not supported".into()),
     }
 }
 
 fn kw(keyword: ItemKeyword) -> ItemAlign {
-    ItemAlign { keyword, safety: Safety::Default }
+    ItemAlign {
+        keyword,
+        safety: Safety::Default,
+    }
 }
 
 fn align_items(v: &AlignItems) -> R<ItemAlign> {
@@ -520,9 +639,10 @@ fn align_items(v: &AlignItems) -> R<ItemAlign> {
         AlignItems::Normal => Ok(kw(ItemKeyword::Normal)),
         AlignItems::Stretch => Ok(kw(ItemKeyword::Stretch)),
         AlignItems::BaselinePosition(b) => baseline(b),
-        AlignItems::SelfPosition { overflow, value } => {
-            Ok(ItemAlign { keyword: self_position(value), safety: safety(*overflow) })
-        }
+        AlignItems::SelfPosition { overflow, value } => Ok(ItemAlign {
+            keyword: self_position(value),
+            safety: safety(*overflow),
+        }),
     }
 }
 
@@ -532,9 +652,10 @@ fn align_self(v: &AlignSelf) -> R<Option<ItemAlign>> {
         AlignSelf::Normal => Ok(Some(kw(ItemKeyword::Normal))),
         AlignSelf::Stretch => Ok(Some(kw(ItemKeyword::Stretch))),
         AlignSelf::BaselinePosition(b) => baseline(b).map(Some),
-        AlignSelf::SelfPosition { overflow, value } => {
-            Ok(Some(ItemAlign { keyword: self_position(value), safety: safety(*overflow) }))
-        }
+        AlignSelf::SelfPosition { overflow, value } => Ok(Some(ItemAlign {
+            keyword: self_position(value),
+            safety: safety(*overflow),
+        })),
     }
 }
 
@@ -543,9 +664,10 @@ fn justify_items(v: &JustifyItems) -> R<ItemAlign> {
         JustifyItems::Normal => Ok(kw(ItemKeyword::Normal)),
         JustifyItems::Stretch => Ok(kw(ItemKeyword::Stretch)),
         JustifyItems::BaselinePosition(b) => baseline(b),
-        JustifyItems::SelfPosition { value, overflow } => {
-            Ok(ItemAlign { keyword: self_position(value), safety: safety(*overflow) })
-        }
+        JustifyItems::SelfPosition { value, overflow } => Ok(ItemAlign {
+            keyword: self_position(value),
+            safety: safety(*overflow),
+        }),
         _ => Err("`left`, `right` and `legacy` are not supported; use start, end or center".into()),
     }
 }
@@ -556,9 +678,10 @@ fn justify_self(v: &JustifySelf) -> R<Option<ItemAlign>> {
         JustifySelf::Normal => Ok(Some(kw(ItemKeyword::Normal))),
         JustifySelf::Stretch => Ok(Some(kw(ItemKeyword::Stretch))),
         JustifySelf::BaselinePosition(b) => baseline(b).map(Some),
-        JustifySelf::SelfPosition { value, overflow } => {
-            Ok(Some(ItemAlign { keyword: self_position(value), safety: safety(*overflow) }))
-        }
+        JustifySelf::SelfPosition { value, overflow } => Ok(Some(ItemAlign {
+            keyword: self_position(value),
+            safety: safety(*overflow),
+        })),
         _ => Err("`left` and `right` are not supported; use start or end".into()),
     }
 }
@@ -583,17 +706,23 @@ fn content_position(p: &ContentPosition) -> ContentKeyword {
 }
 
 fn ckw(keyword: ContentKeyword) -> ContentAlign {
-    ContentAlign { keyword, safety: Safety::Default }
+    ContentAlign {
+        keyword,
+        safety: Safety::Default,
+    }
 }
 
 fn align_content(v: &AlignContent) -> R<ContentAlign> {
     match v {
         AlignContent::Normal => Ok(ckw(ContentKeyword::Normal)),
-        AlignContent::BaselinePosition(_) => Err("baseline content alignment is not supported".into()),
-        AlignContent::ContentDistribution(d) => Ok(ckw(distribution(d))),
-        AlignContent::ContentPosition { overflow, value } => {
-            Ok(ContentAlign { keyword: content_position(value), safety: safety(*overflow) })
+        AlignContent::BaselinePosition(_) => {
+            Err("baseline content alignment is not supported".into())
         }
+        AlignContent::ContentDistribution(d) => Ok(ckw(distribution(d))),
+        AlignContent::ContentPosition { overflow, value } => Ok(ContentAlign {
+            keyword: content_position(value),
+            safety: safety(*overflow),
+        }),
     }
 }
 
@@ -601,9 +730,10 @@ fn justify_content(v: &JustifyContent) -> R<ContentAlign> {
     match v {
         JustifyContent::Normal => Ok(ckw(ContentKeyword::Normal)),
         JustifyContent::ContentDistribution(d) => Ok(ckw(distribution(d))),
-        JustifyContent::ContentPosition { value, overflow } => {
-            Ok(ContentAlign { keyword: content_position(value), safety: safety(*overflow) })
-        }
+        JustifyContent::ContentPosition { value, overflow } => Ok(ContentAlign {
+            keyword: content_position(value),
+            safety: safety(*overflow),
+        }),
         _ => Err("`left` and `right` are not supported; use start or end".into()),
     }
 }
@@ -614,7 +744,9 @@ fn overflow(v: OverflowKeyword) -> R<Overflow> {
         OverflowKeyword::Hidden => Ok(Overflow::Hidden),
         OverflowKeyword::Clip => Ok(Overflow::Clip),
         OverflowKeyword::Scroll => Ok(Overflow::Scroll),
-        OverflowKeyword::Auto => Err("`auto` is not supported by Taffy; use scroll, hidden or clip".into()),
+        OverflowKeyword::Auto => {
+            Err("`auto` is not supported by Taffy; use scroll, hidden or clip".into())
+        }
     }
 }
 
@@ -631,7 +763,11 @@ fn breadth(b: &CssTrackBreadth, cx: &LengthContext) -> R<TrackBreadth> {
             Length::Px(v) => TrackBreadth::Px(v),
             Length::Percent(v) => TrackBreadth::Percent(v),
             Length::Auto => TrackBreadth::Auto,
-            Length::Calc { .. } => return Err("calc() mixing px and % is not supported in grid tracks; use one unit".into()),
+            Length::Calc { .. } => {
+                return Err(
+                    "calc() mixing px and % is not supported in grid tracks; use one unit".into(),
+                );
+            }
         },
         CssTrackBreadth::Flex(f) => TrackBreadth::Fr(*f),
         CssTrackBreadth::MinContent => TrackBreadth::MinContent,
@@ -654,7 +790,9 @@ fn track(t: &TrackSize, cx: &LengthContext) -> R<Track> {
             Length::Px(v) => Ok(Track::FitContentPx(v)),
             Length::Percent(v) => Ok(Track::FitContentPercent(v)),
             Length::Auto => Err("fit-content() needs a length".into()),
-            Length::Calc { .. } => Err("calc() mixing px and % is not supported in fit-content(); use one unit".into()),
+            Length::Calc { .. } => {
+                Err("calc() mixing px and % is not supported in fit-content(); use one unit".into())
+            }
         },
     }
 }
@@ -680,18 +818,28 @@ fn template(t: &TrackSizing<'_>, cx: &LengthContext) -> R<Template> {
                 }
                 let count = match r.count {
                     CssRepeatCount::Number(n) => RepeatCount::Count(
-                        u16::try_from(n).ok().filter(|n| *n > 0).ok_or_else(|| format!("repeat count {n} is out of range"))?,
+                        u16::try_from(n)
+                            .ok()
+                            .filter(|n| *n > 0)
+                            .ok_or_else(|| format!("repeat count {n} is out of range"))?,
                     ),
                     CssRepeatCount::AutoFill => RepeatCount::AutoFill,
                     CssRepeatCount::AutoFit => RepeatCount::AutoFit,
                 };
-                let tracks = r.track_sizes.iter().map(|t| track(t, cx)).collect::<R<Vec<_>>>()?;
+                let tracks = r
+                    .track_sizes
+                    .iter()
+                    .map(|t| track(t, cx))
+                    .collect::<R<Vec<_>>>()?;
                 Ok(TemplateItem::Repeat(count, tracks))
             }
         })
         .collect::<R<Vec<_>>>()?;
-    let mut names: Vec<Vec<String>> =
-        list.line_names.iter().map(|set| set.iter().map(|n| String::from(&*n.0)).collect()).collect();
+    let mut names: Vec<Vec<String>> = list
+        .line_names
+        .iter()
+        .map(|set| set.iter().map(|n| String::from(&*n.0)).collect())
+        .collect();
     if names.iter().all(Vec::is_empty) {
         names.clear();
     } else {
@@ -741,24 +889,37 @@ fn areas(a: &CssGridTemplateAreas) -> R<Option<GridAreas>> {
             for c in area.column_start..area.column_end {
                 let idx = (usize::from(r) - 1) * columns + usize::from(c) - 1;
                 if cells[idx].as_deref() != Some(area.name.as_str()) {
-                    return Err(format!("grid area `{}` is not a filled rectangle", area.name));
+                    return Err(format!(
+                        "grid area `{}` is not a filled rectangle",
+                        area.name
+                    ));
                 }
             }
         }
     }
-    Ok(Some(GridAreas { rows: rows16, columns: columns16, areas: out }))
+    Ok(Some(GridAreas {
+        rows: rows16,
+        columns: columns16,
+        areas: out,
+    }))
 }
 
 fn grid_line(l: &CssGridLine<'_>) -> R<GridLine> {
     match l {
         CssGridLine::Auto => Ok(GridLine::Auto),
         CssGridLine::Area { name } => Ok(GridLine::Named(String::from(&*name.0), 0)),
-        CssGridLine::Line { index, name: Some(name) } => i16::try_from(*index)
+        CssGridLine::Line {
+            index,
+            name: Some(name),
+        } => i16::try_from(*index)
             .ok()
             .filter(|i| *i != 0)
             .map(|i| GridLine::Named(String::from(&*name.0), i))
             .ok_or_else(|| format!("grid line {index} is out of range")),
-        CssGridLine::Span { index, name: Some(name) } => u16::try_from(*index)
+        CssGridLine::Span {
+            index,
+            name: Some(name),
+        } => u16::try_from(*index)
             .ok()
             .filter(|i| *i > 0)
             .map(|i| GridLine::NamedSpan(String::from(&*name.0), i))
@@ -777,27 +938,47 @@ fn grid_line(l: &CssGridLine<'_>) -> R<GridLine> {
 }
 
 fn sides(top: Length, right: Length, bottom: Length, left: Length) -> Sides<Length> {
-    Sides { top, right, bottom, left }
+    Sides {
+        top,
+        right,
+        bottom,
+        left,
+    }
 }
 
 /// Applies one declaration (value already free of `var()`) to `style`.
 pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str, cx: &LengthContext) -> R<()> {
     let prop = Property::parse_string(PropertyId::from(name), value, ParserOptions::default())
-        .map_err(|e| format!("invalid value `{value}`: {}", CssError::from(e, String::new()).kind))?;
+        .map_err(|e| {
+            format!(
+                "invalid value `{value}`: {}",
+                CssError::from(e, String::new()).kind
+            )
+        })?;
     let s = style;
     match &prop {
         Property::Display(d) => {
             s.display = match d {
                 CssDisplay::Keyword(DisplayKeyword::None) => Display::None,
-                CssDisplay::Pair(p) if !p.is_list_item && matches!(p.outside, DisplayOutside::Block) => {
+                CssDisplay::Pair(p)
+                    if !p.is_list_item && matches!(p.outside, DisplayOutside::Block) =>
+                {
                     match p.inside {
                         DisplayInside::Flow => Display::Block,
                         DisplayInside::Flex(_) => Display::Flex,
                         DisplayInside::Grid => Display::Grid,
-                        _ => return Err(format!("`display: {value}` is not supported; use block, flex, grid or none")),
+                        _ => {
+                            return Err(format!(
+                                "`display: {value}` is not supported; use block, flex, grid or none"
+                            ));
+                        }
                     }
                 }
-                _ => return Err(format!("`display: {value}` is not supported; use block, flex, grid or none")),
+                _ => {
+                    return Err(format!(
+                        "`display: {value}` is not supported; use block, flex, grid or none"
+                    ));
+                }
             }
         }
         Property::Position(p) => {
@@ -821,7 +1002,14 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str, cx: &Lengt
         }
         Property::OverflowX(o) => s.overflow_x = overflow(*o)?,
         Property::OverflowY(o) => s.overflow_y = overflow(*o)?,
-        Property::Inset(i) => s.inset = sides(lpa(&i.top, cx)?, lpa(&i.right, cx)?, lpa(&i.bottom, cx)?, lpa(&i.left, cx)?),
+        Property::Inset(i) => {
+            s.inset = sides(
+                lpa(&i.top, cx)?,
+                lpa(&i.right, cx)?,
+                lpa(&i.bottom, cx)?,
+                lpa(&i.left, cx)?,
+            )
+        }
         Property::Top(v) => s.inset.top = lpa(v, cx)?,
         Property::Right(v) => s.inset.right = lpa(v, cx)?,
         Property::Bottom(v) => s.inset.bottom = lpa(v, cx)?,
@@ -834,12 +1022,21 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str, cx: &Lengt
         Property::MaxHeight(v) => s.max_height = max_size(v, cx)?,
         Property::AspectRatio(a) => {
             s.aspect_ratio = match &a.ratio {
-                Some(r) if r.1 == 0.0 || r.0 <= 0.0 => return Err("aspect ratio must be positive".into()),
+                Some(r) if r.1 == 0.0 || r.0 <= 0.0 => {
+                    return Err("aspect ratio must be positive".into());
+                }
                 Some(r) => Some(r.0 / r.1),
                 None => None,
             }
         }
-        Property::Margin(m) => s.margin = sides(lpa(&m.top, cx)?, lpa(&m.right, cx)?, lpa(&m.bottom, cx)?, lpa(&m.left, cx)?),
+        Property::Margin(m) => {
+            s.margin = sides(
+                lpa(&m.top, cx)?,
+                lpa(&m.right, cx)?,
+                lpa(&m.bottom, cx)?,
+                lpa(&m.left, cx)?,
+            )
+        }
         Property::MarginTop(v) => s.margin.top = lpa(v, cx)?,
         Property::MarginRight(v) => s.margin.right = lpa(v, cx)?,
         Property::MarginBottom(v) => s.margin.bottom = lpa(v, cx)?,
@@ -906,23 +1103,44 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str, cx: &Lengt
         Property::GridTemplateRows(t) => {
             (s.grid_template_rows, s.grid_template_row_names) = template(t, cx)?;
         }
-        Property::GridAutoColumns(l) => s.grid_auto_columns = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?,
-        Property::GridAutoRows(l) => s.grid_auto_rows = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?,
+        Property::GridAutoColumns(l) => {
+            s.grid_auto_columns = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?
+        }
+        Property::GridAutoRows(l) => {
+            s.grid_auto_rows = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?
+        }
         Property::GridAutoFlow(f) => {
-            s.grid_auto_flow = match (f.contains(CssGridAutoFlow::Column), f.contains(CssGridAutoFlow::Dense)) {
+            s.grid_auto_flow = match (
+                f.contains(CssGridAutoFlow::Column),
+                f.contains(CssGridAutoFlow::Dense),
+            ) {
                 (false, false) => GridAutoFlow::Row,
                 (true, false) => GridAutoFlow::Column,
                 (false, true) => GridAutoFlow::RowDense,
                 (true, true) => GridAutoFlow::ColumnDense,
             }
         }
-        Property::GridRow(r) => s.grid_row = GridPlacement { start: grid_line(&r.start)?, end: grid_line(&r.end)? },
+        Property::GridRow(r) => {
+            s.grid_row = GridPlacement {
+                start: grid_line(&r.start)?,
+                end: grid_line(&r.end)?,
+            }
+        }
         Property::GridColumn(c) => {
-            s.grid_column = GridPlacement { start: grid_line(&c.start)?, end: grid_line(&c.end)? }
+            s.grid_column = GridPlacement {
+                start: grid_line(&c.start)?,
+                end: grid_line(&c.end)?,
+            }
         }
         Property::GridArea(a) => {
-            s.grid_row = GridPlacement { start: grid_line(&a.row_start)?, end: grid_line(&a.row_end)? };
-            s.grid_column = GridPlacement { start: grid_line(&a.column_start)?, end: grid_line(&a.column_end)? };
+            s.grid_row = GridPlacement {
+                start: grid_line(&a.row_start)?,
+                end: grid_line(&a.row_end)?,
+            };
+            s.grid_column = GridPlacement {
+                start: grid_line(&a.column_start)?,
+                end: grid_line(&a.column_end)?,
+            };
         }
         Property::GridRowStart(l) => s.grid_row.start = grid_line(l)?,
         Property::GridRowEnd(l) => s.grid_row.end = grid_line(l)?,

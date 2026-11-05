@@ -54,7 +54,10 @@ const CSS: &str = r"
 ";
 
 fn main() {
-    let width = std::env::args().nth(1).and_then(|w| w.parse().ok()).unwrap_or(1024.0f32);
+    let width = std::env::args()
+        .nth(1)
+        .and_then(|w| w.parse().ok())
+        .unwrap_or(1024.0f32);
     let tokens = TokenTable::material();
     let sheet = match parse_stylesheet(CSS, &tokens) {
         Ok(sheet) => sheet,
@@ -65,23 +68,28 @@ fn main() {
     };
 
     // A rejected declaration shows the fail-closed diagnostics.
-    if let Err(diags) = parse_stylesheet(".x { float: left; overflow: auto; width: 2em }", &tokens) {
+    if let Err(diags) = parse_stylesheet(".x { float: left; overflow: auto; width: 2em }", &tokens)
+    {
         eprintln!("expected diagnostics:\n{diags}\n");
     }
 
     let mut tree = LayoutTree::new();
     let style = |s: &str| sheet.style(&[s]);
-    let text = |tree: &mut LayoutTree, name: &str, t: &str| tree.text(name, &style(".text"), t).unwrap();
+    let text =
+        |tree: &mut LayoutTree, name: &str, t: &str| tree.text(name, &style(".text"), t).unwrap();
 
     let title = text(&mut tree, "title", "Settings");
     let search = text(&mut tree, "search", "Search settings");
-    let top_bar = tree.node("top-bar", &style(".top-bar"), &[title, search]).unwrap();
+    let top_bar = tree
+        .node("top-bar", &style(".top-bar"), &[title, search])
+        .unwrap();
 
     let nav_items: Vec<NodeKey> = ["Network", "Display", "Sound", "Privacy", "About"]
         .iter()
         .map(|label| {
             let t = text(&mut tree, &format!("nav-{label}-label"), label);
-            tree.node(&format!("nav-{label}"), &style(".nav-item"), &[t]).unwrap()
+            tree.node(&format!("nav-{label}"), &style(".nav-item"), &[t])
+                .unwrap()
         })
         .collect();
     let nav = tree.node("nav", &style(".nav"), &nav_items).unwrap();
@@ -90,33 +98,51 @@ fn main() {
     for (i, (headline, supporting)) in [
         ("Wi-Fi", "Connected to yolo-5G"),
         ("Bluetooth", "Off"),
-        ("Airplane mode", "Turns off every wireless connection on this device"),
+        (
+            "Airplane mode",
+            "Turns off every wireless connection on this device",
+        ),
     ]
     .iter()
     .enumerate()
     {
         let h = text(&mut tree, &format!("row-{i}-headline"), headline);
         let s = text(&mut tree, &format!("row-{i}-supporting"), supporting);
-        let body = tree.node(&format!("row-{i}-text"), &style(".row-text"), &[h, s]).unwrap();
-        let switch = tree.node(&format!("row-{i}-switch"), &style(".switch"), &[]).unwrap();
-        rows.push(tree.node(&format!("row-{i}"), &style(".row"), &[body, switch]).unwrap());
+        let body = tree
+            .node(&format!("row-{i}-text"), &style(".row-text"), &[h, s])
+            .unwrap();
+        let switch = tree
+            .node(&format!("row-{i}-switch"), &style(".switch"), &[])
+            .unwrap();
+        rows.push(
+            tree.node(&format!("row-{i}"), &style(".row"), &[body, switch])
+                .unwrap(),
+        );
     }
     let heading = text(&mut tree, "section-heading", "Network & internet");
     rows.insert(0, heading);
     let section = tree.node("section", &style(".section"), &rows).unwrap();
 
     let cards: Vec<NodeKey> = (0..4)
-        .map(|i| tree.node(&format!("card-{i}"), &style(".card"), &[]).unwrap())
+        .map(|i| {
+            tree.node(&format!("card-{i}"), &style(".card"), &[])
+                .unwrap()
+        })
         .collect();
     let card_grid = tree.node("cards", &style(".cards"), &cards).unwrap();
-    let content = tree.node("content", &style(".content"), &[section, card_grid]).unwrap();
+    let content = tree
+        .node("content", &style(".content"), &[section, card_grid])
+        .unwrap();
     let fab = tree.node("fab", &style(".fab"), &[]).unwrap();
 
-    let page = tree.node("page", &style(".page"), &[top_bar, nav, content, fab]).unwrap();
+    let page = tree
+        .node("page", &style(".page"), &[top_bar, nav, content, fab])
+        .unwrap();
     let mut page_style = style(".page");
     page_style.position = yolo_layout::Position::Relative;
     tree.set_style(page, &page_style).unwrap();
 
-    tree.compute(page, Some(width), Some(720.0), monospace_measure(8.0, 20.0)).unwrap();
+    tree.compute(page, Some(width), Some(720.0), monospace_measure(8.0, 20.0))
+        .unwrap();
     println!("{}", tree.to_json(page).unwrap());
 }
