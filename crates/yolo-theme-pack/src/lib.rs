@@ -14,6 +14,7 @@
 pub mod manifest;
 pub mod omarchy;
 pub mod resolve;
+pub mod scoped;
 pub mod surfaces;
 pub mod wallpaper;
 
@@ -22,4 +23,5 @@ pub use manifest::{
     Wallpaper, WallpaperFit,
 };
 pub use resolve::{ActiveWallpaper, ResolvedTheme, SCHEMA_VERSION, UserPrefs, resolve};
+pub use scoped::css_scoped;
 pub use surfaces::ROLE_SURFACES;
