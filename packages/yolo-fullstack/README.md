@@ -1,10 +1,10 @@
 # @yolo-rs/fullstack
 
-A Bun-native replacement for Next.js. The Next.js `app/` conventions (page, layout, template, loading, error,
-not-found, route handlers, route groups, dynamic and catch-all segments, metadata files, `proxy.ts`
-middleware) with React Server Components, server actions, streaming SSR and static generation, built by three
-`Bun.build` passes (rsc, client, ssr) and served by `Bun.serve`. No Node.js, no webpack, no Turbopack binary:
-Bun 1.4.4+ is the whole toolchain.
+A Bun-native replacement for Next.js. It implements the Next.js `app/` conventions (page, layout, template,
+loading, error, not-found, route handlers, route groups, dynamic and catch-all segments, metadata files,
+`proxy.ts` middleware) with React Server Components, server actions, streaming SSR and static generation.
+Three `Bun.build` passes (rsc, client, ssr) build the app and `Bun.serve` serves it. Bun 1.4.4+ is the whole
+toolchain; Node.js, webpack and the Turbopack binary are not used.
 
 Status 2026-11-04: `bun test` 141 tests green in this package, including an end-to-end build and serve of
 `fixtures/app-basic` (next.config rules, Turbopack aliases and rules, `next/font/local`, `next/image`
@@ -45,9 +45,9 @@ bun x yolo-fullstack config                                   # the resolved nex
 `@yolo-rs/fullstack/tanstack`:
 
 - `QueryProvider` (client) and `makeQueryClient`: one QueryClient per request on the server, one per browser.
-- `getQueryClient()` keyed on the request store, `HydrateClient` server component wrapping `HydrationBoundary` with the dehydrated cache (pending queries included), the official App Router pattern.
-- `renderRouteTree(tree)` / `routeTreePlugin(tree)`: a `@tanstack/react-router` tree generated from the `app/` scan (`[slug]` to `$slug`, catch-all to `$`, layouts, loading/error/not-found), served as the virtual module `yolo:route-tree`.
-- `bunRoutesFromTree(tree, load)` and `serveSpa({ html, tree })`: `route.ts` handlers as `Bun.serve({ routes })` entries next to an HTML import, Bun's native fullstack dev server with HMR for the SPA mode.
+- `getQueryClient()` is keyed on the request store, and the `HydrateClient` server component wraps `HydrationBoundary` with the dehydrated cache (pending queries included), following the official App Router pattern.
+- `renderRouteTree(tree)` / `routeTreePlugin(tree)`: generate a `@tanstack/react-router` tree from the `app/` scan (`[slug]` to `$slug`, catch-all to `$`, layouts, loading/error/not-found) and serve it as the virtual module `yolo:route-tree`.
+- `bunRoutesFromTree(tree, load)` and `serveSpa({ html, tree })`: register `route.ts` handlers as `Bun.serve({ routes })` entries next to an HTML import, so the SPA mode runs on Bun's native fullstack dev server with HMR.
 
 ## Dioxus 0.8
 

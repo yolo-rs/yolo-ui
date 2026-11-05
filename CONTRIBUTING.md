@@ -1,17 +1,12 @@
-# Contributing to YOLO (Linux Kernel & Google Open Source Standard)
+# Contributing to YOLO (Linux kernel and Google open source standards)
 
-Thank you for contributing to the **YOLO** open-source ecosystem!
-YOLO upholds strict engineering standards drawn from the **Linux Kernel Subsystem Model** and **Google Open Source Guidelines**.
-
----
+Thank you for contributing to the YOLO open-source ecosystem. YOLO follows strict engineering standards drawn from the Linux kernel subsystem model and the Google Open Source Guidelines.
 
 ## 1. Code of Conduct
 
-All contributors, maintainers, and automated agents must adhere to the [Code of Conduct](CODE_OF_CONDUCT.md) (Contributor Covenant v2.1). Respectful, constructive, and technically rigorous collaboration is mandatory.
+All contributors, maintainers, and automated agents must follow the [Code of Conduct](CODE_OF_CONDUCT.md) (Contributor Covenant v2.1). Collaboration must be respectful, constructive and technically rigorous.
 
----
-
-## 2. Developer Certificate of Origin (DCO) & Commit Standards
+## 2. Developer Certificate of Origin (DCO) and commit standards
 
 Every commit submitted to YOLO repositories must include a `Signed-off-by` line indicating agreement with the Developer Certificate of Origin (DCO 1.1):
 
@@ -35,7 +30,7 @@ By making a contribution to this project, I certify that:
     indefinitely.
 ```
 
-### Commit Message Format (Conventional Commits)
+### Commit message format (Conventional Commits)
 
 Commit messages must follow the [Conventional Commits v1.0.0](https://www.conventionalcommits.org/) specification:
 
@@ -49,49 +44,46 @@ Signed-off-by: Full Name <author@example.com>
 ```
 
 Allowed types:
-- `feat`: A new feature or user-visible capability
-- `fix`: A bug fix or regression remediation
-- `docs`: Documentation only changes
-- `style`: Formatting, whitespace (no code change)
-- `refactor`: Code restructuring without functional behavior changes
-- `perf`: Performance improvements
-- `test`: Adding or correcting tests
-- `build`: Build system or dependency updates
+- `feat`: a new feature or user-visible capability
+- `fix`: a bug fix or regression fix
+- `docs`: documentation-only changes
+- `style`: formatting and whitespace (no code change)
+- `refactor`: code restructuring that does not change behavior
+- `perf`: performance improvements
+- `test`: adding or correcting tests
+- `build`: build system or dependency updates
 - `ci`: CI configuration and workflow scripts
-- `chore`: Repository maintenance
+- `chore`: repository maintenance
 
----
-
-## 3. Style Guidelines
+## 3. Style guidelines
 
 ### Rust
-- Conforms to the [Google Rust Style Guide](https://google.github.io/styleguide/rustguide.html).
-- Format and lint enforcement:
-  ```bash
-  cargo fmt --check
-  cargo clippy --workspace --all-targets -- -D warnings
-  ```
+
+Rust code follows the [Google Rust Style Guide](https://google.github.io/styleguide/rustguide.html). Formatting and lints are enforced with:
+
+```bash
+cargo fmt --check
+cargo clippy --workspace --all-targets -- -D warnings
+```
 
 ### TypeScript / JavaScript
-- Conforms to the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html).
-- Enforces 100% native **Bun v1.4.4+** (`zero Node.js`, `zero Zig` runtime assumptions).
-- Quality enforcement:
-  ```bash
-  bun check
-  bun fmt --check
-  bun lint
-  bun test
-  ```
 
-### Hardcoded Paths Policy
-- **Machine-specific absolute paths are strictly forbidden** (e.g., `C:/`, `C:\`, `/home/user`, user profiles).
-- Dynamic relative path resolution must always be used (`resolve(import.meta.dir, ...)`, `process.cwd()`, or configurable environment variables `PORT`, `HOST`, `BASE_URL`).
+TypeScript and JavaScript follow the [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html). Code runs on native Bun v1.4.4+ only (`zero Node.js`, `zero Zig` runtime assumptions). Quality checks:
 
----
+```bash
+bun check
+bun fmt --check
+bun lint
+bun test
+```
 
-## 4. Pull Request Review & Subsystem Maintainer Process
+### Hardcoded paths policy
 
-1. **Branching**: Branch off `main` using descriptive branch names (`feat/my-feature`, `fix/issue-description`).
-2. **Atomic Commits**: Keep commits focused and logically separated.
-3. **Continuous Integration**: All automated test suites (`bun test`, `cargo test`) must pass cleanly with zero regression.
-4. **Subsystem Review**: PRs will be reviewed by the corresponding subsystem maintainer listed in [MAINTAINERS.md](MAINTAINERS.md).
+Machine-specific absolute paths (e.g., `C:/`, `C:\`, `/home/user`, user profiles) are strictly forbidden. Always resolve paths dynamically and relatively (`resolve(import.meta.dir, ...)`, `process.cwd()`, or the configurable environment variables `PORT`, `HOST`, `BASE_URL`).
+
+## 4. Pull request review and subsystem maintainer process
+
+1. Branch off `main` with a descriptive branch name (`feat/my-feature`, `fix/issue-description`).
+2. Keep commits atomic: focused and logically separated.
+3. All automated test suites in continuous integration (`bun test`, `cargo test`) must pass with no regressions.
+4. The subsystem maintainer listed in [MAINTAINERS.md](MAINTAINERS.md) for the affected area reviews the PR.

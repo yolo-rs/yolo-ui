@@ -1,20 +1,20 @@
-# Yolo UI (`yolo-rs/yolo-ui`) — Unified Multi-Engine Fullstack Rust & Bun v1.4.4+ Framework Guide
+# Yolo UI (`yolo-rs/yolo-ui`): multi-engine fullstack Rust and Bun v1.4.4+ framework guide
 
-Yolo UI (`yolo-rs/yolo-ui`) is a **vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo**. It unifies **124 `yolo-rs/*` Git submodules (`submodules/*`)** across **31 upstream UI & compiler ecosystems**, **9 Rust UI toolkits**, **8 built-in theme presets (`YoloThemePreset`)**, a **Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`)**, a **Full-Bun + Rust React 19 & React Native/Expo engine (`yolo-react`)**, and **one unified CLI/Plugin/MCP (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`)**.
+Yolo UI (`yolo-rs/yolo-ui`) is a vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo. It brings together 124 `yolo-rs/*` Git submodules (`submodules/*`) from 31 upstream UI and compiler ecosystems, 9 Rust UI toolkits, 8 built-in theme presets (`YoloThemePreset`), a Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`), a Full-Bun + Rust React 19 and React Native/Expo engine (`yolo-react`), and one CLI, plugin and MCP server (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`).
 
-## 1. The 7 First-Class Theme Presets (`YoloThemePreset`)
+## 1. The 7 first-class theme presets (`YoloThemePreset`)
 
-`yolo-ui` is **neutral by default** (`YoloManifest::default()` uses `YoloThemePreset::Neutral` with `pet_companion: None`):
+`yolo-ui` is neutral by default (`YoloManifest::default()` uses `YoloThemePreset::Neutral` with `pet_companion: None`):
 
-1. **`yolo-neutral`** (`YoloThemePreset::Neutral`, `#6366F1` default indigo seed) — Unbranded zinc/slate dark & light surfaces.
-2. **`yolo-m3`** (`YoloThemePreset::M3`, `#6750A4`) — Google Material Design 3 / Jetpack Compose upstream (`49` HCT roles, `material-color-utilities`).
-3. **`yolo-fluent`** (`YoloThemePreset::Fluent`, `#0078D4`) — Microsoft Fluent UI 2 / WinUI 3 (`Mica`, `Acrylic`, `Smoke`, `4px`/`8px` radii).
-4. **`yolo-apple`** (`YoloThemePreset::Apple`, `#007AFF`) — Apple macOS Sequoia/Tahoe Liquid Glass (`NSGlassEffectView`) & iOS Cupertino/SwiftUI HIG (`24px` vibrancy blur, `10px`/`14px` squircles, `#FF5F56`/`#FFBD2E`/`#27C93F` traffic lights).
-5. **`yolo-omarchy`** (`YoloThemePreset::Omarchy`, `#7AA2F7`) — Omacom Omarchy Linux & `omarchy-site` TUI-modern design system + **all 23 official subthemes** (`OmarchySubTheme::ALL`).
-6. **`yolo-hyprland`** (`YoloThemePreset::Hyprland`, `#33CCFF`) — Hyprwm / Hyprland Wayland Compositor (`#33CCFF -> #00FF99` `45deg` active border, `8×3` Kawase blur, `hyprtoolkit`, `hyprqt6engine`).
-7. **`yolo-aphrody`** (`YoloThemePreset::Aphrody`, `#17335C`) — Signature Byron Love (Afuro Terumi / Aphrody) pet & brand theme (10 measured Oklch sprite-atlas colors `#F7F3F0`..`#131420`, `#FFD700` gold, `#7C5CFF` violet, `#00D4FF` cyan, `8×11` `ByronLovePetSpec`).
+1. `yolo-neutral` (`YoloThemePreset::Neutral`, `#6366F1` default indigo seed): unbranded zinc/slate dark and light surfaces.
+2. `yolo-m3` (`YoloThemePreset::M3`, `#6750A4`): Google Material Design 3 / Jetpack Compose upstream (`49` HCT roles, `material-color-utilities`).
+3. `yolo-fluent` (`YoloThemePreset::Fluent`, `#0078D4`): Microsoft Fluent UI 2 / WinUI 3 (`Mica`, `Acrylic`, `Smoke`, `4px`/`8px` radii).
+4. `yolo-apple` (`YoloThemePreset::Apple`, `#007AFF`): Apple macOS Sequoia/Tahoe Liquid Glass (`NSGlassEffectView`) and iOS Cupertino/SwiftUI HIG (`24px` vibrancy blur, `10px`/`14px` squircles, `#FF5F56`/`#FFBD2E`/`#27C93F` traffic lights).
+5. `yolo-omarchy` (`YoloThemePreset::Omarchy`, `#7AA2F7`): Omacom Omarchy Linux and the `omarchy-site` TUI-modern design system, with all 23 official subthemes (`OmarchySubTheme::ALL`).
+6. `yolo-hyprland` (`YoloThemePreset::Hyprland`, `#33CCFF`): Hyprwm / Hyprland Wayland compositor (`#33CCFF -> #00FF99` `45deg` active border, `8×3` Kawase blur, `hyprtoolkit`, `hyprqt6engine`).
+7. `yolo-aphrody` (`YoloThemePreset::Aphrody`, `#17335C`): the Byron Love (Afuro Terumi / Aphrody) signature pet and brand theme (10 measured Oklch sprite-atlas colors `#F7F3F0`..`#131420`, `#FFD700` gold, `#7C5CFF` violet, `#00D4FF` cyan, `8×11` `ByronLovePetSpec`).
 
-## 2. Flattened Monorepo Structure
+## 2. Flattened monorepo structure
 
 ```text
 yolo-ui/
@@ -63,7 +63,7 @@ yolo-ui/
 └── submodules/                 # Pinned `yolo-rs/*` forks and upstream source inputs
 ```
 
-## 3. Core Toolchain Commands (`bun ui` + `just` + `cargo` + `sccache`)
+## 3. Core toolchain commands (`bun ui` + `just` + `cargo` + `sccache`)
 
 ```bash
 bun run ui doctor     # Verify the submodule fleet, 7 theme presets, 34 UI/UX Pro Max stacks, and toolchains

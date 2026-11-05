@@ -1,21 +1,19 @@
-# 13 — Tauri v3 Alpha (`dev` / `v3`) & Wry/Tao Native Desktop/Mobile Stack
+# 13: Tauri v3 Alpha (`dev` / `v3`) and the Wry/Tao native desktop and mobile stack
 
-> **Current integration boundary (2026-11-04):** Yolo UI currently integrates
-> Tauri with Wry. The selected Tauri source tree contains upstream CEF-related
-> code, but Yolo UI does not expose or qualify a CEF runtime. Chromium, CEF,
-> and browser-engine adapters belong to `yolo-web`; a Tauri-to-CEF adapter is
-> future work there. Treat the CEF examples below as upstream architecture
-> notes only, not available Yolo UI features.
+> Current integration boundary (2026-11-04): Yolo UI integrates Tauri with
+> Wry. The selected Tauri source tree contains upstream CEF-related code, but
+> Yolo UI does not expose or qualify a CEF runtime. Chromium, CEF, and
+> browser-engine adapters belong to `yolo-web`, where a Tauri-to-CEF adapter
+> is future work. The CEF examples below describe upstream architecture only;
+> they are not available Yolo UI features.
 
-`yolo-ui` integrates the **Tauri v3 Alpha (`3.0.0-alpha.5`)** ecosystem alongside **Dioxus 0.8 (`dioxus-desktop` / `dioxus-mobile`)** via the `yolo-tauri` crate (`packages/yolo-tauri`) and 15 forked/synced `aphrody-labs/*` submodules under `submodules/*`.
+`yolo-ui` integrates Tauri v3 Alpha (`3.0.0-alpha.5`) next to Dioxus 0.8 (`dioxus-desktop` / `dioxus-mobile`) through the `yolo-tauri` crate (`packages/yolo-tauri`) and 15 forked and synced `aphrody-labs/*` submodules under `submodules/*`.
 
----
+## 1. `tauri-apps` -> `aphrody-labs` submodule fleet
 
-## 1. Unified `tauri-apps` -> `aphrody-labs` Submodule Fleet
+`dioxus-desktop` and `tauri` v3 use the same windowing, webview, menu, system tray, hotkey, vibrancy, and mobile build crates:
 
-Both `dioxus-desktop` and `tauri` v3 share the exact same underlying windowing, webview, menu, system tray, hotkey, vibrancy, and mobile build crates:
-
-| Submodule Path | Upstream & Fork (`aphrody-labs/*`) | Branch | Crate Version | Role in `yolo-ui` |
+| Submodule path | Upstream and fork (`aphrody-labs/*`) | Branch | Crate version | Role in `yolo-ui` |
 | :--- | :--- | :--- | :--- | :--- |
 | `submodules/tauri` | `aphrody-labs/tauri` | `v3` (`dev`) | `3.0.0-alpha.5` | Selected Tauri source (`tauri`, `tauri-runtime`, `tauri-runtime-wry`, bundler, CLI); CEF source is not integrated by Yolo UI |
 | `submodules/wry` | `aphrody-labs/wry` | `dev` | `0.57.1` | Cross-platform WebView rendering library (WebView2, WKWebView, WebKitGTK, Android/iOS) |
@@ -33,9 +31,7 @@ Both `dioxus-desktop` and `tauri` v3 share the exact same underlying windowing, 
 | `submodules/tauri-vscode` | `aphrody-labs/tauri-vscode` | `dev` | `v2/v3` | VS Code JSON schema & command extension for Tauri |
 | `submodules/awesome-tauri` | `aphrody-labs/awesome-tauri` | `main` | — | Curated catalog of Tauri plugins, apps, and guides |
 
----
-
-## 2. How `dioxus-desktop` and `yolo-tauri` Share the Native Stack
+## 2. How `dioxus-desktop` and `yolo-tauri` share the native stack
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
@@ -61,12 +57,10 @@ Both `dioxus-desktop` and `tauri` v3 share the exact same underlying windowing, 
       └───────────────────────────────────────────────────────────────┘
 ```
 
----
+## 3. Tauri 2.0 -> 3.0 Alpha migration reference (`https://v3.tauri.app/start/migrate/from-tauri-2/`)
 
-## 3. Tauri 2.0 -> 3.0 Alpha Migration Reference (`https://v3.tauri.app/start/migrate/from-tauri-2/`)
-
-### 3.1 Decoupled Webview Runtimes (Upstream reference)
-In Tauri 3.0 Alpha, the webview runtime is **no longer selected via Cargo features (`wry` / `cef`) on the `tauri` crate**. Instead, applications depend directly on a runtime crate and pass its attributes to `tauri::Builder::runtime(...)`:
+### 3.1 Decoupled webview runtimes (upstream reference)
+Tauri 3.0 Alpha no longer selects the webview runtime through Cargo features (`wry` / `cef`) on the `tauri` crate. Applications depend directly on a runtime crate and pass its attributes to `tauri::Builder::runtime(...)`:
 
 ```toml
 # Cargo.toml (Tauri 3.0 Alpha)
@@ -90,17 +84,17 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 ```
- omitting `.runtime(...)` fails at runtime with `tauri_runtime::Error::RuntimeNotConfigured`.
+Omitting `.runtime(...)` fails at runtime with `tauri_runtime::Error::RuntimeNotConfigured`.
 
-### 3.2 Type-Erased `tauri::DynRuntime` by Default
+### 3.2 Type-erased `tauri::DynRuntime` by default
 - `tauri::Builder::default()` and generic handles (`tauri::AppHandle`, `tauri::Window`, `tauri::Webview`, `tauri::WebviewWindow`) now default to the type-erased `tauri::DynRuntime` instead of `tauri::Wry`.
 - `tauri::Wry` and `tauri::WryHandle` re-exports were removed from `tauri`.
-- Static dispatch remains available via `tauri::Builder::<tauri_runtime_wry::WryRuntime>::new()`.
+- Static dispatch is still available through `tauri::Builder::<tauri_runtime_wry::WryRuntime>::new()`.
 
-### 3.3 Runtime Extension Traits (`AppHandleWryExt`, `WebviewWryExt`, `WebviewCefExt`)
+### 3.3 Runtime extension traits (`AppHandleWryExt`, `WebviewWryExt`, `WebviewCefExt`)
 Runtime-specific APIs moved out of `tauri` into extension traits on the runtime crates:
 
-| Tauri 2.0 API | Tauri 3.0 Alpha Replacement |
+| Tauri 2.0 API | Tauri 3.0 Alpha replacement |
 | :--- | :--- |
 | `tauri::tao`, `tauri::wry` | `tauri_runtime_wry::{tao, wry}` |
 | `AppHandle::create_tao_window` | `tauri_runtime_wry::AppHandleWryExt::create_tao_window` |
@@ -109,15 +103,15 @@ Runtime-specific APIs moved out of `tauri` into extension traits on the runtime 
 | `tauri::webview_version()` | `app.webview_version()` / `app_handle.webview_version()` |
 | `tauri::android_binding!` | `tauri_runtime_wry::android_binding!` |
 
-### 3.4 Linux GTK3 / GTK4 Selection & `ksni` D-Bus Tray Backend
-- **GTK Version Isolation**: `tauri` no longer links GTK unconditionally on Linux. `tauri-runtime-wry` enables `tauri/gtk3` (`gtk = "0.18"`), whereas `tauri-runtime-cef` enables `tauri/gtk4` (`gtk4 = "0.11.4"`). Mismatched GTK access returns `tauri::Error::GtkVersionMismatch`.
-- **D-Bus StatusNotifierItem (`ksni`) Default Tray**: Linux system tray icons now default to `ksni` (pure D-Bus `StatusNotifierItem`), eliminating the `libayatana-appindicator` build/runtime dependency. Legacy `libappindicator` remains opt-in via `features = ["linux-libappindicator"]`.
+### 3.4 Linux GTK3 / GTK4 selection and the `ksni` D-Bus tray backend
+- `tauri` no longer links GTK unconditionally on Linux. `tauri-runtime-wry` enables `tauri/gtk3` (`gtk = "0.18"`) and `tauri-runtime-cef` enables `tauri/gtk4` (`gtk4 = "0.11.4"`). Accessing the wrong GTK version returns `tauri::Error::GtkVersionMismatch`.
+- Linux system tray icons now default to `ksni` (pure D-Bus `StatusNotifierItem`), which removes the `libayatana-appindicator` build and runtime dependency. The legacy `libappindicator` backend is still available as an opt-in through `features = ["linux-libappindicator"]`.
 
-### 3.5 On-Demand ACL Command Permissions & `allow-*` / `deny-*` Wildcards
-- Autogenerated `allow-$command` and `deny-$command` files are no longer written into the source tree (`permissions/autogenerated/commands` is removed; files are emitted to `OUT_DIR`).
+### 3.5 On-demand ACL command permissions and `allow-*` / `deny-*` wildcards
+- Tauri no longer writes the autogenerated `allow-$command` and `deny-$command` files into the source tree. `permissions/autogenerated/commands` is removed, and the files go to `OUT_DIR`.
 - App capabilities can now use implicit `allow-*` and `deny-*` wildcard entries to allow or deny all commands registered via `tauri_build::AppManifest::commands`.
-- `yolo-tauri::CapabilityManifest` supports `PermissionEntry::allow_all_app_commands()` (`"allow-*"`) and `PermissionEntry::deny_all_app_commands()` (`"deny-*"`) out of the box.
+- `yolo-tauri::CapabilityManifest` supports `PermissionEntry::allow_all_app_commands()` (`"allow-*"`) and `PermissionEntry::deny_all_app_commands()` (`"deny-*"`).
 
-### 3.6 Live Development Resources & macOS 26 Liquid Glass Icons
-- **Live Dev Resources**: In `tauri dev` / `cargo run`, `bundle > resources` are resolved directly from their source paths without copying into `target/`, preventing full rebuilds when editing assets.
-- **macOS Liquid Glass Icons**: `tauri-bundler` supports Xcode 26 Icon Composer `.icon` directories and prebuilt `Assets.car` bundles in `bundle > icon`.
+### 3.6 Live development resources and macOS 26 Liquid Glass icons
+- In `tauri dev` / `cargo run`, `bundle > resources` resolve directly from their source paths and are not copied into `target/`, so editing assets does not trigger a full rebuild.
+- `tauri-bundler` supports Xcode 26 Icon Composer `.icon` directories and prebuilt `Assets.car` bundles in `bundle > icon`.
