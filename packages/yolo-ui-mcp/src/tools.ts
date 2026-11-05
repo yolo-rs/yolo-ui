@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
+import { runLocalModel } from "./local-model";
 import { dirname, join, resolve } from "node:path";
 import {
   AVAILABLE_STACKS,
@@ -595,6 +596,22 @@ export const MCP_TOOL_DEFINITIONS: McpToolDefinition[] = [
       },
     },
   },
+  {
+    name: "ui_local_model",
+    description:
+      "Run a design, codegen or review prompt on the local yolo-ai llama.cpp model (OpenAI-compatible, loopback only; default http://127.0.0.1:8083/v1 local-qwen-small, override with YOLO_LOCAL_LLM_BASE_URL / YOLO_LOCAL_LLM_MODEL).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        prompt: { type: "string", description: "The task prompt." },
+        task: { type: "string", enum: ["design", "codegen", "review"], description: "System prompt flavor (default design)." },
+        model: { type: "string", description: "Model alias, e.g. local-qwen-small or local-qwen-coder." },
+        baseUrl: { type: "string", description: "Loopback OpenAI-compatible base URL, e.g. http://127.0.0.1:8082/v1 for the coder." },
+        maxTokens: { type: "number", description: "Completion token cap (default 1024)." },
+      },
+      required: ["prompt"],
+    },
+  },
 ];
 
 export async function executeUiTool(
@@ -602,6 +619,17 @@ export async function executeUiTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "ui_local_model": {
+      if (typeof args.prompt !== "string" || !args.prompt.trim()) throw new Error("prompt is required");
+      return runLocalModel({
+        prompt: args.prompt,
+        task: args.task as "design" | "codegen" | "review" | undefined,
+        model: typeof args.model === "string" ? args.model : undefined,
+        baseUrl: typeof args.baseUrl === "string" ? args.baseUrl : undefined,
+        maxTokens: typeof args.maxTokens === "number" ? args.maxTokens : undefined,
+      });
+    }
+
     case "ui_search": {
       const query = String(args.query ?? "").trim();
       const stack = args.stack ? String(args.stack).trim() : undefined;

@@ -13,6 +13,7 @@ import { compatProviderId, isCompatProviderId } from '../api/providers/compat-id
 import { clearProviderCache } from '../api/providers/client-cache'
 import { onLocalSlotChanged } from '../lib/builtin-slot-eviction'
 import { LU_ENGINE_NAME, renameLegacyEngine } from '../lib/engine-name'
+import { yoloLocalEndpointsFromEnv, type YoloLocalEndpoint } from '../lib/yolo-local-endpoints'
 import { announceDarkenedSlots } from '../lib/provider-slot-darkening'
 import { honourUserDisable } from '../lib/provider-visibility'
 import { secretGet, secretSet, secretDelete, secretParkGet, secretParkSet, secretParkDelete } from '../api/backend'
@@ -818,3 +819,22 @@ export const useProviderStore = create<ProviderState>()(
     }
   )
 )
+
+/**
+ * Seeds the yolo-ai local llama.cpp endpoints as OpenAI-compatible entries (loopback only, no key).
+ * Runs after hydration so a persisted store keeps its own entries and only gains the missing ones.
+ */
+export function seedYoloLocalEntries(endpoints: YoloLocalEndpoint[] = yoloLocalEndpointsFromEnv()): number {
+  let added = 0
+  for (const ep of endpoints) {
+    if (useProviderStore.getState().openaiEntries.some((e) => e.baseUrl.replace(/\/+$/, '') === ep.baseUrl)) continue
+    useProviderStore.getState().addOpenAIEntry({ name: ep.name, baseUrl: ep.baseUrl, isLocal: true })
+    added++
+  }
+  return added
+}
+
+if (yoloLocalEndpointsFromEnv().length > 0) {
+  if (useProviderStore.persist.hasHydrated()) seedYoloLocalEntries()
+  else useProviderStore.persist.onFinishHydration(() => { seedYoloLocalEntries() })
+}

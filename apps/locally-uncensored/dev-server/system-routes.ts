@@ -37,6 +37,13 @@ export function registerSystemRoutes(routes: RouteMount): void {
       probe('http://localhost:8188/system_stats', 'http://localhost:8188'),
       probe('http://localhost:1234/v1/models', 'http://localhost:1234'),
     ])
+    const yoloRaw = process.env.YOLO_LOCAL_LLM_ENDPOINTS || process.env.VITE_YOLO_LOCAL_LLM_ENDPOINTS || ''
+    const yolo_local = await Promise.all(yoloRaw.split(',').map((p: string) => p.trim()).filter((p: string) => p.indexOf('=') > 0).map(async (p: string) => {
+      const name = p.slice(0, p.indexOf('=')).trim()
+      const base = p.slice(p.indexOf('=') + 1).trim().replace(/\/+$/, '')
+      if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/|$)/i.test(base)) return { name, status: 'rejected', endpoint: base }
+      return { name, ...(await probe(`${base}/models`, base)) }
+    }))
     let vram_total_gb: number | null = null
     let vram_free_gb: number | null = null
     try {
@@ -60,6 +67,7 @@ export function registerSystemRoutes(routes: RouteMount): void {
         disk_free_gb, vram_total_gb, vram_free_gb,
       },
       ollama, comfyui, lm_studio,
+      ...(yolo_local.length ? { yolo_local } : {}),
     }))
   })
 

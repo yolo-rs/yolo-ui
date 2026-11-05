@@ -166,8 +166,8 @@ describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
     }
   });
 
-  test("4. @yolo-rs/ui-mcp exposes and executes all 10 unified tools + JSON-RPC 2.0", async () => {
-    expect(MCP_TOOL_DEFINITIONS).toHaveLength(10);
+  test("4. @yolo-rs/ui-mcp exposes and executes all 11 unified tools + JSON-RPC 2.0", async () => {
+    expect(MCP_TOOL_DEFINITIONS).toHaveLength(11);
     const toolNames = MCP_TOOL_DEFINITIONS.map((t) => t.name);
     expect(toolNames).toEqual([
       "ui_search",
@@ -180,6 +180,7 @@ describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
       "ui_catalog_lookup",
       "ui_workbenches",
       "ui_fleet_status",
+      "ui_local_model",
     ]);
 
     const searchOut = (await executeUiTool("ui_search", {
@@ -274,7 +275,7 @@ describe("Unified Yolo UI Skill, Plugin, MCP & CLI Suite", () => {
     })) as {
       result: { tools: unknown[] };
     };
-    expect(listResp.result.tools).toHaveLength(10);
+    expect(listResp.result.tools).toHaveLength(11);
 
     const callResp = (await handleMcpJsonRpcRequest({
       jsonrpc: "2.0",
