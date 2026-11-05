@@ -1,0 +1,38 @@
+[package]
+name = "yolo-showcase-web"
+version = { workspace = true }
+authors = ["Yolo UI Contributors <contact@aphrody.com>"]
+edition = "2024"
+rust-version.workspace = true
+description = "Browser build of the Yolo UI showcase: a Dioxus 0.8 web app (router, live theme packs) plus the component gallery shared with the static `--emit-gallery` output."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yolo-rs/yolo-ui"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "yolo-showcase-web"
+path = "src/main.rs"
+required-features = ["web"]
+
+[dependencies]
+yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true }
+yolo-theme-pack = { workspace = true }
+yolo-contracts = { workspace = true }
+dioxus = { workspace = true, default-features = false, features = ["lib"] }
+dioxus-ssr = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+# getrandom 0.3.4 selects its browser backend from this feature alone on wasm32-unknown-unknown.
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[features]
+default = []
+# Interactive Dioxus app (router, live theme switching) in `src/app.rs`. No engine crates: the
+# multi-engine tree stays in `apps/yolo-showcase`, which only uses this crate's gallery.
+web = ["dioxus/web", "dioxus/router", "dioxus/launch"]

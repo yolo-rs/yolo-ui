@@ -8,8 +8,9 @@
 //! that single value, so changing the pack (or the seed, variant, contrast, mode) repaints all of
 //! them in the same render. The logic itself is in [`crate::theme_state`] and tested there.
 //!
-//! Build for the browser with `dx serve --platform web -p yolo-showcase --features web`, or with
-//! `cargo build --target wasm32-unknown-unknown --features web` plus `wasm-bindgen`.
+//! Build for the browser with `dx serve --platform web -p yolo-showcase-web --features web`, or
+//! with `cargo build -p yolo-showcase-web --target wasm32-unknown-unknown --features web` plus
+//! `wasm-bindgen --target web` and the crate's `index.html`.
 
 use dioxus::prelude::*;
 use yolo_theme_pack::Mode;
@@ -18,8 +19,15 @@ use yolo_tokens::scheme::Variant;
 use crate::gallery::{self, Matrix};
 use crate::theme_state::{AppliedTheme, ThemeChoice, catalog};
 
-/// Favicon, bundled and hashed by the asset pipeline.
-static FAVICON: Asset = asset!("/assets/yolo-mark.svg");
+/// Favicon as a data URL, so a plain `wasm-bindgen` build served from any static host has it
+/// without the `dx` asset pipeline.
+fn favicon() -> String {
+    let svg = include_str!("../assets/yolo-mark.svg").trim();
+    format!(
+        "data:image/svg+xml,{}",
+        svg.replace('%', "%25").replace('#', "%23")
+    )
+}
 
 /// Roles shown as swatches on the themes page.
 const SWATCH_ROLES: [&str; 8] = [
@@ -129,7 +137,7 @@ fn Shell() -> Element {
     let css = applied.css.clone();
     rsx! {
         document::Title { "{title}" }
-        document::Link { rel: "icon", r#type: "image/svg+xml", href: FAVICON }
+        document::Link { rel: "icon", r#type: "image/svg+xml", href: favicon() }
         div {
             class: "app",
             "data-theme-pack": "{pack}",

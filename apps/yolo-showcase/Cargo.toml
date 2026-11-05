@@ -22,13 +22,5 @@ yolo-shell = { workspace = true }
 yolo-craft = { workspace = true }
 yolo-storyteller = { workspace = true }
 yolo-react = { workspace = true }
-dioxus = { workspace = true, default-features = false, features = ["lib"] }
-dioxus-ssr = { workspace = true }
-base64 = { workspace = true }
-sha2 = { workspace = true }
-
-[features]
-default = []
-# Interactive Dioxus app (router, live theme switching) in `src/app.rs`. Off by default so the
-# static `--emit-gallery` build keeps its small dependency set.
-web = ["dioxus/web", "dioxus/router", "dioxus/launch"]
+# Component gallery for `--emit-gallery`. The browser app lives in `apps/yolo-showcase-web`.
+yolo-showcase-web = { path = "../yolo-showcase-web" }

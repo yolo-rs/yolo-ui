@@ -67,6 +67,8 @@ features = [
     "IntersectionObserverEntry",
     "InputEvent",
     "KeyboardEvent",
+    # `history.rs` reads `window.location()` in every build, not only with `devtools`.
+    "Location",
     "MouseEvent",
     "NodeList",
     "PointerEvent",

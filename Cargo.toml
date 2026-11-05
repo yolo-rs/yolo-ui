@@ -19,6 +19,7 @@ members = [
     "crates/yolo-3d",
     "crates/yolo-icons",
     "apps/yolo-showcase",
+    "apps/yolo-showcase-web",
     "packages/yolo-ui",
     "packages/yolo-gpui",
     "packages/yolo-iced",

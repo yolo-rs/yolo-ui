@@ -35988,10 +35988,6 @@ dependencies = [
 name = "yolo-showcase"
 version = "0.8.0-alpha.3"
 dependencies = [
- "base64 0.22.1",
- "dioxus",
- "dioxus-ssr",
- "sha2 0.10.9",
  "yolo-contracts",
  "yolo-craft",
  "yolo-emit",
@@ -36000,6 +35996,7 @@ dependencies = [
  "yolo-react",
  "yolo-shared",
  "yolo-shell",
+ "yolo-showcase-web",
  "yolo-storyteller",
  "yolo-theme-pack",
  "yolo-tokens",
@@ -36007,10 +36004,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "yolo-showcase-web"
+version = "0.8.0-alpha.3"
+dependencies = [
+ "base64 0.22.1",
+ "dioxus",
+ "dioxus-ssr",
+ "getrandom 0.3.4",
+ "sha2 0.10.9",
+ "yolo-contracts",
+ "yolo-shared",
+ "yolo-theme-pack",
+ "yolo-tokens",
+]
+
+[[package]]
 name = "yolo-storyteller"
 version = "0.8.0-alpha.3"
 dependencies = [
  "serde",
+ "serde_json",
  "yolo-shared",
 ]
 

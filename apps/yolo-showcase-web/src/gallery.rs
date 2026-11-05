@@ -11,7 +11,7 @@ use std::fmt::Write as _;
 use dioxus::prelude::*;
 use yolo_contracts::accessibility::MIN_TARGET_DP;
 use yolo_contracts::components::{Button, ButtonVariant};
-use yolo_ui::shared::{RgbaColor, YoloThemePreset};
+use yolo_shared::{RgbaColor, YoloThemePreset};
 
 /// Material 3 baseline error role (light, dark); the shared tokens carry no error role yet.
 const ERROR_ROLE: (&str, &str) = ("#B3261E", "#F2B8B5");

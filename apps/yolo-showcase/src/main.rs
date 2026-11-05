@@ -6,12 +6,8 @@
 //! `yolo-migrator` (Shadcn/Tailwind/Radix/BaseUI TSX -> 6 Rust targets), and
 //! `yolo-react` (Full-Bun + Rust React 19 RSC & React Native Taffy Layout) compile and work together!
 
-#[cfg(feature = "web")]
-pub mod app;
 pub mod benchmarks;
-pub mod gallery;
 pub mod site_hub;
-pub mod theme_state;
 
 use site_hub::{
     AWESOME_HUB_CATEGORIES, MASTER_MIGRATION_ENTRIES, MigrationPillar, YOLO_STARTER_TEMPLATES,
@@ -19,6 +15,7 @@ use site_hub::{
 };
 use std::fs;
 use std::path::Path;
+use yolo_showcase_web::gallery;
 use yolo_ui::craft::workbenches::all_workbenches;
 use yolo_ui::emit::{Target as EmitTarget, emit_preset};
 use yolo_ui::gpui::{DockArea, DockPosition, GpuiTheme, I18nContext, PanelDescriptor, TabItem};
@@ -33,17 +30,6 @@ use yolo_ui::storyteller::StorytellerProject;
 use yolo_ui::tauri::{CapabilityManifest, TauriV3Config, WebviewEngine};
 
 fn main() {
-    #[cfg(all(feature = "web", target_arch = "wasm32"))]
-    {
-        app::launch();
-        return;
-    }
-    #[cfg(not(all(feature = "web", target_arch = "wasm32")))]
-    run();
-}
-
-#[cfg_attr(all(feature = "web", target_arch = "wasm32"), allow(dead_code))]
-fn run() {
     let manifest = YoloManifest::default();
     let gpui_theme = GpuiTheme::aphrody_dark();
     let iced_theme = IcedTheme::aphrody_dark();
