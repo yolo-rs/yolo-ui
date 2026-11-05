@@ -303,10 +303,10 @@ export async function getYoloReactStatus(): Promise<YoloReactEngineStatus> {
     "submodules/react-native",
     "submodules/react-strict-dom",
     "submodules/expo",
-    "submodules/ibex",
+    "submodules/expo-ibex",
     "submodules/oxc",
     "submodules/facetpack",
-    "submodules/uniffi-bindgen-react-native",
+    "submodules/uniffi-react-native",
     "submodules/rozenite",
     "submodules/tuono",
   ];
