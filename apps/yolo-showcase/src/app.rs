@@ -91,7 +91,11 @@ pub fn App() -> Element {
     let choice = use_signal(ThemeChoice::default);
     let system_dark = use_signal(|| false);
     let applied = use_memo(move || AppliedTheme::new(&choice.read(), *system_dark.read()));
-    use_context_provider(|| ThemeCtx { choice, system_dark, applied });
+    use_context_provider(|| ThemeCtx {
+        choice,
+        system_dark,
+        applied,
+    });
     use_future(move || watch_system_scheme(system_dark));
     rsx! { Router::<Route> {} }
 }
@@ -224,7 +228,7 @@ fn NotFound(segments: Vec<String>) -> Element {
 
 #[component]
 fn Themes() -> Element {
-    let ctx = use_theme();
+    let mut ctx = use_theme();
     let applied = ctx.applied.read().clone();
     let choice = ctx.choice.read().clone();
     let pack = choice.pack();
@@ -239,7 +243,11 @@ fn Themes() -> Element {
     let variant = theme.variant.clone();
     let contrast = theme.contrast;
     let clamp = choice.clamp_text;
-    let modes = [(Mode::Light, "Light"), (Mode::Dark, "Dark"), (Mode::System, "System")];
+    let modes = [
+        (Mode::Light, "Light"),
+        (Mode::Dark, "Dark"),
+        (Mode::System, "System"),
+    ];
     rsx! {
         header { class: "panel",
             h1 { "Themes" }
@@ -352,5 +360,9 @@ fn Themes() -> Element {
 }
 
 fn system_label(ctx: ThemeCtx) -> &'static str {
-    if *ctx.system_dark.read() { "dark" } else { "light" }
+    if *ctx.system_dark.read() {
+        "dark"
+    } else {
+        "light"
+    }
 }

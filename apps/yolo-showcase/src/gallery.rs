@@ -8,9 +8,9 @@
 
 use std::fmt::Write as _;
 
+use dioxus::prelude::*;
 use yolo_contracts::accessibility::MIN_TARGET_DP;
 use yolo_contracts::components::{Button, ButtonVariant};
-use dioxus::prelude::*;
 use yolo_ui::shared::{RgbaColor, YoloThemePreset};
 
 /// Material 3 baseline error role (light, dark); the shared tokens carry no error role yet.
@@ -36,7 +36,11 @@ pub const fn short_name(preset: YoloThemePreset) -> &'static str {
 
 fn channel(c: f32) -> f64 {
     let c = f64::from(c);
-    if c <= 0.040_45 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
+    if c <= 0.040_45 {
+        c / 12.92
+    } else {
+        ((c + 0.055) / 1.055).powf(2.4)
+    }
 }
 
 /// WCAG relative luminance.
@@ -254,12 +258,18 @@ pub struct Scope {
 
 impl Scope {
     /// The theme currently resolved by the interactive app (scope class `p-active`).
-    pub const ACTIVE: Self = Self { id: "active", name: "Active theme" };
+    pub const ACTIVE: Self = Self {
+        id: "active",
+        name: "Active theme",
+    };
 
     /// The column of a preset.
     #[must_use]
     pub const fn of(preset: YoloThemePreset) -> Self {
-        Self { id: preset.id(), name: short_name(preset) }
+        Self {
+            id: preset.id(),
+            name: short_name(preset),
+        }
     }
 
     /// Identifier used in CSS classes (`p-<id>`) and element ids.
@@ -293,10 +303,14 @@ impl Row {
 /// Lowercase, dash-separated form of a row name.
 #[must_use]
 pub fn slug(name: &str) -> String {
-    name.split_whitespace().collect::<Vec<_>>().join("-").to_lowercase()
+    name.split_whitespace()
+        .collect::<Vec<_>>()
+        .join("-")
+        .to_lowercase()
 }
 
 /// The row whose [`Row::slug`] is `slug`.
+#[cfg(any(feature = "web", test))]
 pub(crate) fn row_by_slug(wanted: &str) -> Option<&'static Row> {
     ROWS.iter().find(|row| row.slug() == wanted)
 }
@@ -449,15 +463,51 @@ fn overlays(preset: Scope) -> Element {
 }
 
 pub(crate) const ROWS: [Row; 9] = [
-    Row { name: "Buttons", note: "Filled, tonal, outlined and text, plus focused and disabled. 48 dp minimum target.", render: buttons },
-    Row { name: "Icon buttons", note: "Icon-only controls carry an accessible name.", render: icon_buttons },
-    Row { name: "Chips", note: "Filter chips expose aria-pressed; input chips have a remove control.", render: chips },
-    Row { name: "Selection", note: "Native checkbox, switch and radio with the preset accent.", render: selection },
-    Row { name: "Slider and progress", note: "Native range and progress elements with visible labels.", render: slider_progress },
-    Row { name: "Text fields", note: "Visible label, helper text, and an error that says how to fix it.", render: text_fields },
-    Row { name: "Navigation", note: "Tabs and a bottom bar; the current place is marked by weight and accent.", render: navigation },
-    Row { name: "Cards", note: "Filled, elevated and outlined containers.", render: cards },
-    Row { name: "Menu and dialog", note: "Static samples of the overlay surfaces.", render: overlays },
+    Row {
+        name: "Buttons",
+        note: "Filled, tonal, outlined and text, plus focused and disabled. 48 dp minimum target.",
+        render: buttons,
+    },
+    Row {
+        name: "Icon buttons",
+        note: "Icon-only controls carry an accessible name.",
+        render: icon_buttons,
+    },
+    Row {
+        name: "Chips",
+        note: "Filter chips expose aria-pressed; input chips have a remove control.",
+        render: chips,
+    },
+    Row {
+        name: "Selection",
+        note: "Native checkbox, switch and radio with the preset accent.",
+        render: selection,
+    },
+    Row {
+        name: "Slider and progress",
+        note: "Native range and progress elements with visible labels.",
+        render: slider_progress,
+    },
+    Row {
+        name: "Text fields",
+        note: "Visible label, helper text, and an error that says how to fix it.",
+        render: text_fields,
+    },
+    Row {
+        name: "Navigation",
+        note: "Tabs and a bottom bar; the current place is marked by weight and accent.",
+        render: navigation,
+    },
+    Row {
+        name: "Cards",
+        note: "Filled, elevated and outlined containers.",
+        render: cards,
+    },
+    Row {
+        name: "Menu and dialog",
+        note: "Static samples of the overlay surfaces.",
+        render: overlays,
+    },
 ];
 
 fn ratio(v: f64) -> String {
@@ -468,8 +518,11 @@ fn ratio(v: f64) -> String {
 /// Renders the gallery page body for one scheme.
 #[component]
 fn Gallery(dark: bool) -> Element {
-    let (scheme, other_label, other_href) =
-        if dark { ("Dark scheme.", "Show light scheme", "index.html") } else { ("Light scheme.", "Show dark scheme", "dark.html") };
+    let (scheme, other_label, other_href) = if dark {
+        ("Dark scheme.", "Show light scheme", "index.html")
+    } else {
+        ("Light scheme.", "Show dark scheme", "dark.html")
+    };
     rsx! {
         header { class: "top",
             h1 { "Yolo UI components" }
@@ -493,7 +546,11 @@ pub fn Matrix(
     #[props(default)] link: Option<Callback<String, Element>>,
 ) -> Element {
     let with_active = active.is_some();
-    let class = if with_active { "matrix has-active" } else { "matrix" };
+    let class = if with_active {
+        "matrix has-active"
+    } else {
+        "matrix"
+    };
     rsx! {
         main { class: "{class}",
             div { class: "corner", "Component" }
@@ -546,8 +603,11 @@ pub fn Matrix(
 pub fn gallery_csp(css: &str) -> String {
     use base64::Engine as _;
     use sha2::Digest as _;
-    let hash = base64::engine::general_purpose::STANDARD.encode(sha2::Sha256::digest(css.as_bytes()));
-    format!("default-src 'none'; style-src 'sha256-{hash}'; img-src 'self' data:; base-uri 'none'; form-action 'none'")
+    let hash =
+        base64::engine::general_purpose::STANDARD.encode(sha2::Sha256::digest(css.as_bytes()));
+    format!(
+        "default-src 'none'; style-src 'sha256-{hash}'; img-src 'self' data:; base-uri 'none'; form-action 'none'"
+    )
 }
 
 /// Full HTML document for one scheme.
@@ -555,7 +615,11 @@ pub fn gallery_csp(css: &str) -> String {
 pub fn render_gallery_html(dark: bool) -> String {
     let css = gallery_css(dark);
     let csp = gallery_csp(&css);
-    let title = if dark { "Yolo UI components, dark" } else { "Yolo UI components" };
+    let title = if dark {
+        "Yolo UI components, dark"
+    } else {
+        "Yolo UI components"
+    };
     let scheme = if dark { "dark" } else { "light" };
     // Dioxus renders the body. The head is written here because SSR escapes text nodes: the
     // stylesheet must reach the page byte for byte to match its CSP hash. The CSS is generated
@@ -587,8 +651,16 @@ mod tests {
             for dark in [false, true] {
                 let accent = parse(preset.tokens(dark).accent_primary);
                 let chosen = contrast(on_accent(accent), accent);
-                let other = if on_accent(accent) == RgbaColor::WHITE { RgbaColor::BLACK } else { RgbaColor::WHITE };
-                assert!(chosen >= contrast(other, accent), "{} dark={dark}", preset.id());
+                let other = if on_accent(accent) == RgbaColor::WHITE {
+                    RgbaColor::BLACK
+                } else {
+                    RgbaColor::WHITE
+                };
+                assert!(
+                    chosen >= contrast(other, accent),
+                    "{} dark={dark}",
+                    preset.id()
+                );
             }
         }
     }
@@ -599,8 +671,15 @@ mod tests {
             let html = render_gallery_html(dark);
             assert!(html.starts_with("<!doctype html><html lang=\"en\">"));
             for preset in YoloThemePreset::ALL {
-                assert!(html.contains(&format!(".p-{}{{", preset.id())), "scope for {}", preset.id());
-                assert_eq!(html.matches(&format!("cell p-{}", preset.id())).count(), ROWS.len());
+                assert!(
+                    html.contains(&format!(".p-{}{{", preset.id())),
+                    "scope for {}",
+                    preset.id()
+                );
+                assert_eq!(
+                    html.matches(&format!("cell p-{}", preset.id())).count(),
+                    ROWS.len()
+                );
             }
             for row in &ROWS {
                 assert!(html.contains(row.name));
@@ -608,18 +687,27 @@ mod tests {
             assert!(html.contains("aria-invalid=\"true\""));
             assert!(html.contains("aria-label=\"Search\""));
             assert!(!html.contains("undefined"));
-            assert!(!html.contains(" style=\""), "inline style attributes would need 'unsafe-inline'");
+            assert!(
+                !html.contains(" style=\""),
+                "inline style attributes would need 'unsafe-inline'"
+            );
             assert!(html.contains(&gallery_csp(&gallery_css(dark))));
         }
     }
 
     fn ids(html: &str) -> Vec<String> {
-        html.split(" id=\"").skip(1).filter_map(|rest| rest.split('"').next()).map(str::to_owned).collect()
+        html.split(" id=\"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .map(str::to_owned)
+            .collect()
     }
 
     #[test]
     fn live_column_keeps_element_ids_unique() {
-        let html = dioxus_ssr::render_element(rsx! { Matrix { dark: false, active: "summary".to_owned() } });
+        let html = dioxus_ssr::render_element(
+            rsx! { Matrix { dark: false, active: "summary".to_owned() } },
+        );
         assert_eq!(html.matches("cell p-active").count(), ROWS.len());
         assert!(html.contains("matrix has-active"));
         let mut all = ids(&html);
@@ -637,7 +725,8 @@ mod tests {
             assert_eq!(row_by_slug(&slug(name)).map(|row| row.name), Some(name));
         }
         assert!(row_by_slug("nope").is_none());
-        let html = dioxus_ssr::render_element(rsx! { Matrix { dark: true, only: "buttons".to_owned() } });
+        let html =
+            dioxus_ssr::render_element(rsx! { Matrix { dark: true, only: "buttons".to_owned() } });
         assert_eq!(html.matches("class=\"label\"").count(), 1);
         assert!(html.contains("Buttons") && !html.contains("Menu and dialog"));
     }

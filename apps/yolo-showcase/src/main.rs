@@ -6,12 +6,12 @@
 //! `yolo-migrator` (Shadcn/Tailwind/Radix/BaseUI TSX -> 6 Rust targets), and
 //! `yolo-react` (Full-Bun + Rust React 19 RSC & React Native Taffy Layout) compile and work together!
 
+#[cfg(feature = "web")]
+pub mod app;
 pub mod benchmarks;
 pub mod gallery;
 pub mod site_hub;
 pub mod theme_state;
-#[cfg(feature = "web")]
-pub mod app;
 
 use site_hub::{
     AWESOME_HUB_CATEGORIES, MASTER_MIGRATION_ENTRIES, MigrationPillar, YOLO_STARTER_TEMPLATES,
@@ -198,12 +198,15 @@ fn run() {
         println!("Emitted Site     : {}", index_path.display());
     }
     if let Some(idx) = args.iter().position(|a| a == "--emit-gallery") {
-        let out_dir = args.get(idx + 1).map_or("dist/yolo-gallery", String::as_str);
+        let out_dir = args
+            .get(idx + 1)
+            .map_or("dist/yolo-gallery", String::as_str);
         let dir_path = Path::new(out_dir);
         fs::create_dir_all(dir_path).expect("failed to create gallery output directory");
         for (file, dark) in [("index.html", false), ("dark.html", true)] {
             let path = dir_path.join(file);
-            fs::write(&path, gallery::render_gallery_html(dark)).expect("failed to write gallery page");
+            fs::write(&path, gallery::render_gallery_html(dark))
+                .expect("failed to write gallery page");
             println!("Emitted Gallery  : {}", path.display());
         }
     }
