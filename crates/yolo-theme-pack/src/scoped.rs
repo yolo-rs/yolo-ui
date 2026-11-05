@@ -92,10 +92,20 @@ mod tests {
         let css = css_scoped(&refs, &UserPrefs::default());
         for p in &packs {
             assert!(css.contains(&format!("[data-theme-pack=\"{}\"] {{", p.id)));
-            assert!(css.contains(&format!("[data-theme-pack=\"{}\"][data-mode=\"dark\"]", p.id)));
+            assert!(css.contains(&format!(
+                "[data-theme-pack=\"{}\"][data-mode=\"dark\"]",
+                p.id
+            )));
         }
-        assert_eq!(css.matches("@media (forced-colors: active)").count(), packs.len());
-        assert_eq!(css.matches('{').count(), css.matches('}').count(), "balanced braces");
+        assert_eq!(
+            css.matches("@media (forced-colors: active)").count(),
+            packs.len()
+        );
+        assert_eq!(
+            css.matches('{').count(),
+            css.matches('}').count(),
+            "balanced braces"
+        );
         assert!(css.contains(":root {"));
     }
 
@@ -117,8 +127,14 @@ mod tests {
         let value = |selector: &str| {
             let start = css.find(selector).expect("selector");
             let tail = &css[start..];
-            tail[tail.find("--yolo-surface:").expect("surface")..].lines().next().map(str::to_owned)
+            tail[tail.find("--yolo-surface:").expect("surface")..]
+                .lines()
+                .next()
+                .map(str::to_owned)
         };
-        assert_ne!(value("[data-mode=\"light\"]"), value("[data-mode=\"dark\"]"));
+        assert_ne!(
+            value("[data-mode=\"light\"]"),
+            value("[data-mode=\"dark\"]")
+        );
     }
 }
