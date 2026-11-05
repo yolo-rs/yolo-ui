@@ -49,7 +49,6 @@
     "@tauri-apps/plugin-shell": "3.0.0-alpha.3",
     "@tauri-apps/plugin-updater": "3.0.0-alpha.3",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "dotenv": "^17.3.1",
     "framer-motion": "^12.38.0",
     "jszip": "^3.10.1",
     "katex": "^0.17.0",
