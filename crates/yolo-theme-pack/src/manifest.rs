@@ -31,6 +31,41 @@ pub struct ThemePack {
     pub typography: Typography,
     /// Interface shape: layout, density, radii, glass and motion.
     pub shell: ShellSpec,
+    /// Further named assets (sounds, cursors, illustrations), each with its own licence.
+    #[serde(default)]
+    pub assets: BTreeMap<String, AssetRef>,
+}
+
+/// A named asset of a pack.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AssetRef {
+    /// Path inside the pack, repository path, or `https://` URL.
+    pub file: String,
+    /// Licence id; see [`is_distributable_license`].
+    pub license: String,
+    /// Where it came from.
+    pub source: String,
+    /// SHA-256 of the file, checked before use.
+    #[serde(default)]
+    pub sha256: Option<String>,
+}
+
+/// Hue and chroma in OKLCH units (hue in degrees, chroma 0..~0.4), as product engines store seeds.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct OklchHueChroma {
+    /// Hue in degrees.
+    pub hue: f64,
+    /// OKLCH chroma.
+    pub chroma: f64,
+}
+
+/// Whether a licence id allows shipping the file. Unverified and pending licences do not.
+#[must_use]
+pub fn is_distributable_license(license: &str) -> bool {
+    let l = license.trim().to_ascii_lowercase();
+    !l.is_empty() && l != "unverified" && !l.starts_with("pending")
 }
 
 /// Product and window strings.
@@ -95,9 +130,16 @@ pub struct ColorSpec {
     /// Default mode.
     #[serde(default)]
     pub mode: Mode,
-    /// Per-role colour overrides (`role-name` to `#RRGGBB`), applied after the scheme.
+    /// Per-role colour overrides (`role-name` to `#RRGGBB`), applied after the scheme. Besides the
+    /// 49 M3 roles, `focus-ring` is accepted (it defaults to `primary`).
     #[serde(default)]
     pub overrides: BTreeMap<String, String>,
+    /// Independent secondary hue and chroma (OKLCH units), instead of the variant's derivation.
+    #[serde(default)]
+    pub secondary: Option<OklchHueChroma>,
+    /// Chroma of the neutral surfaces in OKLCH units; `0` gives pure greys.
+    #[serde(default)]
+    pub neutral_chroma: Option<f64>,
 }
 
 fn default_variant() -> String {
@@ -225,8 +267,7 @@ impl Wallpaper {
     /// Whether this file may ship with the product.
     #[must_use]
     pub fn distributable(&self) -> bool {
-        let license = self.license.trim();
-        !license.is_empty() && !license.eq_ignore_ascii_case("unverified")
+        is_distributable_license(&self.license)
     }
 }
 
@@ -241,9 +282,15 @@ pub struct PetSpec {
     /// Where the pet sits by default (`bottom-right`, `bottom-left`, `dock`).
     #[serde(default = "default_anchor")]
     pub anchor: String,
+    /// Display name of the pet.
+    #[serde(default)]
+    pub name: Option<String>,
     /// Animation states the pet provides; shells map app activity onto them.
     #[serde(default = "default_pet_states")]
     pub states: Vec<String>,
+    /// One file per state (`state` to path or URL). When set, its keys are the states.
+    #[serde(default)]
+    pub files: BTreeMap<String, String>,
     /// Display size hint in CSS px (the longest side).
     #[serde(default = "default_pet_size")]
     pub size: u16,

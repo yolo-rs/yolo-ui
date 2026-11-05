@@ -69,6 +69,8 @@ pub fn pack_from_colors(
             contrast: 0.0,
             mode,
             overrides: std::collections::BTreeMap::new(),
+            secondary: None,
+            neutral_chroma: None,
         },
         icons: IconSpec {
             set: "phosphor".to_owned(),
@@ -89,6 +91,7 @@ pub fn pack_from_colors(
             glass_blur: 0,
             motion: MotionProfile::Calm,
         },
+        assets: std::collections::BTreeMap::new(),
     })
 }
 

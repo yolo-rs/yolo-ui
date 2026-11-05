@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use serde::Serialize;
+use yolo_tokens::palette::TonalPalette;
 use yolo_tokens::role::Role;
 use yolo_tokens::scheme::{DynamicScheme, Variant};
 
@@ -86,7 +87,7 @@ pub struct ResolvedTheme {
     pub variant: String,
     /// Contrast level actually used.
     pub contrast: f64,
-    /// The 49 system colour roles as (`role-name`, `#RRGGBB`).
+    /// The 49 M3 system colour roles plus `focus-ring`, as (`role-name`, `#RRGGBB`).
     pub roles: Vec<(String, String)>,
     /// Active wallpaper.
     pub wallpaper: ActiveWallpaper,
@@ -118,6 +119,20 @@ pub struct ResolvedTheme {
 
 fn hex(argb: u32) -> String {
     format!("#{:06x}", argb & 0x00FF_FFFF)
+}
+
+/// Roles painted from the neutral palette.
+const NEUTRAL_ROLES: [&str; 16] = [
+    "background", "on-background", "surface", "on-surface", "surface-dim", "surface-bright",
+    "surface-container-lowest", "surface-container-low", "surface-container",
+    "surface-container-high", "surface-container-highest", "inverse-surface", "inverse-on-surface",
+    "surface-variant", "on-surface-variant", "outline",
+];
+
+/// HCT tonal palette for an OKLCH hue and chroma, taken through the sRGB colour at L = 0.65.
+fn oklch_palette(hue: f64, chroma: f64) -> TonalPalette {
+    let argb = parse_hex(&format!("oklch(0.65 {chroma} {hue})")).unwrap_or(0xFF80_8080);
+    TonalPalette::from_argb(argb)
 }
 
 fn motion_tokens(profile: MotionProfile) -> (u16, &'static str) {
@@ -185,6 +200,30 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
         .iter()
         .map(|r| (r.name().to_owned(), hex(scheme.argb(*r))))
         .collect();
+    // Independent secondary hue and neutral chroma: same tones as the scheme, other palettes.
+    if let Some(sec) = pack.color.secondary {
+        let palette = oklch_palette(sec.hue, sec.chroma);
+        for (role, slot) in Role::ALL.iter().zip(roles.iter_mut()) {
+            if slot.0.contains("secondary") {
+                slot.1 = hex(palette.tone(scheme.tone(*role)));
+            }
+        }
+    }
+    if let Some(chroma) = pack.color.neutral_chroma {
+        let hue = yolo_tokens::hct::Hct::from_argb(seed).hue;
+        let palette = if chroma <= 0.0 {
+            TonalPalette::from_hue_and_chroma(hue, 0.0)
+        } else {
+            oklch_palette(hue, chroma)
+        };
+        for (role, slot) in Role::ALL.iter().zip(roles.iter_mut()) {
+            if NEUTRAL_ROLES.contains(&slot.0.as_str()) {
+                slot.1 = hex(palette.tone(scheme.tone(*role)));
+            }
+        }
+    }
+    let primary = roles.iter().find(|(n, _)| n == "primary").map_or_else(String::new, |(_, v)| v.clone());
+    roles.push(("focus-ring".to_owned(), primary));
     for (name, value) in pack.color.overrides.iter().chain(prefs.overrides.iter()) {
         if let (Some(slot), Some(argb)) =
             (roles.iter_mut().find(|(n, _)| n == name), parse_hex(value))
@@ -445,7 +484,7 @@ mod tests {
                     },
                     false,
                 );
-                assert_eq!(t.roles.len(), 49);
+                assert_eq!(t.roles.len(), 50);
                 assert_eq!(t.dark, dark);
                 assert!(t.css(None).contains("--yolo-primary: #"));
             }
@@ -582,7 +621,7 @@ mod tests {
             serde_json::from_str(&t.to_json().expect("json")).expect("parse");
         assert_eq!(a["schema_version"], SCHEMA_VERSION);
         assert_eq!(a["content_hash"], b["content_hash"]);
-        assert_eq!(a["theme"]["roles"].as_array().map(Vec::len), Some(49));
+        assert_eq!(a["theme"]["roles"].as_array().map(Vec::len), Some(50));
         let other = resolve(
             &pack(),
             &UserPrefs {
@@ -594,6 +633,23 @@ mod tests {
         let c: serde_json::Value =
             serde_json::from_str(&other.to_json().expect("json")).expect("parse");
         assert_ne!(a["content_hash"], c["content_hash"]);
+    }
+
+    #[test]
+    fn secondary_neutral_and_focus_ring() {
+        let mut p = pack();
+        p.color.secondary = Some(crate::manifest::OklchHueChroma { hue: 84.0, chroma: 0.164 });
+        p.color.neutral_chroma = Some(0.0);
+        p.color.overrides.insert("focus-ring".into(), "#ffdd00".into());
+        let base = resolve(&pack(), &UserPrefs::default(), true);
+        let t = resolve(&p, &UserPrefs::default(), true);
+        assert_ne!(base.role("secondary"), t.role("secondary"));
+        let grey = |v: &str| parse_hex(v).is_some_and(|c| (c >> 16 & 0xFF) == (c >> 8 & 0xFF) && (c >> 8 & 0xFF) == (c & 0xFF));
+        assert!(t.role("surface").is_some_and(grey), "{:?}", t.role("surface"));
+        assert_eq!(t.role("focus-ring"), Some("#ffdd00"));
+        assert_eq!(base.role("focus-ring"), base.role("primary"));
+        assert!(!crate::manifest::is_distributable_license("pending-owner-decision"));
+        assert!(crate::manifest::is_distributable_license("CC0-1.0"));
     }
 
     #[test]
