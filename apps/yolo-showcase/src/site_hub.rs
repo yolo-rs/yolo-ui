@@ -1,5 +1,12 @@
 //! Unified `yolo.aphrody.com` Portal & 6-Pillar Rust Migration Engine (`apps/yolo-showcase/src/site_hub.rs`).
 //!
+//! **No longer the live site.** Since 2026-11-05, yolo.aphrody.com serves the static export of
+//! `yolo-rs/yolo-hub` (Leptos SSR, fr/en/ja, canonical/hreflang/sitemap, yolo-tokens palettes):
+//! `yolo-hub --export dist/yolo-aphrody-com`, then `bunx wrangler deploy` from this repo
+//! (`wrangler.jsonc`). This module stays as the showcase catalogue; `--emit-site` writes only an
+//! `index.html` and would replace that export if pointed at `dist/yolo-aphrody-com`, so emit it
+//! elsewhere (`--emit-site dist/site-hub`).
+//!
 //! Unifies:
 //! 1. **Awesome Catalog (`/awesome`)**: 11 Awesome lists + 124 `yolo-rs/*` submodules across 31 ecosystems.
 //! 2. **Multi-Engine & 7-Theme Showcase (`/showcase`)**: 7 `YoloThemePreset`s, 23 Omarchy subthemes,
