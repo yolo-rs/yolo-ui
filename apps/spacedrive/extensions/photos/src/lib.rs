@@ -25,7 +25,7 @@ use jobs::*;
 pub use models::*;
 pub use queries::*;
 
-use spacedrive_sdk::{extension, prelude::*};
+use spacedrive_sdk::extension;
 
 #[extension(
     id = "com.spacedrive.photos",
@@ -48,5 +48,6 @@ use spacedrive_sdk::{extension, prelude::*};
     ]
 )]
 pub struct Photos {
+	#[expect(dead_code, reason = "settings the jobs will read once they are wired up")]
 	config: PhotosConfig,
 }

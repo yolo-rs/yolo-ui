@@ -7,7 +7,7 @@ use crate::models::*;
 
 #[action]
 pub async fn create_album(
-	ctx: &ActionContext,
+	_ctx: &ActionContext,
 	name: String,
 	photo_ids: Vec<Uuid>,
 ) -> ActionResult<ActionPreview> {
@@ -35,12 +35,9 @@ pub async fn create_album_execute(
 	preview: ActionPreview,
 ) -> ActionResult<ExecutionResult> {
 	for change in preview.changes {
-		match change {
-			Change::CreateModel { model_type, data } => {
-				let album: Album = serde_json::from_value(data)?;
-				ctx.vdfs().create_model(album).await?;
-			}
-			_ => {}
+		if let Change::CreateModel { data, .. } = change {
+			let album: Album = serde_json::from_value(data)?;
+			ctx.vdfs().create_model(album).await?;
 		}
 	}
 

@@ -160,12 +160,12 @@ async fn a_walk_writes_records_and_facets() {
 		3
 	);
 
-	let (title, size, mode): (String, i64, i64) = sqlx::query_as(&format!(
+	let (title, size, mode): (String, i64, i64) = sqlx::query_as(
 		"SELECT r.title, f.size, f.mode FROM record r
 		 JOIN facet_file f ON f.record_uuid = r.uuid
 		 JOIN directory_path parent ON parent.record_uuid = r.parent_uuid
-		 WHERE parent.path = 'notes' AND r.title = 'a.txt'"
-	))
+		 WHERE parent.path = 'notes' AND r.title = 'a.txt'",
+	)
 	.fetch_one(db.pool())
 	.await
 	.expect("row");

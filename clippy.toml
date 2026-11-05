@@ -1,3 +1,2 @@
-msrv = "1.95"
 too-many-arguments-threshold = 10
 type-complexity-threshold = 500

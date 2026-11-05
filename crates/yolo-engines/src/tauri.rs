@@ -96,11 +96,12 @@ pub type Result<T> = std::result::Result<T, YoloTauriError>;
 /// In Tauri 3.0, the webview runtime is no longer selected by Cargo features on `tauri`;
 /// instead, applications depend on `tauri-runtime-wry` or `tauri-runtime-cef` directly
 /// and pass the runtime attributes to `tauri::Builder::runtime(...)`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "engine", rename_all = "kebab-case")]
 pub enum WebviewEngine {
     /// System WebView via `tauri-runtime-wry` (`wry` 0.57+ / `tao` 0.37+):
     /// WebView2 on Windows, WKWebView on macOS/iOS, WebKitGTK (GTK3) on Linux, Android WebView.
+    #[default]
     Wry,
     /// Chromium Embedded Framework (`tauri-runtime-cef` 3.0.0-alpha.6+):
     /// Ships a self-contained Chromium runtime on Windows, macOS, and Linux (GTK4).
@@ -115,12 +116,6 @@ pub enum WebviewEngine {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         remote_debugging_port: Option<u16>,
     },
-}
-
-impl Default for WebviewEngine {
-    fn default() -> Self {
-        Self::Wry
-    }
 }
 
 impl WebviewEngine {
@@ -169,29 +164,25 @@ pub enum LinuxGtkBackend {
 }
 
 /// Linux system tray icon backend in Tauri 3.0 Alpha (`tray-icon` 0.26+).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum LinuxTrayBackend {
     /// Pure D-Bus `StatusNotifierItem` (`ksni` crate) — **new default in Tauri 3.0**,
     /// removing the `libayatana-appindicator` system dependency.
+    #[default]
     Ksni,
     /// Legacy `libappindicator` backend (opt-in via `features = ["linux-libappindicator"]`).
     LibAppIndicator,
 }
 
-impl Default for LinuxTrayBackend {
-    fn default() -> Self {
-        Self::Ksni
-    }
-}
-
 /// Native window background blur & vibrancy effects (`window-vibrancy` 0.8.1+).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum VibrancyEffect {
     /// No translucent window vibrancy.
     None,
     /// Windows 11 Mica effect (`DWMWA_SYSTEMBACKDROP_TYPE = DWMSBT_MAINWINDOW`).
+    #[default]
     Mica,
     /// Windows 11 Mica Tabbed effect (`DWMSBT_TABBEDWINDOW`).
     MicaTabbed,
@@ -203,12 +194,6 @@ pub enum VibrancyEffect {
     MacOsUnderWindow,
     /// macOS 26+ `NSGlassEffectView` Liquid Glass surface (`window-vibrancy` 0.8.1+).
     MacOsLiquidGlass,
-}
-
-impl Default for VibrancyEffect {
-    fn default() -> Self {
-        Self::Mica
-    }
 }
 
 /// System tray icon and menu configuration (`tray-icon` 0.26+ & `muda` 0.21+).

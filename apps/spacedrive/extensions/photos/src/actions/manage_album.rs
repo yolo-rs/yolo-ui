@@ -1,4 +1,4 @@
-use spacedrive_sdk::{action, action_execute};
+use spacedrive_sdk::action;
 
 use spacedrive_sdk::prelude::*;
 use uuid::Uuid;
@@ -20,7 +20,7 @@ pub async fn remove_photo_from_album(
 			model_id: album_id,
 			field: "photo_ids".to_string(),
 			operation: "remove".to_string(),
-			value: serde_json::to_value(&photo_id)?,
+			value: serde_json::to_value(photo_id)?,
 		}],
 		reversible: true,
 	})

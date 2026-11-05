@@ -99,7 +99,7 @@ fn fit(img: &RgbaImage, cell: u32) -> (u32, u32, Vec<u8>) {
 }
 
 fn rgba_into_bgra(mut buf: Vec<u8>) -> Vec<u8> {
-	for px in buf.chunks_exact_mut(4) {
+	for px in buf.as_chunks_mut::<4>().0 {
 		px.swap(0, 2);
 	}
 	buf
@@ -178,7 +178,7 @@ mod tests {
 		assert_eq!(tile.bgra().len(), (TILE * TILE * 4) as usize);
 		// The 100×100 center of the strip is solid green, so every pixel of
 		// the covered tile is green — stored BGRA.
-		assert!(tile.bgra().chunks_exact(4).all(|px| px == [0, 255, 0, 255]));
+		assert!(tile.bgra().as_chunks::<4>().0.iter().all(|px| *px == [0, 255, 0, 255]));
 	}
 
 	#[test]
@@ -254,7 +254,7 @@ mod tests {
 			.produce(&WorkItem::file(path), TILE)
 			.expect("jpeg decodes");
 
-		for px in tile.bgra().chunks_exact(4) {
+		for px in tile.bgra().as_chunks::<4>().0 {
 			assert!(
 				px[0] < 16 && px[1] > 239 && px[2] < 16,
 				"expected ~green, got {px:?}"

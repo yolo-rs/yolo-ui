@@ -41,8 +41,7 @@ impl SampleJob {
 			task_dispatcher
 				.dispatch_many(initial_steps)
 				.await
-				.unwrap()
-				.into_iter(),
+				.unwrap(),
 		)
 		.lend_mut();
 

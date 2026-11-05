@@ -17,6 +17,7 @@ use spacedrive_sdk::{extension, job, model, task};
 	jobs = [test_counter, catalog_files, tag_files],
 	models = [CatalogEntry],
 )]
+#[expect(dead_code, reason = "#[extension] registers the type; nothing constructs it")]
 struct TestExtension;
 
 // Job State Definition
@@ -63,7 +64,7 @@ fn test_counter(ctx: &JobContext, state: &mut CounterState) -> Result<()> {
 		ctx.increment_items(1);
 
 		// Periodic checkpoint for recovery
-		if state.current % 10 == 0 {
+		if state.current.is_multiple_of(10) {
 			ctx.checkpoint(state)?;
 		}
 	}

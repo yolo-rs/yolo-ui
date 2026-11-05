@@ -386,6 +386,8 @@ cli/turbo.exe
 .env*
 vendor/
 data
+# sd-core source module, not a data directory.
+!core/src/data/
 packages/turbo-server/data/
 packages/turbo-server/uploads/
 apps/*/stats.html

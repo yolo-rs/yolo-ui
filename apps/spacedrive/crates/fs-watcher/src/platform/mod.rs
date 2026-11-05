@@ -33,6 +33,10 @@ pub use windows::WindowsHandler;
 /// Platform handlers receive raw notify events and return normalized `FsEvent` values.
 /// They may buffer events internally for rename detection or debouncing.
 #[async_trait::async_trait]
+#[expect(
+	clippy::double_must_use,
+	reason = "async_trait marks the boxed future of each trait method #[must_use]"
+)]
 pub trait EventHandler: Send + Sync {
 	/// Process a raw event and return normalized events
 	///

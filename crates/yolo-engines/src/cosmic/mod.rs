@@ -7,7 +7,7 @@
 //!   style closures;
 //! - [`style`] provides M3 appearance structs for `button` (5 variants), `container` (cards,
 //!   sheets, dialogs, sidebars), `text_input`, and `toggler`;
-//! - [`cosmic`] produces [`cosmic::CosmicThemeBuilder`] values and `cosmic-config` RON key-value
+//! - [`theme_builder`] produces [`theme_builder::CosmicThemeBuilder`] values and `cosmic-config` RON key-value
 //!   fragments so a `libcosmic` application or the COSMIC desktop reads the exact M3 / Yolo tokens.
 
 use serde::{Deserialize, Serialize};
@@ -22,7 +22,7 @@ pub use yolo_tokens::scheme::{DynamicScheme, Variant};
 use yolo_tokens::shape::SCALE as SHAPE_SCALE;
 use yolo_tokens::typography::{self, TypeToken};
 
-pub mod cosmic;
+pub mod theme_builder;
 pub mod style;
 
 /// RGBA color in linear/sRGB `0.0..=1.0` floats matching `iced_core::Color`.
@@ -372,8 +372,8 @@ pub fn theme_for_preset(preset: YoloThemePreset, dark: bool) -> Theme {
 /// Generates the `cosmic-theme` RON string (Light + Dark) for one of the 5 [`YoloThemePreset`]s.
 #[must_use]
 pub fn cosmic_ron_for_preset(preset: YoloThemePreset) -> String {
-    let light = cosmic::CosmicThemeBuilder::for_preset(preset, false);
-    let dark = cosmic::CosmicThemeBuilder::for_preset(preset, true);
+    let light = theme_builder::CosmicThemeBuilder::for_preset(preset, false);
+    let dark = theme_builder::CosmicThemeBuilder::for_preset(preset, true);
     format!("{}{}", light.to_ron_string(), dark.to_ron_string())
 }
 
@@ -397,7 +397,7 @@ mod tests {
         let c = style::container(&p, style::SurfaceKind::Dialog);
         assert_eq!(c.border.radius, shapes::EXTRA_LARGE);
 
-        let cb = cosmic::CosmicThemeBuilder::from_scheme(&s);
+        let cb = theme_builder::CosmicThemeBuilder::from_scheme(&s);
         assert!(cb.is_dark);
         assert_eq!(cb.accent, p.get(Role::Primary));
         assert_eq!(cb.to_ron_entries().len(), 13);
@@ -412,7 +412,7 @@ mod tests {
             assert!(!light_theme.roles.is_dark);
             assert_eq!(dark_theme.roles.preset, Some(preset));
 
-            let builder = cosmic::CosmicThemeBuilder::for_preset(preset, true);
+            let builder = theme_builder::CosmicThemeBuilder::for_preset(preset, true);
             assert_eq!(builder.preset, Some(preset));
             let ron = cosmic_ron_for_preset(preset);
             assert!(ron.contains("com.system76.CosmicTheme.Light.Builder/v2/accent"));

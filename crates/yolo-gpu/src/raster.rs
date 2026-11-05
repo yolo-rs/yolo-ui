@@ -196,7 +196,7 @@ fn dib(r: &Raster) -> Result<Vec<u8>> {
     out.extend_from_slice(&32u16.to_le_bytes());
     out.extend_from_slice(&[0u8; 24]);
     for row in (0..h).rev() {
-        for p in r.rgba[row * w * 4..(row + 1) * w * 4].chunks_exact(4) {
+        for p in r.rgba[row * w * 4..(row + 1) * w * 4].as_chunks::<4>().0 {
             out.extend_from_slice(&[p[2], p[1], p[0], p[3]]);
         }
     }

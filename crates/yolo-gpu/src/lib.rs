@@ -81,8 +81,8 @@ pub enum DeviceLimits {
     Default,
     /// `adapter.limits()`: every capability the physical adapter reports.
     Adapter,
-    /// Explicit limits supplied by the caller.
-    Custom(wgpu::Limits),
+    /// Explicit limits supplied by the caller. Boxed: `wgpu::Limits` is about 256 bytes.
+    Custom(Box<wgpu::Limits>),
 }
 
 impl DeviceLimits {
@@ -90,7 +90,7 @@ impl DeviceLimits {
         match self {
             Self::Default => wgpu::Limits::default(),
             Self::Adapter => adapter.limits(),
-            Self::Custom(limits) => limits,
+            Self::Custom(limits) => *limits,
         }
     }
 }

@@ -26,6 +26,7 @@ fn main() {
     emit_mobile_client_page();
     emit_android_page_size();
     emit_phone_version();
+    leave_out_missing_sidecars_in_debug();
     if windows_msvc_target() {
         emit_windows_app_manifest();
         build_tauri_without_app_manifest();
@@ -165,4 +166,27 @@ fn emit_mobile_client_page() {
     if let Err(e) = std::fs::write(&out, page) {
         panic!("could not write the mobile client page to {}: {e}", out.display());
     }
+}
+
+/// A fresh checkout has no `bin/lu-llama-server-<target>`: `scripts/build-llama.sh`
+/// builds the sidecars. A debug build (check, clippy, test) without them leaves
+/// `bundle > externalBin` empty through the `TAURI_CONFIG` overlay instead of
+/// failing in `tauri_build`; a release build still requires them.
+fn leave_out_missing_sidecars_in_debug() {
+    println!("cargo:rerun-if-changed=bin");
+    if std::env::var("PROFILE").as_deref() == Ok("release")
+        || std::env::var_os("TAURI_CONFIG").is_some()
+    {
+        return;
+    }
+    let target = std::env::var("TARGET").expect("cargo sets TARGET");
+    let exe = if target.contains("windows") { ".exe" } else { "" };
+    let sidecar = format!("bin/lu-llama-server-{target}{exe}");
+    if std::path::Path::new(&sidecar).exists() {
+        return;
+    }
+    println!(
+        "cargo:warning={sidecar} is missing; this debug build leaves the sidecars out (run scripts/build-llama.sh)"
+    );
+    std::env::set_var("TAURI_CONFIG", r#"{"bundle":{"externalBin":[]}}"#);
 }

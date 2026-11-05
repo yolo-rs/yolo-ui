@@ -70,6 +70,10 @@ mod sealed {
 }
 
 #[async_trait::async_trait]
+#[expect(
+	clippy::double_must_use,
+	reason = "async_trait marks the boxed future of each trait method #[must_use]"
+)]
 pub trait DynActor<Id: ActorId>: Send + Sync + sealed::Sealed + 'static {
 	async fn run(&mut self, stop: Stopper);
 }

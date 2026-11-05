@@ -24,26 +24,22 @@ fn main() {
 	// exist even for a check or clippy run, so a debug build without either
 	// gets an empty one; a release build refuses to ship a server without a UI.
 	if Command::new("bun").arg("--version").output().is_err() {
-		let dist = web_dir.join("dist");
-		if !dist.exists() {
-			if env::var("PROFILE").as_deref() == Ok("release") {
-				panic!(
-					"bun not found on PATH and {} does not exist; build the web UI first or set SD_SKIP_WEB_BUILD=1 with a prebuilt dist",
-					dist.display()
-				);
-			}
-			std::fs::create_dir_all(&dist).expect("create an empty apps/web/dist");
-			println!(
-				"cargo:warning=bun not found on PATH — created an empty apps/web/dist so the server compiles without the web UI"
-			);
-			return;
-		}
-		println!("cargo:warning=bun not found on PATH — using existing apps/web/dist");
+		use_prebuilt_dist(&web_dir, "bun not found on PATH");
+		return;
+	}
+
+	// Without installed workspace dependencies the UI cannot be built. A debug
+	// build (check, clippy, test) falls back to a prebuilt or empty dist like
+	// the no-bun case; a release build refuses.
+	let node_modules = repo_root.join("node_modules");
+	println!("cargo:rerun-if-changed={}", node_modules.display());
+	if !node_modules.exists() && env::var("PROFILE").as_deref() != Ok("release") {
+		use_prebuilt_dist(&web_dir, "node_modules missing");
 		return;
 	}
 
 	// Refuse to proceed if workspace dependencies aren't installed.
-	if !repo_root.join("node_modules").exists() {
+	if !node_modules.exists() {
 		panic!(
 			"node_modules missing at {} — run `bun install` (or `just setup`) before building sd-server, \
 			 or set SD_SKIP_WEB_BUILD=1 to skip the embedded UI build.",
@@ -83,6 +79,27 @@ fn main() {
 			status
 		);
 	}
+}
+
+/// Builds against an existing `apps/web/dist` without running the UI build.
+/// A debug build without one gets an empty dist so RustEmbed has a folder; a
+/// release build refuses to ship a server without a UI.
+fn use_prebuilt_dist(web_dir: &Path, why: &str) {
+	let dist = web_dir.join("dist");
+	if dist.exists() {
+		println!("cargo:warning={why} — using existing apps/web/dist");
+		return;
+	}
+	if env::var("PROFILE").as_deref() == Ok("release") {
+		panic!(
+			"{why} and {} does not exist; build the web UI first or set SD_SKIP_WEB_BUILD=1 with a prebuilt dist",
+			dist.display()
+		);
+	}
+	std::fs::create_dir_all(&dist).expect("create an empty apps/web/dist");
+	println!(
+		"cargo:warning={why} — created an empty apps/web/dist so the server compiles without the web UI"
+	);
 }
 
 fn watch_dir(dir: &Path) {

@@ -31,6 +31,13 @@ pub struct FFmpegMetadata {
 
 impl FFmpegMetadata {
 	#[allow(clippy::unused_async)]
+	#[cfg_attr(
+		not(feature = "ffmpeg"),
+		expect(
+			clippy::unused_async_trait_impl,
+			reason = "only the ffmpeg build awaits; callers keep one async signature"
+		)
+	)]
 	pub async fn from_path(path: impl AsRef<Path> + Send) -> Result<Self> {
 		#[cfg(not(feature = "ffmpeg"))]
 		{

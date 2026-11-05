@@ -282,7 +282,7 @@ fn read_tile_png(path: &std::path::Path, uuid: Uuid, version: u64) -> Option<Vec
 	// of the image.
 	bgra.truncate(frame.len());
 	// Tiles are stored BGRA8, which is what a GPU atlas wants; PNG wants RGBA.
-	for pixel in bgra.chunks_exact_mut(4) {
+	for pixel in bgra.as_chunks_mut::<4>().0 {
 		pixel.swap(0, 2);
 	}
 	let buffer = image::RgbaImage::from_raw(frame.content_width, frame.content_height, bgra)?;
@@ -371,8 +371,7 @@ mod tests {
 			source_height: 8,
 		};
 		// Opaque red, written the way a baker writes it: B, G, R, A.
-		let pixels: Vec<u8> = std::iter::repeat([0x00, 0x00, 0xFF, 0xFF])
-			.take(8 * 8)
+		let pixels: Vec<u8> = std::iter::repeat_n([0x00, 0x00, 0xFF, 0xFF], 8 * 8)
 			.flatten()
 			.collect();
 		writer.write(uuid, 3, frame, &pixels).expect("tile writes");
@@ -425,8 +424,7 @@ mod tests {
 			source_width: 4032,
 			source_height: 1512,
 		};
-		let pixels: Vec<u8> = std::iter::repeat([0x00, 0xFF, 0x00, 0xFF])
-			.take(16 * 6)
+		let pixels: Vec<u8> = std::iter::repeat_n([0x00, 0xFF, 0x00, 0xFF], 16 * 6)
 			.flatten()
 			.collect();
 		writer.write(uuid, 1, frame, &pixels).expect("tile writes");

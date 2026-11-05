@@ -1,4 +1,4 @@
-use spacedrive_sdk::{action, action_execute};
+use spacedrive_sdk::action;
 
 use spacedrive_sdk::prelude::*;
 use uuid::Uuid;
@@ -7,7 +7,7 @@ use crate::models::FaceDetection;
 
 #[action]
 pub async fn identify_person(
-	ctx: &ActionContext,
+	_ctx: &ActionContext,
 	face_detections: Vec<(Uuid, FaceDetection)>,
 	name: String,
 ) -> ActionResult<ActionPreview> {

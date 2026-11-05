@@ -60,7 +60,7 @@ pub async fn analyze_photos_batch(ctx: &JobContext, state: &mut AnalyzePhotosSta
 		state.current_index = idx + 1;
 		ctx.increment_items(1);
 		ctx.check_interrupt().await?;
-		if state.current_index % 10 == 0 {
+		if state.current_index.is_multiple_of(10) {
 			ctx.checkpoint(state)?;
 		}
 

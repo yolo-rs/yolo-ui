@@ -144,7 +144,7 @@ pub(crate) mod pump {
     /// True when the pump should wake the loop now. Counts one down.
     pub fn take(ticks: &AtomicI64) -> bool {
         ticks
-            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |left| match left {
+            .try_update(Ordering::AcqRel, Ordering::Acquire, |left| match left {
                 FOREGROUND => Some(FOREGROUND),
                 left if left > 0 => Some(left - 1),
                 _ => None,

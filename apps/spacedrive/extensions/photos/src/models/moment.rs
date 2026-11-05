@@ -2,7 +2,6 @@ use spacedrive_sdk::model;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use spacedrive_sdk::prelude::*;
 use uuid::Uuid;
 
 use super::PlaceId;

@@ -7,7 +7,7 @@ use crate::{
 };
 
 use ffmpeg_sys_next::{
-	av_cmp_q, av_display_rotation_get, av_read_frame, av_reduce, av_stream_get_side_data,
+	av_cmp_q, av_display_rotation_get, av_read_frame, av_packet_side_data_get, av_reduce,
 	avformat_close_input, avformat_find_stream_info, avformat_open_input, AVChapter, AVCodecID,
 	AVDictionary, AVFormatContext, AVMediaType, AVPacket, AVPacketSideDataType, AVRational,
 	AVStream, AV_DISPOSITION_ATTACHED_PIC, AV_DISPOSITION_CAPTIONS, AV_DISPOSITION_CLEAN_EFFECTS,
@@ -97,17 +97,27 @@ impl FFmpegFormatContext {
 		 * See libavutil/display.h for a detailed description of the data.
 		 * https://github.com/FFmpeg/FFmpeg/blob/n6.1.1/libavutil/display.h#L32-L71
 		 *
-		 * The pointer conversion is due to the fact that av_stream_get_side_data is a generic function that has no prior
-		 * knowledge of the type of the side data it is retrieving.
+		 * Since FFmpeg 7 stream side data lives in the codec parameters (`coded_side_data`).
+		 * The pointer conversion is due to the fact that side data is untyped bytes.
 		 */
 		#[allow(clippy::cast_ptr_alignment)]
-		let matrix = (unsafe {
-			av_stream_get_side_data(
-				stream,
-				AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
-				ptr::null_mut(),
-			)
-		} as *const i32);
+		let matrix = unsafe {
+			let par = stream.codecpar;
+			let side_data = if par.is_null() {
+				ptr::null()
+			} else {
+				av_packet_side_data_get(
+					(*par).coded_side_data,
+					(*par).nb_coded_side_data,
+					AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
+				)
+			};
+			if side_data.is_null() {
+				ptr::null()
+			} else {
+				(*side_data).data as *const i32
+			}
+		};
 
 		if matrix.is_null() {
 			0.0

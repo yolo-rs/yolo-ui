@@ -136,6 +136,10 @@ impl<T: Task<E> + 'static, E: RunError> IntoTask<E> for T {
 /// We're currently using the [`async_trait`](https://docs.rs/async-trait) crate to allow dyn async traits,
 /// due to a limitation in the Rust language.
 #[async_trait]
+#[expect(
+	clippy::double_must_use,
+	reason = "async_trait marks the boxed future of each trait method #[must_use]"
+)]
 pub trait Task<E: RunError>: Downcast + Send + Sync + 'static {
 	/// An unique identifier for the task, it will be used to identify the task on the system and also to the user.
 	fn id(&self) -> TaskId;

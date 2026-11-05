@@ -161,7 +161,6 @@ members = [
     "submodules/warnings",
     "submodules/warnings/warnings-macro",
     "submodules/prettier-please",
-    "submodules/web-adapters",
     "submodules/accessibility-cli/packages/accessibility-android-sys",
     "submodules/accessibility-cli/packages/accessibility-linux-sys",
     "submodules/accessibility-cli/packages/accessibility-macos-sys",
@@ -180,7 +179,6 @@ members = [
     "apps/locally-uncensored/src-tauri",
     "apps/locally-uncensored/src-tauri/plugins/lu-native",
     "apps/locally-uncensored/scripts/linux-mic-probe",
-    "apps/locally-uncensored/mobile-tests/fixture/ios-testbett/src-tauri",
     "apps/locally-uncensored/mobile-tests/fixture/ios-testbett/plugin",
     "apps/spacedrive/extensions/test-extension",
     "apps/spacedrive/extensions/photos",
@@ -215,6 +213,10 @@ default-members = [
     "packages/yolo-ui",
 ]
 exclude = [
+    # Snippet archive of the old Dioxus web adapters, not a buildable crate.
+    "submodules/web-adapters",
+    # iOS simulator fixture: bauen.sh builds it from a copy and generates its icons there.
+    "apps/locally-uncensored/mobile-tests/fixture/ios-testbett/src-tauri",
     "packages/stores/tests/visibility-helper",
     "submodules/blitz/packages/dioxus-native",
     "submodules/blitz/packages/dioxus-native-dom",

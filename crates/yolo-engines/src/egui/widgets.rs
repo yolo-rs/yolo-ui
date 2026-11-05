@@ -392,11 +392,11 @@ impl Widget for Chip<'_> {
         };
         let w = text_width(ui, self.label, font.clone()) + 32.0 + lead + trail;
         let (rect, mut response) = ui.allocate_exact_size(Vec2::new(w, 32.0), Sense::click());
-        if response.clicked() {
-            if let Some(sel) = self.selected.as_deref_mut() {
-                *sel = !*sel;
-                response.mark_changed();
-            }
+        if response.clicked()
+            && let Some(sel) = self.selected.as_deref_mut()
+        {
+            *sel = !*sel;
+            response.mark_changed();
         }
         let now = self.selected.as_deref().copied().unwrap_or(false);
         if self.kind == ChipKind::Filter {

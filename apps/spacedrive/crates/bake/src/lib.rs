@@ -76,7 +76,7 @@ impl Tile {
 	/// A square tile filled with one BGRA color.
 	pub fn solid(size: u32, bgra: [u8; 4]) -> Self {
 		let mut buf = vec![0u8; size as usize * size as usize * 4];
-		for px in buf.chunks_exact_mut(4) {
+		for px in buf.as_chunks_mut::<4>().0 {
 			px.copy_from_slice(&bgra);
 		}
 		Self::new(size, size, buf)
@@ -282,7 +282,9 @@ mod tests {
 		assert_eq!(tile.bgra().len(), 8 * 8 * 4);
 		assert!(tile
 			.bgra()
-			.chunks_exact(4)
-			.all(|px| px == [10, 20, 30, 255]));
+			.as_chunks::<4>()
+			.0
+			.iter()
+			.all(|px| *px == [10, 20, 30, 255]));
 	}
 }

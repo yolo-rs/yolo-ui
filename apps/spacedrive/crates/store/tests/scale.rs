@@ -185,7 +185,7 @@ async fn a_hundred_cold_stores_answer_without_writers() {
 	// Reads write nothing: every store's database is the size it was. SQLite
 	// itself may leave an empty WAL and its shared-memory index beside a
 	// database opened in WAL mode, which is not a write of ours.
-	for store in 0..stores {
+	for (store, before) in before.iter().enumerate() {
 		let ours = |files: &[(String, u64)]| -> Vec<(String, u64)> {
 			files
 				.iter()
@@ -195,7 +195,7 @@ async fn a_hundred_cold_stores_answer_without_writers() {
 		};
 		assert_eq!(
 			ours(&layout(store)),
-			ours(&before[store]),
+			ours(before),
 			"store-{store} changed on disk under read-only reads"
 		);
 	}
