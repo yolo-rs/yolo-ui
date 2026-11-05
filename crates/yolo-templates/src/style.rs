@@ -394,7 +394,7 @@ mod tests {
             assert!(PAINT_CSS.contains(selector));
         }
         // Scroll-driven animations only exist inside the no-preference block.
-        let scroll = PAINT_CSS.find("animation-timeline").unwrap();
+        let scroll = PAINT_CSS.find("animation-timeline:--").unwrap();
         let guard = PAINT_CSS.find("@media (prefers-reduced-motion: no-preference)").unwrap();
         assert!(guard < scroll);
     }
