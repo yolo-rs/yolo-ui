@@ -7,6 +7,9 @@
 //! following `catalog/conversion.toml`.
 
 use std::fmt::Write;
+
+pub mod dioxus_components;
+pub use dioxus_components::emit_dioxus_components_theme;
 pub use yolo_shared::{
     apple_hig, ByronLovePetSpec, HyprlandDecorationSpec, OmarchySubTheme, OmarchyThemePalette,
     YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens, BYRON_LOVE_PALETTE,
