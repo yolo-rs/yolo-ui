@@ -35921,6 +35921,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "yolo-templates"
+version = "0.8.0-alpha.3"
+dependencies = [
+ "dioxus",
+ "dioxus-ssr",
+ "naga 30.0.1",
+ "yolo-layout",
+ "yolo-shared",
+]
+
+[[package]]
 name = "yolo-tokens"
 version = "0.8.0-alpha.3"
 dependencies = [

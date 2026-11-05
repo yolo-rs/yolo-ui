@@ -16,6 +16,7 @@ members = [
     "crates/yolo-react",
     "crates/yolo-engines",
     "crates/yolo-3d",
+    "crates/yolo-templates",
     "apps/yolo-showcase",
     "packages/yolo-ui",
     "packages/yolo-gpui",
