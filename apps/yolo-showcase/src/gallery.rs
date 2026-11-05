@@ -99,7 +99,8 @@ fn preset_scope(preset: YoloThemePreset, dark: bool) -> String {
         ".p-{id}{{--bg:{bg};--surface:{surface};--elevated:{elevated};--text:{text};--muted:{muted};\
          --accent:{accent};--accent-2:{accent2};--on-accent:{on};--rule:{rule};--r-sm:{rsm}px;--r-md:{rmd}px;\
          --r-lg:{rlg}px;--r-pill:{rpill}px;--grid:{grid}px;--bw:{bw}px;--font:{font};\
-         background:var(--bg);color:var(--text);font-family:var(--font)}}",
+         background:var(--bg);color:var(--text);font-family:var(--font);color-scheme:{scheme}}}",
+        scheme = if dark { "dark" } else { "light" },
         id = preset.id(),
         bg = t.bg_primary,
         surface = t.bg_surface,
@@ -168,6 +169,19 @@ pub fn gallery_css(dark: bool) -> String {
          .switch input:checked{{background:var(--accent)}} .switch input:checked::after{{left:19px;background:var(--on-accent)}}\
          input[type=range]{{width:100%;accent-color:var(--accent);min-height:{target}px;margin:0}}\
          progress{{width:100%;height:6px;accent-color:var(--accent)}}\
+         @supports not (accent-color:red){{\
+           .opt input[type=checkbox]:not([role=switch]),.opt input[type=radio]{{appearance:none;display:grid;place-content:center;border:2px solid var(--muted);background:var(--bg);border-radius:4px}}\
+           .opt input[type=radio]{{border-radius:50%}}\
+           .opt input:checked{{background:var(--accent);border-color:var(--accent)}}\
+           .opt input[type=checkbox]:not([role=switch]):checked::after{{content:\"\";width:10px;height:6px;border:solid var(--on-accent);border-width:0 0 2px 2px;transform:translateY(-1px) rotate(-45deg)}}\
+           .opt input[type=radio]:checked{{box-shadow:inset 0 0 0 4px var(--bg)}}\
+           input[type=range]{{appearance:none;background:transparent}}\
+           input[type=range]::-webkit-slider-runnable-track{{height:6px;border-radius:3px;background:linear-gradient(to right,var(--accent) var(--value,0%),var(--rule) var(--value,0%))}}\
+           input[type=range]::-webkit-slider-thumb{{appearance:none;width:20px;height:20px;margin-top:-7px;border-radius:50%;background:var(--accent)}}\
+           progress{{appearance:none;border:0;border-radius:3px;background:var(--rule)}}\
+           progress::-webkit-progress-bar{{background:var(--rule);border-radius:3px}}\
+           progress::-webkit-progress-value{{background:var(--accent);border-radius:3px}}\
+         }}\
          .field label{{display:block;font-size:13px;font-weight:500;margin-bottom:4px}}\
          .field input{{width:100%;min-height:{target}px;padding:0 12px;font:15px var(--font);color:var(--text);background:var(--surface);border:var(--bw) solid var(--rule);border-radius:var(--r-sm)}}\
          .field .help{{font-size:12px;color:var(--muted);margin:4px 0 0}}\
@@ -189,6 +203,8 @@ pub fn gallery_css(dark: bool) -> String {
          .dialog h4{{margin:0 0 8px;font-size:17px}} .dialog p{{margin:0 0 16px;font-size:14px;color:var(--muted)}}\
          .dialog .actions{{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}}\
          .scheme{{font-size:14px}}\
+         .group{{border:0;margin:0;padding:0}} .caption{{font-size:13px;font-weight:500;padding:0}} .v40{{--value:40%}}\
+         .btn.chip-x{{min-height:32px;min-width:32px;width:32px;height:32px}}\
          @media (max-width:899px){{.matrix{{grid-template-columns:repeat(2,minmax(0,1fr))}}\
            .corner{{display:none}} .label{{grid-column:1/-1}} .head{{position:static}} .top{{padding:28px 20px 20px}}}}\
          @media (prefers-reduced-motion:reduce){{*{{transition:none!important;animation:none!important}}}}",
@@ -250,7 +266,6 @@ fn buttons(_: YoloThemePreset) -> Element {
                     button {
                         class: "btn {variant_class(contract.variant)}",
                         r#type: "button",
-                        style: "min-height:{contract.min_target_dp}px",
                         "{contract.label}"
                     }
                 }
@@ -275,7 +290,7 @@ fn chips(_: YoloThemePreset) -> Element {
         button { class: "chip", r#type: "button", "aria-pressed": "true", "Open now" }
         span { class: "chip",
             "Paris"
-            button { class: "btn text icon-btn", r#type: "button", "aria-label": "Remove Paris", style: "min-height:32px;min-width:32px;width:32px;height:32px", Icon { d: CLOSE } }
+            button { class: "btn text icon-btn chip-x", r#type: "button", "aria-label": "Remove Paris", Icon { d: CLOSE } }
         }
     }
 }
@@ -286,9 +301,10 @@ fn selection(preset: YoloThemePreset) -> Element {
         div { class: "stack",
             label { class: "opt", input { r#type: "checkbox" } "Email updates" }
             label { class: "opt", input { r#type: "checkbox", checked: true } "Weekly digest" }
-            label { class: "opt switch", input { r#type: "checkbox", role: "switch", checked: true } "Sync" }
-            fieldset { style: "border:0;margin:0;padding:0",
-                legend { style: "font-size:13px;font-weight:500;padding:0", "Density" }
+            // `switch` is native in Safari 17.4+; elsewhere role="switch" and the .switch styles carry it.
+            label { class: "opt switch", input { r#type: "checkbox", "switch": "", role: "switch", checked: true } "Sync" }
+            fieldset { class: "group",
+                legend { class: "caption", "Density" }
                 label { class: "opt", input { r#type: "radio", name: "density-{id}", checked: true } "Comfortable" }
                 label { class: "opt", input { r#type: "radio", name: "density-{id}" } "Compact" }
             }
@@ -300,9 +316,9 @@ fn slider_progress(preset: YoloThemePreset) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
-            label { r#for: "vol-{id}", style: "font-size:13px;font-weight:500", "Volume" }
-            input { id: "vol-{id}", r#type: "range", min: "0", max: "100", value: "40" }
-            label { r#for: "up-{id}", style: "font-size:13px;font-weight:500", "Upload" }
+            label { class: "caption", r#for: "vol-{id}", "Volume" }
+            input { id: "vol-{id}", r#type: "range", min: "0", max: "100", value: "40", class: "v40" }
+            label { class: "caption", r#for: "up-{id}", "Upload" }
             progress { id: "up-{id}", max: "100", value: "64", "64%" }
         }
     }
@@ -432,15 +448,26 @@ fn Gallery(dark: bool) -> Element {
     }
 }
 
+/// Content-Security-Policy for the gallery: no scripts, no network, only the hashed inline stylesheet.
+#[must_use]
+pub fn gallery_csp(css: &str) -> String {
+    use base64::Engine as _;
+    use sha2::Digest as _;
+    let hash = base64::engine::general_purpose::STANDARD.encode(sha2::Sha256::digest(css.as_bytes()));
+    format!("default-src 'none'; style-src 'sha256-{hash}'; img-src 'self' data:; base-uri 'none'; form-action 'none'")
+}
+
 /// Full HTML document for one scheme.
 #[must_use]
 pub fn render_gallery_html(dark: bool) -> String {
     let css = gallery_css(dark);
+    let csp = gallery_csp(&css);
     let title = if dark { "Yolo UI components, dark" } else { "Yolo UI components" };
     let body = dioxus_ssr::render_element(rsx! {
         html { lang: "en",
             head {
                 meta { charset: "utf-8" }
+                meta { "http-equiv": "Content-Security-Policy", content: "{csp}" }
                 meta { name: "viewport", content: "width=device-width, initial-scale=1" }
                 meta { name: "color-scheme", content: if dark { "dark" } else { "light" } }
                 title { "{title}" }
@@ -489,6 +516,8 @@ mod tests {
             assert!(html.contains("aria-invalid=\"true\""));
             assert!(html.contains("aria-label=\"Search\""));
             assert!(!html.contains("undefined"));
+            assert!(!html.contains(" style=\""), "inline style attributes would need 'unsafe-inline'");
+            assert!(html.contains(&gallery_csp(&gallery_css(dark))));
         }
     }
 }
