@@ -29,7 +29,14 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
-    let theme = resolve(&pack, &UserPrefs { clamp_text: true, ..UserPrefs::default() }, dark);
+    let theme = resolve(
+        &pack,
+        &UserPrefs {
+            clamp_text: true,
+            ..UserPrefs::default()
+        },
+        dark,
+    );
     match theme.to_json() {
         Ok(json) => {
             println!("{json}");

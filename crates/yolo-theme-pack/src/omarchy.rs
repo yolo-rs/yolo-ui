@@ -70,7 +70,11 @@ pub fn pack_from_colors(
             mode,
             overrides: std::collections::BTreeMap::new(),
         },
-        icons: IconSpec { set: "phosphor".to_owned(), style: IconStyle::Outlined, weight: 400 },
+        icons: IconSpec {
+            set: "phosphor".to_owned(),
+            style: IconStyle::Outlined,
+            weight: 400,
+        },
         wallpapers,
         pet: None,
         typography: Typography {
@@ -96,7 +100,9 @@ pub fn import_dir(theme_dir: &Path) -> io::Result<ThemePack> {
     let id = theme_dir
         .file_name()
         .and_then(|n| n.to_str())
-        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "theme directory has no name"))?;
+        .ok_or_else(|| {
+            io::Error::new(io::ErrorKind::InvalidInput, "theme directory has no name")
+        })?;
     let colors = fs::read_to_string(theme_dir.join("colors.toml"))?;
     let mut backgrounds: Vec<String> = match fs::read_dir(theme_dir.join("backgrounds")) {
         Ok(entries) => entries
@@ -120,8 +126,12 @@ mod tests {
 
     #[test]
     fn imports_seed_mode_and_unverified_wallpapers() {
-        let pack = pack_from_colors("catppuccin", CATPPUCCIN, &["1-a.webp".into(), "2-b.webp".into()])
-            .expect("valid colors");
+        let pack = pack_from_colors(
+            "catppuccin",
+            CATPPUCCIN,
+            &["1-a.webp".into(), "2-b.webp".into()],
+        )
+        .expect("valid colors");
         assert_eq!(pack.color.seed, "#89b4fa");
         assert_eq!(pack.color.mode, Mode::Dark);
         assert_eq!(pack.wallpapers.len(), 2);

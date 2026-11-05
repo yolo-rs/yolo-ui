@@ -8,7 +8,10 @@
 use std::fmt::Write as _;
 
 fn role<'a>(roles: &'a [(String, String)], name: &str, fallback: &'a str) -> &'a str {
-    roles.iter().find(|(n, _)| n == name).map_or(fallback, |(_, v)| v.as_str())
+    roles
+        .iter()
+        .find(|(n, _)| n == name)
+        .map_or(fallback, |(_, v)| v.as_str())
 }
 
 /// Small deterministic generator (SplitMix64) seeded from the colour seed.
@@ -72,10 +75,14 @@ mod tests {
     use super::*;
 
     fn roles() -> Vec<(String, String)> {
-        [("surface", "#101418"), ("primary-container", "#004f58"), ("primary", "#82d3e0")]
-            .iter()
-            .map(|(n, v)| ((*n).to_owned(), (*v).to_owned()))
-            .collect()
+        [
+            ("surface", "#101418"),
+            ("primary-container", "#004f58"),
+            ("primary", "#82d3e0"),
+        ]
+        .iter()
+        .map(|(n, v)| ((*n).to_owned(), (*v).to_owned()))
+        .collect()
     }
 
     #[test]

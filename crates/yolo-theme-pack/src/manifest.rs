@@ -360,27 +360,39 @@ impl ThemePack {
 #[must_use]
 pub fn parse_hex(hex: &str) -> Option<u32> {
     let text = hex.trim();
-    if let Some(inner) = text.strip_prefix("oklch(").and_then(|t| t.strip_suffix(')')) {
+    if let Some(inner) = text
+        .strip_prefix("oklch(")
+        .and_then(|t| t.strip_suffix(')'))
+    {
         return parse_oklch(inner);
     }
     let digits = text.trim_start_matches('#');
     if digits.len() != 6 {
         return None;
     }
-    u32::from_str_radix(digits, 16).ok().map(|rgb| 0xFF00_0000 | rgb)
+    u32::from_str_radix(digits, 16)
+        .ok()
+        .map(|rgb| 0xFF00_0000 | rgb)
 }
 
 /// `L C H` from CSS `oklch()` (L as 0..1 or a percentage, H in degrees) to opaque sRGB ARGB,
 /// using the OKLab matrices from Bjorn Ottosson's reference. Out-of-gamut channels are clipped.
 fn parse_oklch(inner: &str) -> Option<u32> {
-    let mut parts = inner.split(|c: char| c.is_whitespace() || c == '/').filter(|p| !p.is_empty());
+    let mut parts = inner
+        .split(|c: char| c.is_whitespace() || c == '/')
+        .filter(|p| !p.is_empty());
     let l_text = parts.next()?;
     let l = match l_text.strip_suffix('%') {
         Some(p) => p.parse::<f64>().ok()? / 100.0,
         None => l_text.parse::<f64>().ok()?,
     };
     let c = parts.next()?.parse::<f64>().ok()?;
-    let h = parts.next()?.trim_end_matches("deg").parse::<f64>().ok()?.to_radians();
+    let h = parts
+        .next()?
+        .trim_end_matches("deg")
+        .parse::<f64>()
+        .ok()?
+        .to_radians();
     let (a, b) = (c * h.cos(), c * h.sin());
     let l_ = (l + 0.396_337_777_4 * a + 0.215_803_757_3 * b).powi(3);
     let m_ = (l - 0.105_561_345_8 * a - 0.063_854_172_8 * b).powi(3);
@@ -392,7 +404,11 @@ fn parse_oklch(inner: &str) -> Option<u32> {
     ];
     let encode = |x: f64| {
         let x = x.clamp(0.0, 1.0);
-        let v = if x <= 0.003_130_8 { 12.92 * x } else { 1.055 * x.powf(1.0 / 2.4) - 0.055 };
+        let v = if x <= 0.003_130_8 {
+            12.92 * x
+        } else {
+            1.055 * x.powf(1.0 / 2.4) - 0.055
+        };
         // Clamped to 0..=1 above, so the rounded value fits in 0..=255.
         #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         let v = (v * 255.0).round() as u32;
@@ -412,7 +428,10 @@ mod tests {
         assert_eq!(parse_hex("oklch(0% 0 0)"), Some(0xFF00_0000));
         // CSS Color 4 reference: oklch(62.8% 0.2577 29.23) is sRGB red.
         let red = parse_hex("oklch(62.8% 0.2577 29.23)").expect("valid oklch");
-        assert!((red >> 16 & 0xFF) >= 0xFD && (red >> 8 & 0xFF) <= 2 && (red & 0xFF) <= 2, "{red:08x}");
+        assert!(
+            (red >> 16 & 0xFF) >= 0xFD && (red >> 8 & 0xFF) <= 2 && (red & 0xFF) <= 2,
+            "{red:08x}"
+        );
         assert_eq!(parse_hex("oklch(nope)"), None);
     }
 }

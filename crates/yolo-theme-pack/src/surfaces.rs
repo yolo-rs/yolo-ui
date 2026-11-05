@@ -5,23 +5,47 @@
 
 /// (`surface`, background role, foreground role).
 pub const ROLE_SURFACES: &[(&str, &str, &str)] = &[
-    ("window frame, active", "surface-container-high", "on-surface"),
-    ("window frame, inactive", "surface-container", "on-surface-variant"),
+    (
+        "window frame, active",
+        "surface-container-high",
+        "on-surface",
+    ),
+    (
+        "window frame, inactive",
+        "surface-container",
+        "on-surface-variant",
+    ),
     ("toolbar", "surface-container", "on-surface"),
     ("toolbar icon", "surface-container", "on-surface-variant"),
     ("toolbar separator", "surface-container", "outline-variant"),
     ("location bar", "surface-container-highest", "on-surface"),
     ("location bar, hover", "surface-bright", "on-surface"),
     ("omnibox results", "surface-container-low", "on-surface"),
-    ("omnibox selected result", "secondary-container", "on-secondary-container"),
+    (
+        "omnibox selected result",
+        "secondary-container",
+        "on-secondary-container",
+    ),
     ("tab, active", "surface", "on-surface"),
     ("tab, inactive", "surface-container", "on-surface-variant"),
     ("page background", "surface", "on-surface"),
     ("card", "surface-container-low", "on-surface"),
-    ("elevated card, dialog", "surface-container-high", "on-surface"),
+    (
+        "elevated card, dialog",
+        "surface-container-high",
+        "on-surface",
+    ),
     ("primary button", "primary", "on-primary"),
-    ("tonal button, selected chip", "secondary-container", "on-secondary-container"),
-    ("accent highlight, badge", "tertiary-container", "on-tertiary-container"),
+    (
+        "tonal button, selected chip",
+        "secondary-container",
+        "on-secondary-container",
+    ),
+    (
+        "accent highlight, badge",
+        "tertiary-container",
+        "on-tertiary-container",
+    ),
     ("text field", "surface-container-highest", "on-surface"),
     ("text field border, divider", "surface", "outline"),
     ("focus ring", "surface", "primary"),

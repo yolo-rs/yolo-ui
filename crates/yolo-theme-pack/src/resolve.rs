@@ -143,7 +143,10 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
     let wallpapers: Vec<_> = pack
         .wallpapers
         .iter()
-        .filter(|w| w.mode.is_none_or(|m| m == Mode::System || (m == Mode::Dark) == dark))
+        .filter(|w| {
+            w.mode
+                .is_none_or(|m| m == Mode::System || (m == Mode::Dark) == dark)
+        })
         .collect();
     let chosen = prefs
         .wallpaper
@@ -162,23 +165,38 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
             .and_then(|w| w.seed.as_deref().and_then(parse_hex))
             .or(prefs.wallpaper_seed)
             .unwrap_or(pack_seed),
-        ColorSource::Seed => prefs.seed.as_deref().and_then(parse_hex).unwrap_or(pack_seed),
+        ColorSource::Seed => prefs
+            .seed
+            .as_deref()
+            .and_then(parse_hex)
+            .unwrap_or(pack_seed),
     };
 
     let variant_name = prefs.variant.as_deref().unwrap_or(&pack.color.variant);
     let (variant, variant_name) = Variant::from_name(variant_name)
         .map_or((Variant::TonalSpot, "tonal-spot"), |v| (v, variant_name));
-    let contrast = prefs.contrast.unwrap_or(pack.color.contrast).clamp(-1.0, 1.0);
+    let contrast = prefs
+        .contrast
+        .unwrap_or(pack.color.contrast)
+        .clamp(-1.0, 1.0);
 
     let scheme = DynamicScheme::from_argb(seed, variant, dark, contrast);
-    let mut roles: Vec<(String, String)> =
-        Role::ALL.iter().map(|r| (r.name().to_owned(), hex(scheme.argb(*r)))).collect();
+    let mut roles: Vec<(String, String)> = Role::ALL
+        .iter()
+        .map(|r| (r.name().to_owned(), hex(scheme.argb(*r))))
+        .collect();
     for (name, value) in pack.color.overrides.iter().chain(prefs.overrides.iter()) {
-        if let (Some(slot), Some(argb)) = (roles.iter_mut().find(|(n, _)| n == name), parse_hex(value)) {
+        if let (Some(slot), Some(argb)) =
+            (roles.iter_mut().find(|(n, _)| n == name), parse_hex(value))
+        {
             slot.1 = hex(argb);
         }
     }
-    let clamped_roles = if prefs.clamp_text { clamp_text_roles(&mut roles) } else { Vec::new() };
+    let clamped_roles = if prefs.clamp_text {
+        clamp_text_roles(&mut roles)
+    } else {
+        Vec::new()
+    };
     let contrast_warnings = contrast_warnings(&roles);
 
     let wallpaper = match chosen {
@@ -224,15 +242,26 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
 /// until it reaches 4.5:1, keeping as much of the original colour as possible. Returns the names.
 fn clamp_text_roles(roles: &mut [(String, String)]) -> Vec<String> {
     let snapshot: Vec<(String, String)> = roles.to_vec();
-    let get = |n: &str| snapshot.iter().find(|(r, _)| r == n).and_then(|(_, v)| parse_hex(v));
+    let get = |n: &str| {
+        snapshot
+            .iter()
+            .find(|(r, _)| r == n)
+            .and_then(|(_, v)| parse_hex(v))
+    };
     let mut clamped = Vec::new();
     for (name, value) in roles.iter_mut() {
-        let Some(base) = name.strip_prefix("on-").and_then(get) else { continue };
+        let Some(base) = name.strip_prefix("on-").and_then(get) else {
+            continue;
+        };
         let Some(fg) = parse_hex(value) else { continue };
         if contrast_ratio(fg, base) >= 4.5 {
             continue;
         }
-        let toward = if luminance(base) > 0.18 { 0xFF00_0000 } else { 0xFFFF_FFFF };
+        let toward = if luminance(base) > 0.18 {
+            0xFF00_0000
+        } else {
+            0xFFFF_FFFF
+        };
         let fixed = (1..=20)
             .map(|step| mix(fg, toward, f64::from(step) / 20.0))
             .find(|c| contrast_ratio(*c, base) >= 4.5)
@@ -257,7 +286,11 @@ fn mix(a: u32, b: u32, t: f64) -> u32 {
 
 fn channel(c: u32) -> f64 {
     let c = f64::from(c & 0xFF) / 255.0;
-    if c <= 0.040_45 { c / 12.92 } else { ((c + 0.055) / 1.055).powf(2.4) }
+    if c <= 0.040_45 {
+        c / 12.92
+    } else {
+        ((c + 0.055) / 1.055).powf(2.4)
+    }
 }
 
 fn luminance(argb: u32) -> f64 {
@@ -273,7 +306,12 @@ pub fn contrast_ratio(a: u32, b: u32) -> f64 {
 
 /// Every `on-X` / `X` pair below 4.5:1.
 fn contrast_warnings(roles: &[(String, String)]) -> Vec<(String, String, f64)> {
-    let get = |n: &str| roles.iter().find(|(r, _)| r == n).and_then(|(_, v)| parse_hex(v));
+    let get = |n: &str| {
+        roles
+            .iter()
+            .find(|(r, _)| r == n)
+            .and_then(|(_, v)| parse_hex(v))
+    };
     roles
         .iter()
         .filter_map(|(on, fg)| {
@@ -288,7 +326,10 @@ impl ResolvedTheme {
     /// Value of a colour role, `#RRGGBB`.
     #[must_use]
     pub fn role(&self, name: &str) -> Option<&str> {
-        self.roles.iter().find(|(n, _)| n == name).map(|(_, v)| v.as_str())
+        self.roles
+            .iter()
+            .find(|(n, _)| n == name)
+            .map(|(_, v)| v.as_str())
     }
 
     /// CSS custom properties for the whole theme, scoped to `:root`. The shell reads layout,
@@ -309,16 +350,26 @@ impl ResolvedTheme {
         let [sm, md, lg] = self.radius;
         let (duration, easing) = self.motion;
         let _ = writeln!(out, "  --yolo-space: {}px;", self.spacing);
-        let _ = writeln!(out, "  --yolo-radius-sm: {sm}px;\n  --yolo-radius-md: {md}px;\n  --yolo-radius-lg: {lg}px;");
+        let _ = writeln!(
+            out,
+            "  --yolo-radius-sm: {sm}px;\n  --yolo-radius-md: {md}px;\n  --yolo-radius-lg: {lg}px;"
+        );
         let _ = writeln!(out, "  --yolo-glass-blur: {}px;", self.glass_blur);
-        let _ = writeln!(out, "  --yolo-motion-duration: {duration}ms;\n  --yolo-motion-easing: {easing};");
+        let _ = writeln!(
+            out,
+            "  --yolo-motion-duration: {duration}ms;\n  --yolo-motion-easing: {easing};"
+        );
         let _ = writeln!(
             out,
             "  --yolo-font-display: \"{}\";\n  --yolo-font-body: \"{}\";\n  --yolo-font-mono: \"{}\";",
             self.typography.display, self.typography.body, self.typography.mono
         );
         if let Some(url) = wallpaper_url {
-            let _ = writeln!(out, "  --yolo-wallpaper: url(\"{}\");", url.replace('"', "%22"));
+            let _ = writeln!(
+                out,
+                "  --yolo-wallpaper: url(\"{}\");",
+                url.replace('"', "%22")
+            );
         }
         out.push_str("}\n@media (prefers-reduced-motion: reduce) {\n  :root { --yolo-motion-duration: 0ms; }\n}\n");
         out
@@ -333,7 +384,9 @@ impl ResolvedTheme {
             ("data-icon-style", self.icon_style.name().to_owned()),
             (
                 "data-pet-anchor",
-                self.pet.as_ref().map_or_else(String::new, |p| p.anchor.clone()),
+                self.pet
+                    .as_ref()
+                    .map_or_else(String::new, |p| p.anchor.clone()),
             ),
         ]
     }
@@ -384,7 +437,14 @@ mod tests {
         ] {
             let p = ThemePack::from_toml(text).expect("pack parses");
             for dark in [false, true] {
-                let t = resolve(&p, &UserPrefs { mode: Some(if dark { Mode::Dark } else { Mode::Light }), ..UserPrefs::default() }, false);
+                let t = resolve(
+                    &p,
+                    &UserPrefs {
+                        mode: Some(if dark { Mode::Dark } else { Mode::Light }),
+                        ..UserPrefs::default()
+                    },
+                    false,
+                );
                 assert_eq!(t.roles.len(), 49);
                 assert_eq!(t.dark, dark);
                 assert!(t.css(None).contains("--yolo-primary: #"));
@@ -396,7 +456,14 @@ mod tests {
     fn user_seed_changes_colours_without_touching_the_pack() {
         let p = pack();
         let base = resolve(&p, &UserPrefs::default(), true);
-        let custom = resolve(&p, &UserPrefs { seed: Some("#e0a526".into()), ..UserPrefs::default() }, true);
+        let custom = resolve(
+            &p,
+            &UserPrefs {
+                seed: Some("#e0a526".into()),
+                ..UserPrefs::default()
+            },
+            true,
+        );
         assert_ne!(base.role("primary"), custom.role("primary"));
         assert_eq!(custom.seed, "#e0a526");
         assert_eq!(p.color.seed, pack().color.seed);
@@ -435,58 +502,127 @@ mod tests {
     fn layout_and_motion_overrides_apply() {
         let t = resolve(
             &pack(),
-            &UserPrefs { layout: Some(ShellLayout::Dock), motion: Some(MotionProfile::Still), ..UserPrefs::default() },
+            &UserPrefs {
+                layout: Some(ShellLayout::Dock),
+                motion: Some(MotionProfile::Still),
+                ..UserPrefs::default()
+            },
             false,
         );
         assert_eq!(t.layout, ShellLayout::Dock);
         assert_eq!(t.motion.0, 0);
-        assert!(t.attributes().iter().any(|(k, v)| *k == "data-shell" && v == "dock"));
+        assert!(
+            t.attributes()
+                .iter()
+                .any(|(k, v)| *k == "data-shell" && v == "dock")
+        );
     }
 
     #[test]
     fn generated_schemes_meet_aa_and_bad_overrides_are_reported() {
         let clean = resolve(&pack(), &UserPrefs::default(), true);
-        assert!(clean.contrast_warnings.is_empty(), "{:?}", clean.contrast_warnings);
+        assert!(
+            clean.contrast_warnings.is_empty(),
+            "{:?}",
+            clean.contrast_warnings
+        );
         let mut overrides = BTreeMap::new();
-        overrides.insert("on-primary".to_owned(), clean.role("primary").unwrap_or("#000000").to_owned());
+        overrides.insert(
+            "on-primary".to_owned(),
+            clean.role("primary").unwrap_or("#000000").to_owned(),
+        );
         overrides.insert("not-a-role".to_owned(), "#ffffff".to_owned());
-        let bad = resolve(&pack(), &UserPrefs { overrides, ..UserPrefs::default() }, true);
+        let bad = resolve(
+            &pack(),
+            &UserPrefs {
+                overrides,
+                ..UserPrefs::default()
+            },
+            true,
+        );
         assert_eq!(bad.role("on-primary"), clean.role("primary"));
-        assert!(bad.contrast_warnings.iter().any(|(on, base, _)| on == "on-primary" && base == "primary"));
+        assert!(
+            bad.contrast_warnings
+                .iter()
+                .any(|(on, base, _)| on == "on-primary" && base == "primary")
+        );
     }
 
     #[test]
     fn clamp_text_repairs_failing_text_roles() {
         let clean = resolve(&pack(), &UserPrefs::default(), true);
         let mut overrides = BTreeMap::new();
-        overrides.insert("on-primary".to_owned(), clean.role("primary").unwrap_or("#000000").to_owned());
-        let fixed = resolve(&pack(), &UserPrefs { overrides, clamp_text: true, ..UserPrefs::default() }, true);
+        overrides.insert(
+            "on-primary".to_owned(),
+            clean.role("primary").unwrap_or("#000000").to_owned(),
+        );
+        let fixed = resolve(
+            &pack(),
+            &UserPrefs {
+                overrides,
+                clamp_text: true,
+                ..UserPrefs::default()
+            },
+            true,
+        );
         assert_eq!(fixed.clamped_roles, vec!["on-primary".to_owned()]);
-        assert!(fixed.contrast_warnings.is_empty(), "{:?}", fixed.contrast_warnings);
+        assert!(
+            fixed.contrast_warnings.is_empty(),
+            "{:?}",
+            fixed.contrast_warnings
+        );
     }
 
     #[test]
     fn json_carries_schema_version_and_stable_hash() {
         let t = resolve(&pack(), &UserPrefs::default(), true);
-        let a: serde_json::Value = serde_json::from_str(&t.to_json().expect("json")).expect("parse");
-        let b: serde_json::Value = serde_json::from_str(&t.to_json().expect("json")).expect("parse");
+        let a: serde_json::Value =
+            serde_json::from_str(&t.to_json().expect("json")).expect("parse");
+        let b: serde_json::Value =
+            serde_json::from_str(&t.to_json().expect("json")).expect("parse");
         assert_eq!(a["schema_version"], SCHEMA_VERSION);
         assert_eq!(a["content_hash"], b["content_hash"]);
         assert_eq!(a["theme"]["roles"].as_array().map(Vec::len), Some(49));
-        let other = resolve(&pack(), &UserPrefs { seed: Some("#e0a526".into()), ..UserPrefs::default() }, true);
-        let c: serde_json::Value = serde_json::from_str(&other.to_json().expect("json")).expect("parse");
+        let other = resolve(
+            &pack(),
+            &UserPrefs {
+                seed: Some("#e0a526".into()),
+                ..UserPrefs::default()
+            },
+            true,
+        );
+        let c: serde_json::Value =
+            serde_json::from_str(&other.to_json().expect("json")).expect("parse");
         assert_ne!(a["content_hash"], c["content_hash"]);
     }
 
     #[test]
     fn invalid_inputs_fall_back() {
         let p = ThemePack {
-            color: ColorSpec { seed: "nope".into(), variant: "unknown".into(), ..pack().color },
-            icons: IconSpec { set: "phosphor".into(), style: IconStyle::Filled, weight: 400 },
-            shell: ShellSpec { density: 9, ..pack().shell },
+            color: ColorSpec {
+                seed: "nope".into(),
+                variant: "unknown".into(),
+                ..pack().color
+            },
+            icons: IconSpec {
+                set: "phosphor".into(),
+                style: IconStyle::Filled,
+                weight: 400,
+            },
+            shell: ShellSpec {
+                density: 9,
+                ..pack().shell
+            },
             ..pack()
         };
-        let t = resolve(&p, &UserPrefs { contrast: Some(5.0), ..UserPrefs::default() }, false);
+        let t = resolve(
+            &p,
+            &UserPrefs {
+                contrast: Some(5.0),
+                ..UserPrefs::default()
+            },
+            false,
+        );
         assert_eq!(t.variant, "tonal-spot");
         assert_eq!(t.seed, "#6750a4");
         assert!((t.contrast - 1.0).abs() < f64::EPSILON);
