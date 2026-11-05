@@ -26,6 +26,7 @@ One Command • One Plugin (@yolo-rs/ui-plugin) • One MCP (@yolo-rs/ui-mcp) �
 Usage:
   bun ui search <query> [--domain <d>] [--stack <s>] [-n <max>]
   bun ui system <query> [-p "Project Name"] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--format ascii|markdown|json]
+  bun ui theme emit --preset <p> --target <t>|all [--out <dir>] [--audit]   (native yolo-emit; YOLO_EMIT_BIN overrides the binary)
   bun ui theme [--preset <p>] [--omarchy <subtheme>] [--target css|gtk|kde|cosmic|qml|winui|fluent|apple|omarchy|hyprland|dtcg]
   bun ui migrate <file.tsx|snippet> [--target dioxus|wgpu|egui|cosmic|gtk|qml|all] [--preset <p>]
   bun ui contrast <fg-hex> <bg-hex>
@@ -37,6 +38,43 @@ Usage:
   bun ui mcp [list | call <tool> '<json>' | serve]
   bun ui doctor
 `);
+}
+
+/** Locates the yolo-emit binary: `YOLO_EMIT_BIN`, then the Cargo target directory. */
+function resolveYoloEmit(): string[] {
+  const fromEnv = process.env.YOLO_EMIT_BIN;
+  if (fromEnv) return [fromEnv];
+  const exe = process.platform === "win32" ? "yolo-emit.exe" : "yolo-emit";
+  const targetDir = process.env.CARGO_TARGET_DIR ?? join(REPO_ROOT, "target");
+  for (const profile of ["release", "debug"]) {
+    const candidate = join(targetDir, profile, exe);
+    if (existsSync(candidate)) return [candidate];
+  }
+  return ["cargo", "run", "--quiet", "--locked", "-p", "yolo-emit", "--"];
+}
+
+/** `bun ui theme emit`: forwards to the Rust emitter so every target comes from yolo-tokens. */
+async function runYoloEmit(
+  positional: string[],
+  flags: Record<string, string | boolean>,
+): Promise<number> {
+  const args: string[] = [];
+  const preset =
+    typeof flags.preset === "string" ? flags.preset : positional[0];
+  if (preset) args.push("--preset", preset);
+  for (const key of ["seed", "variant", "contrast", "target", "out"]) {
+    const value = flags[key];
+    if (typeof value === "string") args.push(`--${key}`, value);
+  }
+  if (flags.t && typeof flags.t === "string") args.push("--target", flags.t);
+  if (flags.audit) args.push("--audit");
+  if (flags["list-targets"]) args.push("--list-targets");
+  const proc = Bun.spawn([...resolveYoloEmit(), ...args], {
+    cwd: REPO_ROOT,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  return await proc.exited;
 }
 
 function parseFlags(args: string[]): {
@@ -155,6 +193,9 @@ export async function runUnifiedUiCli(
     }
 
     case "theme": {
+      if (positional[0] === "emit") {
+        return await runYoloEmit(positional.slice(1), flags);
+      }
       const preset =
         typeof flags.preset === "string"
           ? flags.preset
