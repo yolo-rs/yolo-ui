@@ -46,6 +46,13 @@ Deliverables:
 Proof: `cargo test -p yolo-icons`, `bun ui icons favicon --preset aphrody --out dist/favicon` produces valid
 ICO/PNG/SVG (checked by decoding them back), size report shows the optimized bundle smaller than the source.
 
+Phase 1 notes (2026-11-05): wired sets are Aphrody (original mark, 24 and 48 dp), Material Symbols outlined
+(26 names incl. FILL=1 for star/favorite), Fluent regular 24, Chromium `.icon` (22, multi-representation files
+included) and COSMIC symbolic, all pinned in `catalog/assets.lock.toml` with LICENSE and NOTICE next to each subset.
+Not done yet: Material variable axes beyond FILL (wght, GRAD, opsz), Adwaita, WhiteSur and Phosphor sets, and
+compiling the generated `aphrody_symbols.rs` into a crate (it is emitted and checked textually). `ui_icons` MCP tool
+exists and shells out to the same binary.
+
 ## Phase 2: complete theme per platform
 
 One preset = one `YoloThemeTokens` set emitted by `yolo-emit` to every target:
@@ -107,7 +114,7 @@ repo, archive the rest (see `yolo-web/dist/folder-inventory.md`). No deletion wi
 
 | Phase | State | Evidence |
 | --- | --- | --- |
-| 1 icons and favicon | in progress | - |
+| 1 icons and favicon | done for the listed deliverables (see notes below) | `cargo test -p yolo-icons` on `vps` through the yolo-vps factory: 21 passed (16 unit, 5 integration). `bun ui icons favicon --preset aphrody --out dist/favicon` wrote 11 files (31 KB) and `bun ui icons verify dist/favicon` decoded 8 PNG (16/32/48/180/192/512, maskable 192/512), 3 ICO entries (16/32/48), favicon.svg and the manifest; committed copy in `crates/yolo-icons/examples/out` is decoded again by the `committed_example_favicon_decodes` test and the `ico` crate. `bun ui icons build`: 97 sources, 85 030 B source SVG/.icon to 42 970 B optimized SVG to 16 255 B zstd across 5 sets; merged Aphrody Symbols bundle 31 icons, 3 409 B. Every optimized icon renders within 1.5% mean alpha error of its source at 48 px. `bun test tests/ui-icons.test.ts tests/ui-unified.test.ts`: 9 passed. |
 | 2 platform themes | partial: 8 presets exist in yolo-shared/yolo-tokens; yolo-chromium applies 7 via `--theme` | `cargo test -p yolo-chromium` |
 | 3 components | not started in this plan | - |
 | 4 surfaces | partial: MV3 extension loads in yolo-chromium; managed policy `--search-engine=aphrody` | yolo-web branch `claude-chrome-extension-yolo` |

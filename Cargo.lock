@@ -15934,6 +15934,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ico"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d75e94d66081e4d8dcd098bd8dc5254800fea14a26389b298410158d834de167"
+dependencies = [
+ "byteorder",
+ "png 0.18.1",
+]
+
+[[package]]
 name = "icrate"
 version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -24328,6 +24338,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "resvg"
+version = "0.49.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1572844b6727a1bf842190e9947641a68ac44bed83f50afb4bd1407a2564bee8"
+dependencies = [
+ "bytemuck",
+ "log 0.4.35",
+ "pico-args",
+ "rgb",
+ "svgtypes 0.16.1",
+ "tiny-skia 0.12.0",
+ "usvg 0.49.0",
+]
+
+[[package]]
 name = "rfc6979"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -29083,7 +29108,7 @@ version = "3.0.0-alpha.4"
 dependencies = [
  "base64 0.23.1",
  "brotli 9.1.1",
- "ico",
+ "ico 0.5.0",
  "json-patch",
  "plist",
  "png 0.18.1",
@@ -31337,6 +31362,25 @@ dependencies = [
  "unicode-script",
  "unicode-vo",
  "xmlwriter",
+]
+
+[[package]]
+name = "usvg"
+version = "0.49.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d09b73ee83641d390ad7ffd9000f347b16eb128e437675b6ff277ea5c7fcf22c"
+dependencies = [
+ "data-url",
+ "imagesize 0.15.0",
+ "kurbo 0.13.1",
+ "log 0.4.35",
+ "pico-args",
+ "roxmltree 0.21.1",
+ "simplecss",
+ "siphasher 1.0.3",
+ "strict-num",
+ "svgtypes 0.16.1",
+ "tiny-skia-path 0.12.0",
 ]
 
 [[package]]
@@ -35780,6 +35824,22 @@ name = "yolo-iced"
 version = "0.8.0-alpha.3"
 dependencies = [
  "yolo-engines",
+]
+
+[[package]]
+name = "yolo-icons"
+version = "0.8.0-alpha.3"
+dependencies = [
+ "clap",
+ "ico 0.6.0",
+ "resvg 0.49.0",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "toml 1.1.2+spec-1.1.0",
+ "yolo-shared",
+ "yolo-tokens",
+ "zstd 0.14.3",
 ]
 
 [[package]]

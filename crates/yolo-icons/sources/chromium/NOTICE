@@ -1,0 +1,6 @@
+Chromium vector icons (.icon)
+Upstream: https://chromium.googlesource.com/chromium/src
+Pinned: commit 4c7244a405d326e284710231ff609168dceb9044
+License: BSD-3-Clause
+Chromium vector icons, Copyright 2015-2026 The Chromium Authors, licensed under the BSD 3-Clause License.
+Subset recorded in catalog/assets.lock.toml; canonical names map to upstream paths there.

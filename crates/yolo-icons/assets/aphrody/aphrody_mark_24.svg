@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+  <!-- Aphrody mark, original artwork (MIT OR Apache-2.0). Material Symbols 24 dp grid, 2 dp padding.
+       Celestial star: four points with concave flanks, tips at y=2 / y=13, x=7 / x=17.
+       Peak: chevron from (2.5,21.5) to apex (12,14.6) to (21.5,21.5), arm thickness 2.43 dp. -->
+  <path d="M12 2Q12.9 6.6 17 7.5Q12.9 8.4 12 13Q11.1 8.4 7 7.5Q11.1 6.6 12 2Z"/>
+  <path d="M12 14.6L21.5 21.5H17.37L12 17.6L6.63 21.5H2.5Z"/>
+</svg>

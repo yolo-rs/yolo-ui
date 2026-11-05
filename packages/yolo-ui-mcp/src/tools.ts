@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { runLocalModel } from "./local-model";
+import { runYoloIconsJson } from "../../../scripts/ui-icons";
 import { dirname, join, resolve } from "node:path";
 import {
   AVAILABLE_STACKS,
@@ -597,6 +598,41 @@ export const MCP_TOOL_DEFINITIONS: McpToolDefinition[] = [
     },
   },
   {
+    name: "ui_icons",
+    description:
+      "Yolo icon and favicon pipeline (Rust yolo-icons): search icons across the licensed sets in catalog/assets.lock.toml (Aphrody, Material Symbols, Fluent, Chromium .icon, COSMIC), build optimized zstd bundles, or generate a preset-colored favicon set (ICO, PNG 16-512, maskable, manifest.webmanifest) and verify it by decoding it back.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        action: {
+          type: "string",
+          enum: ["search", "build", "favicon", "verify"],
+          description: "Pipeline step.",
+        },
+        query: { type: "string", description: "Search query (action=search)." },
+        limit: {
+          type: "number",
+          description: "Maximum search hits (default 20).",
+        },
+        preset: {
+          type: "string",
+          description:
+            "Theme preset for action=favicon (aphrody, chromium, m3, fluent, apple, omarchy, hyprland, neutral).",
+        },
+        out: {
+          type: "string",
+          description:
+            "Output directory for build/favicon, or the directory to verify.",
+        },
+        name: {
+          type: "string",
+          description: "Application name for the web manifest.",
+        },
+      },
+      required: ["action"],
+    },
+  },
+  {
     name: "ui_local_model",
     description:
       "Run a design, codegen or review prompt on the local yolo-ai llama.cpp model (OpenAI-compatible, loopback only; default http://127.0.0.1:8083/v1 local-qwen-small, override with YOLO_LOCAL_LLM_BASE_URL / YOLO_LOCAL_LLM_MODEL).",
@@ -604,10 +640,25 @@ export const MCP_TOOL_DEFINITIONS: McpToolDefinition[] = [
       type: "object",
       properties: {
         prompt: { type: "string", description: "The task prompt." },
-        task: { type: "string", enum: ["design", "codegen", "review"], description: "System prompt flavor (default design)." },
-        model: { type: "string", description: "Model alias, e.g. local-qwen-small or local-qwen-coder." },
-        baseUrl: { type: "string", description: "Loopback OpenAI-compatible base URL, e.g. http://127.0.0.1:8082/v1 for the coder." },
-        maxTokens: { type: "number", description: "Completion token cap (default 1024)." },
+        task: {
+          type: "string",
+          enum: ["design", "codegen", "review"],
+          description: "System prompt flavor (default design).",
+        },
+        model: {
+          type: "string",
+          description:
+            "Model alias, e.g. local-qwen-small or local-qwen-coder.",
+        },
+        baseUrl: {
+          type: "string",
+          description:
+            "Loopback OpenAI-compatible base URL, e.g. http://127.0.0.1:8082/v1 for the coder.",
+        },
+        maxTokens: {
+          type: "number",
+          description: "Completion token cap (default 1024).",
+        },
       },
       required: ["prompt"],
     },
@@ -619,14 +670,49 @@ export async function executeUiTool(
   args: Record<string, unknown> = {},
 ): Promise<unknown> {
   switch (name) {
+    case "ui_icons": {
+      const action = String(args.action ?? "");
+      const str = (k: string) =>
+        typeof args[k] === "string" && args[k] ? String(args[k]) : undefined;
+      switch (action) {
+        case "search":
+          return runYoloIconsJson([
+            "search",
+            ...(str("query") ?? "").split(/s+/).filter(Boolean),
+            "--limit",
+            String(typeof args.limit === "number" ? args.limit : 20),
+          ]);
+        case "build":
+          return runYoloIconsJson([
+            "build",
+            ...(str("out") ? ["--out", str("out")!] : []),
+          ]);
+        case "favicon":
+          return runYoloIconsJson([
+            "favicon",
+            "--preset",
+            str("preset") ?? "aphrody",
+            ...(str("out") ? ["--out", str("out")!] : []),
+            ...(str("name") ? ["--name", str("name")!] : []),
+          ]);
+        case "verify":
+          if (!str("out")) throw new Error("out is required for action=verify");
+          return runYoloIconsJson(["verify", str("out")!]);
+        default:
+          throw new Error(`unknown ui_icons action ${action}`);
+      }
+    }
+
     case "ui_local_model": {
-      if (typeof args.prompt !== "string" || !args.prompt.trim()) throw new Error("prompt is required");
+      if (typeof args.prompt !== "string" || !args.prompt.trim())
+        throw new Error("prompt is required");
       return runLocalModel({
         prompt: args.prompt,
         task: args.task as "design" | "codegen" | "review" | undefined,
         model: typeof args.model === "string" ? args.model : undefined,
         baseUrl: typeof args.baseUrl === "string" ? args.baseUrl : undefined,
-        maxTokens: typeof args.maxTokens === "number" ? args.maxTokens : undefined,
+        maxTokens:
+          typeof args.maxTokens === "number" ? args.maxTokens : undefined,
       });
     }
 
