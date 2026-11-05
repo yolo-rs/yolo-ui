@@ -28,7 +28,7 @@
 //   - a run whose beginning is on the disk and whose end is not was killed,
 //     also when the ledger lost it.
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useChatStore, flushChatPersist } from '../stores/chatStore'
 import { useGenerationStore } from '../stores/generationStore'
 import { isMobile } from './device-kind'

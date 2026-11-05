@@ -1,4 +1,4 @@
-import { v4 as uuid } from "uuid"
+const uuid = (): string => crypto.randomUUID()
 import type { DocumentMeta, TextChunk, RAGContext, VectorSearchResult } from "../types/rag"
 import { ollamaUrl, localFetch } from "./backend"
 import {

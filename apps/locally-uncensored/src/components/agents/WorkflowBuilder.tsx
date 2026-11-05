@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { Plus, Trash2, ChevronUp, ChevronDown, Save, X, ArrowLeft } from 'lucide-react'
 import { useAgentWorkflowStore } from '../../stores/agentWorkflowStore'
 import { AGENT_TOOL_DEFS } from '../../api/tool-registry'

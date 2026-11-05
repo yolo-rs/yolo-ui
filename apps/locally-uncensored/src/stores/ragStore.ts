@@ -4,7 +4,7 @@ import { safeJSONStorage } from "../lib/storage-quota"
 import type { DocumentMeta, TextChunk } from "../types/rag"
 import { saveChunks, loadChunks, deleteChunks } from "../lib/ragDB"
 import { log } from "../lib/logger"
-import { v4 as uuid } from "uuid"
+const uuid = (): string => crypto.randomUUID()
 
 /**
  * A document whose reading did not finish (wish 18 of the mobile agent

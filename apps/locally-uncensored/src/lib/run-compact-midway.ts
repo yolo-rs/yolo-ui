@@ -32,7 +32,7 @@
  * cannot write a usable summary costs two round trips, not forty.
  */
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import {
   applyToolResultDecay,
   isToolResult,

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { GlowButton } from '../ui/GlowButton'
 import { useSettingsStore } from '../../stores/settingsStore'
 import type { SamplerValues } from '../../types/settings'

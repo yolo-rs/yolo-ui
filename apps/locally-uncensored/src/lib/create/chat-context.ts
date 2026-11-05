@@ -7,7 +7,7 @@
 // customer's messages in this conversation, the gallery is the Create tab's,
 // the results are the finished runs of this conversation's orders.
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useChatStore } from '../../stores/chatStore'
 import { useCreateStore } from '../../stores/createStore'
 import { useCreateOrderStore } from '../../stores/createOrderStore'

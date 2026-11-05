@@ -7,7 +7,7 @@
  * - Execution completion / errors
  */
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { log } from '../lib/logger'
 import { comfyuiWsUrl, isTauri } from './backend'
 

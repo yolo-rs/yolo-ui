@@ -11,7 +11,7 @@ import {
   removeApproval,
   drainApprovals,
 } from '../lib/approval-queue'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { streamProviderTurn, type StreamedProviderTurn } from '../lib/provider-stream'
 import { requestUsageTracker } from '../lib/request-usage'
 import { createHermesDisplayFilter, createThinkStreamSplitter, createTurnThinkingSink } from '../lib/hermes-stream'

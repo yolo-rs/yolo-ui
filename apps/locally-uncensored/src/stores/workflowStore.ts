@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { safeJSONStorage } from '../lib/storage-quota'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { isInstalledVideoType, type ModelType, } from '../api/comfyui'
 import type { WorkflowTag, WorkflowTemplate } from '../types/workflows'
 import type { ParamValue, WorkflowParamOverrides } from '../api/workflow-params'

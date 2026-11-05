@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { safeJSONStorage } from '../lib/storage-quota'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { AgentWorkflow } from '../types/agent-workflows'
 import { BUILT_IN_WORKFLOWS } from '../lib/built-in-workflows'
 import { isRecord, prop, asString } from '../types/json-guards'

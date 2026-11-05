@@ -3,7 +3,7 @@ import { blobFromUrl } from '../lib/render/data-url'
 import { videoRunGivenUp, videoRunProgress, videoRunStatus } from '../lib/mlx-video-progress'
 import { featherMaskBlob } from '../lib/mask-feather'
 import { macHiresPass } from '../lib/mac-hires'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import {
   checkComfyConnection,
   refreshComfyModels,

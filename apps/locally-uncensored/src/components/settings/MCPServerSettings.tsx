@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { Plus, Trash2, Power, PowerOff, Pencil } from 'lucide-react'
 import { useMCPStore } from '../../stores/mcpStore'
 import { toolRegistry } from '../../api/mcp'

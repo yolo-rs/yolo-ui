@@ -10,7 +10,7 @@
 // conversation). A session in which nothing was said removes it again, so an
 // accidental Start leaves no empty chat behind.
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { AgentBlock, AgentToolCall } from '../types/agent-mode'
 import type { Message } from '../types/chat'
 import { useChatStore } from '../stores/chatStore'

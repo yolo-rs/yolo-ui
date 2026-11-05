@@ -33,7 +33,7 @@
  * Now the record lands first here too, then the field is emptied and the
  * question sent.
  */
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { dropPendingStorageWrite, idbStorage } from '../../lib/idbStorage'
 import { INTERRUPTED_EMPTY_TEXT, INTERRUPTED_FINISH_REASON } from '../../lib/interrupted-runs'
 import { log } from '../../lib/logger'
