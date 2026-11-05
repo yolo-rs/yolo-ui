@@ -570,7 +570,7 @@ pub unsafe fn apply_patch(mut table: JumpTable) -> Result<(), PatchError> {
         // Fetch + decode the patch wasm. Both awaits are pure I/O — they
         // touch no shared state, so the future is safe to drop here.
         let response: web_sys::Response =
-            JsFuture::from(web_sys::window().unwrap_throw().fetch_with_str(&path))
+            JsFuture::from(web_sys::window().unwrap_throw().fetch_with_str(path))
                 .await
                 .unwrap()
                 .unchecked_into();
@@ -677,10 +677,10 @@ pub unsafe fn apply_patch(mut table: JumpTable) -> Result<(), PatchError> {
             "__wasm_apply_global_relocs",
             "__wasm_call_ctors",
         ] {
-            if let Ok(val) = Reflect::get(&inst_exports, &func_name.into()) {
-                if let Ok(func) = val.dyn_into::<js_sys::Function>() {
-                    _ = func.call0(&JsValue::undefined());
-                }
+            if let Ok(val) = Reflect::get(&inst_exports, &func_name.into())
+                && let Ok(func) = val.dyn_into::<js_sys::Function>()
+            {
+                _ = func.call0(&JsValue::undefined());
             }
         }
 
