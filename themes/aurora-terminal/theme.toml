@@ -1,0 +1,33 @@
+# Dark, dense, glassy: a dock over a generated aurora wallpaper. Colours follow the active
+# wallpaper when one is added; until then the seed below drives the scheme.
+id = "aurora-terminal"
+name = "Aurora Terminal"
+
+[title]
+product_name = "Yolo"
+window_title_template = "{page} - Yolo"
+ntp_heading = "Yolo"
+
+[color]
+seed = "#2f8f9d"
+source = "wallpaper"
+variant = "vibrant"
+contrast = 0.2
+mode = "dark"
+
+[icons]
+set = "phosphor"
+style = "outlined"
+weight = 300
+
+[typography]
+display = "Google Sans Flex"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "dock"
+density = -1
+radius = [6, 12, 20]
+glass_blur = 24
+motion = "lively"

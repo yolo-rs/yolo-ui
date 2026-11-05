@@ -1,0 +1,32 @@
+# Light, spacious, flat: a sidebar workspace on warm paper tones, no glass, calm motion.
+id = "paper-studio"
+name = "Paper Studio"
+
+[title]
+product_name = "Yolo Studio"
+window_title_template = "{page} - Yolo Studio"
+ntp_heading = "Studio"
+
+[color]
+seed = "#b4532a"
+source = "seed"
+variant = "tonal-spot"
+contrast = 0.0
+mode = "light"
+
+[icons]
+set = "material-symbols"
+style = "rounded"
+weight = 400
+
+[typography]
+display = "Google Sans Flex"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "sidebar"
+density = 1
+radius = [4, 8, 12]
+glass_blur = 0
+motion = "calm"

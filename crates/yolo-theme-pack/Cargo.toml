@@ -1,0 +1,21 @@
+[package]
+name = "yolo-theme-pack"
+version.workspace = true
+edition = "2024"
+rust-version.workspace = true
+license = "MIT OR Apache-2.0"
+description = "Theme packs for Yolo UI: colours, wallpapers, icons, logo, title, companion pet, typography, shell layout and motion switched together, with dynamic HCT colour from a seed or the active wallpaper."
+repository = "https://github.com/yolo-rs/yolo-ui"
+publish = false
+
+[features]
+default = []
+# Seed extraction from wallpaper image bytes (PNG/JPEG decode through yolo-tokens).
+image = ["yolo-tokens/image"]
+
+[dependencies]
+yolo-tokens = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+toml = { workspace = true }
+sha2 = { workspace = true }
