@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Golden check of the Aphrody brand theme exports consumed by `@aphrody/app-ui`.
+//! Golden check of the Aphrody brand theme exports.
 //!
-//! `m3/packages/app-ui/src/generated/brand-theme{,-high-contrast}.json` are the
+//! `tests/fixtures/brand-theme{,-high-contrast}.json` are the
 //! [`ThemeExport`](yolo_tokens::theme::ThemeExport) of the identity pet seed at contrast 0
-//! and 1; `bun run brand` in app-ui turns them into `src/brand.css`. Rewrite them with
-//! `APHRODY_UPDATE_TOKENS=1 scripts/aphrody/build/rust/cargo-serial.sh test -p yolo-tokens --test
-//! brand_theme_golden`.
+//! and 1. Consumers (the former `@aphrody/app-ui` brand CSS) copy them from here. Rewrite them
+//! on the vps with `APHRODY_UPDATE_TOKENS=1 cargo test -p yolo-tokens --test brand_theme_golden`.
 
 #![cfg(feature = "std")]
 
 use std::{fs, path::PathBuf};
 
-use yolo_tokens::theme::ThemeRequest;
 use serde_json::{Value, json};
+use yolo_tokens::theme::ThemeRequest;
 
 fn pet_seed() -> String {
     let fixture: Value = serde_json::from_str(include_str!("fixtures/mcu-pet.json")).unwrap();
@@ -39,7 +38,7 @@ fn export_json(contrast: f64) -> String {
 
 fn check(relative: &str, expected: &str) {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../..")
+        .join("tests/fixtures")
         .join(relative);
     if std::env::var_os("APHRODY_UPDATE_TOKENS").is_some() {
         fs::write(&path, expected).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
@@ -55,12 +54,6 @@ fn check(relative: &str, expected: &str) {
 
 #[test]
 fn brand_theme_exports_are_current() {
-    check(
-        "packages/app-ui/src/generated/brand-theme.json",
-        &export_json(0.0),
-    );
-    check(
-        "packages/app-ui/src/generated/brand-theme-high-contrast.json",
-        &export_json(1.0),
-    );
+    check("brand-theme.json", &export_json(0.0));
+    check("brand-theme-high-contrast.json", &export_json(1.0));
 }
