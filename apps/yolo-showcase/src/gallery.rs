@@ -244,14 +244,70 @@ fn variant_class(variant: ButtonVariant) -> &'static str {
     }
 }
 
-/// One gallery row: label column plus one cell per preset.
-struct Row {
+/// One column of the matrix: a preset, or the live theme of the interactive app. The id keeps
+/// element ids unique when the same row is rendered in several columns of one page.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Scope {
+    id: &'static str,
     name: &'static str,
-    note: &'static str,
-    render: fn(YoloThemePreset) -> Element,
 }
 
-fn buttons(_: YoloThemePreset) -> Element {
+impl Scope {
+    /// The theme currently resolved by the interactive app (scope class `p-active`).
+    pub const ACTIVE: Self = Self { id: "active", name: "Active theme" };
+
+    /// The column of a preset.
+    #[must_use]
+    pub const fn of(preset: YoloThemePreset) -> Self {
+        Self { id: preset.id(), name: short_name(preset) }
+    }
+
+    /// Identifier used in CSS classes (`p-<id>`) and element ids.
+    #[must_use]
+    pub const fn id(self) -> &'static str {
+        self.id
+    }
+
+    /// Short column label.
+    #[must_use]
+    pub const fn name(self) -> &'static str {
+        self.name
+    }
+}
+
+/// One gallery row: label column plus one cell per preset.
+pub(crate) struct Row {
+    pub(crate) name: &'static str,
+    pub(crate) note: &'static str,
+    pub(crate) render: fn(Scope) -> Element,
+}
+
+impl Row {
+    /// URL segment of the row (`Slider and progress` becomes `slider-and-progress`).
+    #[must_use]
+    pub(crate) fn slug(&self) -> String {
+        slug(self.name)
+    }
+}
+
+/// Lowercase, dash-separated form of a row name.
+#[must_use]
+pub fn slug(name: &str) -> String {
+    name.split_whitespace().collect::<Vec<_>>().join("-").to_lowercase()
+}
+
+/// The row whose [`Row::slug`] is `slug`.
+pub(crate) fn row_by_slug(wanted: &str) -> Option<&'static Row> {
+    ROWS.iter().find(|row| row.slug() == wanted)
+}
+
+/// Names of every row, in display order.
+#[must_use]
+pub fn row_names() -> Vec<&'static str> {
+    ROWS.iter().map(|row| row.name).collect()
+}
+
+fn buttons(_: Scope) -> Element {
     let variants = [
         (ButtonVariant::Filled, "Save"),
         (ButtonVariant::Tonal, "Duplicate"),
@@ -276,7 +332,7 @@ fn buttons(_: YoloThemePreset) -> Element {
     }
 }
 
-fn icon_buttons(_: YoloThemePreset) -> Element {
+fn icon_buttons(_: Scope) -> Element {
     rsx! {
         button { class: "btn tonal icon-btn", r#type: "button", "aria-label": "Search", Icon { d: SEARCH } }
         button { class: "btn outlined icon-btn", r#type: "button", "aria-label": "Notifications", Icon { d: BELL } }
@@ -284,7 +340,7 @@ fn icon_buttons(_: YoloThemePreset) -> Element {
     }
 }
 
-fn chips(_: YoloThemePreset) -> Element {
+fn chips(_: Scope) -> Element {
     rsx! {
         button { class: "chip", r#type: "button", "aria-pressed": "false", "Nearby" }
         button { class: "chip", r#type: "button", "aria-pressed": "true", "Open now" }
@@ -295,7 +351,7 @@ fn chips(_: YoloThemePreset) -> Element {
     }
 }
 
-fn selection(preset: YoloThemePreset) -> Element {
+fn selection(preset: Scope) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
@@ -312,7 +368,7 @@ fn selection(preset: YoloThemePreset) -> Element {
     }
 }
 
-fn slider_progress(preset: YoloThemePreset) -> Element {
+fn slider_progress(preset: Scope) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
@@ -324,7 +380,7 @@ fn slider_progress(preset: YoloThemePreset) -> Element {
     }
 }
 
-fn text_fields(preset: YoloThemePreset) -> Element {
+fn text_fields(preset: Scope) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
@@ -342,9 +398,9 @@ fn text_fields(preset: YoloThemePreset) -> Element {
     }
 }
 
-fn navigation(preset: YoloThemePreset) -> Element {
+fn navigation(preset: Scope) -> Element {
     let id = preset.id();
-    let name = short_name(preset);
+    let name = preset.name();
     rsx! {
         div { class: "tabs", role: "tablist", "aria-label": "Library, {name} sample",
             button { role: "tab", id: "tab-songs-{id}", "aria-selected": "true", "aria-controls": "panel-{id}", r#type: "button", "Songs" }
@@ -360,7 +416,7 @@ fn navigation(preset: YoloThemePreset) -> Element {
     }
 }
 
-fn cards(_: YoloThemePreset) -> Element {
+fn cards(_: Scope) -> Element {
     rsx! {
         div { class: "stack",
             article { class: "card filled", h4 { "Filled" } p { "Groups related content on the surface." } }
@@ -370,7 +426,7 @@ fn cards(_: YoloThemePreset) -> Element {
     }
 }
 
-fn overlays(preset: YoloThemePreset) -> Element {
+fn overlays(preset: Scope) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
@@ -392,7 +448,7 @@ fn overlays(preset: YoloThemePreset) -> Element {
     }
 }
 
-const ROWS: [Row; 9] = [
+pub(crate) const ROWS: [Row; 9] = [
     Row { name: "Buttons", note: "Filled, tonal, outlined and text, plus focused and disabled. 48 dp minimum target.", render: buttons },
     Row { name: "Icon buttons", note: "Icon-only controls carry an accessible name.", render: icon_buttons },
     Row { name: "Chips", note: "Filter chips expose aria-pressed; input chips have a remove control.", render: chips },
@@ -420,8 +476,33 @@ fn Gallery(dark: bool) -> Element {
             p { "Every component in all eight presets, rendered from the shared contracts. {scheme} Contrast is measured against WCAG 2.2 AA (4.5:1)." }
             a { class: "scheme", href: "{other_href}", "{other_label}" }
         }
-        main { class: "matrix",
+        Matrix { dark }
+    }
+}
+
+/// The component matrix: one column per preset and one row per component.
+///
+/// The static gallery renders it with the defaults. The interactive app adds a leading column
+/// painted by the live theme (`active`, the text summarising it), narrows the matrix to one row
+/// (`only`, a [`Row::slug`]) and turns row names into links (`link`).
+#[component]
+pub fn Matrix(
+    dark: bool,
+    #[props(default)] active: Option<String>,
+    #[props(default)] only: Option<String>,
+    #[props(default)] link: Option<Callback<String, Element>>,
+) -> Element {
+    let with_active = active.is_some();
+    let class = if with_active { "matrix has-active" } else { "matrix" };
+    rsx! {
+        main { class: "{class}",
             div { class: "corner", "Component" }
+            if let Some(summary) = active {
+                section { class: "head p-active", "aria-label": "Active theme",
+                    h2 { "Active theme" }
+                    p { "{summary}" }
+                }
+            }
             for preset in YoloThemePreset::ALL {
                 {
                     let c = preset_contrast(preset, dark);
@@ -438,10 +519,22 @@ fn Gallery(dark: bool) -> Element {
                     }
                 }
             }
-            for row in ROWS {
-                div { class: "label", h3 { "{row.name}" } p { "{row.note}" } }
+            for row in ROWS.iter().filter(|row| only.as_deref().is_none_or(|wanted| row.slug() == wanted)) {
+                div { class: "label",
+                    h3 {
+                        if let Some(link) = link {
+                            {link.call(row.name.to_owned())}
+                        } else {
+                            "{row.name}"
+                        }
+                    }
+                    p { "{row.note}" }
+                }
+                if with_active {
+                    div { class: "cell p-active", {(row.render)(Scope::ACTIVE)} }
+                }
                 for preset in YoloThemePreset::ALL {
-                    div { class: "cell p-{preset.id()}", {(row.render)(preset)} }
+                    div { class: "cell p-{preset.id()}", {(row.render)(Scope::of(preset))} }
                 }
             }
         }
@@ -518,5 +611,34 @@ mod tests {
             assert!(!html.contains(" style=\""), "inline style attributes would need 'unsafe-inline'");
             assert!(html.contains(&gallery_csp(&gallery_css(dark))));
         }
+    }
+
+    fn ids(html: &str) -> Vec<String> {
+        html.split(" id=\"").skip(1).filter_map(|rest| rest.split('"').next()).map(str::to_owned).collect()
+    }
+
+    #[test]
+    fn live_column_keeps_element_ids_unique() {
+        let html = dioxus_ssr::render_element(rsx! { Matrix { dark: false, active: "summary".to_owned() } });
+        assert_eq!(html.matches("cell p-active").count(), ROWS.len());
+        assert!(html.contains("matrix has-active"));
+        let mut all = ids(&html);
+        let total = all.len();
+        all.sort_unstable();
+        all.dedup();
+        assert_eq!(all.len(), total, "duplicate element ids");
+        assert!(all.iter().any(|id| id == "vol-active"));
+    }
+
+    #[test]
+    fn row_filter_and_slugs() {
+        assert_eq!(slug("Slider and progress"), "slider-and-progress");
+        for name in row_names() {
+            assert_eq!(row_by_slug(&slug(name)).map(|row| row.name), Some(name));
+        }
+        assert!(row_by_slug("nope").is_none());
+        let html = dioxus_ssr::render_element(rsx! { Matrix { dark: true, only: "buttons".to_owned() } });
+        assert_eq!(html.matches("class=\"label\"").count(), 1);
+        assert!(html.contains("Buttons") && !html.contains("Menu and dialog"));
     }
 }

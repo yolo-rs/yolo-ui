@@ -9,6 +9,9 @@
 pub mod benchmarks;
 pub mod gallery;
 pub mod site_hub;
+pub mod theme_state;
+#[cfg(feature = "web")]
+pub mod app;
 
 use site_hub::{
     AWESOME_HUB_CATEGORIES, MASTER_MIGRATION_ENTRIES, MigrationPillar, YOLO_STARTER_TEMPLATES,
@@ -30,6 +33,17 @@ use yolo_ui::storyteller::StorytellerProject;
 use yolo_ui::tauri::{CapabilityManifest, TauriV3Config, WebviewEngine};
 
 fn main() {
+    #[cfg(all(feature = "web", target_arch = "wasm32"))]
+    {
+        app::launch();
+        return;
+    }
+    #[cfg(not(all(feature = "web", target_arch = "wasm32")))]
+    run();
+}
+
+#[cfg_attr(all(feature = "web", target_arch = "wasm32"), allow(dead_code))]
+fn run() {
     let manifest = YoloManifest::default();
     let gpui_theme = GpuiTheme::aphrody_dark();
     let iced_theme = IcedTheme::aphrody_dark();

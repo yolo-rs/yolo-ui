@@ -13,6 +13,7 @@ publish = false
 yolo-shared = { workspace = true }
 yolo-ui = { workspace = true, features = ["lib", "multi-engine"] }
 yolo-tokens = { workspace = true }
+yolo-theme-pack = { workspace = true }
 yolo-contracts = { workspace = true }
 yolo-emit = { workspace = true }
 yolo-layout = { workspace = true }
@@ -25,3 +26,9 @@ dioxus = { workspace = true, default-features = false, features = ["lib"] }
 dioxus-ssr = { workspace = true }
 base64 = { workspace = true }
 sha2 = { workspace = true }
+
+[features]
+default = []
+# Interactive Dioxus app (router, live theme switching) in `src/app.rs`. Off by default so the
+# static `--emit-gallery` build keeps its small dependency set.
+web = ["dioxus/web", "dioxus/router", "dioxus/launch"]
