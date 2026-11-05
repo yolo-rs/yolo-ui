@@ -1,14 +1,12 @@
-# 12 — Iced Stack (`iced-rs` / `aphrody-labs/iced` & `packages/yolo-iced`)
+# 12. Iced stack (`iced-rs` / `aphrody-labs/iced` and `packages/yolo-iced`)
 
-Yolo UI integrates the complete **`iced-rs`** Elm-architecture GUI ecosystem into the monorepo via 10 forked repositories under `github.com/aphrody-labs/*` (materialized in `submodules/*`) and the unified **`yolo-iced`** bridge crate (`packages/yolo-iced`).
+Yolo UI brings the whole `iced-rs` Elm-architecture GUI ecosystem into the monorepo through 10 forked repositories under `github.com/aphrody-labs/*` (checked out in `submodules/*`) and the `yolo-iced` bridge crate (`packages/yolo-iced`).
 
----
+## 1. Forked `iced-rs` repository fleet (`aphrody-labs/*`)
 
-## 1. Forked `iced-rs` Repository Fleet (`aphrody-labs/*`)
+All 10 upstream `iced-rs` repositories are maintained as `aphrody-labs` forks and checked out under `submodules/`:
 
-All 10 upstream `iced-rs` repositories are maintained as first-class `aphrody-labs` forks and materialized under `submodules/`:
-
-| Submodule Path            | Upstream Repository    | Aphrody Labs Fork           | Primary Responsibility                                                                                                                                                                  |
+| Submodule path            | Upstream repository    | Aphrody Labs fork           | Primary responsibility                                                                                                                                                                  |
 | :------------------------ | :--------------------- | :-------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `submodules/iced`         | `iced-rs/iced`         | `aphrody-labs/iced`         | Core Elm-architecture GUI framework (`iced`, `iced_core`, `iced_runtime`, `iced_futures`, `iced_widget`, `iced_renderer`, `iced_wgpu`, `iced_tiny_skia`, `iced_winit`, `iced_devtools`) |
 | `submodules/iced_aw`      | `iced-rs/iced_aw`      | `aphrody-labs/iced_aw`      | Additional community widgets (`Modal`, `Split`, `Tabs`, `Badge`, `Card`, `ColorPicker`, `NumberInput`, `Wrap`, `ContextMenu`)                                                           |
@@ -21,9 +19,7 @@ All 10 upstream `iced-rs` repositories are maintained as first-class `aphrody-la
 | `submodules/iced-rfcs`    | `iced-rs/rfcs`         | `aphrody-labs/iced-rfcs`    | Design RFCs for widgets, layout, reactive tasks, and GPU rendering                                                                                                                      |
 | `submodules/awesome-iced` | `iced-rs/awesome-iced` | `aphrody-labs/awesome-iced` | Curated catalog of Iced applications, libraries, and ecosystem crates                                                                                                                   |
 
----
-
-## 2. Crate Topology Inside `submodules/iced`
+## 2. Crate topology inside `submodules/iced`
 
 ```
 submodules/iced/
@@ -39,17 +35,11 @@ submodules/iced/
 └── devtools/           # `iced_devtools`: Comet time-travel debugger client integration
 ```
 
----
+## 3. `packages/yolo-iced` architecture
 
-## 3. `packages/yolo-iced` Architecture
+`packages/yolo-iced` brings the Iced Elm Architecture (MVU) and the Aphrody Material 3 Dark-Glass design system into the Yolo UI workspace. It has four modules.
 
-`packages/yolo-iced` bridges the Iced Elm Architecture (MVU) and Aphrody Material 3 Dark-Glass design system into the Yolo UI workspace:
-
-1. **Aphrody Material 3 Dark-Glass Palette (`IcedTheme::aphrody_dark()`)**:
-   - Maps `APHRODY_DARK_THEME` (`#090b10` background, `#111520` surface container, `#181e2e` high surface container, `#f3f6fc` primary text, `#7c5cff` primary accent, `#00d4ff` secondary accent) directly into `IcedPalette` (`background`, `text`, `primary`, `success`, `warning`, `danger`) and `IcedSurfaceTokens`.
-2. **Elm MVU Runtime & Task Graph (`yolo_iced::mvu`)**:
-   - Provides `IcedApplication`, `Task<Message>`, `SubscriptionDescriptor`, and `MvuRuntime<App>` so MVU state machines can be unit-tested headlessly, inspected via `CometRecorder`, or bridged with Dioxus signals (`dioxus-signals`).
-3. **Extended & Audio DSP Widget Specs (`yolo_iced::widgets`)**:
-   - Provides serializable state & parameter curves from `iced_audio` (`NormalParam`, `FreqRange`, `ModRange`, `KnobConfig`, `FaderConfig`) and `iced_aw` (`SplitPaneConfig`, `ModalConfig`).
-4. **Comet Telemetry & Cryoglyph Diagnostics (`yolo_iced::comet`)**:
-   - Ring-buffered `CometRecorder` capturing `CometTraceSpan` entries for every MVU message and `CryoglyphAtlasStats` for GPU glyph cache observability.
+1. Aphrody Material 3 Dark-Glass palette (`IcedTheme::aphrody_dark()`). It maps `APHRODY_DARK_THEME` (`#090b10` background, `#111520` surface container, `#181e2e` high surface container, `#f3f6fc` primary text, `#7c5cff` primary accent, `#00d4ff` secondary accent) directly into `IcedPalette` (`background`, `text`, `primary`, `success`, `warning`, `danger`) and `IcedSurfaceTokens`.
+2. Elm MVU runtime and task graph (`yolo_iced::mvu`). `IcedApplication`, `Task<Message>`, `SubscriptionDescriptor` and `MvuRuntime<App>` let MVU state machines be unit-tested headlessly, inspected with `CometRecorder`, or bridged with Dioxus signals (`dioxus-signals`).
+3. Extended and audio DSP widget specs (`yolo_iced::widgets`). These are serializable state and parameter curves from `iced_audio` (`NormalParam`, `FreqRange`, `ModRange`, `KnobConfig`, `FaderConfig`) and `iced_aw` (`SplitPaneConfig`, `ModalConfig`).
+4. Comet telemetry and Cryoglyph diagnostics (`yolo_iced::comet`). A ring-buffered `CometRecorder` captures `CometTraceSpan` entries for every MVU message and `CryoglyphAtlasStats` for observing the GPU glyph cache.

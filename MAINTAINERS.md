@@ -1,6 +1,6 @@
 # MAINTAINERS
 
-This file lists the subsystem maintainers and review areas for the YOLO open-source ecosystem, structured in the style of the Linux Kernel `MAINTAINERS` file.
+This file lists the subsystem maintainers and review areas for the YOLO open-source ecosystem, in the format of the Linux kernel `MAINTAINERS` file.
 
 General queries: maintainers@yolo-rs.org  
 Project Repository: https://github.com/yolo-rs/yolo  

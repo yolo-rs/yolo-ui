@@ -1,21 +1,21 @@
-# `yolo-iced` — Aphrody Labs Iced Stack & Elm MVU Integration
+# `yolo-iced`: Aphrody Labs Iced stack and Elm MVU integration
 
-`yolo-iced` unifies the forked **`aphrody-labs/iced`** ecosystem (`iced`, `iced_aw`, `iced_audio`, `comet`, `cryoglyph`, `iced-opengl`, `iced-book`, `mdbook-iced`, `iced-rfcs`, and `awesome-iced`) into the **Yolo UI** monorepo (`aphrody-labs/yolo-ui`).
+`yolo-iced` brings the forked `aphrody-labs/iced` ecosystem (`iced`, `iced_aw`, `iced_audio`, `comet`, `cryoglyph`, `iced-opengl`, `iced-book`, `mdbook-iced`, `iced-rfcs`, and `awesome-iced`) into the Yolo UI monorepo (`aphrody-labs/yolo-ui`).
 
-## Key Capabilities
+## Capabilities
 
-1. **Elm Architecture (MVU) Bridge (`mvu` module)**:
-   - Pure Rust `IcedApplication`, `Task<Message>` (formerly `Command<Message>`), `Subscription<Message>`, and `MvuRouter<State, Message>` abstractions that can run standalone or synchronize bi-directionally with Dioxus reactive signals (`dioxus-signals`).
-2. **Aphrody Material 3 Dark-Glass Palette & Theme (`theme` module)**:
-   - Deterministic hex/RGBA parser and `IcedPalette` + `IcedExtendedPalette` generator matching `iced_core::theme::Palette` (`background`, `text`, `primary`, `success`, `warning`, `danger`) and extended surface containers.
-3. **Extended & Audio DSP Widget Descriptors (`widgets` module)**:
+1. Elm architecture (MVU) bridge (`mvu` module):
+   - Pure Rust `IcedApplication`, `Task<Message>` (formerly `Command<Message>`), `Subscription<Message>` and `MvuRouter<State, Message>` abstractions. They can run standalone or stay in sync in both directions with Dioxus reactive signals (`dioxus-signals`).
+2. Aphrody Material 3 dark-glass palette and theme (`theme` module):
+   - A deterministic hex/RGBA parser and an `IcedPalette` + `IcedExtendedPalette` generator that match `iced_core::theme::Palette` (`background`, `text`, `primary`, `success`, `warning`, `danger`) and the extended surface containers.
+3. Extended and audio DSP widget descriptors (`widgets` module):
    - Declarative configurations for `iced_aw` (`ModalConfig`, `SplitPaneConfig`, `TabBarConfig`, `BadgeConfig`) and `iced_audio` (`KnobConfig`, `FaderConfig`, `XYPadConfig`, `ModRange`, `NormalParam`, `FreqRange`).
-4. **Comet Elm Debugger & Cryoglyph Text Telemetry (`comet` module)**:
-   - Time-travel MVU message span tracing (`CometTraceSpan`, `CometRecorder`) compatible with `aphrody-labs/comet` and glyph atlas diagnostics for `aphrody-labs/cryoglyph`.
+4. Comet Elm debugger and Cryoglyph text telemetry (`comet` module):
+   - Time-travel MVU message span tracing (`CometTraceSpan`, `CometRecorder`) compatible with `aphrody-labs/comet`, plus glyph atlas diagnostics for `aphrody-labs/cryoglyph`.
 
-## Submodule Fleet (`submodules/*`)
+## Submodule fleet (`submodules/*`)
 
-| Submodule Path            | Upstream Origin        | Aphrody Labs Fork           | Role                                                                                                                     |
+| Submodule path            | Upstream origin        | Aphrody Labs fork           | Role                                                                                                                     |
 | :------------------------ | :--------------------- | :-------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
 | `submodules/iced`         | `iced-rs/iced`         | `aphrody-labs/iced`         | Core Elm-inspired cross-platform GUI library (`iced_core`, `iced_runtime`, `iced_widget`, `iced_wgpu`, `iced_tiny_skia`) |
 | `submodules/iced_aw`      | `iced-rs/iced_aw`      | `aphrody-labs/iced_aw`      | Additional widgets (modals, split panes, tabs, badges, color picker, number input)                                       |

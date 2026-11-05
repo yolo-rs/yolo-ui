@@ -27,12 +27,13 @@ license notices and provenance.
 | Bun runtime and YOLO OS package CLI                          | sibling `yolo-bun` repository               | Upstream-aligned Bun runtime changes plus one package-management interface that delegates to native backends |
 
 These repositories have separate source trees and release ownership. The root
-Cargo and Bun workspaces unify products **inside `yolo-ui`**; they do not claim
-to turn sibling repositories into members or to vendor their full source. A
+Cargo and Bun workspaces unify products inside `yolo-ui` only; sibling
+repositories do not become members, and their full source is not vendored. A
 cross-repository integration is complete when the owning repository exposes a
 versioned API/package and this workspace consumes it through an explicit
-dependency or generated artifact with provenance recorded. Until that exists,
-references to sibling projects are ownership boundaries, not build dependencies.
+dependency or generated artifact with provenance recorded. Until then, a
+reference to a sibling project marks an ownership boundary and is not a build
+dependency.
 
 ### Cross-repository ownership rules
 
@@ -62,8 +63,8 @@ references to sibling projects are ownership boundaries, not build dependencies.
   UI, Tauri, plugin, browser, and cross-build product features to their owning
   repositories. Do not claim upstream-level runtime performance without a
   reproducible comparison against the same Bun release.
-- First-party ownership means maintained by the Yolo product; it does not
-  erase upstream licenses, attribution, or source provenance. Do not copy an
+- First-party ownership means the Yolo product maintains the code; upstream
+  licenses, attribution, and source provenance still apply. Do not copy an
   upstream implementation into another repository just to satisfy a folder
   layout or workspace count.
 
@@ -95,9 +96,9 @@ manifests remain outside the workspace.
 Spacedrive's 39 Rust packages and two extensions now belong to the root Cargo
 workspace; its standalone Cargo manifest and extension workspace declarations
 were removed. Root dependency catalog entries were added for 33 dependencies
-that were previously Spacedrive-only. A set of dependencies retains
+that were previously Spacedrive-only. Some dependencies keep
 Spacedrive-specific inline constraints because the existing root versions or
-default-feature policies differ; these are version migrations still to do.
+default-feature policies differ; their version migrations are still to do.
 Spacedrive's 2021 editions and upstream license files remain preserved; package
 license fields are retained where declared upstream, while missing metadata
 must be normalized before publishing individual packages. The workspace Rust
@@ -126,7 +127,7 @@ is not represented as Aphrody Drive.
 
 The product policy is to absorb useful engine, framework, tooling, and template
 sources into Yolo UI while preserving each component's upstream license and
-provenance. “First party” describes the unified product and maintenance
+provenance. "First party" describes the unified product and maintenance
 ownership; it does not change copyright ownership or relicense imported code.
 The same applies to repositories collected under `upstreams/`. A source is
 considered consolidated only when it has a canonical product location, a
@@ -152,7 +153,7 @@ against the current Spacedrive tree:
 | Native drag and macOS Full Disk Access            | `apps/spacedrive/apps/tauri/src-tauri/src/drag/` and `apps/spacedrive/crates/fda/`                   | Existing Spacedrive implementations; do not duplicate their plugin crates.                                                                                              |
 | Browser OPFS explorer protocol                    | Legacy Bun OS WebOS files                                                                            | Remains a browser-only WebOS concern; it is not part of the native Spacedrive daemon client.                                                                            |
 | Local-model chat attachment builder               | `apps/locally-uncensored/src/lib/chat-attachments.ts`                                                | A related local AI attachment path exists in Locally Uncensored; keep it app-owned until a shared `yolo-ai` contract is defined.                                        |
-| “Ask Aphrody” context prompt for selected files   | No current Spacedrive equivalent found                                                               | Unported legacy behavior. Rebuild only as a first-party Yolo UI/Aphrody AI feature with explicit selection, OCR, and media eligibility contracts.                       |
+| "Ask Aphrody" context prompt for selected files   | No current Spacedrive equivalent found                                                               | Unported legacy behavior. Rebuild only as a first-party Yolo UI/Aphrody AI feature with explicit selection, OCR, and media eligibility contracts.                       |
 
 The Bun OS `packages/bun-tauri` nested workspace contains 14 crates, mostly
 renamed Tauri v3 upstream sources. Its main runtime crate declares
