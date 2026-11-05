@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-icons"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Icon and favicon pipeline for Yolo UI: SVG and Chromium .icon import to a normalized path IR, SVGO-equivalent optimizer, zstd bundles with typed Rust/TS codegen, and preset-colored favicon/PWA icon generation."
+include = ["src/**", "assets/**", "tests/**", "Cargo.toml"]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+[[bin]]
+name = "yolo-icons"
+path = "src/bin/yolo-icons.rs"
+
+[dependencies]
+clap = { workspace = true, features = ["derive"] }
+resvg = { version = "0.49.0", default-features = false }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+toml = { workspace = true }
+yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true }
+zstd = "0.14.3"
+
+[dev-dependencies]
+ico = "0.6.0"

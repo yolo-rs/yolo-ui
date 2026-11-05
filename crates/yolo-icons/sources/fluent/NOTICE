@@ -1,0 +1,6 @@
+Fluent UI System Icons (Regular, 24)
+Upstream: https://github.com/microsoft/fluentui-system-icons
+Pinned: commit 9bfae3d782fda4c8764f2128cec4d0dda160b283
+License: MIT
+Fluent UI System Icons, Copyright (c) 2020 Microsoft Corporation, licensed under the MIT License.
+Subset recorded in catalog/assets.lock.toml; canonical names map to upstream paths there.

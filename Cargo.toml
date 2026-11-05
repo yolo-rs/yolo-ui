@@ -17,6 +17,7 @@ members = [
     "crates/yolo-react",
     "crates/yolo-engines",
     "crates/yolo-3d",
+    "crates/yolo-icons",
     "apps/yolo-showcase",
     "packages/yolo-ui",
     "packages/yolo-gpui",
@@ -378,6 +379,7 @@ aphrody-m3-tokens = { package = "yolo-tokens", path = "crates/yolo-tokens", vers
 yolo-react = { path = "crates/yolo-react", version = "=0.8.0-alpha.3" }
 yolo-engines = { path = "crates/yolo-engines", version = "=0.8.0-alpha.3" }
 yolo-3d = { path = "crates/yolo-3d", version = "=0.8.0-alpha.3" }
+yolo-icons = { path = "crates/yolo-icons", version = "=0.8.0-alpha.3" }
 yolo-ui = { path = "packages/yolo-ui", version = "=0.8.0-alpha.3" }
 yolo-gpui = { path = "packages/yolo-gpui", version = "=0.8.0-alpha.3" }
 yolo-iced = { path = "packages/yolo-iced", version = "=0.8.0-alpha.3" }

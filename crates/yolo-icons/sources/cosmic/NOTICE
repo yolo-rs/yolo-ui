@@ -1,0 +1,6 @@
+COSMIC Icons (symbolic)
+Upstream: https://github.com/pop-os/cosmic-icons
+Pinned: commit 343c007f37cd71716e68f01c43ecf2764b7f7c47
+License: CC-BY-SA-4.0
+"Cosmic Icons" (http://github.com/pop-os/cosmic-icons) by System76, licensed under CC BY-SA 4.0. Optimized copies in this repository are adaptations under the same license.
+Subset recorded in catalog/assets.lock.toml; canonical names map to upstream paths there.

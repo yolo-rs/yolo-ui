@@ -1,22 +1,28 @@
 #!/usr/bin/env bun
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import {
-  executeUiTool,
-  MCP_TOOL_DEFINITIONS,
-  REPO_ROOT,
-  runToolHostCli,
-  startMcpStdioServer,
-} from "@yolo-rs/ui-mcp";
-import {
-  DEVTOOLS_REGISTRY,
-  OMARCHY_SUBTHEMES,
-  YOLO_THEME_PRESETS,
-} from "@yolo-rs/ui-plugin";
-import {
-  AVAILABLE_STACKS,
-  CSV_CONFIG,
-} from "../skills/yolo-ui-pro-max/scripts/core";
+import { runIconsCli } from "./ui-icons";
+
+// The MCP, plugin and skill modules load lazily so `bun ui icons` runs without the workspace packages installed.
+async function loadUiCore() {
+  const [mcp, plugin, core] = await Promise.all([
+    import("@yolo-rs/ui-mcp"),
+    import("@yolo-rs/ui-plugin"),
+    import("../skills/yolo-ui-pro-max/scripts/core"),
+  ]);
+  return {
+    executeUiTool: mcp.executeUiTool,
+    MCP_TOOL_DEFINITIONS: mcp.MCP_TOOL_DEFINITIONS,
+    REPO_ROOT: mcp.REPO_ROOT,
+    runToolHostCli: mcp.runToolHostCli,
+    startMcpStdioServer: mcp.startMcpStdioServer,
+    DEVTOOLS_REGISTRY: plugin.DEVTOOLS_REGISTRY,
+    OMARCHY_SUBTHEMES: plugin.OMARCHY_SUBTHEMES,
+    YOLO_THEME_PRESETS: plugin.YOLO_THEME_PRESETS,
+    AVAILABLE_STACKS: core.AVAILABLE_STACKS,
+    CSV_CONFIG: core.CSV_CONFIG,
+  };
+}
 
 function printHelp(): void {
   console.log(`
@@ -35,6 +41,7 @@ Usage:
   bun ui workbenches [filter]
   bun ui fleet [query] [--stack <owner>]
   bun ui mcp [list | call <tool> '<json>' | serve]
+  bun ui icons fetch|build|search|favicon|verify|optimize [...]   (bun ui icons help)
   bun ui doctor
 `);
 }
@@ -92,6 +99,21 @@ export async function runUnifiedUiCli(
 
   const subcommand = argv[0]!;
   const rest = argv.slice(1);
+  if (subcommand === "icons") {
+    return await runIconsCli(rest);
+  }
+  const {
+    executeUiTool,
+    MCP_TOOL_DEFINITIONS,
+    REPO_ROOT,
+    runToolHostCli,
+    startMcpStdioServer,
+    DEVTOOLS_REGISTRY,
+    OMARCHY_SUBTHEMES,
+    YOLO_THEME_PRESETS,
+    AVAILABLE_STACKS,
+    CSV_CONFIG,
+  } = await loadUiCore();
   const { positional, flags } = parseFlags(rest);
 
   switch (subcommand) {

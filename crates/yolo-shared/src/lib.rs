@@ -1017,6 +1017,8 @@ pub struct ByronLoveColorTeinte {
 }
 
 /// The 10 canonical Oklch/sRGB colors measured from the Byron Love 8×11 sprite atlas (`192×208` cells).
+// `0.318` (azur) is a measured Oklch lightness, not an approximation of 1/pi.
+#[allow(clippy::approx_constant)]
 pub const BYRON_LOVE_PALETTE: [ByronLoveColorTeinte; 10] = [
     ByronLoveColorTeinte {
         index: 1,
