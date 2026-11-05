@@ -499,18 +499,21 @@ blitz-paint = { path = "submodules/blitz/packages/blitz-paint", version = "=0.3.
 blitz-traits = { path = "submodules/blitz/packages/blitz-traits", version = "=0.3.0-beta.4", default-features = false }
 blitz-shell = { path = "submodules/blitz/packages/blitz-shell", version = "=0.3.0-beta.4", default-features = false }
 blitz-vibey-script = { path = "submodules/blitz/packages/blitz-vibey-script", version = "=0.3.0-beta.4", default-features = false }
-stylo_taffy = { path = "submodules/blitz/packages/stylo_taffy", version = "=0.3.0-beta.4", default-features = false }
+# `taffy` resolves to the dioxus-taffy fork, whose default features include
+# float_layout, so `taffy::Style` always has `float` and `clear`. stylo_taffy
+# only fills them with its `floats` feature, which must therefore be on.
+stylo_taffy = { path = "submodules/blitz/packages/stylo_taffy", version = "=0.3.0-beta.4", default-features = false, features = ["floats"] }
 accesskit_xplat = { path = "submodules/blitz/packages/accesskit_xplat", version = "0.2.1", default-features = false }
 debug_timer = { path = "submodules/blitz/packages/debug_timer", version = "0.1.3" }
 
 # Servo / Stylo / Blitz dependencies
-style = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo" }
-stylo = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo" }
-style_traits = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_traits" }
-style_atoms = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_atoms" }
-style_config = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_static_prefs" }
-style_dom = { version = "0.23.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "stylo_dom" }
-selectors = { version = "0.42.0", git = "https://github.com/servo/stylo", rev = "2dca34592ced37c6aa01733e94206a767194cf9d", package = "selectors" }
+style = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo" }
+stylo = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo" }
+style_traits = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_traits" }
+style_atoms = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_atoms" }
+style_config = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_static_prefs" }
+style_dom = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_dom" }
+selectors = { version = "0.42.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "selectors" }
 cssparser = { version = "0.38.0" }
 markup5ever = "0.40.0"
 html5ever = "0.40.1"
@@ -660,7 +663,7 @@ gloo-net = "0.7.0"
 mime = "0.3.17"
 woff2 = { package = "woff2-patched", version = "0.4.0" }
 ureq = "3.1.2"
-winit = { version = "=0.31.0-beta.3" }
+winit = { version = "=0.31.0-beta.4" }
 atomic_refcell = "0.1.13"
 
 # a fork of pretty please for tests - let's get off of this if we can!
@@ -1051,6 +1054,15 @@ sqlx = { workspace = true, features = [
     "tls-native-tls",
 ], optional = true }
 wasm-streams = { workspace = true }
+
+# Never built (the cfg is always false) but resolved into Cargo.lock.
+# bindgen 0.73, a build dependency of skia-bindings, accepts syn 2 or 3 and
+# prettyplease 0.2 or 0.3, yet only matching pairs compile. The Dioxus
+# formatter crates lock prettyplease 0.2; keeping 0.3 in the graph lets the
+# resolver pair bindgen's syn 3 with prettyplease 0.3, so `cargo update`
+# cannot bring back the syn 3 + prettyplease 0.2 mix.
+[target.'cfg(any())'.dev-dependencies]
+prettyplease_0_3 = { package = "prettyplease", version = "0.3" }
 
 [dev-dependencies]
 dioxus = { workspace = true, features = ["router", "fullstack"] }

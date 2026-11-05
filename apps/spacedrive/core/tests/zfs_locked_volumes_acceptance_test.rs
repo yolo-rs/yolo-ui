@@ -20,7 +20,7 @@ use std::{
 	sync::Arc,
 };
 
-use helpers::TestConfigBuilder;
+use helpers::sync_harness::TestConfigBuilder;
 use sd_core::{
 	infra::{action::LibraryAction, api::SessionContext, query::LibraryQuery},
 	library::Library,

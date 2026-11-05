@@ -211,6 +211,10 @@ async fn test_rule_toggles_basic() {
 		only_images: false,
 		no_dev_dirs: false,
 	};
+	#[cfg_attr(
+		not(any(target_os = "macos", target_os = "windows")),
+		expect(unused_variables, reason = "only the macOS and Windows checks use it")
+	)]
 	let ruler = build_default_ruler(toggles, root, root).await;
 	#[cfg(target_os = "macos")]
 	{

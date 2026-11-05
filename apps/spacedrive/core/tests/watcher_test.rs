@@ -69,7 +69,7 @@ impl FsEventCollector {
 
 		writeln!(file, "=== FsWatcher Event Log ===")?;
 		writeln!(file, "Total events collected: {}", events.len())?;
-		writeln!(file, "")?;
+		writeln!(file)?;
 
 		for (i, (timestamp, event)) in events.iter().enumerate() {
 			let elapsed = timestamp.duration_since(self.start_time);
@@ -84,7 +84,7 @@ impl FsEventCollector {
 			if let Some(is_dir) = event.is_directory {
 				writeln!(file, "         is_directory: {}", is_dir)?;
 			}
-			writeln!(file, "")?;
+			writeln!(file)?;
 		}
 
 		writeln!(file, "=== End of Event Log ===")?;
@@ -263,7 +263,7 @@ impl CoreEventCollector {
 
 		writeln!(file, "=== Core ResourceChanged Event Log ===")?;
 		writeln!(file, "Total events collected: {}", events.len())?;
-		writeln!(file, "")?;
+		writeln!(file)?;
 
 		for (i, event) in events.iter().enumerate() {
 			let elapsed = event.timestamp.duration_since(self.start_time);
@@ -320,7 +320,7 @@ impl CoreEventCollector {
 			for line in event.resource_json.lines() {
 				writeln!(file, "    {}", line)?;
 			}
-			writeln!(file, "")?;
+			writeln!(file)?;
 		}
 
 		writeln!(file, "=== End of Core Event Log ===")?;
@@ -718,24 +718,6 @@ impl TestHarness {
 			.list_directory(&self.test_dir)
 			.map(|v| v.len())
 			.unwrap_or(0)
-	}
-
-	/// Verify children count using list_directory (catches the orphan bug)
-	async fn verify_children_count(
-		&self,
-		expected: usize,
-	) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-		let count = self.get_children_count().await;
-		if count == expected {
-			println!("✓ Children count (list_directory) matches: {}", expected);
-			Ok(())
-		} else {
-			Err(format!(
-				"Children count mismatch: expected {} but found {} (using list_directory)",
-				expected, count
-			)
-			.into())
-		}
 	}
 
 	/// Verify expected entry count

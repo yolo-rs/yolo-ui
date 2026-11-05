@@ -12,7 +12,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::{event_collector::*, indexing_harness::*};
 use sd_core::ops::indexing::IndexScope;
 use tokio::time::Duration;
 

@@ -21,7 +21,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tokio::time::Duration;

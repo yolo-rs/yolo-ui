@@ -47,7 +47,7 @@ fn script_for(kind: &str) -> String {
 /// window included. It has no commands and needs no permission.
 pub fn plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
     tauri::plugin::Builder::new("lu-host-kind")
-        .js_init_script(init_script())
+        .initialization_script(init_script())
         .build()
 }
 

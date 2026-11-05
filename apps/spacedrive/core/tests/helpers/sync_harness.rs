@@ -2,7 +2,7 @@
 //!
 //! Provides reusable components to reduce duplication across sync tests.
 
-use super::MockTransport;
+use super::sync_transport::MockTransport;
 use sd_core::{
 	infra::{
 		db::entities,
@@ -232,7 +232,7 @@ pub async fn create_snapshot_dir(test_name: &str) -> anyhow::Result<PathBuf> {
 #[allow(dead_code)]
 pub struct TwoDeviceHarnessBuilder {
 	test_name: String,
-	test_data: super::TestDataDir,
+	test_data: super::test_data::TestDataDir,
 	data_dir_alice: PathBuf,
 	data_dir_bob: PathBuf,
 	snapshot_dir: PathBuf,
@@ -247,7 +247,7 @@ impl TwoDeviceHarnessBuilder {
 		let test_name_str = test_name.into();
 
 		// Use TestDataDir for proper temp directory management
-		let test_data = super::TestDataDir::new(&test_name_str)?;
+		let test_data = super::test_data::TestDataDir::new(&test_name_str)?;
 		let test_root = test_data.path().to_path_buf();
 
 		let data_dir = test_root.join("data");
@@ -464,7 +464,7 @@ impl TwoDeviceHarnessBuilder {
 
 /// Two-device sync test harness
 pub struct TwoDeviceHarness {
-	test_data: super::TestDataDir,
+	test_data: super::test_data::TestDataDir,
 	pub data_dir_alice: PathBuf,
 	pub data_dir_bob: PathBuf,
 	pub core_alice: Core,
@@ -484,7 +484,7 @@ pub struct TwoDeviceHarness {
 
 impl TwoDeviceHarness {
 	/// Get access to the snapshot manager (if snapshots enabled via SD_TEST_SNAPSHOTS=1)
-	pub fn snapshot_manager(&self) -> Option<&super::SnapshotManager> {
+	pub fn snapshot_manager(&self) -> Option<&super::snapshot::SnapshotManager> {
 		self.test_data.snapshot_manager()
 	}
 
@@ -510,8 +510,8 @@ impl TwoDeviceHarness {
 				icon: Set("Folder".to_string()),
 				color: Set("#3B82F6".to_string()),
 				order: Set(index as i32),
-				created_at: Set(now.into()),
-				updated_at: Set(now.into()),
+				created_at: Set(now),
+				updated_at: Set(now),
 			}
 			.insert(self.library_alice.db().conn())
 			.await?;
@@ -536,7 +536,7 @@ impl TwoDeviceHarness {
 				.await
 				.map(|count| count as usize)
 		};
-		if super::wait_until("Bob to hold every space", max_duration, || async {
+		if super::wait::wait_until("Bob to hold every space", max_duration, || async {
 			(present().await.ok()? == uuids.len()).then_some(())
 		})
 		.await

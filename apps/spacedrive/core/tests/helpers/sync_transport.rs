@@ -12,11 +12,14 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 /// Unified mock transport for N-device sync tests
+/// Message queues shared between devices: recipient id -> (sender id, message).
+pub type MessageQueues = Arc<Mutex<HashMap<Uuid, Vec<(Uuid, SyncMessage)>>>>;
+
 pub struct MockTransport {
 	my_device_id: Uuid,
 	connected_peers: Vec<Uuid>,
 	/// Shared message queues: recipient_id -> messages for them
-	queues: Arc<Mutex<HashMap<Uuid, Vec<(Uuid, SyncMessage)>>>>,
+	queues: MessageQueues,
 	/// Complete message history: (from, to, message)
 	history: Arc<Mutex<Vec<(Uuid, Uuid, SyncMessage)>>>,
 	/// Shared sync service registry for request/response handling
@@ -30,7 +33,7 @@ impl MockTransport {
 	pub fn new(
 		my_device_id: Uuid,
 		connected_peers: Vec<Uuid>,
-		queues: Arc<Mutex<HashMap<Uuid, Vec<(Uuid, SyncMessage)>>>>,
+		queues: MessageQueues,
 		history: Arc<Mutex<Vec<(Uuid, Uuid, SyncMessage)>>>,
 		sync_services: Arc<Mutex<HashMap<Uuid, Weak<SyncService>>>>,
 		blocked_devices: Arc<Mutex<std::collections::HashSet<Uuid>>>,
@@ -127,7 +130,7 @@ impl MockTransport {
 	) -> anyhow::Result<usize> {
 		let mut queues = self.queues.lock().await;
 		let messages = queues.entry(self.my_device_id).or_insert_with(Vec::new);
-		let incoming: Vec<_> = messages.drain(..).collect();
+		let incoming = std::mem::take(messages);
 		let count = incoming.len();
 		drop(queues);
 

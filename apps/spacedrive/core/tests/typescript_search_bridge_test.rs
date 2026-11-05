@@ -6,7 +6,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use sd_core::ops::indexing::IndexScope;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

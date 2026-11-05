@@ -5,10 +5,7 @@
 
 mod helpers;
 
-use helpers::{
-	create_snapshot_dir, create_test_volume, init_test_tracing, register_device, wait_until,
-	MockTransport, TestConfigBuilder, TestDataDir,
-};
+use helpers::{sync_harness::create_snapshot_dir, sync_harness::create_test_volume, sync_harness::init_test_tracing, sync_harness::register_device, wait::wait_until, sync_transport::MockTransport, sync_harness::TestConfigBuilder, test_data::TestDataDir};
 use sd_core::{
 	infra::{db::entities, sync::NetworkTransport},
 	service::Service,

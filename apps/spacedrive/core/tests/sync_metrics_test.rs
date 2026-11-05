@@ -10,7 +10,7 @@
 
 mod helpers;
 
-use helpers::TwoDeviceHarnessBuilder;
+use helpers::sync_harness::TwoDeviceHarnessBuilder;
 use sd_core::{library::Library, service::sync::metrics::snapshot::SyncMetricsSnapshot};
 use std::sync::Arc;
 use tokio::{fs, time::Duration};

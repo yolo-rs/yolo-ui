@@ -612,7 +612,7 @@ pub fn run() {
 
     let app_state = AppState::new();
 
-    let builder = tauri::Builder::default();
+    let builder = tauri::Builder::default().runtime(tauri_runtime_wry::Wry::default());
     // A phone starts one instance of an app by itself, and the crate behind
     // this plugin is empty there.
     #[cfg(desktop)]
@@ -1284,7 +1284,12 @@ pub fn run() {
             // answers for it, and on Linux nobody else asks the user.
             #[cfg(target_os = "linux")]
             if let Some(window) = app.get_webview_window("main") {
-                let _ = window.with_webview(|webview| linux_media::answer_microphone_requests(&webview.inner()));
+                let _ = window.with_webview(|webview| {
+                    // The runtime is type-erased; under wry it is a WebKitGTK view.
+                    if let Some(webview) = webview.downcast_ref::<tauri_runtime_wry::Webview>() {
+                        linux_media::answer_microphone_requests(&webview.inner());
+                    }
+                });
             }
 
             // ─── Erststart: Onboarding im eigenen Fenster ───

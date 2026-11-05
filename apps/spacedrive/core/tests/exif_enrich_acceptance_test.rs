@@ -11,7 +11,7 @@ mod helpers;
 
 use std::{path::Path, sync::Arc, time::Duration};
 
-use helpers::*;
+use helpers::{exif_fixture::*, indexing_harness::*};
 use sd_core::{
 	infra::action::LibraryAction,
 	library::AddOverrides,

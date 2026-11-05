@@ -40,23 +40,18 @@ impl EventCollector {
 		let events = self.events.clone();
 
 		let timeout_result = tokio::time::timeout(duration, async {
-			loop {
-				match self.subscriber.recv().await {
-					Ok(event) => {
-						// Filter out library statistics noise
-						let should_include = match &event {
-							Event::ResourceChanged { resource_type, .. } => {
-								resource_type != "library"
-							}
-							Event::LibraryStatisticsUpdated { .. } => false,
-							_ => true,
-						};
-
-						if should_include {
-							events.lock().await.push(event);
-						}
+			while let Ok(event) = self.subscriber.recv().await {
+				// Filter out library statistics noise
+				let should_include = match &event {
+					Event::ResourceChanged { resource_type, .. } => {
+						resource_type != "library"
 					}
-					Err(_) => break,
+					Event::LibraryStatisticsUpdated { .. } => false,
+					_ => true,
+				};
+
+				if should_include {
+					events.lock().await.push(event);
 				}
 			}
 		})

@@ -5,7 +5,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::{event_collector::*, indexing_harness::*};
 use sd_core::{
 	domain::addressing::{SdPath, SdPathBatch},
 	ops::files::copy::{
@@ -150,9 +150,9 @@ async fn test_copy_action_construction() {
 	});
 
 	assert_eq!(copy_job.sources.paths.len(), 2);
-	assert_eq!(copy_job.options.overwrite, false);
-	assert_eq!(copy_job.options.verify_checksum, true);
-	assert_eq!(copy_job.options.preserve_timestamps, true);
+	assert!(!copy_job.options.overwrite);
+	assert!(copy_job.options.verify_checksum);
+	assert!(copy_job.options.preserve_timestamps);
 
 	println!("Copy job construction test passed!");
 }

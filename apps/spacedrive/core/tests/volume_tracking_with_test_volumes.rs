@@ -340,7 +340,7 @@ async fn test_volume_capacity_scenarios() {
 				"Volume capacity should match the detected volume"
 			);
 			assert!(
-				volume.total_capacity <= (size_mb as u64) * 1024 * 1024,
+				volume.total_capacity <= size_mb * 1024 * 1024,
 				"capacity {} exceeds the {} MB image",
 				volume.total_capacity,
 				size_mb
@@ -686,10 +686,7 @@ async fn test_concurrent_volume_operations() {
 		let our_volume = tracked
 			.iter()
 			.find(|v| v.fingerprint == volume.fingerprint)
-			.expect(&format!(
-				"Library {} should have our test volume tracked",
-				i
-			));
+			.unwrap_or_else(|| panic!("Library {i} should have our test volume tracked"));
 
 		assert_eq!(
 			our_volume.display_name,

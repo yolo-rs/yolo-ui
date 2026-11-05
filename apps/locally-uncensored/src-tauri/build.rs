@@ -27,6 +27,7 @@ fn main() {
     emit_android_page_size();
     emit_phone_version();
     leave_out_missing_sidecars_in_debug();
+    create_missing_frontend_dist_in_debug();
     if windows_msvc_target() {
         emit_windows_app_manifest();
         build_tauri_without_app_manifest();
@@ -189,4 +190,20 @@ fn leave_out_missing_sidecars_in_debug() {
         "cargo:warning={sidecar} is missing; this debug build leaves the sidecars out (run scripts/build-llama.sh)"
     );
     std::env::set_var("TAURI_CONFIG", r#"{"bundle":{"externalBin":[]}}"#);
+}
+
+/// `tauri::generate_context!` refuses a `frontendDist` that does not exist,
+/// and `../dist` only appears after `bun run build`. A debug build (check,
+/// clippy, test) without it gets an empty folder, the way sd-server handles
+/// its web dist; a release build still needs the real frontend.
+fn create_missing_frontend_dist_in_debug() {
+    let dist = std::path::Path::new("../dist");
+    println!("cargo:rerun-if-changed=../dist");
+    if dist.exists() || std::env::var("PROFILE").as_deref() == Ok("release") {
+        return;
+    }
+    std::fs::create_dir_all(dist).expect("create an empty ../dist");
+    println!(
+        "cargo:warning=../dist is missing; created an empty one so this debug build compiles without the frontend (run bun run build)"
+    );
 }

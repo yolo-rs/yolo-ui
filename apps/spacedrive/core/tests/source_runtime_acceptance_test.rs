@@ -11,7 +11,7 @@ mod helpers;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use helpers::*;
+use helpers::{exif_fixture::*, indexing_harness::*};
 use sd_core::{
 	domain::addressing::SdPath,
 	infra::{api::SessionContext, query::CoreQuery, query::LibraryQuery},

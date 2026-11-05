@@ -16,7 +16,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
-use helpers::exif_jpeg;
+use helpers::exif_fixture::exif_jpeg;
 use sd_core::{
 	domain::{ContentKind, File, SdPath},
 	filetype::{FileTypeRegistry, KindConflict, PreviewSpec},

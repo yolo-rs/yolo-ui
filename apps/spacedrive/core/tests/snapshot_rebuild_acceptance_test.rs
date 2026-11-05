@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
 
-use helpers::TestConfigBuilder;
+use helpers::sync_harness::TestConfigBuilder;
 use sd_core::{
 	domain::addressing::SdPath,
 	infra::{

@@ -15,7 +15,7 @@ mod helpers;
 
 use std::path::Path;
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use sd_core::{
 	infra::{action::LibraryAction, api::SessionContext, db::entities, query::LibraryQuery},
 	library::AddOverrides,

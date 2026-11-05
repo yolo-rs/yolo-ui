@@ -12,7 +12,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use sd_core::device::get_current_device_slug;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

@@ -15,7 +15,7 @@ use std::{
 	path::{Path, PathBuf},
 };
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use sd_core::{
 	domain::{addressing::SdPath, ItemType},
 	infra::{

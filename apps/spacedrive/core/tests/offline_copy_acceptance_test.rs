@@ -17,7 +17,7 @@ mod helpers;
 use std::{path::Path, sync::Arc};
 
 use helpers::test_volumes::{TestVolume, TestVolumeBuilder, TestVolumeManager};
-use helpers::TestConfigBuilder;
+use helpers::sync_harness::TestConfigBuilder;
 use sd_core::{
 	infra::{action::LibraryAction, api::SessionContext, query::LibraryQuery},
 	library::{AddOverrides, Library},

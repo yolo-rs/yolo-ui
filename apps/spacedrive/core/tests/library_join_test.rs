@@ -88,8 +88,8 @@ async fn alice_join_scenario() {
 			icon: Set("Folder".to_string()),
 			color: Set("#FF0000".to_string()),
 			order: Set(1),
-			created_at: Set(Utc::now().into()),
-			updated_at: Set(Utc::now().into()),
+			created_at: Set(Utc::now()),
+			updated_at: Set(Utc::now()),
 		}
 		.insert(db)
 		.await

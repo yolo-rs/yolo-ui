@@ -5,10 +5,9 @@
 
 mod helpers;
 
-use helpers::{MockTransport, TestDataDir};
+use helpers::{sync_transport::MockTransport, test_data::TestDataDir};
 use sd_core::{
 	infra::{
-		db::entities,
 		sync::{EventCategory, EventSeverity, NetworkTransport, SyncEventQuery, SyncEventType},
 	},
 	library::Library,
@@ -23,7 +22,7 @@ use uuid::Uuid;
 /// Test harness for event log testing
 struct EventLogTestHarness {
 	_test_data_alice: TestDataDir,
-	core_alice: Core,
+	_core_alice: Core,
 	library_alice: Arc<Library>,
 	device_alice_id: Uuid,
 	transport_alice: Arc<MockTransport>,
@@ -89,7 +88,7 @@ impl EventLogTestHarness {
 
 		Ok(Self {
 			_test_data_alice: test_data_alice,
-			core_alice,
+			_core_alice: core_alice,
 			library_alice,
 			device_alice_id,
 			transport_alice,
@@ -198,10 +197,8 @@ async fn test_backfill_session_correlation() -> anyhow::Result<()> {
 	tracing::info!(event_count = events.len(), "Events retrieved via query API");
 
 	// Verify query API works (even if no events yet)
-	assert!(
-		events.len() >= 0,
-		"Query API should return results (even if empty)"
-	);
+	// The query returning Ok is the check; an empty result is fine.
+	let _ = events;
 
 	Ok(())
 }
@@ -364,7 +361,7 @@ async fn test_batch_aggregation() -> anyhow::Result<()> {
 
 	// Should have one batch event aggregating all the adds
 	assert!(
-		events.len() >= 1,
+		!events.is_empty(),
 		"Expected at least one batch ingestion event"
 	);
 
@@ -432,7 +429,8 @@ async fn test_buffer_overflow_logging() -> anyhow::Result<()> {
 
 	// Note: Buffer overflow only logs if drops actually occurred
 	// This test verifies the infrastructure exists, even if no drops happened
-	assert!(error_events.len() >= 0, "Error event query should work");
+	// The query returning Ok is the check; an empty result is fine.
+	let _ = error_events;
 
 	Ok(())
 }
@@ -458,7 +456,7 @@ async fn test_event_log_persistence() -> anyhow::Result<()> {
 	let events_before = harness.query_events_api(query.clone()).await?;
 
 	assert!(
-		events_before.len() >= 1,
+		!events_before.is_empty(),
 		"Should have logged state transition"
 	);
 
@@ -476,10 +474,7 @@ async fn test_event_log_persistence() -> anyhow::Result<()> {
 		"Events persisted to sync.db"
 	);
 
-	// Restart sync service (simulates app restart)
-	drop(harness.library_alice.sync_service());
-
-	// Re-initialize sync service
+	// Re-initialize the sync service (simulates an app restart)
 	harness
 		.library_alice
 		.init_sync_service(
@@ -679,7 +674,7 @@ async fn test_severity_filtering() -> anyhow::Result<()> {
 
 	tracing::info!(error_count = errors.len(), "Error events");
 
-	assert!(errors.len() >= 1, "Should have at least one error event");
+	assert!(!errors.is_empty(), "Should have at least one error event");
 
 	// All should be Error severity
 	for event in &errors {

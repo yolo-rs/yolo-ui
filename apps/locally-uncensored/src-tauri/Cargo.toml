@@ -64,6 +64,8 @@ tauri-build = { version = "3.0.0-alpha.4", path = "../../../submodules/tauri/cra
 # every command. Debug builds keep the inspector through debug_assertions.
 # Guard: src/lib/__tests__/release-opens-no-debug-socket.test.ts
 tauri = { version = "3.0.0-alpha.5", path = "../../../submodules/tauri/crates/tauri", features = ["image-png"] }
+# The tauri fork bundles no webview runtime; `run()` selects wry.
+tauri-runtime-wry = { version = "3.0.0-alpha.5", path = "../../../submodules/tauri/crates/tauri-runtime-wry" }
 tauri-plugin-shell = { version = "3.0.0-alpha.3", path = "../../../submodules/plugins-workspace/plugins/shell" }
 tauri-plugin-opener = { version = "3.0.0-alpha.3", path = "../../../submodules/plugins-workspace/plugins/opener" }
 # The same signature check the updater plugin runs, for the one download the
@@ -181,6 +183,8 @@ tauri-plugin-lu-native = { path = "plugins/lu-native" }
 # the updater has nothing to install because updates come through the store.
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri = { version = "3.0.0-alpha.5", path = "../../../submodules/tauri/crates/tauri", features = ["devtools", "tray-icon"] }
+# `devtools` on tauri needs the runtime crate to enable it as well.
+tauri-runtime-wry = { version = "3.0.0-alpha.5", path = "../../../submodules/tauri/crates/tauri-runtime-wry", features = ["devtools"] }
 tauri-plugin-updater = { version = "3.0.0-alpha.3", path = "../../../submodules/plugins-workspace/plugins/updater" }
 tauri-plugin-single-instance = { version = "3.0.0-alpha.3", path = "../../../submodules/plugins-workspace/plugins/single-instance" }
 # Native open and save dialogs.

@@ -20,7 +20,7 @@ use desk::types::{code, Outcome, Permission, Refusal};
 use serde::Serialize;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex, OnceLock};
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
 use crate::state::AppState;

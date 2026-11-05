@@ -7,7 +7,7 @@ use anyhow::{anyhow, Context, Result};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tracing::{debug, info};
+use tracing::info;
 
 /// Supported filesystems for test volumes
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -30,7 +30,7 @@ pub enum TestFileSystem {
 
 impl TestFileSystem {
 	/// Get the filesystem string for the current platform
-	pub fn to_platform_string(&self) -> &'static str {
+	pub fn to_platform_string(self) -> &'static str {
 		match self {
 			TestFileSystem::Apfs => "APFS",
 			TestFileSystem::HfsPlus => "HFS+",
@@ -187,7 +187,7 @@ impl MacOSTestVolumeManager {
 
 		// Create RAM disk
 		let output = tokio::process::Command::new("hdiutil")
-			.args(&["attach", "-nomount", &format!("ram://{}", sectors)])
+			.args(["attach", "-nomount", &format!("ram://{}", sectors)])
 			.output()
 			.await
 			.context("Failed to create RAM disk")?;
@@ -201,7 +201,7 @@ impl MacOSTestVolumeManager {
 
 		let disk_path = String::from_utf8_lossy(&output.stdout).trim().to_string();
 
-		debug!("Created RAM disk at {}", disk_path);
+		tracing::debug!("Created RAM disk at {}", disk_path);
 
 		// Format the disk
 		let fs_type = match config.filesystem {
@@ -213,7 +213,7 @@ impl MacOSTestVolumeManager {
 		};
 
 		let output = tokio::process::Command::new("diskutil")
-			.args(&["erasevolume", fs_type, &config.name, &disk_path])
+			.args(["erasevolume", fs_type, &config.name, &disk_path])
 			.output()
 			.await
 			.context("Failed to format RAM disk")?;
@@ -221,7 +221,7 @@ impl MacOSTestVolumeManager {
 		if !output.status.success() {
 			// Clean up RAM disk
 			tokio::process::Command::new("hdiutil")
-				.args(&["detach", &disk_path])
+				.args(["detach", &disk_path])
 				.output()
 				.await
 				.ok();
@@ -242,7 +242,7 @@ impl MacOSTestVolumeManager {
 			cleanup: Some(Box::new(move || {
 				// Detach the RAM disk
 				std::process::Command::new("hdiutil")
-					.args(&["detach", &disk_path_clone, "-force"])
+					.args(["detach", &disk_path_clone, "-force"])
 					.output()
 					.ok();
 			})),
@@ -266,7 +266,7 @@ impl MacOSTestVolumeManager {
 		};
 
 		let output = tokio::process::Command::new("hdiutil")
-			.args(&[
+			.args([
 				"create",
 				"-size",
 				&format!("{}m", size_mb),
@@ -289,7 +289,7 @@ impl MacOSTestVolumeManager {
 
 		// Mount the disk image
 		let output = tokio::process::Command::new("hdiutil")
-			.args(&["attach", dmg_path.to_str().unwrap()])
+			.args(["attach", dmg_path.to_str().unwrap()])
 			.output()
 			.await
 			.context("Failed to mount disk image")?;
@@ -331,7 +331,7 @@ impl MacOSTestVolumeManager {
 			cleanup: Some(Box::new(move || {
 				// Detach the disk
 				std::process::Command::new("hdiutil")
-					.args(&["detach", &disk_id_clone, "-force"])
+					.args(["detach", &disk_id_clone, "-force"])
 					.output()
 					.ok();
 
@@ -431,7 +431,7 @@ impl WindowsTestVolumeManager {
 		);
 
 		let output = tokio::process::Command::new("powershell")
-			.args(&["-NoProfile", "-Command", &script])
+			.args(["-NoProfile", "-Command", &script])
 			.output()
 			.await
 			.context("Failed to create VHD")?;
@@ -472,7 +472,7 @@ impl WindowsTestVolumeManager {
 				);
 
 				std::process::Command::new("powershell")
-					.args(&["-NoProfile", "-Command", &script])
+					.args(["-NoProfile", "-Command", &script])
 					.output()
 					.ok();
 
@@ -500,7 +500,7 @@ impl WindowsTestVolumeManager {
 	pub async fn check_privileges(&self) -> Result<()> {
 		// Check if we're running as administrator
 		let output = tokio::process::Command::new("net")
-			.args(&["session"])
+			.args(["session"])
 			.output()
 			.await?;
 
@@ -554,7 +554,7 @@ impl LinuxTestVolumeManager {
 		// Mount tmpfs
 		let size_mb = config.size_bytes / (1024 * 1024);
 		let output = tokio::process::Command::new("sudo")
-			.args(&[
+			.args([
 				"mount",
 				"-t",
 				"tmpfs",
@@ -584,7 +584,7 @@ impl LinuxTestVolumeManager {
 			cleanup: Some(Box::new(move || {
 				// Unmount tmpfs
 				std::process::Command::new("sudo")
-					.args(&["umount", mount_point_clone.to_str().unwrap()])
+					.args(["umount", mount_point_clone.to_str().unwrap()])
 					.output()
 					.ok();
 
@@ -605,7 +605,7 @@ impl LinuxTestVolumeManager {
 
 		// Create image file
 		let output = tokio::process::Command::new("dd")
-			.args(&[
+			.args([
 				"if=/dev/zero",
 				&format!("of={}", img_path.to_str().unwrap()),
 				"bs=1M",
@@ -624,7 +624,7 @@ impl LinuxTestVolumeManager {
 
 		// Create loop device
 		let output = tokio::process::Command::new("sudo")
-			.args(&["losetup", "--find", "--show", img_path.to_str().unwrap()])
+			.args(["losetup", "--find", "--show", img_path.to_str().unwrap()])
 			.output()
 			.await
 			.context("Failed to create loop device")?;
@@ -670,7 +670,7 @@ impl LinuxTestVolumeManager {
 		if !output.status.success() {
 			// Clean up loop device
 			tokio::process::Command::new("sudo")
-				.args(&["losetup", "-d", &loop_device])
+				.args(["losetup", "-d", &loop_device])
 				.output()
 				.await
 				.ok();
@@ -683,7 +683,7 @@ impl LinuxTestVolumeManager {
 
 		// Mount the loop device
 		let output = tokio::process::Command::new("sudo")
-			.args(&["mount", &loop_device, mount_point.to_str().unwrap()])
+			.args(["mount", &loop_device, mount_point.to_str().unwrap()])
 			.output()
 			.await
 			.context("Failed to mount loop device")?;
@@ -691,7 +691,7 @@ impl LinuxTestVolumeManager {
 		if !output.status.success() {
 			// Clean up
 			tokio::process::Command::new("sudo")
-				.args(&["losetup", "-d", &loop_device])
+				.args(["losetup", "-d", &loop_device])
 				.output()
 				.await
 				.ok();
@@ -721,13 +721,13 @@ impl LinuxTestVolumeManager {
 			cleanup: Some(Box::new(move || {
 				// Unmount
 				std::process::Command::new("sudo")
-					.args(&["umount", mount_point_clone.to_str().unwrap()])
+					.args(["umount", mount_point_clone.to_str().unwrap()])
 					.output()
 					.ok();
 
 				// Detach loop device
 				std::process::Command::new("sudo")
-					.args(&["losetup", "-d", &loop_device_clone])
+					.args(["losetup", "-d", &loop_device_clone])
 					.output()
 					.ok();
 
@@ -756,7 +756,7 @@ impl LinuxTestVolumeManager {
 	pub async fn check_privileges(&self) -> Result<()> {
 		// Check if we can use sudo
 		let output = tokio::process::Command::new("sudo")
-			.args(&["-n", "true"])
+			.args(["-n", "true"])
 			.output()
 			.await?;
 
@@ -769,7 +769,7 @@ impl LinuxTestVolumeManager {
 		// A container or VM without /dev/loop-control has sudo but cannot back a
 		// volume with a loop device; report that instead of failing at mkfs time.
 		let output = tokio::process::Command::new("sudo")
-			.args(&["-n", "losetup", "--find"])
+			.args(["-n", "losetup", "--find"])
 			.output()
 			.await?;
 

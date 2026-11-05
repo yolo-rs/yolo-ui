@@ -162,7 +162,7 @@ async fn capture_event_fixtures_for_typescript(
 
 	let source_path = sd_core::domain::SdPath::Physical {
 		device_slug: device_slug.clone(),
-		path: test_dir.clone().into(),
+		path: test_dir.clone(),
 	};
 
 	// The production action, so the events are the ones the frontend receives

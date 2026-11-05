@@ -3,6 +3,8 @@
 //! These tests verify that the volume detection system correctly identifies volumes,
 //! resolves paths to their storage locations, and selects optimal copy strategies.
 
+// Only the macOS tests use these.
+#[cfg(target_os = "macos")]
 use sd_core::{
 	device::get_current_device_slug,
 	domain::addressing::SdPath,
@@ -13,7 +15,9 @@ use sd_core::{
 		VolumeManager,
 	},
 };
+#[cfg(target_os = "macos")]
 use std::{path::PathBuf, sync::Arc};
+#[cfg(target_os = "macos")]
 use uuid::Uuid;
 
 /// Test volume detection on macOS

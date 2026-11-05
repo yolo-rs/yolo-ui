@@ -1,5 +1,7 @@
 //! Test helper modules for integration tests
 
+#![allow(dead_code, reason = "each test binary uses a subset of the shared helpers")]
+
 pub mod event_collector;
 pub mod exif_fixture;
 pub mod indexing_harness;
@@ -10,11 +12,3 @@ pub mod test_data;
 pub mod test_volumes;
 pub mod wait;
 
-pub use event_collector::*;
-pub use exif_fixture::*;
-pub use indexing_harness::*;
-pub use snapshot::*;
-pub use sync_harness::*;
-pub use sync_transport::*;
-pub use test_data::*;
-pub use wait::*;

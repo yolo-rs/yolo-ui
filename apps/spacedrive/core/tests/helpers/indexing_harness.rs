@@ -4,7 +4,8 @@
 //! index and watcher tests can walk temp directories, collect events, and
 //! assert on what the index reports.
 
-use super::{init_test_tracing, register_device, TestConfigBuilder, TestDataDir};
+use super::sync_harness::{init_test_tracing, register_device, TestConfigBuilder};
+use super::test_data::TestDataDir;
 use anyhow::Context;
 use sd_core::{
 	domain::addressing::SdPath,
@@ -171,7 +172,7 @@ impl IndexingHarness {
 	}
 
 	/// Get access to the snapshot manager (if snapshots enabled via SD_TEST_SNAPSHOTS=1)
-	pub fn snapshot_manager(&self) -> Option<&super::SnapshotManager> {
+	pub fn snapshot_manager(&self) -> Option<&super::snapshot::SnapshotManager> {
 		self.test_data.snapshot_manager()
 	}
 
@@ -202,7 +203,7 @@ impl IndexingHarness {
 	}
 
 	/// Create a test directory to write files into
-	pub async fn create_test_dir(&self, name: &str) -> anyhow::Result<TestDir> {
+	pub async fn create_test_dir(&self, name: &str) -> anyhow::Result<TestDir<'_>> {
 		let dir = self.temp_path().join(name);
 		tokio::fs::create_dir_all(&dir).await?;
 

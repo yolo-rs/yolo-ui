@@ -10,7 +10,7 @@
 
 mod helpers;
 
-use helpers::*;
+use helpers::indexing_harness::*;
 use sd_core::{
 	domain::{addressing::SdPath, ContentKind},
 	infra::{api::SessionContext, query::LibraryQuery},
@@ -191,7 +191,7 @@ async fn test_search_with_filters() -> anyhow::Result<()> {
 
 	let size_results = execute_search(&harness, size_search).await?;
 	assert!(
-		size_results.results.len() >= 1,
+		!size_results.results.is_empty(),
 		"Should find at least 1 large file"
 	);
 

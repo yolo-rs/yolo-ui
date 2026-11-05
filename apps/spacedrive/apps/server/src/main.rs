@@ -271,7 +271,7 @@ fn read_tile_png(path: &std::path::Path, uuid: uuid::Uuid, version: u64) -> Opti
 		return None;
 	};
 	bgra.truncate(frame.len());
-	for pixel in bgra.chunks_exact_mut(4) {
+	for pixel in bgra.as_chunks_mut::<4>().0 {
 		pixel.swap(0, 2);
 	}
 	let buffer = image::RgbaImage::from_raw(frame.content_width, frame.content_height, bgra)?;
