@@ -13,7 +13,8 @@ use lightningcss::properties::display::{Display as CssDisplay, DisplayInside, Di
 use lightningcss::properties::flex::{FlexDirection as CssFlexDirection, FlexWrap as CssFlexWrap};
 use lightningcss::properties::grid::{
     GridAutoFlow as CssGridAutoFlow, GridLine as CssGridLine, RepeatCount as CssRepeatCount,
-    TrackBreadth as CssTrackBreadth, TrackListItem, TrackSize, TrackSizing,
+    GridTemplateAreas as CssGridTemplateAreas, TrackBreadth as CssTrackBreadth, TrackListItem,
+    TrackSize, TrackSizing,
 };
 use lightningcss::properties::overflow::OverflowKeyword;
 use lightningcss::properties::position::Position as CssPosition;
@@ -86,6 +87,8 @@ pub struct Rule {
 pub struct StyleSheet {
     /// Rules in source order.
     pub rules: Vec<Rule>,
+    /// The context the sheet was parsed with.
+    pub context: LengthContext,
 }
 
 impl StyleSheet {
@@ -93,12 +96,20 @@ impl StyleSheet {
     /// `"section"`), applying matching rules in source order.
     #[must_use]
     pub fn style(&self, selectors: &[&str]) -> LayoutStyle {
+        self.style_in(selectors, &self.context)
+    }
+
+    /// Like [`Self::style`], but resolves `rem`, `em`, `vw` and `vh` against `cx` instead of the
+    /// context the sheet was parsed with (a per-node parent font size, a resized viewport).
+    /// A viewport unit with no viewport in `cx` resolves to nothing: that declaration is skipped.
+    #[must_use]
+    pub fn style_in(&self, selectors: &[&str], cx: &LengthContext) -> LayoutStyle {
         let mut style = LayoutStyle::default();
         for rule in &self.rules {
             if rule.selectors.iter().any(|s| selectors.contains(&s.as_str())) {
                 for d in &rule.declarations {
                     // Validated at parse time; re-applying cannot fail.
-                    let _ = apply(&mut style, &d.name, &d.value);
+                    let _ = apply(&mut style, &d.name, &d.value, cx);
                 }
             }
         }
@@ -114,6 +125,15 @@ impl StyleSheet {
 
 /// Parses a declaration list (the body of a `style` attribute) into one style.
 pub fn parse_style(css: &str, tokens: &TokenTable) -> Result<LayoutStyle, Diagnostics> {
+    parse_style_in(css, tokens, &LengthContext::default())
+}
+
+/// Like [`parse_style`], resolving `rem`, `em`, `vw` and `vh` against `cx`.
+pub fn parse_style_in(
+    css: &str,
+    tokens: &TokenTable,
+    cx: &LengthContext,
+) -> Result<LayoutStyle, Diagnostics> {
     let src = blank_comments(css);
     let lines = LineIndex::new(&src);
     let mut diags = Vec::new();
@@ -122,14 +142,23 @@ pub fn parse_style(css: &str, tokens: &TokenTable) -> Result<LayoutStyle, Diagno
         return Err(Diagnostics(diags));
     }
     let mut style = LayoutStyle::default();
-    for d in declarations(&src, 0, src.len(), &lines, tokens, &mut diags) {
-        let _ = apply(&mut style, &d.name, &d.value);
+    for d in declarations(&src, 0, src.len(), &lines, tokens, cx, &mut diags) {
+        let _ = apply(&mut style, &d.name, &d.value, cx);
     }
     if diags.is_empty() { Ok(style) } else { Err(Diagnostics(diags)) }
 }
 
 /// Parses a stylesheet of simple-selector rules (`.page { display: grid; }`).
 pub fn parse_stylesheet(css: &str, tokens: &TokenTable) -> Result<StyleSheet, Diagnostics> {
+    parse_stylesheet_in(css, tokens, &LengthContext::default())
+}
+
+/// Like [`parse_stylesheet`], resolving `rem`, `em`, `vw` and `vh` against `cx`.
+pub fn parse_stylesheet_in(
+    css: &str,
+    tokens: &TokenTable,
+    cx: &LengthContext,
+) -> Result<StyleSheet, Diagnostics> {
     let src = blank_comments(css);
     let lines = LineIndex::new(&src);
     let mut diags = Vec::new();
@@ -199,11 +228,11 @@ pub fn parse_stylesheet(css: &str, tokens: &TokenTable) -> Result<StyleSheet, Di
                 message: "nested rules are not supported".into(),
             });
         }
-        let declarations = declarations(&src, open + 1, close, &lines, tokens, &mut diags);
+        let declarations = declarations(&src, open + 1, close, &lines, tokens, cx, &mut diags);
         rules.push(Rule { selectors, declarations });
         i = close + 1;
     }
-    if diags.is_empty() { Ok(StyleSheet { rules }) } else { Err(Diagnostics(diags)) }
+    if diags.is_empty() { Ok(StyleSheet { rules, context: *cx }) } else { Err(Diagnostics(diags)) }
 }
 
 fn css_error(e: &CssError<lightningcss::error::ParserError<'_>>) -> Diagnostic {
@@ -300,6 +329,7 @@ fn declarations(
     end: usize,
     lines: &LineIndex,
     tokens: &TokenTable,
+    cx: &LengthContext,
     diags: &mut Vec<Diagnostic>,
 ) -> Vec<Declaration> {
     let bytes = &src.as_bytes()[..end];
@@ -346,7 +376,7 @@ fn declarations(
             }
         }
         let mut scratch = LayoutStyle::default();
-        match apply(&mut scratch, &name, &value) {
+        match apply(&mut scratch, &name, &value, cx) {
             Ok(()) => out.push(Declaration { name, value }),
             Err(message) => diags.push(err(message)),
         }
@@ -413,50 +443,43 @@ pub const SUPPORTED: &[&str] = &[
     "justify-content", "align-content", "align-items", "align-self", "justify-items",
     "justify-self", "place-content", "place-items", "place-self",
     "gap", "row-gap", "column-gap",
-    "grid-template-columns", "grid-template-rows", "grid-auto-columns", "grid-auto-rows",
+    "grid-template", "grid-template-areas", "grid-template-columns", "grid-template-rows", "grid-auto-columns", "grid-auto-rows",
     "grid-auto-flow", "grid-row", "grid-column", "grid-area", "grid-row-start", "grid-row-end",
     "grid-column-start", "grid-column-end",
 ];
 
 type R<T> = Result<T, String>;
 
-fn lp(v: &LengthPercentage) -> R<Length> {
-    match v {
-        DimensionPercentage::Dimension(d) => d
-            .to_px()
-            .map(Length::Px)
-            .ok_or_else(|| format!("unit of `{d:?}` is not supported; use px or %")),
-        DimensionPercentage::Percentage(p) => Ok(Length::Percent(p.0)),
-        DimensionPercentage::Calc(_) => Err("calc() that does not reduce to one px or % value is not supported".into()),
-    }
+fn lp(v: &LengthPercentage, cx: &LengthContext) -> R<Length> {
+    crate::calc::length_percentage(v, cx)
 }
 
-fn lpa(v: &LengthPercentageOrAuto) -> R<Length> {
+fn lpa(v: &LengthPercentageOrAuto, cx: &LengthContext) -> R<Length> {
     match v {
         LengthPercentageOrAuto::Auto => Ok(Length::Auto),
-        LengthPercentageOrAuto::LengthPercentage(l) => lp(l),
+        LengthPercentageOrAuto::LengthPercentage(l) => lp(l, cx),
     }
 }
 
-fn no_auto(v: &LengthPercentageOrAuto, what: &str) -> R<Length> {
-    match lpa(v)? {
+fn no_auto(v: &LengthPercentageOrAuto, what: &str, cx: &LengthContext) -> R<Length> {
+    match lpa(v, cx)? {
         Length::Auto => Err(format!("`auto` is not valid for {what}")),
         l => Ok(l),
     }
 }
 
-fn size(v: &Size) -> R<Length> {
+fn size(v: &Size, cx: &LengthContext) -> R<Length> {
     match v {
         Size::Auto => Ok(Length::Auto),
-        Size::LengthPercentage(l) => lp(l),
+        Size::LengthPercentage(l) => lp(l, cx),
         other => Err(format!("sizing keyword `{other:?}` is not supported; use px, % or auto")),
     }
 }
 
-fn max_size(v: &MaxSize) -> R<Length> {
+fn max_size(v: &MaxSize, cx: &LengthContext) -> R<Length> {
     match v {
         MaxSize::None => Ok(Length::Auto),
-        MaxSize::LengthPercentage(l) => lp(l),
+        MaxSize::LengthPercentage(l) => lp(l, cx),
         other => Err(format!("sizing keyword `{other:?}` is not supported; use px, % or none")),
     }
 }
@@ -595,19 +618,20 @@ fn overflow(v: OverflowKeyword) -> R<Overflow> {
     }
 }
 
-fn gap(v: &GapValue) -> R<Length> {
+fn gap(v: &GapValue, cx: &LengthContext) -> R<Length> {
     match v {
         GapValue::Normal => Ok(Length::ZERO),
-        GapValue::LengthPercentage(l) => lp(l),
+        GapValue::LengthPercentage(l) => lp(l, cx),
     }
 }
 
-fn breadth(b: &CssTrackBreadth) -> R<TrackBreadth> {
+fn breadth(b: &CssTrackBreadth, cx: &LengthContext) -> R<TrackBreadth> {
     Ok(match b {
-        CssTrackBreadth::Length(l) => match lp(l)? {
+        CssTrackBreadth::Length(l) => match lp(l, cx)? {
             Length::Px(v) => TrackBreadth::Px(v),
             Length::Percent(v) => TrackBreadth::Percent(v),
             Length::Auto => TrackBreadth::Auto,
+            Length::Calc { .. } => return Err("calc() mixing px and % is not supported in grid tracks; use one unit".into()),
         },
         CssTrackBreadth::Flex(f) => TrackBreadth::Fr(*f),
         CssTrackBreadth::MinContent => TrackBreadth::MinContent,
@@ -616,39 +640,43 @@ fn breadth(b: &CssTrackBreadth) -> R<TrackBreadth> {
     })
 }
 
-fn track(t: &TrackSize) -> R<Track> {
+fn track(t: &TrackSize, cx: &LengthContext) -> R<Track> {
     match t {
-        TrackSize::TrackBreadth(b) => Ok(Track::Single(breadth(b)?)),
+        TrackSize::TrackBreadth(b) => Ok(Track::Single(breadth(b, cx)?)),
         TrackSize::MinMax { min, max } => {
-            let min = breadth(min)?;
+            let min = breadth(min, cx)?;
             if matches!(min, TrackBreadth::Fr(_)) {
                 return Err("an `fr` value is not valid as the minimum of minmax()".into());
             }
-            Ok(Track::MinMax(min, breadth(max)?))
+            Ok(Track::MinMax(min, breadth(max, cx)?))
         }
-        TrackSize::FitContent(l) => match lp(l)? {
+        TrackSize::FitContent(l) => match lp(l, cx)? {
             Length::Px(v) => Ok(Track::FitContentPx(v)),
             Length::Percent(v) => Ok(Track::FitContentPercent(v)),
             Length::Auto => Err("fit-content() needs a length".into()),
+            Length::Calc { .. } => Err("calc() mixing px and % is not supported in fit-content(); use one unit".into()),
         },
     }
 }
 
-fn template(t: &TrackSizing<'_>) -> R<Vec<TemplateItem>> {
+type Template = (Vec<TemplateItem>, Vec<Vec<String>>);
+
+/// Tracks plus the names of the lines around them. Names are positional (one set before each
+/// item and one after the last) and are dropped when no line is named. Names inside `repeat()`
+/// are not supported.
+fn template(t: &TrackSizing<'_>, cx: &LengthContext) -> R<Template> {
     let list = match t {
-        TrackSizing::None => return Ok(Vec::new()),
+        TrackSizing::None => return Ok((Vec::new(), Vec::new())),
         TrackSizing::TrackList(list) => list,
     };
-    if list.line_names.iter().any(|n| !n.is_empty()) {
-        return Err("named grid lines are not supported".into());
-    }
-    list.items
+    let items = list
+        .items
         .iter()
         .map(|item| match item {
-            TrackListItem::TrackSize(t) => Ok(TemplateItem::Track(track(t)?)),
+            TrackListItem::TrackSize(t) => Ok(TemplateItem::Track(track(t, cx)?)),
             TrackListItem::TrackRepeat(r) => {
                 if r.line_names.iter().any(|n| !n.is_empty()) {
-                    return Err("named grid lines are not supported".into());
+                    return Err("named grid lines inside repeat() are not supported".into());
                 }
                 let count = match r.count {
                     CssRepeatCount::Number(n) => RepeatCount::Count(
@@ -657,20 +685,84 @@ fn template(t: &TrackSizing<'_>) -> R<Vec<TemplateItem>> {
                     CssRepeatCount::AutoFill => RepeatCount::AutoFill,
                     CssRepeatCount::AutoFit => RepeatCount::AutoFit,
                 };
-                let tracks = r.track_sizes.iter().map(track).collect::<R<Vec<_>>>()?;
+                let tracks = r.track_sizes.iter().map(|t| track(t, cx)).collect::<R<Vec<_>>>()?;
                 Ok(TemplateItem::Repeat(count, tracks))
             }
         })
-        .collect()
+        .collect::<R<Vec<_>>>()?;
+    let mut names: Vec<Vec<String>> =
+        list.line_names.iter().map(|set| set.iter().map(|n| String::from(&*n.0)).collect()).collect();
+    if names.iter().all(Vec::is_empty) {
+        names.clear();
+    } else {
+        names.resize(items.len() + 1, Vec::new());
+    }
+    Ok((items, names))
+}
+
+/// `grid-template-areas` rows to named rectangles. Every named area must be one filled
+/// rectangle (CSS Grid §7.3); an `.` cell is unnamed.
+fn areas(a: &CssGridTemplateAreas) -> R<Option<GridAreas>> {
+    let (columns, cells) = match a {
+        CssGridTemplateAreas::None => return Ok(None),
+        CssGridTemplateAreas::Areas { columns, areas } => (*columns as usize, areas),
+    };
+    if columns == 0 || cells.len() % columns != 0 {
+        return Err("grid-template-areas rows must all have the same number of cells".into());
+    }
+    let rows = cells.len() / columns;
+    let (Ok(rows16), Ok(columns16)) = (u16::try_from(rows), u16::try_from(columns)) else {
+        return Err("grid-template-areas is too large".into());
+    };
+    let mut out: Vec<GridArea> = Vec::new();
+    for (i, cell) in cells.iter().enumerate() {
+        let Some(name) = cell else { continue };
+        let (r, c) = (i / columns + 1, i % columns + 1);
+        // `r`, `c` are at most `rows` and `columns`, which fit u16.
+        let (r, c) = (r as u16, c as u16);
+        match out.iter_mut().find(|x| x.name == *name) {
+            Some(x) => {
+                x.row_start = x.row_start.min(r);
+                x.row_end = x.row_end.max(r + 1);
+                x.column_start = x.column_start.min(c);
+                x.column_end = x.column_end.max(c + 1);
+            }
+            None => out.push(GridArea {
+                name: name.clone(),
+                row_start: r,
+                row_end: r + 1,
+                column_start: c,
+                column_end: c + 1,
+            }),
+        }
+    }
+    for area in &out {
+        for r in area.row_start..area.row_end {
+            for c in area.column_start..area.column_end {
+                let idx = (usize::from(r) - 1) * columns + usize::from(c) - 1;
+                if cells[idx].as_deref() != Some(area.name.as_str()) {
+                    return Err(format!("grid area `{}` is not a filled rectangle", area.name));
+                }
+            }
+        }
+    }
+    Ok(Some(GridAreas { rows: rows16, columns: columns16, areas: out }))
 }
 
 fn grid_line(l: &CssGridLine<'_>) -> R<GridLine> {
     match l {
         CssGridLine::Auto => Ok(GridLine::Auto),
-        CssGridLine::Area { .. } => Err("named grid areas are not supported; use line numbers".into()),
-        CssGridLine::Line { name: Some(_), .. } | CssGridLine::Span { name: Some(_), .. } => {
-            Err("named grid lines are not supported; use line numbers".into())
-        }
+        CssGridLine::Area { name } => Ok(GridLine::Named(String::from(&*name.0), 0)),
+        CssGridLine::Line { index, name: Some(name) } => i16::try_from(*index)
+            .ok()
+            .filter(|i| *i != 0)
+            .map(|i| GridLine::Named(String::from(&*name.0), i))
+            .ok_or_else(|| format!("grid line {index} is out of range")),
+        CssGridLine::Span { index, name: Some(name) } => u16::try_from(*index)
+            .ok()
+            .filter(|i| *i > 0)
+            .map(|i| GridLine::NamedSpan(String::from(&*name.0), i))
+            .ok_or_else(|| format!("span {index} is out of range")),
         CssGridLine::Line { index, name: None } => i16::try_from(*index)
             .ok()
             .filter(|i| *i != 0)
@@ -689,7 +781,7 @@ fn sides(top: Length, right: Length, bottom: Length, left: Length) -> Sides<Leng
 }
 
 /// Applies one declaration (value already free of `var()`) to `style`.
-pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str) -> R<()> {
+pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str, cx: &LengthContext) -> R<()> {
     let prop = Property::parse_string(PropertyId::from(name), value, ParserOptions::default())
         .map_err(|e| format!("invalid value `{value}`: {}", CssError::from(e, String::new()).kind))?;
     let s = style;
@@ -729,17 +821,17 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str) -> R<()> {
         }
         Property::OverflowX(o) => s.overflow_x = overflow(*o)?,
         Property::OverflowY(o) => s.overflow_y = overflow(*o)?,
-        Property::Inset(i) => s.inset = sides(lpa(&i.top)?, lpa(&i.right)?, lpa(&i.bottom)?, lpa(&i.left)?),
-        Property::Top(v) => s.inset.top = lpa(v)?,
-        Property::Right(v) => s.inset.right = lpa(v)?,
-        Property::Bottom(v) => s.inset.bottom = lpa(v)?,
-        Property::Left(v) => s.inset.left = lpa(v)?,
-        Property::Width(v) => s.width = size(v)?,
-        Property::Height(v) => s.height = size(v)?,
-        Property::MinWidth(v) => s.min_width = size(v)?,
-        Property::MinHeight(v) => s.min_height = size(v)?,
-        Property::MaxWidth(v) => s.max_width = max_size(v)?,
-        Property::MaxHeight(v) => s.max_height = max_size(v)?,
+        Property::Inset(i) => s.inset = sides(lpa(&i.top, cx)?, lpa(&i.right, cx)?, lpa(&i.bottom, cx)?, lpa(&i.left, cx)?),
+        Property::Top(v) => s.inset.top = lpa(v, cx)?,
+        Property::Right(v) => s.inset.right = lpa(v, cx)?,
+        Property::Bottom(v) => s.inset.bottom = lpa(v, cx)?,
+        Property::Left(v) => s.inset.left = lpa(v, cx)?,
+        Property::Width(v) => s.width = size(v, cx)?,
+        Property::Height(v) => s.height = size(v, cx)?,
+        Property::MinWidth(v) => s.min_width = size(v, cx)?,
+        Property::MinHeight(v) => s.min_height = size(v, cx)?,
+        Property::MaxWidth(v) => s.max_width = max_size(v, cx)?,
+        Property::MaxHeight(v) => s.max_height = max_size(v, cx)?,
         Property::AspectRatio(a) => {
             s.aspect_ratio = match &a.ratio {
                 Some(r) if r.1 == 0.0 || r.0 <= 0.0 => return Err("aspect ratio must be positive".into()),
@@ -747,23 +839,23 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str) -> R<()> {
                 None => None,
             }
         }
-        Property::Margin(m) => s.margin = sides(lpa(&m.top)?, lpa(&m.right)?, lpa(&m.bottom)?, lpa(&m.left)?),
-        Property::MarginTop(v) => s.margin.top = lpa(v)?,
-        Property::MarginRight(v) => s.margin.right = lpa(v)?,
-        Property::MarginBottom(v) => s.margin.bottom = lpa(v)?,
-        Property::MarginLeft(v) => s.margin.left = lpa(v)?,
+        Property::Margin(m) => s.margin = sides(lpa(&m.top, cx)?, lpa(&m.right, cx)?, lpa(&m.bottom, cx)?, lpa(&m.left, cx)?),
+        Property::MarginTop(v) => s.margin.top = lpa(v, cx)?,
+        Property::MarginRight(v) => s.margin.right = lpa(v, cx)?,
+        Property::MarginBottom(v) => s.margin.bottom = lpa(v, cx)?,
+        Property::MarginLeft(v) => s.margin.left = lpa(v, cx)?,
         Property::Padding(p) => {
             s.padding = sides(
-                no_auto(&p.top, "padding")?,
-                no_auto(&p.right, "padding")?,
-                no_auto(&p.bottom, "padding")?,
-                no_auto(&p.left, "padding")?,
+                no_auto(&p.top, "padding", cx)?,
+                no_auto(&p.right, "padding", cx)?,
+                no_auto(&p.bottom, "padding", cx)?,
+                no_auto(&p.left, "padding", cx)?,
             )
         }
-        Property::PaddingTop(v) => s.padding.top = no_auto(v, "padding")?,
-        Property::PaddingRight(v) => s.padding.right = no_auto(v, "padding")?,
-        Property::PaddingBottom(v) => s.padding.bottom = no_auto(v, "padding")?,
-        Property::PaddingLeft(v) => s.padding.left = no_auto(v, "padding")?,
+        Property::PaddingTop(v) => s.padding.top = no_auto(v, "padding", cx)?,
+        Property::PaddingRight(v) => s.padding.right = no_auto(v, "padding", cx)?,
+        Property::PaddingBottom(v) => s.padding.bottom = no_auto(v, "padding", cx)?,
+        Property::PaddingLeft(v) => s.padding.left = no_auto(v, "padding", cx)?,
         Property::FlexDirection(d, _) => s.flex_direction = flex_direction(d),
         Property::FlexWrap(w, _) => s.flex_wrap = flex_wrap(w),
         Property::FlexFlow(f, _) => {
@@ -773,11 +865,11 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str) -> R<()> {
         Property::Flex(f, _) => {
             s.flex_grow = f.grow;
             s.flex_shrink = f.shrink;
-            s.flex_basis = lpa(&f.basis)?;
+            s.flex_basis = lpa(&f.basis, cx)?;
         }
         Property::FlexGrow(v, _) => s.flex_grow = *v,
         Property::FlexShrink(v, _) => s.flex_shrink = *v,
-        Property::FlexBasis(v, _) => s.flex_basis = lpa(v)?,
+        Property::FlexBasis(v, _) => s.flex_basis = lpa(v, cx)?,
         Property::JustifyContent(v, _) => s.justify_content = justify_content(v)?,
         Property::AlignContent(v, _) => s.align_content = align_content(v)?,
         Property::AlignItems(v, _) => s.align_items = align_items(v)?,
@@ -797,15 +889,25 @@ pub(crate) fn apply(style: &mut LayoutStyle, name: &str, value: &str) -> R<()> {
             s.justify_self = justify_self(&p.justify)?;
         }
         Property::Gap(g) => {
-            s.row_gap = gap(&g.row)?;
-            s.column_gap = gap(&g.column)?;
+            s.row_gap = gap(&g.row, cx)?;
+            s.column_gap = gap(&g.column, cx)?;
         }
-        Property::RowGap(g) => s.row_gap = gap(g)?,
-        Property::ColumnGap(g) => s.column_gap = gap(g)?,
-        Property::GridTemplateColumns(t) => s.grid_template_columns = template(t)?,
-        Property::GridTemplateRows(t) => s.grid_template_rows = template(t)?,
-        Property::GridAutoColumns(l) => s.grid_auto_columns = l.0.iter().map(track).collect::<R<_>>()?,
-        Property::GridAutoRows(l) => s.grid_auto_rows = l.0.iter().map(track).collect::<R<_>>()?,
+        Property::RowGap(g) => s.row_gap = gap(g, cx)?,
+        Property::ColumnGap(g) => s.column_gap = gap(g, cx)?,
+        Property::GridTemplateColumns(t) => {
+            (s.grid_template_columns, s.grid_template_column_names) = template(t, cx)?;
+        }
+        Property::GridTemplateAreas(a) => s.grid_template_areas = areas(a)?,
+        Property::GridTemplate(t) => {
+            (s.grid_template_rows, s.grid_template_row_names) = template(&t.rows, cx)?;
+            (s.grid_template_columns, s.grid_template_column_names) = template(&t.columns, cx)?;
+            s.grid_template_areas = areas(&t.areas)?;
+        }
+        Property::GridTemplateRows(t) => {
+            (s.grid_template_rows, s.grid_template_row_names) = template(t, cx)?;
+        }
+        Property::GridAutoColumns(l) => s.grid_auto_columns = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?,
+        Property::GridAutoRows(l) => s.grid_auto_rows = l.0.iter().map(|t| track(t, cx)).collect::<R<_>>()?,
         Property::GridAutoFlow(f) => {
             s.grid_auto_flow = match (f.contains(CssGridAutoFlow::Column), f.contains(CssGridAutoFlow::Dense)) {
                 (false, false) => GridAutoFlow::Row,

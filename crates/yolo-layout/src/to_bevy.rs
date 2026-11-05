@@ -16,6 +16,8 @@ fn val(l: Length) -> Val {
         Length::Auto => Val::Auto,
         Length::Px(v) => Val::Px(v),
         Length::Percent(v) => Val::Percent(v * 100.0),
+        // Bevy has no calc(); keep the px term of a mixed value (see `Length::Calc`).
+        Length::Calc { px, .. } => Val::Px(px),
     }
 }
 
@@ -157,8 +159,14 @@ fn template(items: &[TemplateItem]) -> Vec<RepeatedGridTrack> {
         .collect()
 }
 
-fn placement(p: GridPlacement) -> BGridPlacement {
-    match (p.start, p.end) {
+fn placement(p: &GridPlacement) -> BGridPlacement {
+    // Bevy has no named lines or areas: they place automatically.
+    let plain = |l: &GridLine| match l {
+        GridLine::Named(..) => GridLine::Auto,
+        GridLine::NamedSpan(..) => GridLine::Span(1),
+        other => other.clone(),
+    };
+    match (plain(&p.start), plain(&p.end)) {
         (GridLine::Auto, GridLine::Auto) => BGridPlacement::auto(),
         (GridLine::Line(s), GridLine::Auto) => BGridPlacement::start(s),
         (GridLine::Auto, GridLine::Line(e)) => BGridPlacement::end(e),
@@ -168,6 +176,7 @@ fn placement(p: GridPlacement) -> BGridPlacement {
         (GridLine::Span(n), GridLine::Auto | GridLine::Span(_)) | (GridLine::Auto, GridLine::Span(n)) => {
             BGridPlacement::span(n)
         }
+        _ => BGridPlacement::auto(),
     }
 }
 
@@ -241,8 +250,8 @@ impl LayoutStyle {
             grid_template_columns: template(&self.grid_template_columns),
             grid_auto_rows: self.grid_auto_rows.iter().copied().map(track).collect(),
             grid_auto_columns: self.grid_auto_columns.iter().copied().map(track).collect(),
-            grid_row: placement(self.grid_row),
-            grid_column: placement(self.grid_column),
+            grid_row: placement(&self.grid_row),
+            grid_column: placement(&self.grid_column),
             ..Node::default()
         })
     }

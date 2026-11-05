@@ -10,7 +10,9 @@
 //! - Bevy (`bevy` feature): [`LayoutStyle::to_bevy_node`] produces a `bevy::ui::Node`;
 //! - egui (`egui` feature): [`LayoutTree::put`] places widgets at the computed rects.
 
+mod calc;
 mod parse;
+mod snap;
 mod style;
 pub mod tailwind;
 mod to_taffy;
@@ -22,12 +24,16 @@ mod to_bevy;
 #[cfg(feature = "egui")]
 mod to_egui;
 
-pub use parse::{Diagnostic, Diagnostics, Rule, SUPPORTED, StyleSheet, parse_style, parse_stylesheet};
+pub use parse::{
+    Diagnostic, Diagnostics, Rule, SUPPORTED, StyleSheet, parse_style, parse_style_in,
+    parse_stylesheet, parse_stylesheet_in,
+};
 pub use style::*;
 pub use tailwind::{
     TailwindResolution, apply_tailwind_token, resolve_tailwind, tailwind_to_css,
     tailwind_to_layout_style,
 };
+pub use snap::{GRID_4, GRID_8, TapTarget, ensure_tap_target, min_tap_target, snap_to_grid};
 pub use tokens::{SPACING_PREFIX, TokenTable};
 pub use tree::{
     Available, LayoutRect, LayoutTree, MeasureRequest, NodeKey, NodeLayout, TreeError,
@@ -75,3 +81,6 @@ pub fn monospace_measure(char_width: f32, line_height: f32) -> impl FnMut(&Measu
         (widest, lines as f32 * line_height)
     }
 }
+
+#[cfg(test)]
+mod tests;

@@ -10,31 +10,84 @@ use taffy::{Dimension, LengthPercentage, LengthPercentageAuto, MinMax, Point, Re
 
 use crate::style::*;
 
-fn dim(l: Length) -> Dimension {
-    match l {
-        Length::Auto => Dimension::auto(),
-        Length::Px(v) => Dimension::length(v),
-        Length::Percent(v) => Dimension::percent(v),
-    }
+/// Axis of the container a percentage resolves against.
+#[derive(Clone, Copy)]
+enum Axis {
+    X,
+    Y,
 }
 
-fn lpa(l: Length) -> LengthPercentageAuto {
-    match l {
-        Length::Auto => LengthPercentageAuto::auto(),
-        Length::Px(v) => LengthPercentageAuto::length(v),
-        Length::Percent(v) => LengthPercentageAuto::percent(v),
-    }
+/// Converts lengths, resolving [`Length::Calc`] against `container` (width, height) when given.
+#[derive(Clone, Copy)]
+struct Conv {
+    container: Option<(f32, f32)>,
 }
 
-fn lp(l: Length) -> LengthPercentage {
-    match l {
-        Length::Auto | Length::Px(_) => LengthPercentage::length(if let Length::Px(v) = l { v } else { 0.0 }),
-        Length::Percent(v) => LengthPercentage::percent(v),
+impl Conv {
+    /// Collapses a `Calc`; every other variant passes through.
+    fn flat(self, l: Length, axis: Axis) -> Length {
+        match l {
+            Length::Calc { px, percent } => match self.container {
+                Some((w, h)) => Length::Px(px + percent * if matches!(axis, Axis::X) { w } else { h }),
+                // No container: TaffyTree cannot resolve a mixed calc(), so keep the px term.
+                None => Length::Px(px),
+            },
+            other => other,
+        }
     }
-}
 
-fn rect<T>(s: Sides<Length>, f: fn(Length) -> T) -> Rect<T> {
-    Rect { left: f(s.left), right: f(s.right), top: f(s.top), bottom: f(s.bottom) }
+    fn dim(self, l: Length, axis: Axis) -> Dimension {
+        match self.flat(l, axis) {
+            Length::Px(v) => Dimension::length(v),
+            Length::Percent(v) => Dimension::percent(v),
+            _ => Dimension::auto(),
+        }
+    }
+
+    fn lpa(self, l: Length, axis: Axis) -> LengthPercentageAuto {
+        match self.flat(l, axis) {
+            Length::Px(v) => LengthPercentageAuto::length(v),
+            Length::Percent(v) => LengthPercentageAuto::percent(v),
+            _ => LengthPercentageAuto::auto(),
+        }
+    }
+
+    fn lp(self, l: Length, axis: Axis) -> LengthPercentage {
+        match self.flat(l, axis) {
+            Length::Px(v) => LengthPercentage::length(v),
+            Length::Percent(v) => LengthPercentage::percent(v),
+            _ => LengthPercentage::length(0.0),
+        }
+    }
+
+    /// Margin percentages refer to the container width on every side (CSS).
+    fn margin(self, s: Sides<Length>) -> Rect<LengthPercentageAuto> {
+        Rect {
+            left: self.lpa(s.left, Axis::X),
+            right: self.lpa(s.right, Axis::X),
+            top: self.lpa(s.top, Axis::X),
+            bottom: self.lpa(s.bottom, Axis::X),
+        }
+    }
+
+    /// Padding percentages refer to the container width on every side (CSS).
+    fn padding(self, s: Sides<Length>) -> Rect<LengthPercentage> {
+        Rect {
+            left: self.lp(s.left, Axis::X),
+            right: self.lp(s.right, Axis::X),
+            top: self.lp(s.top, Axis::X),
+            bottom: self.lp(s.bottom, Axis::X),
+        }
+    }
+
+    fn inset(self, s: Sides<Length>) -> Rect<LengthPercentageAuto> {
+        Rect {
+            left: self.lpa(s.left, Axis::X),
+            right: self.lpa(s.right, Axis::X),
+            top: self.lpa(s.top, Axis::Y),
+            bottom: self.lpa(s.bottom, Axis::Y),
+        }
+    }
 }
 
 fn safety(s: Safety) -> AlignmentSafety {
@@ -130,16 +183,18 @@ fn template(items: &[TemplateItem]) -> Vec<GridTemplateComponent<String>> {
         .collect()
 }
 
-fn placement(line: GridLine) -> taffy::GridPlacement<String> {
+fn placement(line: &GridLine) -> taffy::GridPlacement<String> {
     match line {
         GridLine::Auto => taffy::GridPlacement::Auto,
-        GridLine::Line(i) => taffy::GridPlacement::from_line_index(i),
-        GridLine::Span(n) => taffy::GridPlacement::from_span(n),
+        GridLine::Line(i) => taffy::GridPlacement::from_line_index(*i),
+        GridLine::Named(name, idx) => taffy::GridPlacement::NamedLine(name.clone(), *idx),
+        GridLine::NamedSpan(name, n) => taffy::GridPlacement::NamedSpan(name.clone(), *n),
+        GridLine::Span(n) => taffy::GridPlacement::from_span(*n),
     }
 }
 
-fn placements(p: GridPlacement) -> taffy::Line<taffy::GridPlacement<String>> {
-    taffy::Line { start: placement(p.start), end: placement(p.end) }
+fn placements(p: &GridPlacement) -> taffy::Line<taffy::GridPlacement<String>> {
+    taffy::Line { start: placement(&p.start), end: placement(&p.end) }
 }
 
 fn overflow(o: Overflow) -> taffy::Overflow {
@@ -152,9 +207,27 @@ fn overflow(o: Overflow) -> taffy::Overflow {
 }
 
 impl LayoutStyle {
-    /// The equivalent Taffy style.
+    /// The equivalent Taffy style. A mixed px + percent [`Length::Calc`] keeps only its px term
+    /// here (Taffy cannot resolve it without a container); use [`Self::to_taffy_in`] to resolve it.
     #[must_use]
     pub fn to_taffy(&self) -> taffy::Style {
+        self.convert(Conv { container: None })
+    }
+
+    /// The equivalent Taffy style with every [`Length::Calc`] resolved against the container
+    /// size `(width, height)` in px: widths, horizontal insets, margins, padding and column gaps
+    /// against the width, heights, vertical insets and row gaps against the height.
+    #[must_use]
+    pub fn to_taffy_in(&self, container: (f32, f32)) -> taffy::Style {
+        self.convert(Conv { container: Some(container) })
+    }
+
+    fn convert(&self, c: Conv) -> taffy::Style {
+        let basis_axis = if matches!(self.flex_direction, FlexDirection::Row | FlexDirection::RowReverse) {
+            Axis::X
+        } else {
+            Axis::Y
+        };
         taffy::Style {
             display: match self.display {
                 Display::Block => taffy::Display::Block,
@@ -173,13 +246,13 @@ impl LayoutStyle {
                 BoxSizing::ContentBox => taffy::BoxSizing::ContentBox,
             },
             overflow: Point { x: overflow(self.overflow_x), y: overflow(self.overflow_y) },
-            inset: rect(self.inset, lpa),
-            size: Size { width: dim(self.width), height: dim(self.height) },
-            min_size: Size { width: lpa(self.min_width), height: lpa(self.min_height) },
-            max_size: Size { width: lpa(self.max_width), height: lpa(self.max_height) },
+            inset: c.inset(self.inset),
+            size: Size { width: c.dim(self.width, Axis::X), height: c.dim(self.height, Axis::Y) },
+            min_size: Size { width: c.lpa(self.min_width, Axis::X), height: c.lpa(self.min_height, Axis::Y) },
+            max_size: Size { width: c.lpa(self.max_width, Axis::X), height: c.lpa(self.max_height, Axis::Y) },
             aspect_ratio: self.aspect_ratio,
-            margin: rect(self.margin, lpa),
-            padding: rect(self.padding, lp),
+            margin: c.margin(self.margin),
+            padding: c.padding(self.padding),
             flex_direction: match self.flex_direction {
                 FlexDirection::Row => taffy::FlexDirection::Row,
                 FlexDirection::RowReverse => taffy::FlexDirection::RowReverse,
@@ -193,14 +266,14 @@ impl LayoutStyle {
             },
             flex_grow: self.flex_grow,
             flex_shrink: self.flex_shrink,
-            flex_basis: dim(self.flex_basis),
+            flex_basis: c.dim(self.flex_basis, basis_axis),
             align_items: items(self.align_items),
             justify_items: items(self.justify_items),
             align_self: self.align_self.map(items),
             justify_self: self.justify_self.map(items),
             align_content: content(self.align_content),
             justify_content: content(self.justify_content),
-            gap: Size { width: lp(self.column_gap), height: lp(self.row_gap) },
+            gap: Size { width: c.lp(self.column_gap, Axis::X), height: c.lp(self.row_gap, Axis::Y) },
             grid_template_rows: template(&self.grid_template_rows),
             grid_template_columns: template(&self.grid_template_columns),
             grid_auto_rows: self.grid_auto_rows.iter().copied().map(track).collect(),
@@ -211,9 +284,30 @@ impl LayoutStyle {
                 GridAutoFlow::RowDense => taffy::GridAutoFlow::RowDense,
                 GridAutoFlow::ColumnDense => taffy::GridAutoFlow::ColumnDense,
             },
-            grid_row: placements(self.grid_row),
-            grid_column: placements(self.grid_column),
+            grid_row: placements(&self.grid_row),
+            grid_column: placements(&self.grid_column),
+            grid_template_row_names: self.grid_template_row_names.clone(),
+            grid_template_column_names: self.grid_template_column_names.clone(),
+            grid_template_areas: self.grid_template_areas.as_ref().map(areas),
             ..taffy::Style::default()
         }
+    }
+}
+
+fn areas(a: &GridAreas) -> taffy::style::GridTemplateAreas<String> {
+    taffy::style::GridTemplateAreas {
+        areas: a
+            .areas
+            .iter()
+            .map(|r| taffy::style::GridTemplateArea {
+                name: r.name.clone(),
+                row_start: r.row_start,
+                row_end: r.row_end,
+                column_start: r.column_start,
+                column_end: r.column_end,
+            })
+            .collect(),
+        row_count: a.rows,
+        column_count: a.columns,
     }
 }
