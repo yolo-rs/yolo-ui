@@ -123,10 +123,22 @@ fn hex(argb: u32) -> String {
 
 /// Roles painted from the neutral palette.
 const NEUTRAL_ROLES: [&str; 16] = [
-    "background", "on-background", "surface", "on-surface", "surface-dim", "surface-bright",
-    "surface-container-lowest", "surface-container-low", "surface-container",
-    "surface-container-high", "surface-container-highest", "inverse-surface", "inverse-on-surface",
-    "surface-variant", "on-surface-variant", "outline",
+    "background",
+    "on-background",
+    "surface",
+    "on-surface",
+    "surface-dim",
+    "surface-bright",
+    "surface-container-lowest",
+    "surface-container-low",
+    "surface-container",
+    "surface-container-high",
+    "surface-container-highest",
+    "inverse-surface",
+    "inverse-on-surface",
+    "surface-variant",
+    "on-surface-variant",
+    "outline",
 ];
 
 /// HCT tonal palette for an OKLCH hue and chroma, taken through the sRGB colour at L = 0.65.
@@ -222,7 +234,10 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
             }
         }
     }
-    let primary = roles.iter().find(|(n, _)| n == "primary").map_or_else(String::new, |(_, v)| v.clone());
+    let primary = roles
+        .iter()
+        .find(|(n, _)| n == "primary")
+        .map_or_else(String::new, |(_, v)| v.clone());
     roles.push(("focus-ring".to_owned(), primary));
     for (name, value) in pack.color.overrides.iter().chain(prefs.overrides.iter()) {
         if let (Some(slot), Some(argb)) =
@@ -638,17 +653,32 @@ mod tests {
     #[test]
     fn secondary_neutral_and_focus_ring() {
         let mut p = pack();
-        p.color.secondary = Some(crate::manifest::OklchHueChroma { hue: 84.0, chroma: 0.164 });
+        p.color.secondary = Some(crate::manifest::OklchHueChroma {
+            hue: 84.0,
+            chroma: 0.164,
+        });
         p.color.neutral_chroma = Some(0.0);
-        p.color.overrides.insert("focus-ring".into(), "#ffdd00".into());
+        p.color
+            .overrides
+            .insert("focus-ring".into(), "#ffdd00".into());
         let base = resolve(&pack(), &UserPrefs::default(), true);
         let t = resolve(&p, &UserPrefs::default(), true);
         assert_ne!(base.role("secondary"), t.role("secondary"));
-        let grey = |v: &str| parse_hex(v).is_some_and(|c| (c >> 16 & 0xFF) == (c >> 8 & 0xFF) && (c >> 8 & 0xFF) == (c & 0xFF));
-        assert!(t.role("surface").is_some_and(grey), "{:?}", t.role("surface"));
+        let grey = |v: &str| {
+            parse_hex(v).is_some_and(|c| {
+                (c >> 16 & 0xFF) == (c >> 8 & 0xFF) && (c >> 8 & 0xFF) == (c & 0xFF)
+            })
+        };
+        assert!(
+            t.role("surface").is_some_and(grey),
+            "{:?}",
+            t.role("surface")
+        );
         assert_eq!(t.role("focus-ring"), Some("#ffdd00"));
         assert_eq!(base.role("focus-ring"), base.role("primary"));
-        assert!(!crate::manifest::is_distributable_license("pending-owner-decision"));
+        assert!(!crate::manifest::is_distributable_license(
+            "pending-owner-decision"
+        ));
         assert!(crate::manifest::is_distributable_license("CC0-1.0"));
     }
 
