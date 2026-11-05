@@ -99,7 +99,7 @@ for (const studio of studios) {
 if (precompress) {
   // Static siblings compressed once at the highest useful level; zstd -19 keeps an 8 MB window (RFC 9659).
   const jobs = hashed.flatMap(path => [
-    ["brotli", "--force", "--quality=11", "--keep", "--output", `${path}.br`, path],
+    ["brotli", "--force", "--quality=11", "--keep", `--output=${path}.br`, path],
     ["zstd", "--force", "-19", "--quiet", "--keep", "-o", `${path}.zst`, path],
   ]);
   const width = Math.max(1, Number(Bun.env.CRAFT_COMPRESS_JOBS ?? 4));
