@@ -25,6 +25,22 @@ export const platform: Platform = {
 		};
 	},
 
+	async getAppVersion() {
+		const response = await fetch("/version");
+		if (!response.ok) throw new Error(`/version returned ${response.status}`);
+		const body = (await response.json()) as { version: string };
+		return body.version;
+	},
+
+	// The current library is per-browser state; keep it next to the other preferences.
+	async getCurrentLibraryId() {
+		return localStorage.getItem("spacedrive-current-library");
+	},
+
+	async setCurrentLibraryId(libraryId: string) {
+		localStorage.setItem("spacedrive-current-library", libraryId);
+	},
+
 	confirm(message: string, callback: (result: boolean) => void) {
 		callback(window.confirm(message));
 	},

@@ -88,6 +88,13 @@ export default defineConfig({
 				target: "http://localhost:8080",
 				changeOrigin: true,
 			},
+			// sd-server also serves events (SSE), sidecars, hot thumbnails and extensions on the
+			// same origin; without these the dev client loads no thumbnails and gets no events.
+			...Object.fromEntries(
+				["/events", "/sidecar", "/hot-thumb", "/hot-thumbstrip", "/extension", "/health", "/version"].map(
+					(route) => [route, { target: "http://localhost:8080", changeOrigin: true }],
+				),
+			),
 		},
 	},
 	optimizeDeps: {

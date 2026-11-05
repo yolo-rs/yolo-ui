@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { idbStorage } from './idbStorage';
 
 type SortBy = string;
 
@@ -26,6 +27,7 @@ export const useSortPreferencesStore = create<SortPreferencesStore>()(
 		}),
 		{
 			name: 'spacedrive-sort-preferences',
+			storage: createJSONStorage(() => idbStorage),
 		}
 	)
 );

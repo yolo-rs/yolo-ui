@@ -88,6 +88,11 @@ async fn health() -> &'static str {
 	"OK"
 }
 
+/// Server version for the web client (`Platform::getAppVersion`).
+async fn version() -> axum::Json<serde_json::Value> {
+	axum::Json(serde_json::json!({ "version": env!("CARGO_PKG_VERSION") }))
+}
+
 /// Serve the embedded web UI. Looks up the requested path in `WebAssets`;
 /// if not found, falls back to `index.html` so client-side routing in the
 /// SPA continues to work for deep links like `/explorer/foo/bar`.
@@ -595,6 +600,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 	let app = Router::new()
 		.route("/health", get(health))
+		.route("/version", get(version))
 		.route("/rpc", post(daemon_rpc))
 		.route("/events", get(events_sse))
 		.route(
