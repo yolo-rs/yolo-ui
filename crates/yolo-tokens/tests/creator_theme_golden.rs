@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Golden check of the creator site theme.
 //!
-//! `packages/infra/product/resources/creator/site/theme.json` is the
+//! `tests/fixtures/creator-theme.json` is the
 //! [`ThemeExport`](yolo_tokens::theme::ThemeExport) of the logo seed (`#951ae2`) in the
-//! `fidelity` variant at contrast 0; the site build (`build.ts`) turns it into `theme.css`.
-//! Rewrite it with `APHRODY_UPDATE_TOKENS=1 scripts/aphrody/build/rust/cargo-serial.sh test -p
-//! yolo-tokens --test creator_theme_golden`.
+//! `fidelity` variant at contrast 0; the creator site build copies it and turns it into
+//! `theme.css`. Rewrite it on the vps with `APHRODY_UPDATE_TOKENS=1 cargo test -p yolo-tokens
+//! --test creator_theme_golden`.
 
 #![cfg(feature = "std")]
 
 use std::{fs, path::PathBuf};
 
-use yolo_tokens::theme::ThemeRequest;
 use serde_json::json;
+use yolo_tokens::theme::ThemeRequest;
 
 const SEED: &str = "#951ae2";
-const PATH: &str = "packages/infra/product/resources/creator/site/theme.json";
+const PATH: &str = "tests/fixtures/creator-theme.json";
 
 fn export_json() -> String {
     let export = ThemeRequest::parse(Some(SEED), Some("fidelity"), Some(0.0))
@@ -38,9 +38,7 @@ fn export_json() -> String {
 #[test]
 fn creator_theme_export_is_current() {
     let expected = export_json();
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../../docs/material/cargo")
-        .join(PATH);
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(PATH);
     if std::env::var_os("APHRODY_UPDATE_TOKENS").is_some() {
         fs::write(&path, &expected).unwrap_or_else(|e| panic!("write {}: {e}", path.display()));
         return;

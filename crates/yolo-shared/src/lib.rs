@@ -1830,7 +1830,7 @@ mod tests {
     #[test]
     fn test_rgba_color_parsing_and_packing() {
         let c = RgbaColor::parse_css(APHRODY_DARK_THEME.accent_primary).unwrap();
-        assert_eq!(c.to_u32_rgba(), 0x7c5cff_ff);
+        assert_eq!(c.to_u32_rgba(), 0x7c5c_ffff);
         assert_eq!(c.to_css_string(), "#7c5cff");
 
         let border = RgbaColor::parse_css(APHRODY_DARK_THEME.border_subtle).unwrap();

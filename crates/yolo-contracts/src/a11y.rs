@@ -261,10 +261,10 @@ impl Accessible {
         if self.role == AccessRole::Tab && self.selected.is_none() {
             return Err(A11yError::MissingSelected(role));
         }
-        if let Some(value) = self.value {
-            if !(value.min <= value.now && value.now <= value.max) {
-                return Err(A11yError::ValueOutOfRange(role));
-            }
+        if let Some(value) = self.value
+            && !(value.min <= value.now && value.now <= value.max)
+        {
+            return Err(A11yError::ValueOutOfRange(role));
         }
         self.children.iter().try_for_each(Self::validate)
     }

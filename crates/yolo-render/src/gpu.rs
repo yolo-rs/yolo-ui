@@ -761,10 +761,6 @@ fn draw_fill<'pass>(
     pass.draw(0..4, 0..1);
 }
 
-#[expect(
-    clippy::too_many_arguments,
-    reason = "GPU draw helper: each argument is a distinct wgpu resource or shadow parameter"
-)]
 fn draw_shadow<'pass>(
     device: &wgpu::Device,
     queue: &wgpu::Queue,

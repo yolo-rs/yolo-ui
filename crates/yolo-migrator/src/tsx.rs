@@ -293,7 +293,7 @@ fn allowed_events(kind: Kind) -> &'static [&'static str] {
 
 enum Child {
     Text(String, Span),
-    Node(Node),
+    Node(Box<Node>),
 }
 
 impl<'s> Lower<'s> {
@@ -680,7 +680,7 @@ impl<'s> Lower<'s> {
                 }
                 JSXChild::Element(e) => {
                     if let Some(n) = self.element(e) {
-                        out.push(Child::Node(n));
+                        out.push(Child::Node(Box::new(n)));
                     }
                 }
                 JSXChild::Fragment(f) => out.extend(self.children(&f.children)),
@@ -759,7 +759,7 @@ impl<'s> Lower<'s> {
             }
             self.scopes.push(scope);
             if let Some(n) = self.element(el) {
-                out.push(Child::Node(n));
+                out.push(Child::Node(Box::new(n)));
             }
             self.scopes.pop();
         }
@@ -793,17 +793,20 @@ impl<'s> Lower<'s> {
                         self.err(sp, format!("text is not allowed directly inside <{name}>"));
                     }
                 }
-                Child::Node(mut n) => {
+                Child::Node(n) => {
+                    let mut n = *n;
                     // Convert `<li>` inside `<List>` / `<ul>` into `Comp::ListItem` automatically
                     if node.is(List) && n.kind == Kind::Box && n.tag_name == "li" {
                         n.kind = Kind::Comp(ListItem);
                     }
                     // If a `<Button>` or `<Text>` wraps a `<span>` text node, extract its text
-                    if text_label && !takes_nodes && matches!(n.kind, Kind::Text(_)) {
-                        if let Some(t) = n.text.take() {
-                            texts.push(t);
-                            continue;
-                        }
+                    if text_label
+                        && !takes_nodes
+                        && matches!(n.kind, Kind::Text(_))
+                        && let Some(t) = n.text.take()
+                    {
+                        texts.push(t);
+                        continue;
                     }
                     raw_nodes.push(n);
                 }
