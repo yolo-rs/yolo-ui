@@ -8,7 +8,8 @@ import { listedLoras, getVAEModels, checkComfyConnection, refreshComfyModels, bu
 import { getAllNodeInfo, clearNodeCache } from '../../../api/comfyui-nodes'
 import { installCustomNodes, nodePacksNotLoaded, assertBundleFits, checkBundlesOnDisk, getImageBundles, getVideoBundles, getAudioBundles, getLipsyncBundles, getMotionBundles, getUpscaleBundles, startModelDownload, getDownloadProgress, modelsNotVisibleInComfy, judgeableFolders } from '../../../api/discover'
 import { CUSTOM_NODE_REGISTRY } from '../../../api/model-bundles'
-import { backendCall, isMacOS, isLinux } from '../../../api/backend'
+import { backendCall, isMacOS, isLinux, comfyuiUrl } from '../../../api/backend'
+import { hasComfyProcessControl } from '../../../lib/capabilities'
 import { asComfyGpuMode, comfyCpuBannerText, type ComfyCpuBannerFacts } from '../../../lib/comfy-cpu-banner'
 import { installMlxStack } from '../../../api/mlx-install'
 import { listMlxLoras, MLX_LORAS_CHANGED, type MlxLoraAlpha, type MlxLoraKeys } from '../../../api/mlx-loras'
@@ -332,6 +333,12 @@ export function CreateExpProvider({ children }: { children: ReactNode }) {
   // cannot find an install at all goes down the one-time download path.
   const ensureComfyRunning = useCallback(async (onProgress?: (msg: string) => void, signal?: AbortSignal) => {
     if (await checkComfyConnection()) return
+    // The web build cannot start or install a process. Say what to do
+    // instead of walking into start_comfyui and install_comfyui, which would
+    // only answer "requires the native app" one after the other.
+    if (!hasComfyProcessControl()) {
+      throw new Error(`ComfyUI is not reachable at ${comfyuiUrl('')}. Start ComfyUI yourself with --enable-cors-header set to this site, or use the desktop app, which starts and installs it for you.`)
+    }
     let repaired = false
     let installedNow = false
     let r: 'up' | 'crashed' | 'timeout' | 'missing'

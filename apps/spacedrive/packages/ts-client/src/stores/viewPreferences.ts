@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { idbStorage } from './idbStorage';
 
 interface ViewSettings {
 	gridSize: number;
@@ -57,6 +58,7 @@ export const useViewPreferencesStore = create<ViewPreferencesStore>()(
 		}),
 		{
 			name: 'spacedrive-view-preferences',
+			storage: createJSONStorage(() => idbStorage),
 		}
 	)
 );

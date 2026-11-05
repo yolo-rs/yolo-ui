@@ -14,8 +14,15 @@
 // The phone question comes from lib/device-kind.ts (a leaf), the desktop
 // questions from api/backend.ts as before. No store is imported, so anything
 // may import this module.
+//
+// The web build (VITE_LU_BUILD_TARGET=web, lib/build-target.ts) is the third
+// answer: a page on a static host has no Rust commands behind it, so
+// everything that spawns a process, opens a native dialog, or moves the
+// mouse does not exist there, whatever desktop the browser runs on. What a
+// page CAN do, talk to a local model server over HTTP, stays.
 
 import { isLinux, isMacOS } from '../api/backend'
+import { isWebBuild } from './build-target'
 import { isAndroid, isIOS, isMobile } from './device-kind'
 import { MOBILE_BUILD } from './mobile-host'
 
@@ -28,29 +35,42 @@ export function hasComfy(): boolean {
   return !MOBILE_BUILD && !isMobile() && !isMacOS()
 }
 
+/** LU may start, stop, install and update ComfyUI here: the Rust process (or
+ *  the dev server) owns the child. Never in the web build, which can only
+ *  talk to a ComfyUI somebody else started (`hasComfy` stays true there). */
+export function hasComfyProcessControl(): boolean {
+  return hasComfy() && !isWebBuild()
+}
+
+/** LU may start local processes here: the built-in engine, Whisper, Piper,
+ *  installers, the code runner. Not on a phone, not in the web build. */
+export function hasProcessSpawn(): boolean {
+  return !isMobile() && !isWebBuild()
+}
+
 /** The Apple MLX image and video runtime can exist here. Mac only. An iPhone
  *  has the same chip family but none of the commands. */
 export function hasMlx(): boolean {
-  return !isMobile() && isMacOS()
+  return !isMobile() && !isWebBuild() && isMacOS()
 }
 
 /** There is a shell the agent may run commands in, with processes, git and a
  *  screen to capture. */
 export function hasShell(): boolean {
-  return !isMobile()
+  return !isMobile() && !isWebBuild()
 }
 
 /** Computer control can exist here: a screen to read, a mouse and a keyboard
  *  to move, and the Rust commands that do it. They are registered on a
  *  desktop only (src-tauri/src/lib.rs). */
 export function hasComputerControl(): boolean {
-  return !isMobile()
+  return !isMobile() && !isWebBuild()
 }
 
 /** The host answers a save or open dialog. On a phone the Rust commands reply
  *  "This device has no file dialog"; saving goes through the share sheet. */
 export function hasFileDialog(): boolean {
-  return !isMobile()
+  return !isMobile() && !isWebBuild()
 }
 
 /** Set by the shell once the native side reports a working secret store on a
@@ -64,15 +84,18 @@ export function setMobileKeychainAvailable(ready: boolean): void {
 }
 
 /** The OS secret store is worth asking. Desktop: yes, as before. Phone: only
- *  after the native side said so. */
+ *  after the native side said so. Web build: the secret_* wrappers go to the
+ *  WebCrypto vault of the page (lib/web-key-vault.ts), which is worth asking
+ *  wherever the page has IndexedDB; each call says so itself when not. */
 export function hasKeychain(): boolean {
+  if (isWebBuild()) return true
   return isMobile() ? mobileKeychainReady : true
 }
 
 /** Local speech (faster-whisper, Piper) can exist here. They are Python
  *  processes; a phone has neither. */
 export function hasLocalVoice(): boolean {
-  return !isMobile()
+  return hasProcessSpawn()
 }
 
 /** Other people's local servers (Ollama, LM Studio and the rest of the

@@ -13,6 +13,9 @@ import { shouldLogRepeat } from "../lib/probe-backoff";
 import { chatFirstReplyMs, FIRST_REPLY_TIMEOUT } from "../lib/chat-reply-timeout";
 import { useSettingsStore } from "../stores/settingsStore";
 import { isIOS, isAndroid, isMobile, isMacOS } from "../lib/device-kind";
+import { isWebBuild } from "../lib/build-target";
+import { NativeAppRequiredError, isNativeAppRequired } from "./native-required";
+import { VAULT_UNAVAILABLE, webKeyVault } from "../lib/web-key-vault";
 
 // Hosts whose proxy failure has already been logged, host -> timestamp. Keeps
 // a dead local backend from filling the console with the same line forever.
@@ -34,6 +37,10 @@ export { isTauri };
 // isMacOS too, since 3.0.8: settingsStore asks it, and this module imports
 // settingsStore, so the store takes it from the leaf.
 export { isIOS, isAndroid, isMobile, isMacOS };
+
+// The static web bundle (VITE_LU_BUILD_TARGET=web), see lib/build-target.ts.
+// Re-exported for the same reason as the platform questions above.
+export { isWebBuild, NativeAppRequiredError, isNativeAppRequired };
 
 /** True on Linux (WebKitGTK reports "Linux ..." / "X11; Linux"). Same
  *  runtime-check rule as isMacOS — one dist serves all three OS builds. */
@@ -489,6 +496,15 @@ export async function backendCall<T = unknown>(
     return invoke(command, args || {}) as Promise<T>;
   }
 
+  // Web build: no Rust and no dev server behind the page. The few commands
+  // with a browser path are answered in the page (api/web-backend.ts), every
+  // other one is a typed NativeAppRequiredError, never a fetch of a
+  // /local-api route the static host does not have.
+  if (isWebBuild()) {
+    const { webBackendCall } = await import("./web-backend");
+    return webBackendCall<T>(command, args, COMFY_ADDRESS);
+  }
+
   // Dev mode: map command to /local-api/ endpoint
   const endpointMap: Record<string, { path: string; method?: string }> = {
     start_comfyui: { path: "/local-api/start-comfyui", method: "POST" },
@@ -795,12 +811,20 @@ export async function backendCall<T = unknown>(
  * Stored without trailing slash so `${_ollamaBase}/api${path}` never
  * produces a double slash.
  */
-let _ollamaBase = 'http://localhost:11434';
+// The web build talks to Ollama from the page itself, so its default names
+// the loopback address and not `localhost`: a browser may try ::1 first, and
+// Ollama's default bind is 127.0.0.1 only. Ollama also has to let the page's
+// origin in (OLLAMA_ORIGINS, see YOLO-INTEGRATION.md).
+export const WEB_OLLAMA_DEFAULT = 'http://127.0.0.1:11434';
+function defaultOllamaBase(): string {
+  return isWebBuild() ? WEB_OLLAMA_DEFAULT : 'http://localhost:11434'
+}
+let _ollamaBase = defaultOllamaBase();
 
 /** Accepts bare host:port, scheme-less host, or full URL — returns full URL. */
 export function normalizeOllamaBase(input: string): string {
   const raw = (input || '').trim()
-  if (!raw) return 'http://localhost:11434'
+  if (!raw) return defaultOllamaBase()
   // Already has scheme?
   if (/^https?:\/\//i.test(raw)) return raw.replace(/\/+$/, '')
   // Bare "host:port" or "host" — add http://
@@ -823,11 +847,13 @@ export function isOllamaLocal(): boolean {
 
 /** Get the base URL for Ollama API calls.
  *  - Tauri: `${_ollamaBase}/api${path}` — honors GUI + env var.
+ *  - Web build: the same absolute URL, from the providers store (AppShell
+ *    hands it over); a static host has no proxy to lean on.
  *  - Dev: `/api${path}` — Vite proxy target is set from OLLAMA_HOST env var
  *    at dev-server startup time.
  */
 export function ollamaUrl(path: string): string {
-  if (isTauri()) {
+  if (isTauri() || isWebBuild()) {
     return `${_ollamaBase}/api${path}`;
   }
   return `/api${path}`;
@@ -845,10 +871,15 @@ export function getComfyPort(): number { return _comfyPort; }
  * When the host is non-local, Settings hides Start/Stop/Restart controls
  * because LU can't manage the lifecycle of a remote Python process.
  */
-let _comfyHost = 'localhost';
+// The web build defaults to 127.0.0.1 for the reason given at
+// WEB_OLLAMA_DEFAULT; its stored address comes from api/web-backend.ts.
+function defaultComfyHost(): string {
+  return isWebBuild() ? '127.0.0.1' : 'localhost'
+}
+let _comfyHost = defaultComfyHost();
 export function setComfyHost(host: string) {
   // Never allow empty — that would produce "http://:8188" which breaks fetch.
-  _comfyHost = (host && host.trim()) ? host.trim() : 'localhost';
+  _comfyHost = (host && host.trim()) ? host.trim() : defaultComfyHost();
 }
 export function getComfyHost(): string { return _comfyHost; }
 export function isComfyLocal(): boolean {
@@ -856,9 +887,19 @@ export function isComfyLocal(): boolean {
   return h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '0.0.0.0';
 }
 
-/** Get the base URL for ComfyUI API calls */
+/** What api/web-backend.ts may read and change of the ComfyUI address. */
+const COMFY_ADDRESS = {
+  getHost: () => _comfyHost,
+  setHost: (host: string) => setComfyHost(host),
+  getPort: () => _comfyPort,
+  setPort: (port: number) => setComfyPort(port),
+};
+
+/** Get the base URL for ComfyUI API calls. Absolute in Tauri and in the web
+ *  build (the page reaches ComfyUI itself; it needs `--enable-cors-header`,
+ *  see YOLO-INTEGRATION.md), the Vite proxy path in browser dev mode. */
 export function comfyuiUrl(path: string): string {
-  if (isTauri()) {
+  if (isTauri() || isWebBuild()) {
     return `http://${_comfyHost}:${_comfyPort}${path}`;
   }
   return `/comfyui${path}`;
@@ -898,6 +939,12 @@ export async function downloadComfyFile(filename: string, subfolder: string = ''
     const a = document.createElement('a')
     a.href = url
     a.download = filename
+    // Web build: the URL is ComfyUI's own origin, where browsers ignore
+    // `download` and would navigate the app away. A new tab keeps it.
+    if (isWebBuild()) {
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer'
+    }
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -945,23 +992,51 @@ export async function downloadComfyFile(filename: string, subfolder: string = ''
 
 // ── Provider key keychain (H5) ──────────────────────────────────
 // Thin wrappers over the Rust secret_* commands (Windows Credential Manager /
-// macOS Keychain). They reject on the web build (no Tauri) and on Linux desktop
-// (the command reports unsupported), which is how providerStore detects "no
-// keychain here" and falls back to the obfuscated-localStorage path.
+// macOS Keychain). They reject in browser dev mode (no Tauri) and on Linux
+// desktop (the command reports unsupported), which is how providerStore
+// detects "no keychain here" and falls back to the obfuscated-localStorage
+// path.
+//
+// The web build (VITE_LU_BUILD_TARGET=web) has a vault of its own instead:
+// AES-GCM under a non-extractable key kept in IndexedDB
+// (lib/web-key-vault.ts). It answers like the Rust commands, so the callers'
+// migration runs unchanged: the first read resolves, finds nothing, and the
+// old base64 value moves into the vault and out of localStorage. Where the
+// page cannot hold the vault it rejects with the same "keychain unavailable"
+// words, and the old fallback still applies. The Tauri path is untouched.
+const WEB_SECRET_PREFIX = 'key:'
+const WEB_PARKED_PREFIX = 'parked-key:'
+const PARKED_ID_RE = /^[a-z0-9-]{1,64}$/
+
+/** True where the secret_* wrappers go to the web vault. */
+function usesWebVault(): boolean {
+  return isWebBuild() && !isTauri()
+}
+
+function webParkedAccount(backendId: string): string {
+  // The rule the Rust side enforces, with the same "refused:" opening that
+  // never echoes the id or the value.
+  if (!PARKED_ID_RE.test(backendId)) throw new Error('refused: invalid parked key id')
+  return `${WEB_PARKED_PREFIX}${backendId}`
+}
+
 export async function secretSet(account: string, value: string): Promise<void> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().set(`${WEB_SECRET_PREFIX}${account}`, value)
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   await invoke('secret_set', { account, value })
 }
 
 export async function secretGet(account: string): Promise<string | null> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().get(`${WEB_SECRET_PREFIX}${account}`)
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   return (await invoke('secret_get', { account })) as string | null
 }
 
 export async function secretDelete(account: string): Promise<void> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().delete(`${WEB_SECRET_PREFIX}${account}`)
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   await invoke('secret_delete', { account })
 }
@@ -978,19 +1053,22 @@ export async function secretDelete(account: string): Promise<void> {
 // "keychain unsupported", same two strings secretSet/Get/Delete's callers
 // already check for).
 export async function secretParkSet(backendId: string, value: string): Promise<void> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().set(webParkedAccount(backendId), value)
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   await invoke('secret_park_set', { backendId, value })
 }
 
 export async function secretParkGet(backendId: string): Promise<string | null> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().get(webParkedAccount(backendId))
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   return (await invoke('secret_park_get', { backendId })) as string | null
 }
 
 export async function secretParkDelete(backendId: string): Promise<void> {
-  if (!isTauri()) throw new Error('keychain unavailable (web build)')
+  if (usesWebVault()) return webKeyVault().delete(webParkedAccount(backendId))
+  if (!isTauri()) throw new Error(VAULT_UNAVAILABLE)
   const invoke = await getInvoke()
   await invoke('secret_park_delete', { backendId })
 }
@@ -1021,6 +1099,8 @@ export async function fetchExternal(url: string, authToken?: string | null): Pro
     // only filtered and rate limited.
     return invoke('fetch_external', { url, authToken: authToken ?? null }) as Promise<string>;
   }
+  // The dev server's proxy route does not exist behind a static host.
+  if (isWebBuild()) throw new NativeAppRequiredError('fetch_external');
   const res = await fetch(`/local-api/proxy-download?url=${encodeURIComponent(url)}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.text();
@@ -1033,6 +1113,7 @@ export async function fetchExternalBytes(url: string): Promise<ArrayBuffer> {
     const bytes = await invoke('fetch_external_bytes', { url }) as number[];
     return new Uint8Array(bytes).buffer;
   }
+  if (isWebBuild()) throw new NativeAppRequiredError('fetch_external_bytes');
   const res = await fetch(`/local-api/proxy-download?url=${encodeURIComponent(url)}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.arrayBuffer();

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { idbStorage } from './idbStorage';
 
 interface DraggedItem {
 	type: 'file' | 'space-item' | 'space-group';
@@ -53,6 +54,7 @@ export const useSidebarStore = create<SidebarStore>()(
 		}),
 		{
 			name: 'spacedrive-sidebar',
+			storage: createJSONStorage(() => idbStorage),
 			partialize: (state) => ({
 				currentSpaceId: state.currentSpaceId,
 			}),

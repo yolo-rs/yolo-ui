@@ -55,8 +55,9 @@ export function useAutoUpdater(checkOnMount = false) {
 		try {
 			setStatus((prev) => ({ ...prev, checking: true, error: undefined }));
 
-			// @ts-expect-error Tauri plugin only available on desktop
-			const { check } = await import('@tauri-apps/plugin-updater');
+			// Desktop-only plugin: the specifier is a variable so web bundlers do not try to resolve it.
+			const updaterModule = '@tauri-apps/plugin-updater';
+			const { check } = await import(/* @vite-ignore */ updaterModule);
 			const foundUpdate = await check();
 
 			if (foundUpdate?.available) {
@@ -156,8 +157,8 @@ export function useAutoUpdater(checkOnMount = false) {
 			await update.install();
 
 			if (!isWindows()) {
-				// @ts-expect-error Tauri plugin only available on desktop
-				const { relaunch } = await import('@tauri-apps/plugin-process');
+				const processModule = '@tauri-apps/plugin-process';
+				const { relaunch } = await import(/* @vite-ignore */ processModule);
 				await relaunch();
 			}
 		} catch (error) {

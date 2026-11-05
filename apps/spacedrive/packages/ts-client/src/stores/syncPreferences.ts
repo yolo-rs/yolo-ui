@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { idbStorage } from './idbStorage';
 
 interface SyncPreferencesStore {
 	/**
@@ -18,6 +19,7 @@ export const useSyncPreferencesStore = create<SyncPreferencesStore>()(
 		}),
 		{
 			name: 'spacedrive-sync-preferences',
+			storage: createJSONStorage(() => idbStorage),
 		}
 	)
 );
