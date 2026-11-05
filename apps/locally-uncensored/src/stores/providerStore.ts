@@ -19,6 +19,7 @@ import { honourUserDisable } from '../lib/provider-visibility'
 import { secretGet, secretSet, secretDelete, secretParkGet, secretParkSet, secretParkDelete } from '../api/backend'
 import { isOpenAIEntryId, OPENAI_ENTRY_PREFIX } from '../api/providers/model-name'
 import { CLOUD_BASE } from '../api/cloud/config'
+import { isWebBuild } from '../lib/build-target'
 
 // ── API Key storage ────────────────────────────────────────────
 // Two-tier (H5):
@@ -26,8 +27,15 @@ import { CLOUD_BASE } from '../api/cloud/config'
 //     (Credential Manager / Keychain) via the Rust secret_* commands.
 //     `keychainReady` flips true once hydrateProviderKeys confirms the vault
 //     works; partialize then keeps the key out of localStorage entirely.
-//   • Linux desktop + the web build → no robust uniform vault, so the key stays
-//     in localStorage under the base64 obfuscation below (unchanged behavior).
+//   • The web build (VITE_LU_BUILD_TARGET=web) → the same secret_* wrappers
+//     answer from the page's WebCrypto vault (AES-GCM, non-extractable key in
+//     IndexedDB, lib/web-key-vault.ts), so this store treats it exactly like
+//     the OS vault: hydrateProviderKeys moves an old base64 value in on its
+//     first read, and partialize drops it from localStorage.
+//   • Linux desktop + browser dev mode → no robust uniform vault, so the key
+//     stays in localStorage under the base64 obfuscation below (unchanged
+//     behavior). Base64 is an encoding, not encryption; it only keeps the
+//     key from being read at a glance.
 // In-memory we always hold the OBFUSCATED form so the sync getters
 // (getProviderApiKey / getEnabledProviders) are identical on every platform.
 
@@ -121,7 +129,9 @@ const DEFAULT_PROVIDERS: Record<FixedProviderId, ProviderConfig> = {
     id: 'ollama',
     name: 'Ollama',
     enabled: false,
-    baseUrl: 'http://localhost:11434',
+    // The web build reaches Ollama from the page, 127.0.0.1 there for the
+    // reason at WEB_OLLAMA_DEFAULT in api/backend.ts.
+    baseUrl: isWebBuild() ? 'http://127.0.0.1:11434' : 'http://localhost:11434',
     apiKey: '',
     isLocal: true,
   },

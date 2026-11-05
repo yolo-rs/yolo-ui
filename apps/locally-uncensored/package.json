@@ -29,6 +29,8 @@
     "build": "vite build",
     "dev:mobile": "VITE_LU_BUILD_TARGET=mobile vite",
     "build:mobile": "VITE_LU_BUILD_TARGET=mobile vite build",
+    "dev:web": "VITE_LU_BUILD_TARGET=web vite",
+    "build:web": "VITE_LU_BUILD_TARGET=web vite build",
     "lint": "eslint .",
     "typecheck": "tsc -b --force",
     "cycles": "madge --circular --extensions ts,tsx src",

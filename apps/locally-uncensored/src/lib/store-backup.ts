@@ -19,6 +19,8 @@ import { idbStorage, hasFailedRead, onIdbWrite } from './idbStorage'
 import { log } from './logger'
 import { isBackupHeld } from './backup-hold'
 import { isMobile } from './device-kind'
+import { isWebBuild } from './build-target'
+import { downloadWebBackup } from './web-backup'
 
 /** Every store that is worth carrying across an update or a wiped WebView2
  *  profile. Order is irrelevant, presence is not: a key missing from this list
@@ -565,7 +567,14 @@ export async function backupStoresNow(): Promise<boolean> {
     }
     const body: Record<string, string> = { ...snapshot }
     delete body.__ts
-    return await writeSnapshot(body)
+    const written = await writeSnapshot(body)
+    // Web build without OPFS: backup_stores only kept the snapshot in the
+    // page (lib/web-backup.ts). This is the explicit "back up now" path, so
+    // here, and never on the five-second tick, the fallback hands it to the
+    // user as a downloaded file. With OPFS there is nothing pending and
+    // nothing is downloaded.
+    if (written && isWebBuild()) downloadWebBackup()
+    return written
   } catch {
     return false
   }

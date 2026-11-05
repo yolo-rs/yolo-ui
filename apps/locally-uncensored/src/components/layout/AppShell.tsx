@@ -40,6 +40,7 @@ import { extractMemoriesFromPair } from '../../hooks/useMemory'
 import { detectLocalBackends, type DetectedBackend } from '../../lib/backend-detector'
 import { whenRunsIdle } from '../../lib/run-idle'
 import { backendCall, isTauri } from '../../api/backend'
+import { isWebBuild } from '../../lib/build-target'
 import { idbStorage, hasStoredItem } from '../../lib/idbStorage'
 import { recoverChatsFromBackup } from '../../lib/chat-backup-recovery'
 import { STORE_KEYS, IDB_STORE_KEYS, backupStoresIfChanged, flushSyncStoreBackup } from '../../lib/store-backup'
@@ -64,6 +65,7 @@ import { RenderFixupModal } from '../create/experimental/RenderFixupModal'
 import { CommandPalette } from '../ui/CommandPalette'
 import { CreditsExhaustedModal } from './CreditsExhaustedModal'
 import { Titlebar } from './Titlebar'
+import { WebSourceFooter } from './SourceOffer'
 
 // Aus der Komponente herausgezogen: `new Set(STORE_KEYS)` entstand bei jedem
 // Render neu und war damit die instabile Referenz, wegen der der Restore-Effekt
@@ -565,14 +567,16 @@ export function AppShell() {
       })
     }
 
-    if (isTauri()) {
+    // The web build has a backup of its own (OPFS, lib/web-backup.ts, behind
+    // the same restore_stores command), and no Tauri global to wait for.
+    if (isTauri() || isWebBuild()) {
       runRestore()
       return
     }
     let tries = 0
     const waitForTauri = setInterval(() => {
       tries++
-      if (isTauri()) {
+      if (isTauri() || isWebBuild()) {
         clearInterval(waitForTauri)
         runRestore()
       } else if (tries >= 50) {
@@ -713,7 +717,9 @@ export function AppShell() {
 
     const waitForTauri = setInterval(() => {
       tries++
-      if (isTauri()) {
+      // The web build arms on the first tick: its backup_stores writes to
+      // OPFS in the page (api/web-backend.ts), there is no global to wait for.
+      if (isTauri() || isWebBuild()) {
         clearInterval(waitForTauri)
         void setupTriad()
       } else if (tries >= 50) {
@@ -830,7 +836,10 @@ export function AppShell() {
     const waitForTauri = setInterval(() => {
       if (cancelled) { clearInterval(waitForTauri); return }
       tries++
-      if (isTauri()) {
+      // Web build: get_ollama_host answers "requires the native app", so
+      // pullAndArm hands the stored providers baseUrl to setOllamaBase,
+      // which is the absolute address ollamaUrl() builds on there.
+      if (isTauri() || isWebBuild()) {
         clearInterval(waitForTauri)
         afterHydration()
       } else if (tries >= 50) {
@@ -1179,6 +1188,9 @@ export function AppShell() {
             {currentView === 'voice' && <LazyView load={loadVoiceView} fallback={<VoiceSkeleton />} />}
           </main>
         </div>
+        {/* AGPL-3.0 section 13: the web build names its source on every
+            screen. Renders nothing in the desktop and phone builds. */}
+        <WebSourceFooter />
       </div>
 
       {/* Backend selection dialog (shown when multiple local backends detected) */}

@@ -92,6 +92,35 @@ function storeBuildCheckPlugin(): Plugin {
 // without the variable is the desktop package (src/main.tsx).
 const PHONE_BUNDLE = process.env.VITE_LU_BUILD_TARGET === 'mobile'
 
+// The static web bundle (VITE_LU_BUILD_TARGET=web, src/lib/build-target.ts):
+// plain files for any host, no Tauri and no dev server behind them. The code
+// reads the same variable through import.meta.env. Here it means two things:
+//  - `vite` in this mode does not mount the dev server's /local-api routes
+//    or the proxies, so what runs locally is what a static host serves (the
+//    bundle reaches Ollama and ComfyUI by their absolute addresses);
+//  - a build refuses a VITE_LU_SOURCE_URL that is not an http(s) address,
+//    because the AGPL source offer of the page points there.
+const WEB_BUNDLE = process.env.VITE_LU_BUILD_TARGET === 'web'
+
+function webSourceOfferPlugin(): Plugin {
+  return {
+    name: 'lu-web-source-offer',
+    apply: 'build',
+    config(_config, { mode }) {
+      if (!WEB_BUNDLE) return
+      const env = { ...loadEnv(mode, __dirname, 'VITE_LU_'), ...process.env }
+      const url = (env.VITE_LU_SOURCE_URL || '').trim()
+      if (url && !/^https?:\/\//i.test(url)) {
+        throw new Error(`VITE_LU_SOURCE_URL is "${url}", which is not an http(s) address. The web build links its source code there (AGPL-3.0 section 13).`)
+      }
+      const commit = (env.VITE_LU_SOURCE_COMMIT || '').trim()
+      if (commit && !/^[0-9a-f]{7,64}$/i.test(commit)) {
+        throw new Error(`VITE_LU_SOURCE_COMMIT is "${commit}", which is not a commit hash.`)
+      }
+    },
+  }
+}
+
 // The oldest web view the phone app is built for (src/dev/webview-target.ts).
 // The build target lowers syntax to it. A FUNCTION the web view does not have
 // is not lowered by anybody, so this reads every built file and stops the
@@ -196,7 +225,7 @@ export default defineConfig({
   // Packages a dependency imports and LU must not ship (the Daily call client
   // with Sentry). The same list is in vitest.config.ts.
   resolve: { alias: ABSENT_PACKAGES },
-  plugins: [react(), tailwindcss(), storeBuildCheckPlugin(), stripConsolePlugin(), webviewTargetPlugin(), phoneVersionPlugin(), devServerPlugin({ port: DEV_PORT }), ...(E2E_CSP ? [appCspPlugin()] : [])],
+  plugins: [react(), tailwindcss(), storeBuildCheckPlugin(), webSourceOfferPlugin(), stripConsolePlugin(), webviewTargetPlugin(), phoneVersionPlugin(), ...(WEB_BUNDLE ? [] : [devServerPlugin({ port: DEV_PORT })]), ...(E2E_CSP ? [appCspPlugin()] : [])],
   // The phone bundle names the web view it is built for. The desktop package
   // keeps the default of Vite, as before.
   ...(PHONE_BUNDLE ? { build: { target: WEBVIEW_BUILD_TARGET }, define: PHONE_DEFINE } : {}),
@@ -216,7 +245,8 @@ export default defineConfig({
     // job of this list is only to withhold arbitrary DNS names; reaching the
     // dev server over a LAN hostname is an opt-in that belongs in here by name.
     allowedHosts: ['localhost', '127.0.0.1'],
-    proxy: {
+    // The web bundle has no proxies: a static host has none either.
+    proxy: WEB_BUNDLE ? {} : {
       '/api': {
         // Issue #31: honour OLLAMA_HOST so `OLLAMA_HOST=0.0.0.0:11434 npm run dev`
         // and remote Ollama setups (Docker, LAN, homelab) just work in dev mode

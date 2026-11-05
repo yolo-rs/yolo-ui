@@ -61,6 +61,7 @@ import { MCPServerSettings } from './MCPServerSettings'
 import { WorkflowList } from '../agents/WorkflowList'
 import { WorkflowBuilder } from '../agents/WorkflowBuilder'
 import { useUpdateStore, isNewerVersion } from '../../stores/updateStore'
+import { SourceOfferRow } from '../layout/SourceOffer'
 import { useReleaseNotesStore } from '../../stores/releaseNotesStore'
 import { releaseNoteFor } from '../../lib/release-notes'
 import { timeAgo } from '../../lib/time-ago'
@@ -2628,6 +2629,9 @@ export function UpdateSection() {
             <span className="text-[0.65rem] text-gray-300 font-mono">v{currentVersion}</span>
           </span>
         </div>
+
+        {/* AGPL-3.0 section 13 source offer, web build only (SourceOffer.tsx). */}
+        <SourceOfferRow />
 
         {/* Latest version, only show if it's actually newer than current */}
         {displayLatestVersion && (
