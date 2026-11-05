@@ -889,25 +889,25 @@ fn apply_parametric_token(res: &mut TailwindResolution, token: &str) -> bool {
     }
 
     // Palette color fallback (`bg-slate-900`, `text-zinc-400`, `border-slate-800`, etc.)
-    if let Some(color_rest) = token.strip_prefix("bg-") {
-        if let Some(role) = map_palette_to_role(color_rest, true) {
-            res.bg_token = Some(role.to_owned());
-            decl("background-color", format!("var(--md-sys-color-{role})"));
-            return true;
-        }
+    if let Some(color_rest) = token.strip_prefix("bg-")
+        && let Some(role) = map_palette_to_role(color_rest, true)
+    {
+        res.bg_token = Some(role.to_owned());
+        decl("background-color", format!("var(--md-sys-color-{role})"));
+        return true;
     }
-    if let Some(color_rest) = token.strip_prefix("text-") {
-        if let Some(role) = map_palette_to_role(color_rest, false) {
-            res.text_token = Some(role.to_owned());
-            decl("color", format!("var(--md-sys-color-{role})"));
-            return true;
-        }
+    if let Some(color_rest) = token.strip_prefix("text-")
+        && let Some(role) = map_palette_to_role(color_rest, false)
+    {
+        res.text_token = Some(role.to_owned());
+        decl("color", format!("var(--md-sys-color-{role})"));
+        return true;
     }
-    if let Some(color_rest) = token.strip_prefix("border-") {
-        if let Some(role) = map_palette_to_role(color_rest, false) {
-            res.border_token = Some(role.to_owned());
-            return true;
-        }
+    if let Some(color_rest) = token.strip_prefix("border-")
+        && let Some(role) = map_palette_to_role(color_rest, false)
+    {
+        res.border_token = Some(role.to_owned());
+        return true;
     }
 
     false
@@ -938,12 +938,11 @@ fn parse_dimension_token(raw: &str) -> Option<(Length, String)> {
         let frac = (n / d).clamp(0.0, 1.0);
         return Some((Length::Percent(frac), format!("{}%", frac * 100.0)));
     }
-    if let Some(inner) = raw.strip_prefix('[').and_then(|s| s.strip_suffix(']')) {
-        if let Some(pct) = inner.strip_suffix('%')
-            && let Ok(v) = pct.parse::<f32>()
-        {
-            return Some((Length::Percent(v / 100.0), format!("{v}%")));
-        }
+    if let Some(inner) = raw.strip_prefix('[').and_then(|s| s.strip_suffix(']'))
+        && let Some(pct) = inner.strip_suffix('%')
+        && let Ok(v) = pct.parse::<f32>()
+    {
+        return Some((Length::Percent(v / 100.0), format!("{v}%")));
     }
     let px = parse_spacing_scale(raw)?;
     Some((Length::Px(px), format!("{px}px")))
