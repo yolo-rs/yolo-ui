@@ -103,6 +103,9 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
   { id: 'ollama', name: 'Ollama', providerId: 'ollama', baseUrl: 'http://localhost:11434', isLocal: true },
 
   // ── Local backends (no API key, no internet) ─────────────
+  // YOLO app server (yolo-rs/yolo-ai crates/yolo-app-server): local OpenAI-compatible
+  // router in front of llama-server/Ollama/vLLM or Anthropic. `bun run app-server` in yolo-ai.
+  { id: 'yolo-app-server', name: 'YOLO App Server', providerId: 'openai', baseUrl: 'http://127.0.0.1:1338/v1', isLocal: true },
   { id: 'lmstudio', name: 'LM Studio', providerId: 'openai', baseUrl: 'http://localhost:1234/v1', isLocal: true },
   { id: 'vllm', name: 'vLLM', providerId: 'openai', baseUrl: 'http://localhost:8000/v1', isLocal: true },
   { id: 'llamacpp', name: 'llama.cpp', providerId: 'openai', baseUrl: 'http://localhost:8080/v1', isLocal: true },
