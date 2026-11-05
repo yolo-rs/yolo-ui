@@ -1,6 +1,6 @@
 # Yolo UI (`yolo-rs/yolo-ui`): multi-engine fullstack Rust and Bun v1.4.4+ framework guide
 
-Yolo UI (`yolo-rs/yolo-ui`) is a vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo. It brings together 124 `yolo-rs/*` Git submodules (`submodules/*`) from 31 upstream UI and compiler ecosystems, 9 Rust UI toolkits, 8 built-in theme presets (`YoloThemePreset`), a Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`), a Full-Bun + Rust React 19 and React Native/Expo engine (`yolo-react`), and one CLI, plugin and MCP server (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`).
+Yolo UI (`yolo-rs/yolo-ui`) is a vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo. It brings together 156 `yolo-rs/*` Git submodules (`submodules/*`) from 31 upstream UI and compiler ecosystems, 9 Rust UI toolkits, 8 built-in theme presets (`YoloThemePreset`), a Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`), a Full-Bun + Rust React 19 and React Native/Expo engine (`yolo-react`), and one CLI, plugin and MCP server (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`).
 
 ## 1. The 8 built-in theme presets (`YoloThemePreset`)
 
@@ -64,6 +64,14 @@ yolo-ui/
 └── submodules/                 # Pinned `yolo-rs/*` forks and upstream source inputs
 ```
 
+The tree above lists the framework core only. Also in the workspace:
+
+- `crates/yolo-theme-pack` + `themes/<id>/theme.toml`: theme packs (seed, wallpapers, icons, logo, titles, shell) resolved to 49 M3 roles; `css_scoped` emits one `[data-theme-pack]` block per pack. Product repos (rosegriffon `packages/rg-ui/themes`, shenron) ship their own packs in this format.
+- `crates/yolo-icons`, `yolo-engines`, `yolo-3d` (Bevy 0.20).
+- `crates/<name>craft-*` (about 300 crates) and `apps/<name>craft{,-cli,-web}`: the 14 Craft studios; `*-web` apps build with Trunk and deploy to craft.aphrody.app.
+- `apps/spacedrive`, `apps/locally-uncensored`: upstream apps with their own CLAUDE.md/AGENTS.md; root `package.json` exposes `sd:*` and `lu:*` scripts.
+- `packages/` also vendors the Dioxus 0.8 crates (`core`, `rsx`, `ssr`, `router`, `fullstack`...) and the `m3-*` packages.
+
 ## 3. Core toolchain commands (`bun ui` + `just` + `cargo` + `sccache`)
 
 ```bash
@@ -75,3 +83,21 @@ bun run react:status  # Inspect the 12 React/Expo/Rust submodules and Full-Bun R
 just check            # Run bun check (tsgo) + cargo metadata + cargo check
 just test             # Run bun test + Rust unit tests across all engines
 ```
+
+## 4. Where commands run, and how changes land
+
+- Never build, lint or test on the local PC. Rust runs on host `vps` (12 cores), Bun and browsers on `bunos`; host `prod` is production only and never builds.
+- Gate a pushed commit on `vps` from a shallow clone, under the shared lock:
+
+  ```bash
+  ssh vps 'D=~/src/yolo-jobs/<job>; rm -rf $D; git clone -q --depth 1 https://github.com/yolo-rs/yolo-ui.git $D && cd $D \
+    && rm -rf submodules && ln -s "$(readlink -f ~/src/yolo-current)/yolo-ui/submodules" submodules \
+    && export TMPDIR=~/build/tmp/<job>; mkdir -p "$TMPDIR"; exec 9<~/build/locks/heavy.lock; flock -w 2400 -x 9; \
+    export CARGO_TARGET_DIR=~/build/target/<job>; cargo clippy -p <crate> --all-targets -j 12 -- -D warnings && cargo test -p <crate> -j 12'
+  ```
+
+  `/tmp` on `vps` is a shared 10G tmpfs: keep `TMPDIR` under `~/build/tmp`. Without the symlink the workspace does not load (path deps into `submodules/`).
+- Commit explicit paths and push `main` right away (`git pull --rebase --autostash` first). No branches, worktrees or PRs, no force push, never `git add -A`: several sessions commit in this checkout at once.
+- Adding a dependency: commit the `Cargo.lock` change too (generate it on `vps`), or the next `--locked` build fails.
+- Stale `.git/index.lock` in a submodule can leave an emptied index; restore with `git read-tree HEAD` and never commit the resulting deletions.
+- yolo.aphrody.com: `wrangler.jsonc` (worker `yolo-aphrody-com`) serves `dist/yolo-aphrody-com`; deploy with `bunx wrangler deploy` from the repo root after producing that directory.
