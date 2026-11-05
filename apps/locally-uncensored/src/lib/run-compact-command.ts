@@ -23,7 +23,7 @@
  * model receives.
  */
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useChatStore } from '../stores/chatStore'
 import { useSettingsStore } from '../stores/settingsStore'
 import { getProviderForModel, getProviderIdFromModel } from '../api/providers'

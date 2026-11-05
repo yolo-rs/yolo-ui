@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useMemoryStore } from '../stores/memoryStore'
 import { useCloudAuthStore } from '../stores/cloudAuthStore'
 import { withMemorySyncSession, MemorySyncError } from '../api/cloud/memory-sync'

@@ -9,7 +9,7 @@ import type { ToolRegistry } from './tool-registry'
 import { reserveCreateTools } from './create-tools'
 import { registerSettingsTools } from './settings-tools'
 import { SETTINGS_TOOL_NAMES } from '../../lib/settings-tool-names'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { backendCall, isTauri } from '../backend'
 import { getActiveChatId, getActiveConversationId, getActiveWorkspace, isChatArtifactMode, captureChatArtifact, isReadOnlyShellTurn } from '../agent-context'
 import type { AgentRunContext } from '../agent-context'

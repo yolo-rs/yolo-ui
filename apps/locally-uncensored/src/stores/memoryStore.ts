@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { MemoryCategory, MemoryFile, MemoryType, MemorySettings, MemoryBudgetTier } from '../types/agent-mode'
 import { MEMORY_MIGRATION_MAP, MEMORY_BUDGET_TIERS } from '../types/agent-mode'
 import { memoryPersistence } from '../lib/memory-persistence'

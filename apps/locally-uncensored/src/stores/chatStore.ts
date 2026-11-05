@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { Conversation, Message, MessageError, ChatArtifact, CompactionRecord, RequestUsage } from '../types/chat'
 import type { AgentBlock } from '../types/agent-mode'
 import { clampSampling, storedTemperature, type SamplingOverrides } from '../lib/sampling'

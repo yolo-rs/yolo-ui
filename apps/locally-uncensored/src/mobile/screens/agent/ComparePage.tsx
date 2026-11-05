@@ -9,7 +9,7 @@
  */
 import { useEffect, useState } from 'react'
 import { Flag, RotateCcw } from 'lucide-react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useABCompare } from '../../../hooks/useABCompare'
 import { useChatStore } from '../../../stores/chatStore'
 import { useCompareStore } from '../../../stores/compareStore'

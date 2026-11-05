@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Plus, Trash2, Pencil, Upload, Download } from 'lucide-react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { useSettingsStore } from '../../stores/settingsStore'
 import { CardError, MAX_CARD_FILE_BYTES, isPng, parseCardFile, personaFromCard } from '../../lib/character-card'
 import { cardImageDataUrl, saveCardExport } from '../../lib/character-card-files'

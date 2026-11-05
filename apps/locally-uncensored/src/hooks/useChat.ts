@@ -3,7 +3,7 @@ import { create } from "zustand"
 import { frameFlush } from '../lib/frame-flush'
 import { sendWindowFor } from '../lib/send-window'
 import { markCannotThink } from '../lib/model-compatibility'
-import { v4 as uuid } from "uuid"
+const uuid = (): string => crypto.randomUUID()
 import { questionOnDisk, useChatStore } from "../stores/chatStore"
 import { errorText } from "../types/json-guards"
 import { endTurnDurably } from "../stores/durability"

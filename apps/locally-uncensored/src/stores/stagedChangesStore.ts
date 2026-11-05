@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { normalizeStagedPath } from '../lib/staged-overlay'
 import type { StagedChange } from '../types/staged-changes'
 import { idbStorage } from '../lib/idbStorage'

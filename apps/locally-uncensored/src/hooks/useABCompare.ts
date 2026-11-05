@@ -11,7 +11,7 @@ import { getChatWindowTokens } from '../lib/context-compaction'
 import { applySendBudget, chatBudgetApplies, sharedChatSendBudget } from '../lib/chat-send-budget'
 import { sendsToALanBackend } from '../lib/lan-openai-slot'
 import { buildChatSystemPrompt } from '../lib/system-prompt'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { ChatMessage } from '../api/providers/types'
 import type { Message } from '../types/chat'
 import { createThinkStreamSplitter } from '../lib/hermes-stream'

@@ -28,6 +28,7 @@ pub mod motion;
 pub mod paint;
 /// The canonical design-token and 5-preset theme contract (`Neutral`, `M3`, `Fluent`, `Apple`, `Aphrody`).
 pub mod theme;
+pub mod theme_pack;
 /// Host-neutral paint parts (surfaces, state layers, focus rings, glyphs, labels).
 pub mod visual;
 

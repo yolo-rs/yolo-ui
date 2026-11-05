@@ -5,7 +5,7 @@
 import { CREATE_CHAT_ORIGIN } from '../lib/create/chat-origin'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { createSafeStorage } from '../lib/storage-quota'
 import {
   adoptInput, cancelJob, getJob, isActiveJob, pollJob, submitCloudJob, uploadInput,

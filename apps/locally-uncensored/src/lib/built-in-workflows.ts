@@ -2,7 +2,7 @@
  * Built-in Agent Workflows — Pre-configured workflow templates.
  */
 
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { AgentWorkflow, WorkflowStep } from '../types/agent-workflows'
 
 function step(type: WorkflowStep['type'], label: string, overrides: Partial<WorkflowStep> = {}): WorkflowStep {

@@ -15,7 +15,7 @@ import {
   Workflow,
   X,
 } from 'lucide-react'
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import { parseImportedWorkflow } from '../../api/workflows'
 import { readWorkflowText } from '../../api/workflow-import'
 import type { ComfyApiGraph } from '../../types/comfy-graph'

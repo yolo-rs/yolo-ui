@@ -10,7 +10,7 @@
 // never get them (run.settingsCard is unset there, see below).
 //
 // What may be changed, and how, is lib/settings-catalog.ts.
-import { v4 as uuid } from 'uuid'
+const uuid = (): string => crypto.randomUUID()
 import type { MCPToolDefinition, ToolArgs } from './types'
 import type { ToolRegistry } from './tool-registry'
 import type { AgentRunContext } from '../agent-context'
