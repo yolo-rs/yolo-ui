@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aphrody / Bun · Documents</title>
+    <link
+      data-trunk
+      rel="rust"
+      data-bin="wordcraft-web"
+      data-wasm-opt="z"
+      data-weak-refs
+    />
+    <link
+      data-trunk
+      rel="css"
+      href="../../build/craft-web/wordcraft-web/theme.css"
+    />
+    <link
+      data-trunk
+      rel="icon"
+      href="../../packages/identity/assets/icon-64.png"
+    />
+    <link
+      data-trunk
+      rel="copy-file"
+      href="../../build/craft-web/wordcraft-web/aphrody-icon.png"
+    />
+  </head>
+  <body>
+    <canvas id="wordcraft_canvas" aria-label="Documents editor"></canvas>
+    <div id="wordcraft_loading" role="status">
+      <img
+        class="aphrody-identity"
+        src="aphrody-icon.png"
+        alt=""
+        width="48"
+        height="48"
+      />Loading Documents&hellip;
+    </div>
+  </body>
+</html>

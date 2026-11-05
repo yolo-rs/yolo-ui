@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aphrody / Bun · Layout</title>
+    <link
+      data-trunk
+      rel="rust"
+      data-bin="designcraft-web"
+      data-wasm-opt="z"
+      data-weak-refs
+    />
+    <link
+      data-trunk
+      rel="css"
+      href="../../build/craft-web/designcraft-web/theme.css"
+    />
+    <link
+      data-trunk
+      rel="icon"
+      href="../../packages/identity/assets/icon-64.png"
+    />
+    <link
+      data-trunk
+      rel="copy-file"
+      href="../../build/craft-web/designcraft-web/aphrody-icon.png"
+    />
+  </head>
+  <body>
+    <canvas id="designcraft_canvas" aria-label="Layout editor"></canvas>
+    <div id="designcraft_loading" role="status">
+      <img
+        class="aphrody-identity"
+        src="aphrody-icon.png"
+        alt=""
+        width="48"
+        height="48"
+      />Loading Layout&hellip;
+    </div>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+[package]
+description = "Native Nintendo DS emulator and analysis command-line frontend."
+license-file = "../../docs/licenses/iecode/licenses/dust/LICENSE"
+name = "aphrody-dust-cli"
+version = "0.1.1"
+edition = "2024"
+publish = false
+[[bin]]
+name = "dust"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+base64 = { version = "0.22.1" }
+clap = { workspace = true }
+cpp_demangle = { workspace = true }
+aphrody-dust-core = { path = "../aphrody-dust-core", version = "0.0.1", features = ["nds-complete"] }
+env_logger = { workspace = true }
+fxhash = { workspace = true }
+log = { workspace = true }
+num-traits = { workspace = true }
+objdiff-core = { workspace = true }
+dsd-object = { workspace = true }
+path-clean = { workspace = true }
+path-slash = { workspace = true }
+pathdiff = { workspace = true }
+serde = { workspace = true, features = ["std"] }
+serde_json = { workspace = true }
+serde-saphyr = { workspace = true }
+snafu = { workspace = true }
+strum = { workspace = true }
+tinytemplate = { workspace = true }
+typed-path = { workspace = true }
+unarm = { workspace = true }
+ratatui = { workspace = true }
+crossterm = { workspace = true }
+similar = { workspace = true }

@@ -1,0 +1,32 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Main-window spawning is limited to configured MCP package runners and the native Aphrody MCP executable without arguments. General-purpose interpreters and container runtimes are not allowed.",
+  "platforms": ["linux", "macOS", "windows"],
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:default",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:window:allow-unmaximize",
+    "core:window:allow-close",
+    "core:window:allow-is-maximized",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-start-dragging",
+    "core:webview:default",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        { "name": "npx", "cmd": "npx", "args": true },
+        { "name": "npx.cmd", "cmd": "npx.cmd", "args": true },
+        { "name": "uvx", "cmd": "uvx", "args": true },
+        { "name": "aphrody-mcp", "cmd": "aphrody-mcp", "args": [] }
+      ]
+    },
+    "shell:allow-stdin-write",
+    "shell:allow-kill",
+    "shell:allow-open",
+    "updater:default"
+  ]
+}

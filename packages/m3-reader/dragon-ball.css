@@ -1,0 +1,61 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Dragon Ball reader skin: the generated dark M3 scheme of the skin seed (scripts/generate-scheme.ts) plus the comic ink shapes. */
+@import "./dragon-ball.scheme.css";
+
+.m3-reader--dragon-ball.m3-reader,
+.m3-reader--dragon-ball .m3-reader {
+  font-family: var(--md-ref-typeface-plain);
+}
+.m3-reader--dragon-ball .m3-reader-container,
+.m3-reader--dragon-ball .m3-reader-collection {
+  border: 2px solid var(--md-sys-color-outline);
+  box-shadow: 4px 4px 0 var(--md-sys-color-shadow);
+}
+.m3-reader--dragon-ball .m3-reader-hud {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 0 var(--md-sys-color-shadow);
+}
+.m3-reader--dragon-ball .m3-reader-btn,
+.m3-reader--dragon-ball .m3-reader-btn-active {
+  border-radius: var(--md-sys-shape-corner-small);
+  box-shadow: 2px 2px 0 var(--md-sys-color-shadow);
+  text-transform: uppercase;
+}
+.m3-reader--dragon-ball .m3-reader-btn:active,
+.m3-reader--dragon-ball .m3-reader-btn-active:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--md-sys-color-shadow);
+}
+.m3-reader--dragon-ball .m3-reader-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: skewX(-12.3deg);
+  border: 2px solid var(--md-sys-color-shadow);
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  color: var(--md-sys-color-on-primary);
+  box-shadow: 2px 2px 0 var(--md-sys-color-shadow);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.m3-reader--dragon-ball .m3-reader-badge > * {
+  transform: skewX(12.3deg);
+}
+.m3-reader--dragon-ball .m3-reader-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-sys-color-primary) var(--md-sys-color-surface-container-lowest);
+}
+.m3-reader--dragon-ball .m3-reader-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.m3-reader--dragon-ball .m3-reader-scroll::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-shadow);
+  border-radius: 2px;
+}
+.m3-reader--dragon-ball .m3-reader-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-primary) 8%, var(--md-sys-color-primary));
+}

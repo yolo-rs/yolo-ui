@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aphrody / Bun · Audio</title>
+    <link
+      data-trunk
+      rel="rust"
+      data-bin="soundcraft-web"
+      data-wasm-opt="z"
+      data-weak-refs
+    />
+    <link
+      data-trunk
+      rel="css"
+      href="../../build/craft-web/soundcraft-web/theme.css"
+    />
+    <link
+      data-trunk
+      rel="icon"
+      href="../../packages/identity/assets/icon-64.png"
+    />
+    <link
+      data-trunk
+      rel="copy-file"
+      href="../../build/craft-web/soundcraft-web/aphrody-icon.png"
+    />
+  </head>
+  <body>
+    <canvas id="soundcraft_canvas" aria-label="Audio editor"></canvas>
+    <script>
+      // cpal (wasm) builds the output stream at startup, before any user gesture, so the
+      // WebAudio AudioContext stays 'suspended': no audio is heard and the transport clock
+      // (driven by the audio callback) never advances. Capture the AudioContext cpal creates
+      // and resume it on the first user gesture. Runs before the wasm module is instantiated.
+      (function () {
+        var Orig = window.AudioContext || window.webkitAudioContext;
+        if (!Orig) return;
+        var ctxs = [];
+        function Wrapped(opts) {
+          var c = new Orig(opts);
+          ctxs.push(c);
+          return c;
+        }
+        Wrapped.prototype = Orig.prototype;
+        window.AudioContext = Wrapped;
+        if (window.webkitAudioContext) window.webkitAudioContext = Wrapped;
+        function resumeAll() {
+          ctxs.forEach(function (c) {
+            if (c.state === "suspended") {
+              c.resume().catch(function () {});
+            }
+          });
+        }
+        ["pointerdown", "mousedown", "touchstart", "keydown"].forEach(
+          function (ev) {
+            window.addEventListener(ev, resumeAll, { capture: true });
+          },
+        );
+      })();
+    </script>
+    <div id="soundcraft_loading" role="status">
+      <img
+        class="aphrody-identity"
+        src="aphrody-icon.png"
+        alt=""
+        width="48"
+        height="48"
+      />Loading Audio&hellip;
+    </div>
+  </body>
+</html>

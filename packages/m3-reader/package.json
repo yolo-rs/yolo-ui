@@ -1,0 +1,82 @@
+{
+  "name": "@aphrody/m3-reader",
+  "version": "1.4.7",
+  "description": "Material 3 manga and illustrated book readers for React",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/m3-reader"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/m3-reader#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "files": [
+    "dist",
+    "src",
+    "styles.css",
+    "dragon-ball.css",
+    "dragon-ball.scheme.css",
+    "!src/**/*.test.*"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./source": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./styles.css": "./styles.css",
+    "./dragon-ball.css": "./dragon-ball.css",
+    "./use-focus-trap": {
+      "types": "./src/use-focus-trap.ts",
+      "default": "./src/use-focus-trap.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "generate": "bun scripts/generate-scheme.ts",
+    "build": "bun build src/index.ts --target browser --packages external --outdir dist --banner '\"use client\";'",
+    "typecheck": "bun check --noEmit",
+    "test": "bun test",
+    "typecheck:fast": "bun check --noEmit",
+    "prepack": "bun run build"
+  },
+  "dependencies": {
+    "@aphrody/m3-theme": "workspace:*",
+    "@tanstack/react-virtual": "catalog:",
+    "lucide-react": "catalog:",
+    "swiper": "catalog:"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*",
+    "@aphrody/m3-tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "tailwindcss": ">=4.1.0"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  },
+  "bunos": {
+    "runtime": {
+      "./source": "react",
+      "./styles.css": "css",
+      "./dragon-ball.css": "css",
+      "./use-focus-trap": "react"
+    }
+  }
+}

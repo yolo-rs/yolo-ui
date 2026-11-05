@@ -1,0 +1,35 @@
+[package]
+name = "pdfcraft-platform"
+description = "Operating-system services shared by the PdfCraft desktop app and automation tools"
+version = "0.7.1"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+
+# `"*"` matches every non-workspace package: crates.io dependencies and the
+# vendored crates under `vendor/` (excluded from the workspace). Our own crates
+# keep full debug info. Dependencies keep only line tables, so backtraces still
+# show file and line, but debug info for the whole dependency graph stays out of
+# every test binary (each UI test binary had a 500-600 MB PDB on Windows, #454).
+
+[dependencies]
+futures-lite = "2"
+async-channel = "2"
+
+[dev-dependencies]
+zbus = { version = "5.19.0", default-features = false, features = ["async-io"] }
+async-channel = "2"
+futures-lite = "2"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# Already in the dependency graph through the accessibility integration. The portal watcher
+# uses the async API so dropping it can cancel an idle subscription without polling.
+zbus = { version = "=5.19.0", default-features = false, features = ["async-io"] }
+async-channel = "2"
+futures-lite = "2"

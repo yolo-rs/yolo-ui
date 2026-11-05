@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aphrody / Bun · Drafting</title>
+    <link
+      data-trunk
+      rel="rust"
+      data-bin="cadcraft-web"
+      data-wasm-opt="z"
+      data-weak-refs
+    />
+    <link
+      data-trunk
+      rel="css"
+      href="../../build/craft-web/cadcraft-web/theme.css"
+    />
+    <link
+      data-trunk
+      rel="icon"
+      href="../../packages/identity/assets/icon-64.png"
+    />
+    <link
+      data-trunk
+      rel="copy-file"
+      href="../../build/craft-web/cadcraft-web/aphrody-icon.png"
+    />
+  </head>
+  <body>
+    <canvas id="cadcraft_canvas" aria-label="Drafting editor"></canvas>
+    <div id="cadcraft_loading" role="status">
+      <img
+        class="aphrody-identity"
+        src="aphrody-icon.png"
+        alt=""
+        width="48"
+        height="48"
+      />Loading Drafting&hellip;
+    </div>
+  </body>
+</html>

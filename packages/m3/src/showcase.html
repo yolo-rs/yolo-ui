@@ -1,0 +1,505 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!--
+  Material 3 token gallery. Every colour, shape, type style, elevation and motion value comes from the
+  generated sheets (crates/aphrody-m3-tokens through @aphrody/m3-theme and @aphrody/m3-tokens); this page
+  declares none of its own.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Material 3 token gallery</title>
+    <link rel="stylesheet" href="../../m3-fonts/src/fonts.css" />
+    <link rel="stylesheet" href="../../m3-tokens/src/m3-tokens.css" />
+    <link rel="stylesheet" href="../../m3-theme/tokens.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--md-sys-typescale-body-medium-font);
+        font-size: var(--md-sys-typescale-body-medium-size);
+        line-height: var(--md-sys-typescale-body-medium-line-height);
+        letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+        background-color: var(--md-sys-color-background);
+        color: var(--md-sys-color-on-background);
+        transition:
+          background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+          color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      }
+      :focus-visible {
+        outline: 2px solid var(--md-sys-color-secondary);
+        outline-offset: 2px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 24px;
+        background: var(--md-sys-color-surface-container);
+        box-shadow: var(--md-sys-elevation-level2);
+        border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      }
+      header h1 {
+        font-family: var(--md-sys-typescale-title-large-font);
+        font-size: var(--md-sys-typescale-title-large-size);
+        line-height: var(--md-sys-typescale-title-large-line-height);
+        font-weight: var(--md-sys-typescale-title-large-weight);
+        color: var(--md-sys-color-on-surface);
+      }
+      header p {
+        font-size: var(--md-sys-typescale-body-small-size);
+        line-height: var(--md-sys-typescale-body-small-line-height);
+        color: var(--md-sys-color-on-surface-variant);
+      }
+
+      .btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 24px;
+        font-family: var(--md-sys-typescale-label-large-font);
+        font-size: var(--md-sys-typescale-label-large-size);
+        line-height: var(--md-sys-typescale-label-large-line-height);
+        letter-spacing: var(--md-sys-typescale-label-large-tracking);
+        font-weight: var(--md-sys-typescale-label-large-weight);
+        border-radius: var(--md-sys-shape-corner-full);
+        cursor: pointer;
+        border: none;
+        overflow: hidden;
+        transition: box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      }
+      .btn::after,
+      nav button::after,
+      .chip::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: currentColor;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+      }
+      .btn:hover::after,
+      nav button:hover::after,
+      .chip:hover::after {
+        opacity: var(--md-sys-state-hover-state-layer-opacity);
+      }
+      .btn:focus-visible::after,
+      nav button:focus-visible::after,
+      .chip:focus-visible::after {
+        opacity: var(--md-sys-state-focus-state-layer-opacity);
+      }
+      .btn:active::after,
+      nav button:active::after,
+      .chip:active::after {
+        opacity: var(--md-sys-state-pressed-state-layer-opacity);
+      }
+      .btn-filled {
+        background: var(--md-sys-color-primary);
+        color: var(--md-sys-color-on-primary);
+      }
+      .btn-filled:hover {
+        box-shadow: var(--md-sys-elevation-level1);
+      }
+      .btn-tonal {
+        background: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
+      }
+      .btn-outlined {
+        background: transparent;
+        color: var(--md-sys-color-primary);
+        border: 1px solid var(--md-sys-color-outline);
+      }
+
+      nav {
+        display: flex;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--md-sys-color-surface-container-low);
+        border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        overflow-x: auto;
+      }
+      nav button {
+        position: relative;
+        overflow: hidden;
+        padding: 8px 16px;
+        border-radius: var(--md-sys-shape-corner-small);
+        font-family: var(--md-sys-typescale-label-large-font);
+        font-size: var(--md-sys-typescale-label-large-size);
+        font-weight: var(--md-sys-typescale-label-large-weight);
+        color: var(--md-sys-color-on-surface-variant);
+        cursor: pointer;
+        background: transparent;
+        border: none;
+      }
+      nav button[aria-selected="true"] {
+        background: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
+      }
+
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+      section[hidden] {
+        display: none;
+      }
+      h2 {
+        font-family: var(--md-sys-typescale-headline-small-font);
+        font-size: var(--md-sys-typescale-headline-small-size);
+        line-height: var(--md-sys-typescale-headline-small-line-height);
+        font-weight: var(--md-sys-typescale-headline-small-weight);
+      }
+      .lead {
+        margin-top: 4px;
+        color: var(--md-sys-color-on-surface-variant);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+      .card {
+        background: var(--md-sys-color-surface-container);
+        border-radius: var(--md-sys-shape-corner-large);
+        padding: 24px;
+        border: 1px solid var(--md-sys-color-outline-variant);
+      }
+      .card h3 {
+        font-family: var(--md-sys-typescale-title-medium-font);
+        font-size: var(--md-sys-typescale-title-medium-size);
+        line-height: var(--md-sys-typescale-title-medium-line-height);
+        font-weight: var(--md-sys-typescale-title-medium-weight);
+        margin-bottom: 4px;
+        color: var(--md-sys-color-on-surface);
+      }
+      .card .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .swatch {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 88px;
+        padding: 12px;
+        border-radius: var(--md-sys-shape-corner-medium);
+        font-size: var(--md-sys-typescale-label-medium-size);
+        line-height: var(--md-sys-typescale-label-medium-line-height);
+        font-weight: var(--md-sys-typescale-label-medium-weight);
+      }
+      .swatch code {
+        font-family: var(--md-ref-typeface-code);
+        font-weight: 400;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .chip {
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 16px;
+        border-radius: var(--md-sys-shape-corner-small);
+        font-family: var(--md-sys-typescale-label-large-font);
+        font-size: var(--md-sys-typescale-label-large-size);
+        font-weight: var(--md-sys-typescale-label-large-weight);
+        background: transparent;
+        color: var(--md-sys-color-on-surface-variant);
+        border: 1px solid var(--md-sys-color-outline);
+        cursor: pointer;
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
+        border-color: transparent;
+      }
+
+      label {
+        display: block;
+        margin-top: 16px;
+        font-size: var(--md-sys-typescale-body-small-size);
+        line-height: var(--md-sys-typescale-body-small-line-height);
+        color: var(--md-sys-color-on-surface-variant);
+      }
+      input[type="text"] {
+        width: 100%;
+        min-height: 56px;
+        margin-top: 4px;
+        padding: 0 16px;
+        background: transparent;
+        border: 1px solid var(--md-sys-color-outline);
+        border-radius: var(--md-sys-shape-corner-extra-small);
+        color: var(--md-sys-color-on-surface);
+        font: inherit;
+        font-size: var(--md-sys-typescale-body-large-size);
+      }
+      input[type="text"]:focus {
+        border-color: var(--md-sys-color-primary);
+        box-shadow: inset 0 0 0 1px var(--md-sys-color-primary);
+      }
+
+      .type-sample {
+        margin-top: 16px;
+      }
+      .type-sample span {
+        display: block;
+        font-size: var(--md-sys-typescale-label-small-size);
+        line-height: var(--md-sys-typescale-label-small-line-height);
+        font-weight: var(--md-sys-typescale-label-small-weight);
+        color: var(--md-sys-color-primary);
+      }
+
+      .elevation {
+        display: grid;
+        place-items: center;
+        min-height: 88px;
+        border-radius: var(--md-sys-shape-corner-medium);
+        background: var(--md-sys-color-surface-container-low);
+        color: var(--md-sys-color-on-surface);
+      }
+
+      .track {
+        position: relative;
+        height: 48px;
+        margin-top: 16px;
+        border-radius: var(--md-sys-shape-corner-full);
+        background: var(--md-sys-color-surface-container-highest);
+      }
+      .dot {
+        position: absolute;
+        inset-block: 4px;
+        inset-inline-start: 4px;
+        width: 40px;
+        border-radius: var(--md-sys-shape-corner-full);
+        background: var(--md-sys-color-primary);
+        transition: inset-inline-start var(--md-sys-motion-duration-long2)
+          var(--md-sys-motion-easing-emphasized-decelerate);
+      }
+      .track[data-on] .dot {
+        inset-inline-start: calc(100% - 44px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dot,
+        body,
+        .btn,
+        .btn::after,
+        nav button::after,
+        .chip::after {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Material 3 token gallery</h1>
+        <p>Generated by crates/aphrody-m3-tokens: roles, shape, type, elevation and motion.</p>
+      </div>
+      <button class="btn btn-tonal" id="scheme-toggle" type="button" aria-pressed="false">Dark scheme</button>
+    </header>
+
+    <nav role="tablist" aria-label="Token families">
+      <button role="tab" aria-selected="true" aria-controls="color" type="button">Colour roles</button>
+      <button role="tab" aria-selected="false" aria-controls="components" type="button">Components</button>
+      <button role="tab" aria-selected="false" aria-controls="type" type="button">Type scale</button>
+      <button role="tab" aria-selected="false" aria-controls="elevation" type="button">Elevation</button>
+      <button role="tab" aria-selected="false" aria-controls="motion" type="button">Motion</button>
+    </nav>
+
+    <main>
+      <section id="color" role="tabpanel">
+        <h2>Colour roles</h2>
+        <p class="lead">Each tile pairs a container role with its on-role, read from tokens.css.</p>
+        <div class="swatches" id="swatches"></div>
+      </section>
+
+      <section id="components" role="tabpanel" hidden>
+        <h2>Components</h2>
+        <p class="lead">Buttons, chips and a text field bound to system roles and state layers.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>Buttons</h3>
+            <div class="stack">
+              <button class="btn btn-filled" type="button">Filled</button>
+              <button class="btn btn-tonal" type="button">Filled tonal</button>
+              <button class="btn btn-outlined" type="button">Outlined</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Filter chips</h3>
+            <div class="chips" id="chips">
+              <button class="chip" type="button" aria-pressed="true">Selected</button>
+              <button class="chip" type="button" aria-pressed="false">Option</button>
+              <button class="chip" type="button" aria-pressed="false">Option</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Text field</h3>
+            <label for="field">Label</label>
+            <input id="field" type="text" placeholder="Type here" />
+          </div>
+        </div>
+      </section>
+
+      <section id="type" role="tabpanel" hidden>
+        <h2>Type scale</h2>
+        <p class="lead">The fifteen M3 styles, each set entirely from its typescale tokens.</p>
+        <div class="card" id="type-samples" style="margin-top: 20px"></div>
+      </section>
+
+      <section id="elevation" role="tabpanel" hidden>
+        <h2>Elevation</h2>
+        <p class="lead">Levels 0 to 5 from the shadow role.</p>
+        <div class="grid" id="elevations"></div>
+      </section>
+
+      <section id="motion" role="tabpanel" hidden>
+        <h2>Motion</h2>
+        <p class="lead">A long2 duration on the emphasized-decelerate easing.</p>
+        <div class="card" style="margin-top: 20px">
+          <button class="btn btn-filled" id="move" type="button">Move</button>
+          <div class="track" id="track"><div class="dot"></div></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const ROLES = [
+        ["primary", "on-primary"],
+        ["primary-container", "on-primary-container"],
+        ["secondary", "on-secondary"],
+        ["secondary-container", "on-secondary-container"],
+        ["tertiary", "on-tertiary"],
+        ["tertiary-container", "on-tertiary-container"],
+        ["error", "on-error"],
+        ["error-container", "on-error-container"],
+        ["surface", "on-surface"],
+        ["surface-container-lowest", "on-surface"],
+        ["surface-container-low", "on-surface"],
+        ["surface-container", "on-surface"],
+        ["surface-container-high", "on-surface"],
+        ["surface-container-highest", "on-surface"],
+        ["surface-variant", "on-surface-variant"],
+        ["inverse-surface", "inverse-on-surface"],
+        ["outline", "surface"],
+        ["outline-variant", "on-surface"],
+      ];
+      const STYLES = ["display", "headline", "title", "body", "label"].flatMap(group =>
+        ["large", "medium", "small"].map(size => `${group}-${size}`),
+      );
+
+      const swatches = document.getElementById("swatches");
+      for (const [role, on] of ROLES) {
+        const tile = document.createElement("div");
+        tile.className = "swatch";
+        tile.style.background = `var(--md-sys-color-${role})`;
+        tile.style.color = `var(--md-sys-color-${on})`;
+        tile.innerHTML = `<span>${role}</span><code>${on}</code>`;
+        swatches.append(tile);
+      }
+
+      const samples = document.getElementById("type-samples");
+      for (const style of STYLES) {
+        const sample = document.createElement("div");
+        sample.className = "type-sample";
+        const label = document.createElement("span");
+        label.textContent = style;
+        const text = document.createElement("div");
+        text.textContent = "Material 3 type scale";
+        for (const [prop, token] of [
+          ["fontFamily", "font"],
+          ["fontSize", "size"],
+          ["lineHeight", "line-height"],
+          ["letterSpacing", "tracking"],
+          ["fontWeight", "weight"],
+        ])
+          text.style[prop] = `var(--md-sys-typescale-${style}-${token})`;
+        sample.append(label, text);
+        samples.append(sample);
+      }
+
+      const elevations = document.getElementById("elevations");
+      for (let level = 0; level <= 5; level++) {
+        const tile = document.createElement("div");
+        tile.className = "elevation";
+        tile.style.boxShadow = `var(--md-sys-elevation-level${level})`;
+        tile.textContent = `level${level}`;
+        elevations.append(tile);
+      }
+
+      const toggle = document.getElementById("scheme-toggle");
+      const root = document.documentElement;
+      const systemDark = matchMedia("(prefers-color-scheme: dark)").matches;
+      const setDark = dark => {
+        root.classList.toggle("dark", dark);
+        root.classList.toggle("light", !dark);
+        toggle.setAttribute("aria-pressed", String(dark));
+        toggle.textContent = dark ? "Light scheme" : "Dark scheme";
+      };
+      setDark(systemDark);
+      toggle.addEventListener("click", () => setDark(!root.classList.contains("dark")));
+
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      const select = tab => {
+        for (const other of tabs) {
+          const selected = other === tab;
+          other.setAttribute("aria-selected", String(selected));
+          other.tabIndex = selected ? 0 : -1;
+          document.getElementById(other.getAttribute("aria-controls")).hidden = !selected;
+        }
+      };
+      for (const [index, tab] of tabs.entries()) {
+        tab.addEventListener("click", () => select(tab));
+        tab.addEventListener("keydown", event => {
+          const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+          if (!step) return;
+          event.preventDefault();
+          const next = tabs[(index + step + tabs.length) % tabs.length];
+          select(next);
+          next.focus();
+        });
+      }
+      select(tabs[0]);
+
+      for (const chip of document.querySelectorAll("#chips .chip"))
+        chip.addEventListener("click", () =>
+          chip.setAttribute("aria-pressed", String(chip.getAttribute("aria-pressed") !== "true")),
+        );
+
+      const track = document.getElementById("track");
+      document.getElementById("move").addEventListener("click", () => track.toggleAttribute("data-on"));
+    </script>
+  </body>
+</html>

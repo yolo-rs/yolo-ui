@@ -1,0 +1,128 @@
+{
+  "name": "@aphrody/m3-next-migrate",
+  "version": "1.4.7",
+  "description": "Migration analysis, codemods and runtime shims for Next.js 16 components and private-owner native Bun web apps; Tauri 3 source planning requires a registered native host adapter for activation",
+  "keywords": [
+    "bun",
+    "codemod",
+    "material-3",
+    "md3",
+    "migration",
+    "next",
+    "nextjs",
+    "react-19",
+    "tauri",
+    "tauri-3"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/m3-next-migrate"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/m3-next-migrate#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "aphrody-code",
+  "bin": {
+    "m3-next-migrate": "./dist/cli.js",
+    "next-migrate": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./source": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./cli": {
+      "types": "./src/cli.ts",
+      "default": "./dist/cli.js"
+    },
+    "./codemods": {
+      "types": "./src/codemods/index.ts",
+      "default": "./dist/codemods/index.js"
+    },
+    "./shims/navigation": {
+      "types": "./src/shims/navigation.tsx",
+      "default": "./dist/shims/navigation.js"
+    },
+    "./shims/link": {
+      "types": "./src/shims/link.tsx",
+      "default": "./dist/shims/link.js"
+    },
+    "./shims/image": {
+      "types": "./src/shims/image.tsx",
+      "default": "./dist/shims/image.js"
+    },
+    "./shims/font": {
+      "types": "./src/shims/font.ts",
+      "default": "./dist/shims/font.js"
+    },
+    "./shims/dynamic": {
+      "types": "./src/shims/dynamic.tsx",
+      "default": "./dist/shims/dynamic.js"
+    },
+    "./shims/headers": {
+      "types": "./src/shims/headers.ts",
+      "default": "./dist/shims/headers.js"
+    },
+    "./shims/form": {
+      "types": "./src/shims/form.tsx",
+      "default": "./dist/shims/form.js"
+    },
+    "./shims/tauri-ipc": {
+      "types": "./src/shims/tauri-ipc.ts",
+      "default": "./dist/shims/tauri-ipc.js"
+    },
+    "./shims/provider": {
+      "types": "./src/shims/provider.tsx",
+      "default": "./dist/shims/provider.js"
+    },
+    "./shims/metadata": {
+      "types": "./src/shims/metadata.tsx",
+      "default": "./dist/shims/metadata.js"
+    },
+    "./shims/server": {
+      "types": "./src/shims/server.ts",
+      "default": "./dist/shims/server.js"
+    },
+    "./layout": {
+      "types": "./src/layout.ts",
+      "default": "./dist/layout.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun ../../scripts/m3/build.ts build --only @aphrody/m3-next-migrate",
+    "typecheck": "bun check -p tsconfig.json --noEmit",
+    "test": "bun test ./test/ && bun test --preload @aphrody/m3-config/test/dom ./test-dom/",
+    "prepack": "bun run build"
+  },
+  "dependencies": {
+    "@aphrody/next-bun": "catalog:",
+    "@aphrody/scaffold": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

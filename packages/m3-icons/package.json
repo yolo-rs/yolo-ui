@@ -1,0 +1,83 @@
+{
+  "name": "@aphrody/m3-icons",
+  "version": "1.4.7",
+  "description": "Material Symbols icons for @aphrody/m3: pixel-perfect inline SVG rendered from the aphrody-bun icons module (variable fonts), no icon font shipped at runtime.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/m3-icons"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/m3-icons#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "author": "aphrody-code",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "bun": "./src/browser.tsx",
+      "types": "./src/browser.tsx",
+      "default": "./dist/browser.js"
+    },
+    "./browser/lit": {
+      "bun": "./src/browser-lit.ts",
+      "types": "./src/browser-lit.ts",
+      "default": "./dist/browser-lit.js"
+    },
+    "./plugin": {
+      "bun": "./src/plugin.ts",
+      "types": "./src/plugin.ts",
+      "default": "./dist/plugin.js"
+    },
+    "./codegen": {
+      "bun": "./src/codegen.ts",
+      "types": "./src/codegen.ts",
+      "default": "./dist/codegen.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun ../../scripts/m3/build.ts build --only @aphrody/m3-icons",
+    "typecheck": "bun check -p tsconfig.json --noEmit",
+    "test": "APHRODY_FFI_DEV=1 bun test",
+    "prepack": "bun run build"
+  },
+  "dependencies": {
+    "@aphrody/bun": "workspace:*"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*",
+    "lit": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "lit": ">=3.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "lit": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

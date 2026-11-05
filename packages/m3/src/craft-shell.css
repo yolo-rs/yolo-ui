@@ -1,0 +1,54 @@
+@import "m3:theme.css";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-sys-typescale-body-large-font, system-ui), sans-serif;
+  font-size: var(--md-sys-typescale-body-large-size, 1rem);
+  font-weight: var(--md-sys-typescale-body-large-weight, 400);
+  line-height: var(--md-sys-typescale-body-large-line-height, 1.5);
+}
+
+canvas {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+[role="status"] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--md-sys-color-on-surface-variant);
+  pointer-events: none;
+}
+
+#loading .err {
+  max-inline-size: 70ch;
+  color: var(--md-sys-color-error);
+  white-space: pre-wrap;
+  pointer-events: auto;
+}
+
+.aphrody-identity {
+  inline-size: 3rem;
+  block-size: 3rem;
+  object-fit: contain;
+}
+
+canvas:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: -2px;
+}

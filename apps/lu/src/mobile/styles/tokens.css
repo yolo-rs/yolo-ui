@@ -1,0 +1,98 @@
+/* Size, type, motion and layout tokens of the mobile shell (prefix --m-).
+   Colour is not here: every colour of the shell is a Material 3 role of the
+   generated sheet (@aphrody/m3-theme/tokens.css, imported by styles/index.css),
+   which switches dark and light with the class theme.ts puts on <html>.
+
+   Two blocks. The markers "tokens:shared" and "tokens:code" are read by
+   styles/__tests__/tokens.test.ts. Keep one declaration per line. */
+
+/* tokens:shared */
+html[data-shell='mobile'] {
+  /* 7.2 type scale, rem so the system text size applies */
+  --m-text-display: 1.5rem;
+  --m-text-title: 1.0625rem;
+  --m-text-body: 1rem;
+  --m-text-control: 0.9375rem;
+  --m-text-caption: 0.8125rem;
+  --m-text-label: 0.75rem;
+  --m-text-mono: 0.8125rem;
+  --m-text-tab: min(0.6875rem, calc(15px / var(--m-zoom)));
+  --m-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --m-font-display: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+  --m-font-mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  --m-font-scale: 1;
+  /* What the WebView enlarges text by on its own: 1 on iOS and in a browser,
+     the text zoom on Android, where the root stays at 16 px (ui/text-zoom.ts
+     measures it). --m-u is one text unit as a LENGTH and grows with the text
+     on every platform; a width that has to follow the text is written in it.
+     A cap in px on a font size is divided by the zoom, or it caps nothing. */
+  --m-zoom: 1;
+  --m-u: calc(1rem * var(--m-zoom));
+
+  /* 7.3 spacing, sizes, radii: px, they do not grow with the text */
+  --m-s1: 4px;
+  --m-s2: 8px;
+  --m-s3: 12px;
+  --m-s4: 16px;
+  --m-s5: 20px;
+  --m-s6: 24px;
+  --m-s8: 32px;
+  --m-gutter: 16px;
+  --m-touch: 44px;
+  --m-row: 52px;
+  --m-icon: min(calc(1.375 * var(--m-u)), 36px);
+  --m-icon-sm: min(calc(1.125 * var(--m-u)), 30px);
+  --m-measure: calc(42 * var(--m-u));
+  --m-rail: 72px;
+  --m-r-sm: 6px;
+  --m-r-md: 10px;
+  --m-r-lg: 14px;
+  --m-r-xl: 20px;
+  --m-r-pill: 999px;
+  /* Safe areas. Default from env(); the native layer may override each one
+     through platform/viewport.ts (setSafeAreaInsets), because WKWebView keeps
+     the portrait values after a rotation (measured in the simulator). */
+  --m-safe-top: env(safe-area-inset-top, 0px);
+  --m-safe-right: env(safe-area-inset-right, 0px);
+  --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --m-safe-left: env(safe-area-inset-left, 0px);
+  /* Keyboard, set by platform/keyboard.ts from window.visualViewport:
+     --m-kb    height the keyboard covers
+     --m-vh    visible height, the shell is exactly this high
+     --m-vtop  how far the system scrolled the page up (iOS)
+     --m-bottom  bottom inset of pages and sheets: the safe area, or nothing
+                 while the keyboard is open (it covers the home indicator) */
+  --m-kb: 0px;
+  --m-vh: 100%;
+  --m-vtop: 0px;
+  --m-bottom: var(--m-safe-bottom);
+
+  /* 9 motion */
+  --m-ease: cubic-bezier(0.2, 0, 0, 1);
+  --m-fast: 120ms;
+  --m-base: 200ms;
+  --m-slow: 300ms;
+}
+
+/* Android: a target is 48 by 48 dp (Material, the Accessibility Scanner of
+   Google Play), iOS asks for 44 pt. In a WebView one CSS px is one dp, so the
+   one size every control of the kit takes its minimum from is larger there.
+   Guards: e2e/mobile/touchziele.mobile.ts, mobile-tests/checks/layout.mjs. */
+html[data-shell='mobile'][data-os='android'] {
+  --m-touch: 48px;
+}
+
+/* tokens:code */
+/* The colours of a code block (ui/highlight-code.tsx reads --m-code-<kind>).
+   Each kind is a Material 3 role of the generated sheet, so the block follows
+   dark and light with the scheme; every role reaches 4.5:1 on the surface
+   containers a code block sits on. */
+html[data-shell='mobile'] {
+  --m-code-comment: var(--md-sys-color-on-surface-variant);
+  --m-code-punct: var(--md-sys-color-on-surface-variant);
+  --m-code-keyword: var(--md-sys-color-primary);
+  --m-code-string: var(--md-ext-color-success);
+  --m-code-number: var(--md-sys-color-tertiary);
+  --m-code-function: var(--md-sys-color-secondary);
+  --m-code-deleted: var(--md-sys-color-error);
+}

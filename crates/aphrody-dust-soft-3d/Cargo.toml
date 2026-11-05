@@ -1,0 +1,10 @@
+[package]
+description = "Nintendo DS software 3D renderer."
+license-file = "../../docs/licenses/iecode/licenses/dust/LICENSE"
+name = "aphrody-dust-soft-3d"
+version = "0.0.1"
+edition = "2021"
+publish = false
+[dependencies]
+aphrody-dust-core = { path = "../aphrody-dust-core", version = "0.0.1" }
+proc-bitfield = { workspace = true }

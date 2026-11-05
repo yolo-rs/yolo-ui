@@ -1,0 +1,110 @@
+{
+  "name": "@aphrody/m3-react",
+  "version": "1.4.7",
+  "description": "React wrappers (@lit/react createComponent) for every <md-*> element of the @aphrody/material-web fork.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/m3-react"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/m3-react#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "aphrody-code",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/index.js",
+    "./dist/**/*.js",
+    "./src/video/video.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./transitions": {
+      "bun": "./src/transitions/index.ts",
+      "types": "./src/transitions/index.ts",
+      "import": "./src/transitions/index.ts",
+      "default": "./dist/transitions/index.js"
+    },
+    "./adaptive": {
+      "bun": "./src/adaptive/index.ts",
+      "types": "./src/adaptive/index.ts",
+      "import": "./src/adaptive/index.ts",
+      "default": "./dist/adaptive/index.js"
+    },
+    "./video": {
+      "bun": "./src/video/index.ts",
+      "types": "./src/video/index.ts",
+      "import": "./src/video/index.ts",
+      "default": "./dist/video/index.js"
+    },
+    "./video.css": "./src/video/video.css",
+    "./state": {
+      "bun": "./src/state/index.ts",
+      "types": "./src/state/index.ts",
+      "import": "./src/state/index.ts",
+      "default": "./dist/state/index.js"
+    },
+    "./adapters/tanstack": {
+      "bun": "./src/adapters/tanstack.ts",
+      "types": "./src/adapters/tanstack.ts",
+      "import": "./src/adapters/tanstack.ts",
+      "default": "./dist/adapters/tanstack.js"
+    },
+    "./data": {
+      "bun": "./src/data/index.ts",
+      "types": "./src/data/index.ts",
+      "import": "./src/data/index.ts",
+      "default": "./dist/data/index.js"
+    },
+    "./package.json": "./package.json",
+    "./*": {
+      "bun": "./src/wrappers/*.ts",
+      "types": "./src/wrappers/*.ts",
+      "import": "./src/wrappers/*.ts",
+      "default": "./dist/wrappers/*.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "generate": "bun run generate.ts",
+    "build": "bun ../../scripts/m3/build.ts build --only @aphrody/m3-react",
+    "typecheck": "bun check --noEmit",
+    "typecheck:fast": "bun check --noEmit",
+    "test": "bun test",
+    "prepack": "bun run build"
+  },
+  "dependencies": {
+    "@aphrody/m3-tokens": "workspace:*",
+    "@lit/react": "catalog:",
+    "@tanstack/react-table": "catalog:",
+    "@tanstack/react-virtual": "catalog:"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*",
+    "@aphrody/material-web": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "@aphrody/material-web": "^3.3.3"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

@@ -1,0 +1,55 @@
+[package]
+name = "wordcraft"
+version = "0.6.1"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+default-run = "wordcraft"
+description = "WordCraft desktop app"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+too_many_arguments = "allow"
+type_complexity = "allow"
+
+[dependencies]
+winit = { workspace = true, features = ["x11"] }
+arboard = "3"
+rfd = "0.17"
+craft-print = { path = "../../crates/craft-print" }
+getrandom = "0.4"
+pollster = "1"
+wordcraft-doc = { path = "../../crates/wordcraft-doc" }
+wordcraft-engine = { path = "../../crates/wordcraft-engine" }
+wordcraft-proof = { path = "../../crates/wordcraft-proof" }
+wordcraft-fonts = { path = "../../crates/wordcraft-fonts" }
+wordcraft-ui-egui = { path = "../../crates/wordcraft-ui-egui" }
+wordcraft-control-key = { path = "../../crates/wordcraft-control-key" }
+eframe = { version = "0.36", default-features = false, features = [
+  "glow",
+  "default_fonts",
+  "wgpu",
+  "accesskit",
+  "wayland",
+  "x11",
+  "links",
+] }
+egui = "0.36"
+serde_json = { version = "1", features = ["float_roundtrip"] }
+log = "0.4"
+
+[build-dependencies]
+winresource = "0.1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+zbus = "5"
+wl-clipboard-rs = "0.9"
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = ["System_UserProfile", "UI_ViewManagement"] }
+clipboard-win = "5"
+open = "5"

@@ -1,0 +1,46 @@
+[package]
+name = "filmcraft-cli"
+description = "FilmCraft headless CLI and MCP server"
+version = "0.9.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+too_many_arguments = "allow"
+needless_range_loop = "allow"
+type_complexity = "allow"
+
+
+[[bin]]
+name = "filmcraft-cli"
+path = "src/main.rs"
+
+[features]
+default = []
+# Speech-to-text (Text panel ▸ Transcribe) with Whisper on the CPU, and model downloads.
+whisper = ["filmcraft-engine/whisper", "filmcraft-engine/speech-download"]
+
+[dependencies]
+filmcraft-engine = { path = "../../crates/filmcraft-engine", version = "0.9.0" }
+filmcraft-export = { path = "../../crates/filmcraft-export", version = "0.9.0" }
+filmcraft-project = { path = "../../crates/filmcraft-project", version = "0.9.0" }
+filmcraft-render = { path = "../../crates/filmcraft-render", version = "0.9.0" }
+filmcraft-time = { path = "../../crates/filmcraft-time", version = "0.9.0" }
+filmcraft-gpu = { path = "../../crates/filmcraft-gpu", version = "0.9.0" }
+filmcraft-media = { path = "../../crates/filmcraft-media", version = "0.9.0" }
+filmcraft-codecs = { path = "../../crates/filmcraft-codecs", version = "0.9.0" }
+filmcraft-platform = { path = "../../crates/filmcraft-platform", version = "0.9.0" }
+filmcraft-mxf = { path = "../../crates/filmcraft-mxf", version = "0.9.0" }
+filmcraft-mpegts = { path = "../../crates/filmcraft-mpegts", version = "0.9.0" }
+filmcraft-ogg = { path = "../../crates/filmcraft-ogg", version = "0.9.0" }
+filmcraft-automation = { path = "../../crates/filmcraft-automation", version = "0.9.0" }
+serde_json = { version = "1" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[dev-dependencies]
+filmcraft-testkit = { path = "../../crates/filmcraft-testkit" }

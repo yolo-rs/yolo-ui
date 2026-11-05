@@ -1,0 +1,25 @@
+[package]
+name = "photocraft-testkit"
+version = "0.8.2"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "Test helpers for the Photocraft crates."
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+
+[dependencies]
+memory-stats = "1"
+photocraft-geom = { path = "../photocraft-geom", version = "0.8.2" }
+photocraft-color = { path = "../photocraft-color", version = "0.8.2" }
+photocraft-raster = { path = "../photocraft-raster", version = "0.8.2" }
+serde_json = "1"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+# In-process resident memory for the benchmarks (`perf`; MIT OR Apache-2.0).
+memory-stats = "1.2"

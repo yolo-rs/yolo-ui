@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "allowImportingTsExtensions": false,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": [
+    "src/dynamic-color.ts",
+    "src/wasm.ts",
+    "src/native-theme.ts",
+    "src/breakpoints.ts",
+    "src/platform-contract.ts",
+    "src/expressive.ts"
+  ]
+}

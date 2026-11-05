@@ -1,0 +1,2153 @@
+/* ── Was Tailwind nach Klassen durchsucht ──────────────────────────────
+   Ohne diese vier Zeilen liest Tailwind 4 das GANZE Projektverzeichnis als
+   Text und macht aus jedem Wort, das wie eine Klasse aussieht, eine Regel im
+   ausgelieferten Bundle: Markdown im Wurzelverzeichnis, die Website unter
+   docs/, die Kommentare des Rust-Backends unter src-tauri/, jede Testdatei.
+
+   Am 01.09.2026 an echten Builds nachgemessen, im A/B/A-Muster gegen
+   denselben Quellstand: der Arbeitsbaum bewegte sich unter der Messung, und
+   ein Diff aus zwei Laeufen ohne Kontrolllauf haette fremde Aenderungen
+   mitgezaehlt — beim ersten Anlauf tat er das auch und schrieb drei Regeln
+   dieser Zeile hier zu, die von woanders kamen.
+
+     Automatik    173380 Bytes roh / 23258 gzip · 1865 Regeln · 1426 Klassen
+     diese Regel  171517 Bytes roh / 22919 gzip · 1833 Regeln · 1396 Klassen
+     ─────────────────────────────────────────────────────────────────────
+     weg            1863 Bytes roh (1,07%) / 339 gzip (1,46%) · 30 Klassen
+
+   Verlustkontrolle: keine einzige Klasse kommt hinzu, die Menge ist eine
+   echte Teilmenge. Vier der dreissig haben ihre einzige Fundstelle
+   ausserhalb von src/, die uebrigen stehen (auch) in einer Testdatei. Die
+   Aufteilung haengt an der Reihenfolge der Sonden und ist deshalb keine
+   Zuordnung — `active:scale-[0.97]` etwa steht in der Audit-Tabelle UND in
+   einem Testkommentar; wer nur eine der beiden Quellen abschaltet, sieht die
+   Klasse weiterhin. Das ist der Grund, warum hier keine Ausschlussliste
+   steht: zwei Quellen, und man pflegt nur eine.
+
+   (Kein Glob in diesem Kommentar: die Zeichenfolge Stern-Stern-Schraegstrich
+   enthaelt das Kommentarende und hat diese Datei beim Aufschreiben genau
+   einmal zerlegt. Der Glob selbst steht unten im Code, wo er hingehoert.)
+
+   Keine einzige davon hatte eine Call-Site. `active:scale-[0.97]` stand als
+   Beispiel in einer Audit-Tabelle, `max-w-[760px]` ausgerechnet in der
+   Beschreibung ihrer eigenen Entfernung, `[hhhh:hhhh]` in einem Kommentar
+   ueber GPU-IDs, `isolate` im englischen Fliesstext eines Blogeintrags. Aus
+   den Platzhaltern `bg-[#...]` und `text-[…]` in Testkommentaren wurden
+   Regeln mit buchstaeblich `#...` und `…` als Wert. Die Zahl ist klein, die
+   Regel dahinter nicht: eine Klasse wurde ausgeliefert, weil jemand ueber
+   sie GESCHRIEBEN hat.
+
+   Und es war nicht nur totes Gewicht. `.active\:scale-\[0\.97\]:active`
+   endet auf dieselbe Zeichenfolge wie die Press-Hausregel weiter unten und
+   stand im Bundle VOR ihr — der Test, der die Kaskade prueft, hat vier
+   Monate lang die Utility gemessen und die Hausregel gemeldet.
+
+   Keine Ausschlussliste nach Endungen (`@source not "*.md"` muesste jede
+   neue Prosa-Endung nachpflegen und uebersieht docs/ und src-tauri/
+   ohnehin), sondern die positive Regel und eine Ausnahme, die keine
+   Pflegeliste ist, sondern eine Definition:
+
+     · Die App ist `index.html` plus `src/`. Was Klassen traegt, steht dort.
+     · `__tests__` sind Pruefungen UEBER die App, nicht die App. Genau so
+       zaehlt es dieses Haus schon: `componentFiles()` in
+       fokusring-und-press.test.ts ueberspringt `__tests__`, wenn es
+       Call-Sites sucht. Der Nebeneffekt ist beabsichtigt: ein Test darf ueber
+       eine Klasse schreiben, ohne sie zu erzeugen.
+
+   DIESE Datei steht bewusst nicht in der Ausschlussliste. Tailwind scannt
+   das Stylesheet, das es selbst verarbeitet, ohnehin nicht — nachgemessen:
+   `@source not "./index.css"` ergab ein BYTE-IDENTISCHES Bundle, und keine
+   der oben genannten Klassen aus diesem Kommentar taucht darin auf. Eine
+   Zeile, die nichts tut, aber so aussieht, als tue sie etwas, waere genau
+   der Fehler, um den es hier geht.
+
+   Wer eine Frontend-Quelle ausserhalb von `src/` anlegt, traegt sie hier
+   nach — sonst fehlen ihre Klassen still. NICHT gemeint ist `mobile-client/`:
+   die Handy-Seite laedt dieses Bundle nicht, sie bringt ihr eigenes
+   `styles.css` mit eigenen Klassennamen mit. Sie hier einzutragen wuerde
+   fremde Woerter in unser CSS holen, ohne ihr zu helfen.
+
+   Bewacht von
+   keine-klasse-aus-prosa.test.ts: es haelt jede Utility des gebauten
+   Bundles gegen genau diese Quellen und wird rot, wenn eine ohne
+   Fundstelle dasteht — in beide Richtungen, also auch, wenn der Scan zu
+   eng wird.
+   ────────────────────────────────────────────────────────────────────── */
+@import "tailwindcss" source(none);
+/* Bun OS design system: every colour, shape, type, elevation and motion
+   token comes from the generated Material 3 sheets. tokens.css switches the
+   scheme with the .light / .dark class the app puts on <html> (and follows
+   prefers-color-scheme without one); tailwind.css maps every role to a
+   utility (bg-surface-container, text-on-surface-variant, border-outline-variant,
+   bg-on-surface/8 as the hover state layer). This file declares no colour of
+   its own. */
+@import "@aphrody/m3-tokens/m3-tokens.css";
+@import "@aphrody/m3-theme/tokens.css";
+@import "@aphrody/m3-theme/tailwind.css";
+@source "../index.html";
+@source "./";
+@source not "./**/__tests__/**";
+/* The mobile shell (src/mobile) brings its own plain CSS with classes m-*
+   and uses no utilities. Its files are not scanned, so a word in them can
+   never put a class into the desktop stylesheet. */
+@source not "./mobile/**";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Hover without the media query (A27, 3.0.8). Tailwind 4 wraps every `hover:`
+   and `group-hover:` in `@media (hover: hover)`. WebKitGTK answers that query
+   from the GDK seat, and a seat without a pointer capability (seen as missing
+   delete buttons on Linux, liam_2007 on Bazzite/KDE) makes it `hover: none`:
+   every control revealed on hover then stays invisible for good, even though
+   the mouse moves and `:hover` itself matches. This is a desktop app driven by
+   a pointer, so a plain `:hover` is the honest rule here. */
+@custom-variant hover (&:hover);
+
+@theme {
+
+  /* ── Form: EINE Radiusleiter ────────────────────────────────────────
+     D-T08. Vorher liefen zwei Systeme nebeneinander: die rem-abgeleitete
+     Tailwind-Leiter und die px-Tokens `--radius-control/panel/pill` unten
+     im `:root`. Das Ergebnis war im Browser nachgemessen (Chromium 149,
+     getComputedStyle):
+
+       rounded      4px      rounded-lg   8px
+       rounded-sm   4px      rounded-xl   8px   ← DIESELBE Zahl wie lg
+       rounded-md   6px      rounded-2xl 10px
+
+     `rounded-lg` und `rounded-xl` waren derselbe Wert: zwei Namen, eine
+     Zahl, und keine Moeglichkeit, im Code eine Stufe ueber 8px zu meinen,
+     ohne in eckige Klammern auszuweichen. Genau das ist passiert —
+     `rounded-[10px]` (3x), `rounded-[8px]` (8x), `rounded-[6px]` (4x)
+     und `rounded-[5px]` (20x) sagen Zahlen, fuer die es Namen gibt oder
+     geben sollte.
+
+     Jetzt sind die Haus-px-Tokens die Quelle, und jede Stufe ist genau
+     einmal da:
+
+       rounded-sm   4px   die Nagelstufe (Badges, Punkte)
+       rounded-md   6px
+       rounded-lg   8px = --radius-control   Controls, Knoepfe
+       rounded-xl  10px                      Panes (die Sidebar steht dort)
+       rounded-2xl 12px = --radius-panel     Dialoge, Panels
+
+     Zwei Werte aendern sich sichtbar: `rounded-xl` 8 → 10px (16
+     Fundstellen) und `rounded-2xl` 10 → 12px (6 Fundstellen). Beide sind
+     kein Zufallssprung, sondern schliessen eine gemessene Luecke: die
+     Hauptpane in AppShell trug `rounded-xl` (8px) und stand direkt neben
+     der Sidebar mit `rounded-[10px]` — zwei Flaechen derselben Familie,
+     nebeneinander, mit verschiedenen Ecken. Und `rounded-2xl` ist der
+     Dialogradius, der damit auf `--radius-panel` faellt statt 2px
+     daneben zu liegen.
+
+     `--radius-3xl` ist geloescht: 0 Fundstellen, und im Browser als leere
+     Variable gemessen — die Klasse haette 0px ergeben.
+
+     ── Und die 5px? Entschieden, nicht aufgezaehlt (Nachtrag 01.09.2026) ──
+
+     Der Absatz oben zaehlte `rounded-[5px]` (20x, alle in der Sidebar) als
+     Symptom auf und liess offen, wohin sie gehen. Das war eine Luecke: eine
+     Leiter, die eine Zahl nennt, ohne ihr eine Stufe oder ein Ziel zu geben,
+     laedt zur naechsten eckigen Klammer ein.
+
+     5px bekommt KEINE Stufe. Zwischen `rounded-sm` (4) und `rounded-md` (6)
+     liegen bei --ui-scale 1,15 genau 4,6 und 6,9 gerenderte Pixel; eine
+     Stufe dazwischen waere 5,75px und damit von beiden Nachbarn rund einen
+     Geraetepixel entfernt. Das ist dieselbe Aufloesung, in der D-T04 die
+     vierzehn Schriftgroessen in einem 4px-Band als Rauschen verworfen hat.
+     Drei Stufen in zwei Pixeln sind keine Leiter, sie sind ein Zittern.
+
+     Die 20 gehen auf `rounded-md` (6px), nicht auf `rounded-sm` (4px):
+     · Es sind Listenzeilen und Knoepfe, keine Punkte und Abzeichen — und
+       4px ist in dieser Leiter ausdruecklich die Nagelstufe fuer Letztere.
+     · Dieselbe Datei schreibt daneben `rounded-[8px]` (8x) und
+       `rounded-[10px]` (3x), also `rounded-lg` und `rounded-xl` unter
+       anderem Namen. Sie fuehrt eine private px-Leiter 5/8/10, von der
+       nur die 5 keinen Namen im Haus hat.
+     · Aufwaerts statt abwaerts, weil die Zeile im Pane mit 10px sitzt: 6
+       bleibt klar kleiner als der Rahmen und klar groesser als die
+       Nagelstufe.
+
+     `src/components/layout/Sidebar.tsx` gehoert in diesem Durchgang einem
+     anderen Agenten; die Zahl ist deshalb gedeckelt und nicht gezogen —
+     die Sperrklinke steht in radius-schatten-hoehe-und-bewegung.test.ts
+     auf 20 und darf nur sinken. ── */
+  --radius-lg: var(--radius-control);
+  --radius-xl: 10px;
+  --radius-2xl: var(--radius-panel);
+
+  /* ── Tiefe: die Schattenleiter und was sie wirklich traegt (D-T09) ──
+     Tailwind liefert SIEBEN Stufen (2xs xs sm md lg xl 2xl). Dieses Haus
+     stimmt drei davon auf dunkle Flaechen ab — und genau daraus bestand
+     der Befund: eine Leiter, die zur Haelfte dem Haus und zur Haelfte der
+     Werkseinstellung gehoert, ohne dass man einer Call-Site ansieht,
+     welche Haelfte sie gerade erwischt.
+
+     Am 01.09.2026 im CODE nachgezaehlt (Kommentare abgeschnitten, sonst
+     zaehlt man Prosa mit):
+
+       shadow-sm   12x  WERK
+       shadow-lg    3x  Haus
+       shadow-xl    6x  Haus
+       shadow-2xl   6x  Haus
+       shadow-md    0x  WERK — niemand ruft sie; wer es taete, bekaeme
+                        ohne Vorwarnung Tailwinds Hellmodus-Wert
+       2xs/xs       0x  dito
+
+     Die Antwort ist NICHT eine vierte Zahl, sondern EIN Aufrufer: fuer
+     „dieses Blatt schwebt" gibt es `.lu-elevated` (Flaeche + Kante +
+     Schatten aus einer Quelle, hell wie dunkel). Zehn Schwebeblaetter in
+     chat/ models/ ui/ agents/ sind darauf gezogen worden; vorher trugen
+     sie acht handgeschriebene Ketten mit sechs verschiedenen Flaechen und
+     drei verschiedenen Schattenstufen.
+
+     `--shadow-2xl` went with the pop-up redesign: its last six call
+     sites were floating sheets and dialogs, which now take `.lu-elevated`
+     or `.lu-dialog`.
+     Bewacht von radius-schatten-hoehe-und-bewegung.test.ts. ── */
+  /* The two house steps are the M3 elevation levels 3 and 4: the shadow
+     role with the key (0.30) and ambient (0.15) alphas, both schemes. */
+  --shadow-lg: var(--md-sys-elevation-level3);
+  --shadow-xl: var(--md-sys-elevation-level4);
+
+
+  /* ── Motion — eine benannte Leiter statt verstreuter Zahlen ──
+     Dauer und Kurve standen bisher als Literale in den Komponenten. Erhoben
+     wurde, was tatsächlich benutzt wird (framer-motion + Tailwind, Stand 2.6.7):
+
+       0.12s ×12  →  --motion-fast   Mikro-Feedback (Hover, Toggle, Badge)
+       0.15s ×21  →  --motion-base   Haus-Standard (Ein-/Ausblenden, Listen)
+       0.20s  ×7  →  --motion-base   (auf den Standard gerundet)
+       0.30s  ×5  →  --motion-slow   Flächen (Dialog, Panel, Slide-over)
+
+     --motion-ease ist die Kurve, die `ease-out`/`transition-colors` in diesem
+     Haus meinen: schnell los, weich aus. Vier Tokens, mehr braucht die App
+     nicht — wer eine fünfte Dauer will, nimmt eine dieser Stufen.
+     Die JS-Seite (framer-motion liest keine CSS-Variablen) spiegelt die
+     gleiche Leiter in src/components/ui/motion.ts. */
+  --motion-fast: 120ms;
+  --motion-base: 150ms;
+  --motion-slow: 300ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Create design tokens — ported verbatim from the lu-labs web companion
+   (the web app). The Create surface was ported WITHOUT these
+   definitions, so every `t-*` typography class fell back to the raw 18.4px
+   root (≈33% oversized vs Chat) and every `h-[var(--control-h-*)]` became an
+   invalid/auto height — which is what oversized the Create tab relative to
+   Chat and clipped the banner title / gallery / drop-zone. Chat is unaffected
+   because it sizes with rem-based `text-*` utilities. Seit dem 16px-Wurzel-
+   maß stehen die Typo-Stufen in ganzen px statt in rem-Brüchen — bei
+   16px Wurzel bezeichnen beide dieselbe Länge, und die px-Schreibweise
+   macht das Raster prüfbar.
+   ───────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Der EINE Maßstab der App ────────────────────────────────────────
+     Bis 2.6.7 liefen vier Maßstäbe gleichzeitig: ein 18,4px-Wurzelmaß,
+     `zoom: 1.25` auf der Sidebar, `scale(0.763)` auf der IntentBar und
+     `scale(0.7)` auf der Composer-Reglerzeile. Jede Schicht war ein
+     Pflaster über eine Größe, die woanders falsch gesetzt war, und keine
+     zwei kompensierten sich sauber (0,763 ≈ 1/1,31, aber 1,25 ≠ 1,15).
+
+     Jetzt: Wurzel auf 16px, damit `rem` und `px` DASSELBE Raster meinen
+     (0.5rem = 8px = --radius-control, statt 9,2px ≠ 8px), und die +15 %
+     genau einmal als `zoom` auf der App-Wurzel. Warum `zoom` und nicht
+     `transform: scale()` oder `calc()` — gemessen in Chromium 149:
+
+       calc(16px * 1.15) auf `html`  →  ist wieder 18,4px. Behebt nichts:
+         rem-abgeleitete Werte bleiben krumm, px-Werte bleiben unskaliert.
+       transform: scale() auf #root  →  nimmt die Wurzel aus dem Layout-
+         fluss und macht sie zum umschließenden Block jedes
+         `position: fixed`-Kindes (gemessen: ein fixiertes Kind sprang um
+         die halbe Seitenhöhe). 15 Modale hängen daran.
+       zoom                          →  skaliert das Layout mit, lässt
+         `position: fixed; inset: 0` weiterhin exakt das Fenster
+         abdecken (gemessen 1440×900 bei --ui-scale 1.15) und hält
+         `getComputedStyle` auf dem UNskalierten Entwurfsraster, so dass
+         die Quelle in ganzen Pixeln lesbar bleibt.
+
+     Die eine Stelle, die `zoom` NICHT mitnimmt, sind Viewport-Einheiten:
+     `100vw` misst innerhalb des gezoomten Baums weiter das ungezoomte
+     Fenster und wird danach mitskaliert, überschießt also um genau
+     --ui-scale (gemessen: 1656px in einem 1440px-Fenster). Die drei
+     Vollbild-Wurzeln der App (AppShell, ViewSkeletons, Onboarding) sind
+     alle `h-screen w-screen`; die Regel `#root > *` unten bindet sie an
+     #root statt ans Fenster. Sauberer wäre `h-full w-full` in den drei
+     Komponenten — das liegt außerhalb dieser Änderung. */
+  --ui-scale: 1.15;
+
+  /* Typography scale — sechs Stufen, alle auf ganzen CSS-Pixeln des
+     16px-Rasters. Vorher rem-Brüche am 18,4px-Wurzelmaß, die auf 20 /
+     17,48 / 14,72 / 13,248 / 11,408 / 12,88px fielen; keine einzige davon
+     lag auf einem Pixel. Die Stufen selbst sind unverändert gemeint, nur
+     gerundet: 20 / 15 / 13 / 12 / 10 / 11px. */
+  --text-display: 20px;      --text-display-lh: 1.2;   --text-display-fw: 500;
+  --text-title:   15px;      --text-title-lh:   1.3;   --text-title-fw:   600;
+  --text-body:    13px;      --text-body-lh:    1.5;   --text-body-fw:    400;
+  --text-control: 12px;      --text-control-lh: 1;     --text-control-fw: 500;
+  --text-label:   10px;      --text-label-lh:   1;     --text-label-fw:   600;
+  --text-mono:    11px;
+  /* --text-micro ist KEINE siebte Zahl: es ist dieselbe 10, die
+     --text-label traegt. Siehe die Rechnung bei `.t-micro` unten. */
+  --text-micro:   var(--text-label);
+
+  /* ── Die Markenschrift fuer die Displaystufe ────────────────────────
+     D-T03 stand als „Display-Schrift fehlt ganz" in der Matrix, mit der
+     Begruendung, `public/fonts/lu-fonts.css` enthalte ausschliesslich
+     Inter-Faces. Das ist nachgemessen falsch. Die Datei hat 39
+     `@font-face`-Bloecke in drei Familien:
+
+       Inter           21 Bloecke  (400/500/600, sieben Unicode-Bereiche)
+       JetBrains Mono  12 Bloecke  (500)
+       Space Grotesk    6 Bloecke  (500 und 700, latin/latin-ext/vietn.)
+
+     Und sie ist nicht nur deklariert, sie laedt. Im laufenden Fenster
+     (Chromium 149) nach `document.fonts.load`:
+
+       [...document.fonts] enthaelt „Space Grotesk" 500 und 700,
+       document.fonts.check('500 20px "Space Grotesk"') === true
+       Breite von „Locally Uncensored" bei 100px Schriftgrad:
+         Inter 600         1103,51px
+         Space Grotesk 500 1094,18px   (-0,85 %)
+         Space Grotesk 700 1094,34px
+         serif (Rueckfall)  972,23px   ← klar unterscheidbar, es faellt
+                                          also nichts zurueck
+
+     Die drei woff2-Dateien liegen in public/fonts/woff2/ und sind ueber
+     `index.html` schon heute im Bundle. Nichts wird nachgeladen, nichts
+     kommt hinzu — der Slot war unbesetzt, obwohl die Schrift ausgeliefert
+     wurde.
+
+     Gewicht 500, nicht 600: Space Grotesk hat in dieser Datei genau die
+     Schnitte 500 und 700. Bei `font-weight: 600` waehlt Chromium nach der
+     CSS-Font-Matching-Regel den naechsthoeheren echten Schnitt, also 700
+     — gemessen an der Breite (600 ergab 1094,34 = exakt der 700er-Wert,
+     nicht 1094,18 wie 500). Die Displaystufe haette also still fett
+     gerendert. --text-display-fw geht deshalb auf 500, den Schnitt, den
+     es wirklich gibt. ── */
+  --font-display: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Control heights + spacing rhythm */
+  --space-unit: 4px;
+  --control-h-sm: 26px;
+  --control-h-md: 32px;   /* default control height */
+  --control-h-lg: 40px;   /* primary Create button */
+
+  /* Chat measure — ONE column for transcript, composer and status anchor.
+     They used to be two independent formulas (max-w-[70%] on the composer,
+     no max-width at all on the message list), which put the answer text and
+     the input box 157px apart at 1600px and let a line run to ~130 chars.
+
+     ACHTUNG, 660 ist kein Tippfehler: dieser Token wird seit der
+     --ui-scale-Umstellung MITSKALIERT. Massgeblich ist die GERENDERTE
+     Spalte — 660 × 1.15 = 759px. Das ist genau die Breite, die die Spalte
+     vor der Umstellung hatte; 760 wuerde heute 874px ergeben.
+
+     Warum: solange die App auf einem 18,4px-Wurzelmass lief, trug dieser
+     px-Token die 15 % NICHT, der rem-basierte Fliesstext aber schon. Jetzt
+     tragen beide. Die Spalte war also als NEBENWIRKUNG um 15 % gewachsen,
+     nicht als Entscheidung — und die 660 stellen den vorherigen Zustand
+     wieder her. Wer sie „korrigiert", weil sie zu schmal aussieht, macht
+     die Spalte um 15 % breiter, nicht die Zahl richtig.
+
+     Zeichen pro Zeile, gemessen (Inter, 1600×1000, 759px Spalte) — die
+     MESSGRUNDLAGE entscheidet, deshalb steht sie dabei:
+
+       Kleinbuchstaben-Alphabet  9,85px/Zeichen  ->  77 Zeichen
+       englische Prosa           8,81px/Zeichen  ->  86 Zeichen
+       deutsche Prosa            8,63px/Zeichen  ->  88 Zeichen
+
+     Das Kleinbuchstaben-Alphabet ist die typografische Konvention fuer
+     „Alphabetlaenge", aber KEINE Aussage ueber Fliesstext: echte Prosa hat
+     Leerzeichen und schmale Buchstaben, also eine kleinere mittlere
+     Zeichenbreite und damit MEHR Zeichen pro Zeile. Der gueltige Wert fuer
+     diese Spalte ist deshalb ~86, nicht 77.
+
+     OFFEN (nicht in diesem Paket entschieden): 86 Zeichen liegen ueber dem
+     klassischen Band fuer gut lesbaren Fliesstext (45–75, aeusserstens 80).
+     Die 760 gerenderten px sind die Wahl aus Audit-Welle 1; ob sie zu breit
+     sind, ist eine eigene, vorbestehende Designfrage.
+
+     Der Test dazu prueft --lu-measure × --ui-scale gegen ~760px, nicht die
+     660 und NICHT eine Zeichenzahl:
+     src/components/__tests__/ein-massstab.test.ts */
+  --lu-measure: 660px;
+
+  /* Radii */
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --radius-pill: 999px;
+}
+
+html {
+  /* 16px, nicht 18,4px: das Wurzelmaß ist das Raster, nicht der Regler.
+     Der Regler ist --ui-scale weiter unten. */
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Die +15 % — genau einmal, auf der App-Wurzel.
+   Der zweite Selektor ist keine zweite Anwendung: Tooltip, Select und
+   MemoryDebugPanel portalieren mit `createPortal(…, document.body)` AUS
+   #root heraus, die App hat also mehr als eine Wurzelbox. Die Portale sind
+   Geschwister von #root, nie Kinder — kein Element bekommt den Faktor
+   zweimal. Ohne die zweite Zeile rendern Dropdowns und Tooltips 13 %
+   kleiner als alles andere, also genau der Fehler, den diese Änderung
+   beseitigt. */
+#root,
+body > :not(#root) {
+  zoom: var(--ui-scale);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Siehe --ui-scale: `100vw`/`100vh` sind die einzigen Längen, die `zoom`
+   nicht mitnimmt. Die Vollbild-Wurzel der App (`h-screen w-screen`) füllt
+   deshalb #root statt des Fensters. */
+#root > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* Glass card — aligned with the web companion: near-invisible (a single
+   hairline divider, no filled surface) so panels read as light structure
+   instead of stacked cards. */
+.glass-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 0;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Custom scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Scrollbars are outline-variant hairlines, outline on hover. */
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 3px;
+}
+
+/* Kill the legacy up/down arrow buttons WebView2 paints on custom-styled
+   scrollbars by default — they read as Windows-XP-era chrome and look
+   completely wrong against an otherwise modern dark UI. Affects all
+   .scrollbar-thin containers including the chat textarea. */
+.scrollbar-thin::-webkit-scrollbar-button,
+.scrollbar-thin::-webkit-scrollbar-button:start,
+.scrollbar-thin::-webkit-scrollbar-button:end,
+.scrollbar-thin::-webkit-scrollbar-button:vertical:start,
+.scrollbar-thin::-webkit-scrollbar-button:vertical:end,
+.scrollbar-thin::-webkit-scrollbar-button:horizontal:start,
+.scrollbar-thin::-webkit-scrollbar-button:horizontal:end {
+  display: none;
+  width: 0;
+  height: 0;
+}
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+.scrollbar-thin::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Global scrollbar (2026-06-02): every scrollable surface — not only
+   .scrollbar-thin containers — gets the themed scrollbar so the bare white
+   Windows/WebView2 default never shows (it was visible on the coding file-tree
+   and other panes). .scrollbar-thin above still wins for the slim 6px variant. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-outline);
+}
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:start,
+::-webkit-scrollbar-button:end {
+  display: none;
+  width: 0;
+  height: 0;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Themed scrollbars via the STANDARD properties (2026-06-02 r2) ──
+   The `::-webkit-scrollbar` rules ABOVE were being IGNORED on every
+   `.scrollbar-thin` container: when `scrollbar-width: thin` is active (it is,
+   via the scrollbar-thin utility), Chromium/WebView2 (Edge 148) switches to
+   the STANDARD scrollbar and drops all -webkit- pseudo styling — falling back
+   to `scrollbar-color: auto`, i.e. the bare grey/white Windows scrollbar.
+   Setting `scrollbar-color` explicitly is the ONLY thing that themes it here.
+   `scrollbar-color` inherits, so the theme-root rules cover every pane. */
+:root {
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+/* Range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"] {
+  background: var(--md-sys-color-surface-container-highest);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  background: var(--md-sys-color-primary);
+}
+
+/* Markdown content */
+.markdown-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Titlebar drag region */
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+[data-tauri-drag-region] button {
+  -webkit-app-region: no-drag;
+}
+
+/* Selection: the M3 text-selection colour, primary at 40 %. */
+::selection {
+  background: color-mix(in oklab, var(--md-sys-color-primary) 40%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   ───────────────────────────────────────────────────────────────────── */
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   DER Fokusring. Eine Regel, 2px, Akzentfarbe, auf allem, was Fokus
+   bekommen kann — Eingabefelder ausdruecklich eingeschlossen.
+
+   The ring is the M3 focus indicator: 2px of the secondary role at a 2px
+   offset, so it lies on the surface BEHIND the control. Secondary reaches
+   3:1 against every surface container of both generated schemes (checked
+   for every scheme by aphrody_m3_tokens::contrast). Under forced colours it
+   becomes Highlight.
+
+   Why `:not(.lu-primary)`: the primary recipe sets its own ring below; the
+   exception stands AT the rule instead of being fought out with more
+   specificity.
+
+   Warum `:not([tabindex='-1'])`: der Dialog-Rahmen (`ui/Modal.tsx`) ist
+   `tabIndex={-1}` und bekommt beim Oeffnen programmatisch Fokus. Chromium
+   laesst `:focus-visible` dort greifen, sobald zuvor die Tastatur im Spiel
+   war — ohne diese Klammer bekaeme der ganze Dialog einen Akzentrahmen.
+   Programmatischer Fokus ist kein Tastaturfokus; genau das steht hier.
+
+   Die Regel ist UNGESCHICHTET und schlaegt damit jede Tailwind-Utility
+   (`@layer utilities`) unabhaengig von der Spezifitaet — auch die 67
+   `outline-none`-Fundstellen, die den Ring bisher einzeln abgeschaltet
+   haben. Deshalb muss keine davon angefasst werden.
+
+   Warum die Regel ihre drei Werte aus Variablen liest: damit es bei EINER
+   Regel bleibt, obwohl es zwei Fokusbilder gibt.
+
+   05.09.2026, am Windows-Bau: „wenn man in das nachrichten feld
+   klickt kommt eine starke lila umrandung, die soll komplett weg." Gemessen
+   an der fokussierten Textarea des Chat-Composers: der 1,739px-Akzentumriss
+   mit 1,739px Abstand, also diese Hausregel; das
+   `focus:outline-none` der Textarea (0,2,0) verliert gegen sie (0,3,0).
+   Am 21.09.2026 hat er denselben Satz fuer die Preset-Werkstatt wiederholt
+   und auf Nachfrage auf die ganze App ausgeweitet: „nirgends."
+
+   Die erste Fassung dieser Antwort war ein Attribut (`data-lu-quiet-focus`)
+   an jedem betroffenen Feld, zuletzt an sechsen. Das skaliert nicht auf
+   „nirgends": die App hat 106 Eingabefelder, 35 davon ohne `type`, und ein
+   Attribut, das an 106 Stellen haengen muss, wird an der 107. vergessen.
+   Also steht die Entscheidung hier, an einer Stelle, und die Felder tragen
+   nichts mehr.
+
+   Was sie unterscheidet, ist nicht Geschmack, sondern die Frage, ob der
+   Fokus sonst zu sehen waere. In ein Textfeld schreibt man, und dass der
+   Fokus dort steht, sagt der blinkende Schreibzeiger, ohne den das Tippen
+   gar nicht ginge. Ein Knopf, ein Link, ein Regler, ein Kaestchen und ein
+   Menueausloeser haben nichts dergleichen; nimmt man ihnen den Ring, ist die
+   Tastaturbedienung blind. Deshalb behalten die den 2px-Akzentring, und nur
+   Texteingaben bekommen die Haarlinie.
+
+   Die Haarlinie ist ruhig, nicht unsichtbar: 1px outline, ohne Abstand,
+   damit sie dem Radius des Feldes folgt statt einen zweiten Rahmen daneben
+   zu setzen. Was sie NICHT erfuellt, ist die 2px-Staerke aus
+   WCAG 2.2 SC 2.4.13. Das ist die Entscheidung des Eigners, hier benannt
+   und nicht weggeschwiegen, und sie betrifft nur Felder, in denen ohnehin
+   ein Schreibzeiger steht. Ihre Farbe ist die outline-Rolle, die in beiden
+   Schemata 3:1 gegen die Flaeche haelt.
+
+   `:not(input)` waere zu grob: `checkbox`, `radio`, `range`, `file`,
+   `color`, `button` und `submit` sind Eingabefelder im Sinne des Elements
+   und Bedienelemente im Sinne des Auges. Die Liste unten nennt deshalb die
+   Typen, in die man schreibt, `:not([type])` inbegriffen (das ist der
+   Vorgabefall `text`, und daran haengen 35 der Felder).
+   ───────────────────────────────────────────────────────────────────── */
+:focus-visible:not([tabindex='-1']):not(.lu-primary) {
+  outline: var(--lu-focus-w, 2px) solid var(--lu-focus-c, var(--md-sys-color-secondary));
+  outline-offset: var(--lu-focus-o, 2px);
+}
+@media (forced-colors: active) {
+  :focus-visible:not([tabindex='-1']) {
+    outline-color: Highlight;
+  }
+}
+
+/* Die eine Ausnahme von der Ausnahme: ein Feld, dessen KASTEN den Fokus
+   schon zeichnet.
+
+   Der Chat-Composer und das Promptfeld von Create sitzen in einem Kasten mit
+   `focus-within:border-*`: der ganze Rahmen wird heller, sobald der Zeiger im
+   Feld steht. Eine Haarlinie zusaetzlich waere dort ein zweiter Rahmen INNEN,
+   und genau das war am 21.09.2026 im Bild zu sehen, nachdem der Akzentring
+   gefallen war. Zwei Rahmen sind nicht leiser als einer, sie sind zwei.
+
+   Deshalb Breite null, und NUR hier. Die Bedingung, unter der das zulaessig
+   ist, prueft fokusring-und-press.test.ts nach: wer diese Klasse traegt, muss
+   in einem Kasten sitzen, der `focus-within:border-` setzt. Ohne den Kasten
+   naehme sie einem Feld seine einzige Fokusanzeige. */
+.lu-fokus-am-kasten {
+  --lu-focus-w: 0px;
+}
+
+/* Texteingaben: dieselbe eine Regel, nur leiser. Gesetzt wird hier NICHT
+   der Umriss, sondern nur, womit die Regel oben ihn zeichnet. */
+textarea,
+input:is(
+  [type='text'], [type='search'], [type='url'], [type='email'],
+  [type='password'], [type='tel'], [type='number'], [type='date'],
+  [type='time'], [type='datetime-local'], [type='month'], [type='week'],
+  :not([type])
+) {
+  --lu-focus-w: 1px;
+  --lu-focus-o: 0px;
+  --lu-focus-c: var(--md-sys-color-outline);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Press-Feedback — EINE Regel statt 489 Call-Sites.
+
+   Der Audit zaehlt „6 von 462 Buttons haben Press-Feedback". Nachgezaehlt
+   am Stand 3883eaa8: 489 Knoepfe (481 `<button>` + 8 `<motion.button>`),
+   davon 6 mit `whileTap` aus framer-motion und 0 mit `active:scale`. Ein
+   Knopf ohne Press-Zustand fuehlt sich an, als haette der Klick nicht
+   stattgefunden — das ist die haeufigste Rueckmeldung der App und sie fehlt
+   an 483 Stellen.
+
+   Warum hier und nicht an den Call-Sites: `active:scale-[0.97]` an 483
+   className-Strings ist dieselbe Krankheit, die der Audit diagnostiziert
+   (378 verschiedene Button-Klassen bei 462 Knoepfen). Eine ungeschichtete
+   Regel sagt dasselbe einmal.
+
+   Warum `scale:` und nicht `transform:` — Tailwind v4 benutzt die
+   Einzel-Properties (`scale-[1.04]` baut `scale:1.04`, nicht `transform`).
+   Ein `transform` hier wuerde `translate-*`/`rotate-*` an derselben
+   Stelle ueberschreiben; `scale` komponiert daneben.
+
+   Warum KEIN Uebergang an dieser Regel: `transition-property` ist EINE
+   Liste, kein additives Feld. Eine globale Regel, die `scale` ergaenzt,
+   muesste die Liste ersetzen — und damit die bewusst gesetzten
+   `transition-colors` / `transition-all` / `duration-*` an allen 489
+   Call-Sites gleich mit. Der Druck folgt dem Finger deshalb ohne Verzoegerung
+   (genau das tut `active:scale-[0.97]` an den 55 Stellen mit
+   `transition-colors` auch, denn die Liste dort kennt `scale` nicht).
+   Wo ein Rezept seine eigene `transition` BESITZT — `.lu-control` weiter
+   unten —, steht `scale` in dieser Liste und der Druck laeuft weich aus.
+   Das ist der Unterschied zwischen einer Regel, die fremde Entscheidungen
+   respektieren muss, und einem Rezept, dem die Entscheidung gehoert.
+
+   `:disabled` und `aria-disabled` sind ausgenommen: ein Knopf, der nicht
+   reagiert, darf auch nicht so tun.
+
+   Und „Bewegung reduzieren" schaltet den Druck NICHT ab. Die Regel weiter
+   unten haelt an, was Dauerbewegung ist (Shimmer, pulsierende Punkte), und
+   laesst stehen, was Rueckmeldung ist (Ladekringel, Skelett-Puls). Drei
+   Prozent auf der Stelle, nur solange der Finger unten ist, sind
+   vestibulaer nichts — abgeschaltet waere der Knopf wieder der, der sich
+   anfuehlt, als haette der Klick nicht stattgefunden, und genau fuer die
+   Gruppe, die am wenigsten davon hat.
+   ───────────────────────────────────────────────────────────────────── */
+:is(button, [role='button']):not(:disabled):not([aria-disabled='true']):active {
+  scale: 0.97;
+}
+
+/* Status readouts (token counters, version strings, t/s, VRAM) in mono
+   with tabular figures so digits stop jittering. Opt-in via `.lu-hud-num`. */
+.lu-hud-num {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  letter-spacing: 0.01em;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   `.lu-elevated` — DAS Schwebeblatt. Flaeche, Kante und Schatten aus einer
+   Quelle fuer alle Menues, Aufklapper und Tooltips.
+
+   Was die Klasse NICHT setzt: den Radius. Der gehoert der Call-Site, weil
+   ein Dialog (`rounded-2xl`) und ein Menue (`rounded-md`) verschieden
+   gross sind. Und sie ist ungeschichtet: wer daneben eine Flaechen- oder
+   Schatten-Utility stehen laesst, schreibt eine Klasse ohne Wirkung.
+   ───────────────────────────────────────────────────────────────────── */
+/* The sheet is the M3 menu surface: surface-container, an outline-variant
+   hairline and elevation level 3, identical in both schemes because the roles
+   switch. Menus are transient surfaces and stay opaque (no blur): a menu lies
+   right on top of text. */
+.lu-elevated {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--shadow-lg);
+}
+
+/* `.lu-dialog`: the M3 dialog surface, surface-container-high with an
+   outline-variant hairline and elevation level 4. Opaque: a dialog carries
+   reading content, and glass is never placed under content.
+   `.lu-dialog-scrim` is the scrim role at the M3 32 % behind it. */
+.lu-dialog {
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--shadow-xl);
+}
+.lu-dialog-scrim {
+  background: color-mix(in oklab, var(--md-sys-color-scrim) 32%, transparent);
+}
+
+/* The dialog button bar (components/ui/ModalActions): an outline-variant
+   divider over the surface-container step below the dialog surface. */
+.lu-dialog-actions {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+.lu-dialog-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast);
+}
+.lu-dialog-btn:disabled { cursor: not-allowed; opacity: 0.45; }
+/* Outlined, text and error-filled buttons; hover is the 8 % state layer of
+   the content role. */
+.lu-dialog-btn-secondary { border-color: var(--md-sys-color-outline); color: var(--md-sys-color-on-surface); background: transparent; }
+.lu-dialog-btn-secondary:hover:not(:disabled) { background: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); }
+.lu-dialog-btn-quiet { color: var(--md-sys-color-on-surface-variant); }
+.lu-dialog-btn-quiet:hover:not(:disabled) { color: var(--md-sys-color-on-surface); background: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); }
+.lu-dialog-btn-danger { background: var(--md-sys-color-error); border-color: var(--md-sys-color-error); color: var(--md-sys-color-on-error); }
+.lu-dialog-btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--md-sys-color-error), var(--md-sys-color-on-error) 8%); }
+
+/* Model pickers: one row grammar.
+   The chat model picker in Cloud mode (components/models/CloudModelPicker)
+   and the Create select (components/create/ui/Select) are two components and
+   one look: the elevated sheet, a hairline, one-line sticky group heads, a
+   24 px row with the accent bar on the selected one, hairline tags. Greys
+   plus the one accent, state dots in green, grey and red, no yellow. Both
+   themes come from the M3 roles, so neither component names a colour of its
+   own: on-surface and on-surface-variant for text, outline-variant for
+   hairlines, the 8 % on-surface state layer for hover, primary for the
+   accent bar, the extended success role and error for the state dots. */
+.lu-picker {
+  border-radius: 10px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.lu-picker-search {
+  flex: none;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 0 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: var(--md-sys-color-on-surface);
+  font-size: var(--text-control);
+  /* The field has the keyboard for as long as the menu is open, so a ring
+     around it says nothing. The house focus rule reads its width here; the
+     lens lights up instead, and the cursor row shows where Enter goes. */
+  --lu-focus-w: 0px;
+}
+.lu-picker-search:focus-within { color: var(--md-sys-color-on-surface-variant); }
+.lu-picker-search input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.lu-picker-text-btn {
+  flex: none;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: var(--text-label);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-text-btn:hover:not(:disabled) { color: var(--md-sys-color-on-surface); background: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); }
+.lu-picker-text-btn:disabled { opacity: 0.6; }
+
+/* The one line for what needs attention now. No box: a dot and a sentence. */
+.lu-picker-note {
+  flex: none;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px 3px 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--text-mono);
+  line-height: 1.35;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-note.is-err { color: var(--md-sys-color-error); }
+.lu-picker-note > span:not(.lu-picker-dot) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+.lu-picker-dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--md-sys-color-outline); }
+.lu-picker-dot.is-accent { background: var(--md-sys-color-primary); }
+.lu-picker-dot.is-ok { background: var(--md-ext-color-success); }
+.lu-picker-dot.is-err { background: var(--md-sys-color-error); }
+
+.lu-picker-chips {
+  flex: none;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lu-picker-chips::-webkit-scrollbar { display: none; }
+.lu-picker-chip {
+  flex: none;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-label);
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+  transition: background-color 120ms, color 120ms, border-color 120ms;
+}
+.lu-picker-chip:hover { color: var(--md-sys-color-on-surface); }
+.lu-picker-chip[aria-pressed='true'] { background: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); color: var(--md-sys-color-on-surface); border-color: var(--md-sys-color-outline-variant); }
+.lu-picker-chip i { font-style: normal; font-variant-numeric: tabular-nums; opacity: 0.7; }
+
+.lu-picker-cap {
+  flex: none;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px 0 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--text-label);
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.8;
+}
+
+.lu-picker-list {
+  /* Rows measure their place against the list (CloudModelPicker keeps the
+     keyboard cursor in view by hand). */
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+}
+.lu-picker-empty { padding: 18px 16px; font-size: var(--text-mono); color: var(--md-sys-color-on-surface-variant); text-align: center; }
+
+/* Group head: one line of 22 px that sticks to the top while its rows scroll. */
+.lu-picker-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px 0 16px;
+  background: var(--md-sys-color-surface-container);
+  font-size: var(--text-label);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-head b { font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.lu-picker-head .n { margin-left: auto; font-variant-numeric: tabular-nums; opacity: 0.8; }
+div + div > .lu-picker-head { margin-top: 2px; }
+
+/* A local service in one line: state dot, a short sentence, a text button.
+   Stands above the local model list, which keeps its own look. */
+.lu-picker-service {
+  flex: none;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px 0 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--text-label);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-service .st { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lu-picker-service.is-err .st { color: var(--md-sys-color-error); }
+.lu-picker-service .lu-picker-text-btn { border: 1px solid var(--md-sys-color-outline-variant); color: var(--md-sys-color-on-surface); }
+
+.lu-picker-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  margin: 0 4px;
+  padding: 0 6px 0 12px;
+  border-radius: 6px;
+  font-size: var(--text-control);
+  line-height: 1.2;
+  color: var(--md-sys-color-on-surface-variant);
+  /* The sticky head above must not cover a row the keyboard scrolls to. */
+  scroll-margin-top: 24px;
+}
+.lu-picker-row:hover,
+.lu-picker-row[data-cursor='true'] { background: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); color: var(--md-sys-color-on-surface); }
+/* Selected: an option of either picker. */
+.lu-picker-row[aria-selected='true'] { color: var(--md-sys-color-on-surface); }
+.lu-picker-row[aria-selected='true'] .lu-picker-name { font-weight: 500; }
+.lu-picker-row[aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--md-sys-color-primary);
+}
+/* The part of a row that picks the model. A button of its own, because the
+   row also carries the rate control, and a button cannot hold another one. */
+.lu-picker-pick {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  color: inherit;
+  font-weight: inherit;
+}
+.lu-picker-row .lu-picker-pick:focus-visible { outline: 0; }
+.lu-picker-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lu-picker-name mark {
+  background: none;
+  color: var(--md-sys-color-on-surface);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--md-sys-color-primary);
+  text-underline-offset: 2px;
+}
+/* Name, marks and the quiet note as one part of the row: the note stands
+   after the name where there is room and wraps under it where there is not. */
+.lu-picker-lead {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1px 6px;
+  padding: 3px 0;
+}
+.lu-picker-lead .lu-picker-name { max-width: 100%; }
+/* Plain muted text, no frame and no colour: it is a note, not a mark. */
+.lu-picker-quiet {
+  flex: none;
+  font-size: var(--text-micro);
+  line-height: 1.2;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+.lu-picker-sub { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--md-sys-color-on-surface-variant); }
+.lu-picker-fill { flex: 1; min-width: 0; }
+
+.lu-picker-tag {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  padding: 0 5px;
+  border-radius: 4px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+.lu-picker-tag.is-accent { color: var(--md-sys-color-primary); }
+.lu-picker-tag.is-bright { color: var(--md-sys-color-on-surface); }
+.lu-picker-tag.is-quiet { opacity: 0.7; }
+/* The statement: the one tag that carries the accent as text, edge and tint.
+   The measured mark next to it in the catalogue is the plain grey tag, so the
+   colour alone tells the two apart. */
+.lu-picker-tag.is-statement {
+  color: var(--md-sys-color-primary);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary) 55%, transparent);
+  background: color-mix(in srgb, var(--md-sys-color-primary) 9%, transparent);
+  font-weight: 600;
+}
+/* On white the tint eats into the contrast of the word, so it is thinner
+   there (measured in e2e/uncensored-mark.spec.ts: at least 4.5 to 1). */
+
+/* The Beta mark (components/ui/BetaMark, the list in lib/beta.ts). One look
+   wherever it stands: the word in a full hairline frame, brighter than a
+   quiet tag so it is not overlooked next to a switch, and without a colour,
+   because Beta is neither a warning nor an error (lib/hinweis.ts). It brings
+   its own two greys, so it reads the same on a panel, a dialog and a sheet. */
+.lu-beta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  padding: 0 5px;
+  border-radius: 4px;
+  border: 1px solid var(--md-sys-color-outline);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.lu-picker-icons { flex: none; display: grid; grid-template-columns: 14px 14px; column-gap: 4px; color: var(--md-sys-color-on-surface-variant); }
+.lu-picker-icons svg { display: block; opacity: 0.85; }
+.lu-picker-num {
+  flex: none;
+  min-width: 38px;
+  text-align: right;
+  font-size: var(--text-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+.lu-picker-row:hover .lu-picker-num,
+.lu-picker-row[data-cursor='true'] .lu-picker-num,
+.lu-picker-row[aria-selected='true'] .lu-picker-num { color: var(--md-sys-color-on-surface-variant); }
+
+/* The tiny question mark at the end of a row: what the model draws. */
+/* The slot keeps its width on a row without one, so the context column
+   stays in line. */
+.lu-picker-rate-anchor { flex: none; width: 14px; height: 14px; display: inline-flex; }
+.lu-picker-rate-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: inline-grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.lu-picker-rate-btn:hover,
+.lu-picker-rate-btn[aria-expanded='true'] { color: var(--md-sys-color-on-surface); border-color: var(--md-sys-color-on-surface-variant); }
+/* Lifted out to the body and placed by hooks/usePopoverPlatz, which sets the
+   coordinates, the width and the height it may take. */
+.lu-picker-rate {
+  position: fixed;
+  z-index: 100;
+  overflow-y: auto;
+  padding: 7px 10px 8px;
+  border-radius: 8px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-mono);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: normal;
+  text-align: left;
+}
+.lu-picker-rate h4 { margin: 0 0 3px; font-size: var(--text-label); font-weight: 500; color: var(--md-sys-color-on-surface-variant); }
+.lu-picker-rate dl { margin: 0; min-width: 146px; display: grid; grid-template-columns: 1fr auto; column-gap: 16px; }
+.lu-picker-rate > span { display: block; max-width: 220px; }
+.lu-picker-rate dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--md-sys-color-on-surface); }
+
+.lu-picker-foot {
+  flex: none;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 0 16px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--text-label);
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+.lu-picker-foot > span:not(.lu-picker-keys) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lu-picker-keys { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
+.lu-picker-keys kbd {
+  font: inherit;
+  font-size: 9px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 3px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: inline-grid;
+  place-items: center;
+}
+
+/* Placeholders: on-surface-variant, the one placeholder colour of the app.
+   Unlayered, so it beats every `placeholder:` utility. It stays at least
+   4.5:1 on every surface container of both schemes. */
+::placeholder { color: var(--md-sys-color-on-surface-variant); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Create typography + surface helpers — the classes the Create components
+   apply instead of `text-[Npx]`. Ported from lu-labs globals.css. Without
+   these every Create label/button/prompt rendered at the raw root size and
+   the control-height vars above were undefined. See the token block near the
+   top of this file for the full rationale.
+   ───────────────────────────────────────────────────────────────────── */
+.t-display { font-size: var(--text-display); line-height: var(--text-display-lh); font-weight: var(--text-display-fw); font-family: var(--font-display); letter-spacing: -0.01em; }
+.t-title   { font-size: var(--text-title);   line-height: var(--text-title-lh);   font-weight: var(--text-title-fw); }
+.t-body    { font-size: var(--text-body);    line-height: var(--text-body-lh);    font-weight: var(--text-body-fw); }
+.t-control { font-size: var(--text-control); line-height: var(--text-control-lh); font-weight: var(--text-control-fw); }
+.t-label   { font-size: var(--text-label);   line-height: var(--text-label-lh);   font-weight: var(--text-label-fw); letter-spacing: 0.08em; text-transform: uppercase; }
+.t-mono    { font-size: var(--text-mono); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   `.t-micro` — die Stufe, deren Fehlen die Leiter umgangen hat (D-T04)
+
+   Gezaehlt am 01.09.2026 ueber src/ ohne __tests__: 1026 Fundstellen
+   einer arbitraeren Schriftgroesse in eckigen Klammern, verteilt auf 30
+   verschiedene Werte (28 Groessen + 2 Farben). Dagegen 143 Nutzungen der
+   `.t-*`-Klassen. Das System existiert und wird umgangen.
+
+   Die Frage war, WARUM. Die Antwort steht in der Verteilung:
+
+     947 von 1026 (92,3 %) liegen zwischen 8 und 11,99 px, also UNTER
+     --text-body (13). Nur 65 (6,3 %) sitzen exakt auf einer Stufe.
+
+     Unter 13px hat die Leiter drei Stufen — und keine davon ist
+     schlichter Text:
+       --text-label (10)  erzwingt uppercase + 0,08em Laufweite
+       --text-mono  (11)  wechselt die Schriftfamilie
+       --text-control (12) setzt line-height 1 (Controlmass, kein Satz)
+
+     Von den 947 Bandstellen tragen 38 uppercase/tracking, waeren also
+     `.t-label`-Kandidaten. Die anderen 909 sind schlichter Kleintext,
+     und dafuer gab es keinen Namen.
+
+   Die Luecke ist also KEINE fehlende Zahl. Der haeufigste Umgehungswert
+   ist 0.6rem = 9,6px, der gewichtete Mittelwert des ganzen Bandes 9,75px
+   — beides einen Viertelpixel neben der 10, die schon da ist. Die
+   Leiter hatte die Zahl und hat sie in einem Stilrezept eingesperrt.
+
+   Deshalb bekommt `.t-micro` KEINE eigene Zahl: --text-micro ist
+   `var(--text-label)`. Eine Groesse, zwei Rezepte — das Grossbuchstaben-
+   Etikett und der schlichte Kleintext.
+
+   Die Auflösung, in der bisher entworfen wurde, ist der zweite Teil des
+   Befunds: 14 verschiedene Werte in einem 4px-Band, die engsten 0,08px
+   auseinander (0.62rem = 9,92 gegen 0.63rem = 10,08). Bei --ui-scale
+   1,15 sind das 0,09 gerenderte Pixel. Das ist keine Entscheidung, das
+   ist Rauschen.
+
+   ── Warum diese Klasse NUR die Groesse setzt ──
+
+   Es gibt einen zweiten Grund fuer die Umgehung, und er ist im Browser
+   nachgemessen: die sechs Klassen oben stehen UNGESCHICHTET und schlagen
+   damit jede Tailwind-Utility, egal mit welcher Spezifitaet (dieselbe
+   Mechanik wie beim Fokusring weiter oben). Gemessen mit
+   getComputedStyle, Chromium 149:
+
+     class="t-body font-semibold"   → font-weight 400  (nicht 600)
+     class="t-control font-bold"    → font-weight 500  (nicht 700)
+     class="t-body leading-none"    → line-height 19,5px (nicht 1)
+     class="t-label font-normal"    → font-weight 600  (nicht 400)
+
+   Wer `.t-body` nimmt, verliert also still sein `font-semibold`. Ein
+   Rezept, das die Entscheidungen der Call-Site frisst, ist kein
+   Angebot — es ist ein Grund, in eckige Klammern auszuweichen.
+
+   `.t-micro` macht das ausdruecklich nicht: EINE Eigenschaft, sonst
+   nichts. Damit ist der Tausch gegen `text-[10px]` beweisbar
+   folgenlos. Nachgemessen: `text-[10px]` erbt line-height 1,5 aus dem
+   Preflight (`html { line-height: 1.5 }` vererbt als ZAHL) und rendert
+   15px; `.t-micro` aendert daran nichts und rendert ebenfalls 15px.
+   Ein `line-height` hier wuerde genau den Fehler wiederholen, der die
+   anderen fuenf Klassen unbrauchbar macht.
+
+   ── Wie weit die Klasse gezogen wurde, und wo die Grenze liegt ──
+   (zweiter Durchgang, 01.09.2026 abends)
+
+   Der erste Durchgang hat die Klasse GEBAUT und neun Call-Sites gehabt.
+   Dieser hat sie GEZOGEN: 1008 -> 826 Fundstellen ueber src/, 25 -> 23
+   verschiedene Werte, `.t-*` von 152 auf 333 Nutzungen, davon 190 auf
+   `.t-micro`. Alles davon in chat/ models/ ui/ agents/ import/ — die
+   uebrigen Verzeichnisse gehoeren in diesem Durchgang anderen.
+
+   Die Grenze ist eine RECHNUNG und keine Ermuedung: `.t-micro` nimmt
+   genau das Band, das auf ihre 10px rundet, ± 1 CSS-Pixel —
+
+     0.58rem  9,28px      0.62rem  9,92px     0.68rem 10,88px
+     0.60rem  9,60px      0.65rem 10,40px     10px / 9px
+
+   — also hoechstens 1,15 gerenderte Pixel Unterschied. Was ausserhalb
+   liegt, BLEIBT stehen, und zwar mit Grund, nicht aus Nachlaessigkeit:
+
+     text-[0.55rem]  8,80px   96x   } kein Name unter 10; sie dorthin zu
+     text-[0.50rem]  8,00px   53x   } ziehen waere +14 bzw. +25 % — eine
+                                    } Entwurfsaenderung, keine Zusammen-
+                                    } fuehrung.
+     text-[0.70rem] 11,20px   50x   } 11 heisst `--text-mono` und wechselt
+                                    } die Schriftfamilie; 12 heisst
+                                    } `--text-control` und setzt lh 1.
+     text-[12px]             15x    } `.t-control` FRISST das
+                                    } `leading-relaxed`/`font-medium` der
+                                    } Call-Site (ungeschichtet, siehe
+                                    } oben). Der Tausch waere nicht
+                                    } folgenlos, sondern still.
+     text-[0.78rem] 12,48px    5x   } die Fliesstextgroesse der Antwort
+                                    } (MessageBubble, `.lu-caret` rechnet
+                                    } mit ihr) plus zwei Ueberschriften
+                                    } mit `font-semibold`.
+
+   Das ist der zweite Teil des Befunds und er ist NICHT behoben: die
+   fuenf Rezeptklassen stehen ungeschichtet und schlagen jede Utility der
+   Call-Site. Sie in `@layer components` zu heben waere die Reparatur —
+   im Baum nachgemessen betrifft sie genau drei Call-Sites (`t-control
+   font-medium`, `t-body leading-relaxed`, `t-body tracking-wide`, alle
+   in create/) und ist damit klein, aber sie ist eine eigene Aenderung
+   mit eigenem Sichttermin, nicht ein Nebensatz in diesem Paket.
+   ───────────────────────────────────────────────────────────────────── */
+.t-micro   { font-size: var(--text-micro); }
+
+/* `.lu-focus-ring` stand hier und ist ersatzlos gestrichen (Audit §5:
+   „9 redundante Nutzungen"). Sie war die Kopie der globalen Regel fuer
+   Controls, die keine `<button>`/`<a>` sind — seit der Fokusring oben an
+   `:focus-visible` haengt statt an einer Elementliste, deckt er genau diese
+   Faelle mit ab. Eine Klasse, die nichts hinzufuegt, ist eine Klasse, die
+   irgendwann auseinanderlaeuft: die alte Kopie hier trug noch den 1px-Ring,
+   als der globale schon 2px gehabt haette. */
+
+/* ──────────────────────────────────────────────────────────────────
+   .lu-control — DAS neutrale Control-Rezept der Composer-Leiste.
+
+   Zusammen mit `.lu-primary` weiter unten sind das die ZWEI Formsprachen,
+   die die Prompt-Zeile noch kennt. Vorher waren es neun, nebeneinander,
+   auf 40 Pixel Hoehe (Audit Welle 2, „Composer-Grammatik"; die Zaehlung
+   steht in src/components/chat/__tests__/composer-grammar.test.ts):
+   Paperclip `p-1.5 rounded-md`, Think `px-1.5 py-1.5 rounded-md` mit
+   blauem Rand nur im Ein-Zustand, Docs dasselbe in Gruen, Tools ganz ohne
+   Flaeche, Plugins `px-2 py-0.5 rounded` mit Dauer-Rand und 10,12px
+   Schrift, Modellwaehler `h-[26px] rounded-md` mit Dauer-Rand und 12,88px
+   Schrift, Stop rot gefuellt, Send violett gefuellt. Vier Hoehen
+   (17 / 26 / 27,8 px), drei Radien (4,6 / 6,9 / 9,2 px), drei
+   Schriftgroessen.
+
+   Was hier steht, ist ausdruecklich EIN Rezept mit ZUSTAENDEN, nicht
+   mehrere Rezepte: Ruhe · Hover · aktiv/offen · disabled · Fokus. Der
+   aktive Zustand wird aus ARIA gelesen (`aria-pressed` fuer Umschalter,
+   `aria-expanded` fuer Aufklapper), damit die Call-Sites nichts
+   dazuschreiben muessen und die Zustandsanzeige zwangslaeufig mit der
+   Barrierefreiheit uebereinstimmt statt daneben zu leben.
+   `data-active` ist die dritte Tuer, fuer Controls, die weder Umschalter
+   noch Aufklapper sind — heute genau eine: Stop.
+
+   Der Rand ist IMMER da, nur im Ruhezustand durchsichtig. Vorher kam er
+   erst beim Aktivieren dazu und die Leiste wuchs beim Umschalten um 2px.
+
+   Warum Stop NEUTRAL bleibt und nicht `.lu-primary` traegt: Stop ist der
+   Normalabschluss eines Streams und die haeufigste Aktion, waehrend eine
+   Antwort laeuft — kein destruktiver Bestaetigungsknopf. Es trug
+   `bg-red-500/15 text-red-400`, und bei 94 `text-red-400`-Fundstellen
+   heisst Rot in dieser App „kaputt oder wird geloescht" (Audit §4, Chat
+   streamend). Auffindbar bleibt es ueber `data-active`, also ueber den
+   Behaelter des neutralen Rezepts, nicht ueber Farbe.
+
+   Geometrie aus vorhandenen Tokens, keine neuen Zahlen:
+   Hoehe --control-h-sm (26px, die Hoehe, die der Modellwaehler und der
+   Send-Slot schon hatten), Radius --radius-control (8px, die Stufe aus
+   dem Token-Diff), Uebergang --motion-fast/--motion-ease.
+
+   Farbe: on-surface-variant in Ruhe, on-surface aktiv, beide Rollen
+   halten 4.5:1 auf jeder Flaeche beider Schemata.
+   ───────────────────────────────────────────────────────────────── */
+.lu-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  height: var(--control-h-sm);
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  /* Bezugsrahmen fuer alles, was das Rezept UEBER das Control legt — heute
+     genau eins: der Aufnahme-Puls des Mikrofons weiter unten. Das ist
+     Geometrie, gilt also fuer beide Rezepte und traegt keine Abgrenzung
+     gegen das betonte. Die beiden Aufklapper der Leiste (Plugins,
+     Modellwaehler) haengen ihre Menues als GESCHWISTER des Knopfes auf,
+     nicht darin — sie bekommen davon nichts ab. */
+  position: relative;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.6rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  /* `scale` steht hier, weil dieses Rezept seine `transition` BESITZT — die
+     globale Press-Regel weiter oben darf die Liste an 489 fremden
+     Call-Sites nicht ersetzen, hier gibt es keine fremde Liste. Ergebnis:
+     der Druck in der Prompt-Zeile laeuft weich aus statt zurueckzuspringen.
+     Dieselben 120 ms wie Hover und Farbe, keine fuenfte Dauer. */
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    scale var(--motion-fast) var(--motion-ease);
+}
+/* Ueberall dort, wo die neutrale HAUT gesetzt wird, steht `:not(.lu-primary)`.
+   Grund: Send traegt beide Klassen (`.lu-control .lu-control--icon
+   .lu-primary`) — Geometrie vom neutralen, Farbe vom betonten Rezept. Beide
+   sind ungeschichtet, also entscheidet erst die Spezifitaet und dann die
+   Reihenfolge. `.light .lu-control:hover:not(:disabled)` ist 0,4,0 und
+   schlaegt `.lu-primary:hover:not(:disabled)` mit 0,3,0 — im Hellmodus
+   waere der Senden-Knopf beim Ueberfahren grau geworden. Die Ausnahme steht
+   deshalb an der Regel, nicht als Gegengewicht mit noch mehr Spezifitaet.
+   Geometrie (Hoehe, Radius, Polsterung, Rand-PLATZ) gilt weiterhin fuer
+   beide — sie ist ja gerade der gemeinsame Teil. */
+
+/* Die quadratische Variante fuer nackte Icons. Gleiche Hoehe, gleicher
+   Radius, gleiche Zustaende — nur ohne waagerechtes Padding, damit das
+   Icon mittig sitzt. Das ist keine zweite Formsprache, sondern dieselbe
+   ohne Beschriftung. */
+.lu-control--icon {
+  width: var(--control-h-sm);
+  padding: 0;
+}
+
+/* The variant that shows its edge at rest. In a toolbar the controls stand in
+   a row and the row is their container. Alone on a card (Stop, Remove, the
+   size picker, Get on a model that does not fit this machine) a control
+   without an edge reads as a label, and that was the Model Manager's
+   complaint on 08.10.2026: nobody could tell what was there to be pressed.
+   The edge is the one the pressed state draws anyway, so no new value. */
+.lu-control--outline { border-color: var(--md-sys-color-outline-variant); }
+
+/* The light switch of the Voice surface: a wall rocker that stands in the
+   "on" position for as long as the voice engine is in memory. Same height,
+   radius and timing as the controls next to it. The rocker is the picture,
+   the number next to it says how much memory a click gives back. */
+.lu-light-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  height: var(--control-h-sm);
+  padding: 0 8px 0 5px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-control);
+  background-color: transparent;
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
+}
+.lu-light-switch:hover:not(:disabled) { background-color: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent); }
+.lu-light-switch:disabled { opacity: 0.6; cursor: default; }
+.lu-light-switch__rocker {
+  position: relative;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid var(--md-sys-color-outline);
+  background-color: color-mix(in oklab, var(--md-sys-color-on-surface) 6%, transparent);
+}
+/* The pressed half of the rocker: up means on. */
+.lu-light-switch__rocker::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: 1px;
+  height: 6px;
+  border-radius: 2px;
+  background-color: var(--md-sys-color-primary);
+  transition: top var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease);
+}
+.lu-light-switch:disabled .lu-light-switch__rocker::after {
+  top: 7px;
+  background-color: var(--md-sys-color-outline);
+}
+
+/* Der Aufnahme-Puls. Ein Control, das gerade zuhoert, sagt das lauter als
+   „aktiv" — aber nicht in Rot: das Mikrofon nimmt auf, es ist nicht kaputt,
+   und Rot heisst in dieser App an rund hundert Stellen „kaputt oder wird
+   geloescht" (dieselbe Begruendung, aus der Stop neutral wurde, siehe oben).
+   Getragen wird die Aussage ohnehin nicht von diesem Ring allein:
+   `aria-pressed` setzt den Behaelter, das aria-label wechselt auf „Stop
+   recording", und der Platzhalter im Eingabefeld schreibt „Recording..."
+   aus. Trotzdem ist Aufnahme ein Zustand, den man auf einen Blick sehen
+   koennen muss — deshalb die volle primary-Kante, die in beiden Schemata
+   3:1 gegen die Composer-Flaeche haelt. Der Ring ist Zugabe, nie das
+   einzige Signal.
+   Takt 1200 ms = --motion-slow x 4, genau die Dauer, die vorher als
+   framer-motion-Literal im Knopf stand; jetzt CSS, damit
+   „Bewegung reduzieren" ihn ueberhaupt erreichen kann. */
+@keyframes lu-control-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.12); }
+}
+.lu-control__pulse {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: lu-control-pulse calc(var(--motion-slow) * 4) var(--motion-ease) infinite;
+}
+
+.lu-control:not(.lu-primary):hover:not(:disabled) {
+  background-color: color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Aktiv / offen — der Behaelter erscheint erst hier. Traeger der Aussage
+   ist die Textfarbe (6.57:1 → 15.34:1 im Dunkelmodus), nicht der Rand:
+   ein 1px-Rand bei 14% Deckung erfuellt 1.4.11 fuer sich genommen nicht
+   und ist deshalb bewusst nur die Zugabe, nie das einzige Signal. */
+.lu-control:not(.lu-primary)[aria-pressed='true'],
+.lu-control:not(.lu-primary)[aria-expanded='true'],
+.lu-control:not(.lu-primary)[data-active='true'] {
+  background-color: color-mix(in oklab, var(--md-sys-color-on-surface) 10%, transparent);
+  border-color: var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Beschaeftigt — der Modellwaehler waehrend ein Modell laedt. Akzentkante
+   statt eines eigenen blauen Rezepts mit Leuchtschatten. */
+.lu-control:not(.lu-primary)[aria-busy='true'] {
+  border-color: var(--md-sys-color-primary);
+}
+
+/* Das Rezept hat keinen eigenen Fokusring: es nimmt den des Hauses. */
+
+/* Deaktiviert heisst gedimmt, nicht defekt: Paperclip und Mikrofon standen
+   auf `opacity-20` und lasen sich als kaputt (Audit §4, Chat streamend). */
+.lu-control:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   .lu-primary — DAS Primaer-Rezept. Genau einmal definiert, benutzt von
+   allen drei Primaeraktionen der App:
+     • create/ui/Button.tsx      (Variante `primary`, u.a. Generate)
+     • auth/AccountPanel.tsx     (Sign in / Create account)
+     • chat/ChatInput.tsx        (Send)
+   Vorher waren das drei getrennte Graustufen-Rezepte (`bg-gray-900`,
+   eine helle Tonung, eine Glasstufe) — die wichtigste Aktion des Bildschirms
+   sah aus wie eine beliebige Nebenaktion.
+
+   Farbe: primary mit on-primary, aus dem generierten M3-Schema; Hover ist
+   die 8-%-Zustandsschicht von on-primary ueber primary.
+   Der Zustand `disabled` entsaettigt die Flaeche zusaetzlich zum Dimmen,
+   damit er nicht als die aktive Variante durchgeht; die Call-Sites bringen
+   ihr eigenes `disabled:opacity-*` mit, das sich damit addiert.
+   Fokus: der M3-Ring (secondary, 2px, 2px Abstand), der auf dem
+   HINTERGRUND liegt und nicht auf der primary-Flaeche.
+   ───────────────────────────────────────────────────────────────── */
+.lu-primary {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border: 1px solid var(--md-sys-color-primary);
+  font-weight: 500;
+}
+
+.lu-primary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary), var(--md-sys-color-on-primary) 8%);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary), var(--md-sys-color-on-primary) 8%);
+}
+
+.lu-primary:focus-visible {
+  outline: 2px solid var(--md-sys-color-secondary);
+  outline-offset: 2px;
+}
+
+.lu-primary:disabled {
+  filter: grayscale(1);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   .lu-tonal: the action of a card in a grid.
+
+   Between the two recipes above there was nothing. `.lu-primary` is the one
+   filled accent of a screen (Send, Generate, Sign in), `.lu-control` is
+   neutral. A catalogue shows the same action once per card, up to 53 times
+   on one screen. Filled, that is a wall of violet, which is why the tiles of
+   the Model Manager kept their Get neutral until now. Neutral, it is what
+   The owner said about that page on 08.10.2026: one cannot tell where to click.
+
+   So the card action is tinted and not filled: the accent at 12 % as its
+   surface, the accent as its word, an edge of the same hue. It leads the eye
+   to the one thing a card is for and stays quiet in a grid of them.
+   `.lu-primary` keeps its place as the action of a surface that has exactly
+   one: the engine setup, an empty state.
+
+   Geometry is the neutral recipe's own (height, radius, type size), so a Get
+   stands in one line with the Stop or the picker next to it.
+
+   The fill is primary-container with on-primary-container on it, the M3
+   tonal pairing (4.5:1 in both schemes); hover is the 8 % state layer.
+   Focus is the ring of the house, which lies on the tile and not on the
+   fill. Disabled loses its colour like `.lu-primary` does: a Get that waits
+   for another download must not look like the one that can be pressed.
+   ───────────────────────────────────────────────────────────────── */
+.lu-tonal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  height: var(--control-h-sm);
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    scale var(--motion-fast) var(--motion-ease);
+}
+.lu-tonal:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary-container), var(--md-sys-color-on-primary-container) 8%);
+}
+.lu-tonal:disabled {
+  filter: grayscale(1);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   .lu-tile: the card of a catalogue grid.
+
+   The chat tile, the bundle tile, the Mac media tile, the installed row and
+   the loading skeleton each spelled the same surface by hand, five chains
+   that had to be changed together and were not. One recipe: surface, edge,
+   corner and the hover that says the card is alive.
+
+   Depth comes from the edge and not from a shadow. On the dark pane a shadow
+   adds almost no contrast, so a raised card is a stronger edge. `--lead` is that brighter edge at rest,
+   for the cards a page puts first. `--active` is the one that is in use: the
+   primary-container ground and the primary edge, the same pair the Settings
+   navigation and the Models rail mark their selection with, and it holds
+   while the pointer is over it.
+
+   Padding stays with the caller: a tile and a list row share the surface,
+   not the measure.
+   ───────────────────────────────────────────────────────────────── */
+.lu-tile {
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-xl);
+  background-color: var(--md-sys-color-surface-container-low);
+  transition:
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
+}
+.lu-tile:hover {
+  border-color: var(--md-sys-color-outline);
+  background-color: var(--md-sys-color-surface-container);
+}
+.lu-tile--lead { border-color: var(--md-sys-color-outline); }
+.lu-tile--active,
+.lu-tile--active:hover {
+  border-color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-primary-container);
+}
+
+/* Checkerboard backing so transparent (background-removed) PNGs don't read
+   as solid black in the Stage / gallery. */
+.lu-checker {
+  background-image:
+    linear-gradient(45deg, color-mix(in oklab, var(--md-sys-color-on-surface) 6%, transparent) 25%, transparent 25%),
+    linear-gradient(-45deg, color-mix(in oklab, var(--md-sys-color-on-surface) 6%, transparent) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, color-mix(in oklab, var(--md-sys-color-on-surface) 6%, transparent) 75%),
+    linear-gradient(-45deg, transparent 75%, color-mix(in oklab, var(--md-sys-color-on-surface) 6%, transparent) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+/* Tool-call band (2.6.0, 2026-07-31): the running tool's name gets a
+   soft violet sweep and trailing dots, so a live call reads as "working"
+   without a chip per step. Text shimmer needs background-clip, so light and
+   dark pick their own base grey. */
+@keyframes lu-tool-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.lu-tool-shimmer {
+  background: linear-gradient(90deg, var(--md-sys-color-on-surface-variant) 30%, var(--md-sys-color-primary) 50%, var(--md-sys-color-on-surface-variant) 70%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: lu-tool-shimmer 1.6s linear infinite;
+}
+@keyframes lu-band-dot {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+.lu-band-dot { animation: lu-band-dot 1.2s ease-in-out infinite; }
+
+/* ──────────────────────────────────────────────────────────────────
+   .lu-caret — der Herzschlag des Streams (Audit Welle 3, §4 Befund 7:
+   „Streaming ist kein eigener Zustand ... Das ist der eine Moment, fuer
+   den diese App existiert. Er hat keine Choreografie.").
+
+   Angesetzt wird am LETZTEN Block der gerenderten Antwort, nicht an einem
+   eigenen Element im Baum. Der Grund ist der teuerste Pfad der App: der
+   Balken laeuft waehrend des Streamens, also bei JEDEM Token. Ein
+   `<span>`, das React pro Token neu einhaengt, wuerde die Animation bei
+   jedem Token von vorn starten (ein zuckender statt eines blinkenden
+   Balkens) — ein Pseudoelement gehoert React nicht, es ueberlebt jede
+   Reconciliation des Textknotens darueber und laeuft im Compositor
+   durch. Und das Blinken ist deshalb KEIN JS-Timer: kein setInterval,
+   kein useState, kein requestAnimationFrame, also auch kein Rerender,
+   den es ohne diesen Balken nicht schon gaebe.
+
+   `.markdown-content` ist die Wurzel, die MarkdownRenderer immer setzt;
+   `> :last-child` ist der letzte Block darin, also genau das Ende der
+   zuletzt geschriebenen Zeile. Das ist auch der Grund, warum der Balken
+   beim Absatzwechsel mitspringt, statt am alten Absatz haengen zu
+   bleiben.
+
+   Geometrie: 2px breit (Hairline), `1em` hoch — der Audit nennt 2x14px,
+   und 1em IST 14,35px an der Stelle, an der der Balken steht
+   (`text-[0.78rem]` auf 16px Wurzel × --ui-scale 1.15 = 14,35 gerenderte
+   px, wie vorher auf der 18,4px-Wurzel). In em statt in px, damit er der
+   Schriftgroesse folgt und nicht bei der naechsten Skalenaenderung
+   danebensteht.
+
+   Farbe: `currentColor`, also die Textfarbe des Absatzes, an dem er
+   haengt. Damit fuehrt dieser Balken KEINE neue Farbe ein — er erbt die,
+   die dort schon gemessen ist (on-surface, weit ueber den 3:1, die 1.4.11
+   fuer ein Nicht-Text-Signal dieser Groesse verlangt).
+
+   Takt: aus der vorhandenen Motion-Leiter gerechnet, nicht als fuenfte
+   Zahl danebengeschrieben — `--motion-slow` an und `--motion-slow` aus,
+   also 300/300 ms. Der Audit schlaegt 133/133 vor; das waeren 3,8
+   Blitze pro Sekunde, direkt an der Schwelle aus WCAG 2.3.1, und neben
+   laufendem Text liest es sich als Stroboskop. 1,67 Hz sagt dasselbe
+   („hier kommt noch etwas") und flimmert nicht.
+   ────────────────────────────────────────────────────────────────── */
+@keyframes lu-caret-blink {
+  0%, 49.99% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.lu-caret .markdown-content > :last-child::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  border-radius: 1px;
+  background-color: currentColor;
+  animation: lu-caret-blink calc(var(--motion-slow) * 2) linear infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   „Bewegung reduzieren" respektieren (Audit Welle 2)
+
+   Für einen Teil der Nutzer ist das keine Geschmacksfrage: großflächige
+   Bewegung löst Übelkeit und Schwindel aus. Bisher lief trotz gesetzter
+   Systemeinstellung die volle Animation.
+
+   ENTSCHEIDUNG: nicht auf null. Ein Dialog, der ohne jede Andeutung
+   dasteht, liest sich wie ein Darstellungsfehler — man sieht nicht, ob er
+   gerade aufging oder schon die ganze Zeit da war. Stattdessen wird alles
+   auf eine sehr kurze Ein-/Ausblendung zusammengezogen (--motion-fast,
+   120 ms, linear): kurz genug, dass nichts mehr über den Schirm wandert,
+   lang genug, dass die Zustandsänderung sichtbar bleibt.
+
+   Endlos laufende Zierde (Shimmer, pulsierende Punkte) wird dagegen ganz
+   angehalten — Dauerbewegung hat keine Rückmeldefunktion, sie ist nur
+   Dekoration, und genau sie ist das Problem.
+
+   framer-motion animiert an CSS vorbei (inline Transforms per JS), diese
+   Regel erreicht es also NICHT. Dafür sitzt <MotionConfig reducedMotion="user">
+   an der App-Wurzel (src/App.tsx).
+   ───────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: var(--motion-fast) !important;
+    transition-timing-function: linear !important;
+    /* `iteration-count: 1` beendet auch Dauerschleifen. Ohne das würde die
+       gekürzte Dauer aus einem 1,6-s-Shimmer ein Stroboskop mit acht Durch-
+       läufen pro Sekunde machen — schlimmer als der Ausgangszustand. */
+    animation-duration: var(--motion-fast) !important;
+    animation-iteration-count: 1 !important;
+    animation-timing-function: linear !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* AUSNAHME: der Ladekringel ist keine Zierde, er ist die einzige Auskunft
+     darüber, dass die App noch arbeitet und nicht hängt. Er läuft weiter,
+     aber langsam und gleichförmig (1,5 s statt 1 s) — eine kleine, ortsfeste
+     Drehung ist vestibulär unkritisch, ein eingefrorener Spinner dagegen
+     eine Falschaussage. Gleiches gilt für die Skelett-Pulse. */
+  .animate-spin {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .animate-pulse {
+    animation-duration: 3s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  /* GEGENAUSNAHME: der Caret steht STILL, statt kurz zu zucken. Er ist
+     beides zugleich — der Balken selbst ist Auskunft („der Stream laeuft
+     noch"), sein Blinken ist Zierde. Ohne diese Zeile griffe die Regel
+     ganz oben und machte aus 300/300 ms ein einzelnes 120-ms-Zucken beim
+     Erscheinen, danach stuende er ohnehin. Hier faellt nur der
+     Animations-NAME weg; `opacity: 1` aus der Basisregel bleibt, der
+     Balken ist also sichtbar und ruhig. Deshalb kein !important: die
+     Regel oben setzt Dauer, Zaehler und Kurve, nie den Namen. */
+  .lu-caret .markdown-content > :last-child::after,
+  .lu-control__pulse {
+    animation-name: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   `.lu-field-dark`: ein Feld, das in einer SCHWARZEN Mulde liegt.
+
+   Der Eigner am 21.09.2026 zur Preset-Werkstatt: das Feld "Resolution"
+   stand als natives `<select>` im Browser-Look darin, also mit hellem
+   Systempfeil auf einer helleren Flaeche, mitten in einem Fenster, das
+   sonst schwarz ist. `baseFieldClass` (SchemaControl.tsx) ist der
+   gemeinsame Feldstil des ganzen Create-Tabs und faerbt deshalb auch die
+   Felder der Expert-Schublade; er bleibt, wie er ist. Diese Klasse legt
+   sich NUR dort darueber, wo die Felder in der schwarzen Mulde liegen.
+
+   Sie ist ungeschichtet und schlaegt damit die Tailwind-Utilities aus
+   `baseFieldClass` (`@layer utilities`), ohne dass dort etwas entfernt
+   werden muss. Der Pfeil ist derselbe Winkel wie der `ChevronDown` von
+   lucide daneben, in on-surface-variant.
+   ───────────────────────────────────────────────────────────────────── */
+.lu-field-dark {
+  background-color: var(--md-sys-color-surface-container-lowest);
+  border-color: var(--md-sys-color-outline-variant);
+}
+select.lu-field-dark {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 1.75rem;
+  /* The chevron drawn from two half-filled squares in on-surface-variant,
+     so it follows the scheme like the ChevronDown next to it. */
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--md-sys-color-on-surface-variant) 50%, var(--md-sys-color-on-surface-variant) calc(50% + 1.5px), transparent calc(50% + 1.5px)),
+    linear-gradient(135deg, transparent 50%, var(--md-sys-color-on-surface-variant) 50%, var(--md-sys-color-on-surface-variant) calc(50% + 1.5px), transparent calc(50% + 1.5px));
+  background-repeat: no-repeat;
+  background-position: right calc(0.55rem + 5px) center, right 0.55rem center;
+  background-size: 5px 10px, 5px 10px;
+}
+select.lu-field-dark option {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Computer control has LU's window while it works on the screen: the small
+   panel in the corner of the display, or the paused view
+   (components/computer/ComputerSurface). The page under it stays mounted and
+   is not shown. On Windows the window is see-through, so nothing of the page
+   may paint around the panel. */
+html[data-computer-surface]:not([data-computer-surface='window']),
+html[data-computer-surface]:not([data-computer-surface='window']) body {
+  background: transparent !important;
+}
+html[data-computer-surface]:not([data-computer-surface='window']) #root {
+  visibility: hidden;
+}
+
+/* The panel. In the app the window is exactly as large as the panel, so a
+   shadow that reaches outside would be cut off at the edge of the window:
+   the panel is drawn by its surface and its hairline alone. An opaque
+   window (macOS) has square corners, and the panel fills it to the edge. */
+.lu-computer-panel {
+  transition: border-color var(--motion-slow) var(--motion-ease);
+}
+.lu-computer-panel--flush {
+  border: 0;
+}
+.lu-computer-head {
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+/* Pause and Stop stand next to the line that says what LU does: small
+   enough to leave that line its room, the same height as each other. */
+.lu-computer-head > .lu-dialog-btn {
+  min-height: 20px;
+  padding: 0 7px;
+  font-size: 11px;
+  line-height: 16px;
+  border-radius: 6px;
+}
+/* What LU does right now: small, one line, level with the middle of the logo. */
+.lu-computer-word {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+/* The grip: a short bar in the padding at the top edge of the panel. It
+   takes no room of its own, so nothing in the panel moves for it, and it
+   stays quiet until the pointer is on it. */
+.lu-computer-grip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  width: 64px;
+  height: 12px;
+  margin-left: -32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+.lu-computer-grip:active {
+  cursor: grabbing;
+}
+.lu-computer-grip::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 18px;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--md-sys-color-outline-variant);
+  transition: background-color var(--motion-base) var(--motion-ease);
+}
+.lu-computer-grip:hover::before,
+.lu-computer-grip:focus-visible::before {
+  background: var(--md-sys-color-on-surface-variant);
+}
+.lu-computer-grip:focus-visible {
+  outline: none;
+}
+/* On a page that is larger than the window (a browser), the panel changes
+   corners the way the window does in the app: one slide that comes to rest. */
+.lu-computer-surface--placed {
+  transition: left 240ms cubic-bezier(0.22, 1, 0.36, 1), top 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* LU waits for the user: a question is open, or the session is paused.
+   Nothing runs until the user answers, so the panel says so in the one
+   accent: its edge takes the primary role and breathes slowly, and the
+   line in the head takes it too (primary on a surface container holds
+   4.5:1 in both schemes). */
+.lu-computer-surface[data-waiting] .lu-computer-panel {
+  border-color: var(--md-sys-color-primary);
+  animation: lu-computer-wait 2.4s ease-in-out infinite;
+}
+.lu-computer-surface[data-waiting] .lu-computer-word {
+  color: var(--md-sys-color-primary);
+}
+@keyframes lu-computer-wait {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  50% {
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-primary), inset 0 0 18px var(--md-sys-color-primary-container);
+  }
+}
+
+/* What changes inside the panel fades in. The panel itself keeps its size. */
+.lu-computer-enter {
+  animation: lu-computer-enter var(--motion-slow) var(--motion-ease) both;
+}
+@keyframes lu-computer-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* A question of computer control (components/computer/ComputerQuestion).
+   In the panel it is the lower part of the panel, under a hairline. Above
+   an input field it is a sheet of its own. */
+.lu-computer-question {
+  padding: 12px 14px;
+}
+.lu-computer-question--panel {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container);
+  animation: lu-computer-enter var(--motion-slow) var(--motion-ease) both;
+}
+/* The answers: two to a row, each as wide as its half and high enough to
+   hit without aiming. The main one stands last. */
+.lu-computer-answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.lu-computer-answers > .lu-dialog-btn {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: var(--text-control);
+}
+/* Above an input field the sheet is wide and the window may be low (Voice
+   at 900 by 600): the answers stand in one row on the right, each wide
+   enough to hit. */
+.lu-computer-question:not(.lu-computer-question--panel) .lu-computer-answers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.lu-computer-question:not(.lu-computer-question--panel) .lu-computer-answers > .lu-dialog-btn {
+  min-width: 112px;
+  min-height: 32px;
+}
+/* The Autonomous switch. Two lines of text have room with the switch on
+   and with it off, so pressing it moves nothing. */
+.lu-computer-autonomy {
+  height: 44px;
+  transition: border-color var(--motion-base) var(--motion-ease), background-color var(--motion-base) var(--motion-ease);
+}
+.lu-computer-autonomy[data-on='true'] {
+  border-color: var(--md-ext-color-success);
+  background: color-mix(in oklab, var(--md-ext-color-success) 8%, transparent);
+}
+/* The two shortcuts, at the foot of the panel while no question stands there. */
+/* The note of computer control above the input field: one small line in
+   the middle. It hangs above its place and takes no room, so nothing moves
+   when it comes and goes. */
+.lu-computer-note {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: min(94%, 30rem);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--md-sys-color-inverse-on-surface);
+  background: var(--md-sys-color-inverse-surface);
+  border: 1px solid transparent;
+  box-shadow: var(--md-sys-elevation-level2);
+  animation: lu-computer-note-in var(--motion-base, 180ms) ease-out both;
+}
+/* A stop with its reason can be long: it may wrap, the passing note never does. */
+.lu-computer-note[data-kind='stopped'] {
+  white-space: normal;
+  border-radius: 12px;
+}
+.lu-computer-note--passing {
+  animation: lu-computer-note-pass 2500ms ease-in-out both;
+}
+.lu-computer-note-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 9999px;
+  background: var(--md-sys-color-inverse-primary);
+}
+.lu-computer-note-close {
+  flex: none;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 9999px;
+  color: color-mix(in oklab, var(--md-sys-color-inverse-on-surface) 72%, transparent);
+}
+.lu-computer-note-close:hover {
+  color: inherit;
+}
+@keyframes lu-computer-note-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 3px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@keyframes lu-computer-note-pass {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 3px);
+  }
+  8%,
+  88% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lu-computer-note,
+  .lu-computer-note--passing {
+    animation: none;
+  }
+}
+.lu-computer-keys {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+.lu-computer-keys kbd {
+  font: inherit;
+  padding: 1px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface-variant);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lu-computer-surface[data-waiting] .lu-computer-panel,
+  .lu-computer-enter,
+  .lu-computer-question--panel {
+    animation: none;
+  }
+  .lu-computer-surface--placed,
+  .lu-computer-grip::before {
+    transition: none;
+  }
+}
+
+/* Where the window does not shrink, the bar of computer control lies over
+   the top of the main panel and says how far down it reaches
+   (--computer-bar-clear, ComputerControlHost). In Voice the question of
+   computer control stands above the controls of the session, and in a low
+   window or before the first words that is right under the title row
+   (2.5rem): the transcript keeps the reach of the bar free, and so does the
+   lower part while it stands alone. */
+.lu-voice-transcript {
+  min-height: max(0px, calc(var(--computer-bar-clear, 0px) - 2.5rem));
+}
+.lu-voice-lower--alone {
+  padding-top: max(0.5rem, calc(var(--computer-bar-clear, 0px) - 2rem));
+  /* Centred while there is room. In a low window the content starts at the
+     top instead of growing out of it on both sides. */
+  justify-content: safe center;
+}
+
+/* Create in chat: the placeholder while a result is being made
+   (components/chat/create/CreateMedia.tsx). Same block as on the web
+   (the web app), so the mirrored card looks the same. */
+@keyframes lu-develop {
+  0% { background-position: 0% 0%, 200% 50%; }
+  100% { background-position: 0% 0%, 0% 50%; }
+}
+.lu-develop {
+  background-color: var(--md-sys-color-surface-container-high);
+  background-image:
+    radial-gradient(120% 90% at 20% 110%, color-mix(in oklab, var(--md-sys-color-primary) 16%, transparent), transparent 60%),
+    linear-gradient(110deg, color-mix(in oklab, var(--md-sys-color-on-surface) 2%, transparent) 30%, color-mix(in oklab, var(--md-sys-color-on-surface) 8%, transparent) 50%, color-mix(in oklab, var(--md-sys-color-on-surface) 2%, transparent) 70%);
+  background-size: 100% 100%, 200% 100%;
+  animation: lu-develop 2.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lu-develop { animation: none; }
+}

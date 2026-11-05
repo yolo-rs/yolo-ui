@@ -1,0 +1,45 @@
+[package]
+name = "deckcraft"
+version = "0.6.1"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "DeckCraft desktop app"
+publish = false
+default-run = "deckcraft"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+too_many_arguments = "allow"
+type_complexity = "allow"
+self_named_constructors = "allow"
+large_enum_variant = "allow"
+result_large_err = "allow"
+
+[dependencies]
+cpal = "0.17"
+winit = { workspace = true, features = ["x11"] }
+rfd = "0.17"
+image = "0.25"
+arboard = "3"
+deckcraft-engine = { path = "../../crates/deckcraft-engine" }
+deckcraft-ui-egui = { path = "../../crates/deckcraft-ui-egui" }
+deckcraft-media = { path = "../../crates/deckcraft-media" }
+eframe = { version = "0.36", default-features = false, features = [
+  "glow",
+  "default_fonts",
+  "wgpu",
+  "accesskit",
+  "links",
+  "wayland",
+  "x11",
+] }
+egui = "0.36"
+serde_json = { version = "1", features = ["float_roundtrip"] }
+log = "0.4"
+
+[build-dependencies]
+winresource = "0.1"

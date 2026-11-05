@@ -1,0 +1,70 @@
+[package]
+name = "photocraft"
+publish = false
+version = "0.8.2"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+default-run = "photocraft"
+description = "Photocraft: an open-source, native image editor"
+build = "build.rs"
+
+[features]
+# Open HEIC/HEIF photos (the optional heic-rs decoder in photocraft-codecs). Not default so distributors choose
+# it; official builds (CI, packaging/, release) build with `--features heif`.
+heif = ["photocraft-codecs/heif"]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+
+[dependencies]
+resvg = "0.48"
+winit = { workspace = true, features = ["x11"] }
+futures-lite = "2"
+photocraft-cms = { path = "../../crates/photocraft-cms", version = "0.8.2" }
+async-io = "2"
+rfd = "0.17"
+arboard = "3"
+ron = "0.12"
+open = "5"
+photocraft-doc = { path = "../../crates/photocraft-doc", version = "0.8.2" }
+photocraft-color = { path = "../../crates/photocraft-color", version = "0.8.2" }
+photocraft-raster = { path = "../../crates/photocraft-raster", version = "0.8.2" }
+photocraft-geom = { path = "../../crates/photocraft-geom", version = "0.8.2" }
+photocraft-compose = { path = "../../crates/photocraft-compose", version = "0.8.2" }
+photocraft-engine = { path = "../../crates/photocraft-engine", version = "0.8.2" }
+photocraft-codecs = { path = "../../crates/photocraft-codecs", version = "0.8.2" }
+photocraft-io = { path = "../../crates/photocraft-io", version = "0.8.2" }
+photocraft-format = { path = "../../crates/photocraft-format", version = "0.8.2" }
+photocraft-automation = { path = "../../crates/photocraft-automation", version = "0.8.2" }
+photocraft-ui-egui = { path = "../../crates/photocraft-ui-egui", version = "0.8.2" }
+photocraft-tablet = { path = "../../crates/photocraft-tablet", version = "0.8.2" }
+eframe = { version = "0.36", default-features = false, features = [
+  "wgpu",
+  "accesskit",
+  "wayland",
+  "x11",
+  "persistence",
+] }
+egui = { version = "0.36", default-features = false }
+serde_json = "1"
+log = "0.4"
+
+[[test]]
+name = "mac_menu_appkit"
+harness = false
+
+[build-dependencies]
+winresource = "0.1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+x11rb = { version = "=0.13.2", default-features = false, features = ["image", "randr", "xkb"] }
+zbus = "5"
+wl-clipboard-rs = "0.9"
+
+[target.'cfg(windows)'.dependencies]
+winsafe = { workspace = true, features = ["gdi", "user"] }
+xcap = "0.7"

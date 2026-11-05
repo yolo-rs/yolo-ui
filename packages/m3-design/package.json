@@ -1,0 +1,46 @@
+{
+  "name": "@aphrody/m3-design",
+  "version": "1.4.7",
+  "description": "Automated design engine for Material Design 3 and Google Design",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-os.git",
+    "directory": "packages/m3-design"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-os/tree/main/packages/m3-design#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-os/issues"
+  },
+  "license": "Apache-2.0 AND MIT",
+  "author": "aphrody-code",
+  "files": [
+    "LICENSE",
+    "LICENSES",
+    "README.md",
+    "intelligence",
+    "src"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "m3-design": "src/cli.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "bun check --noEmit",
+    "typecheck:fast": "bun check --noEmit"
+  },
+  "dependencies": {
+    "@aphrody/bun": "workspace:*",
+    "@aphrody/m3-tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

@@ -1,0 +1,30 @@
+[package]
+name = "photocraft-plugins"
+description = "Sandboxed WebAssembly filter plug-ins: a resource-limited wasmi host for the PhotoCraft plug-in ABI"
+version = "0.8.2"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+rust-version = "1.95"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+
+[dependencies]
+rayon = "1"
+photocraft-geom = { path = "../photocraft-geom", version = "0.8.2" }
+photocraft-color = { path = "../photocraft-color", version = "0.8.2" }
+photocraft-raster = { path = "../photocraft-raster", version = "0.8.2" }
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = "1"
+thiserror = "2"
+wasmi = { version = "2.0.0", default-features = false, features = ["std", "validate", "stable", "portable-dispatch"] }
+
+[dev-dependencies]
+wat = "1.228"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rayon = { workspace = true }

@@ -1,0 +1,54 @@
+{
+  "name": "@aphrody/m3-tokens",
+  "version": "1.4.7",
+  "description": "Material 3 design tokens (--md-sys-*) for web stacks: generated sheets from crates/aphrody-m3-tokens and runtime dynamic colour through its WebAssembly build (crates/libm3-wasm).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/m3-tokens"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/m3-tokens#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "aphrody-code",
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "type": "module",
+  "main": "./src/dynamic-color.ts",
+  "types": "./src/dynamic-color.ts",
+  "exports": {
+    ".": "./src/dynamic-color.ts",
+    "./dynamic-color": "./src/dynamic-color.ts",
+    "./wasm": "./src/wasm.ts",
+    "./native-theme": "./src/native-theme.ts",
+    "./android": "./src/android.ts",
+    "./breakpoints": "./src/breakpoints.ts",
+    "./platform-contract": "./src/platform-contract.ts",
+    "./breakpoints.css": "./src/breakpoints.css",
+    "./m3-tokens.css": "./src/m3-tokens.css",
+    "./expressive": "./src/expressive.ts",
+    "./expressive.css": "./src/expressive.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun build.ts && bun check -p tsconfig.build.json",
+    "typecheck": "bun check -p tsconfig.json --noEmit",
+    "lint": "bun lint src test",
+    "test": "bun test test/",
+    "generate": "bun scripts/generate.ts",
+    "check:generated": "bun scripts/generate.ts --check"
+  },
+  "devDependencies": {
+    "@aphrody/bun": "workspace:*",
+    "@aphrody/m3-config": "workspace:*"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}
