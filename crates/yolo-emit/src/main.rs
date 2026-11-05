@@ -3,12 +3,18 @@
 
 use std::path::PathBuf;
 use std::process::ExitCode;
-use yolo_emit::{emit, emit_gpui_theme, emit_preset, emit_tailwind_theme, Target, Theme, YoloThemePreset};
+use yolo_emit::{
+    Target, Theme, YoloThemePreset, emit, emit_gpui_theme, emit_preset, emit_tailwind_theme,
+};
 use yolo_tokens::scheme::Variant;
 
 fn parse_seed(text: &str) -> Option<u32> {
     let hex = text.trim_start_matches('#');
-    (hex.len() == 6).then(|| u32::from_str_radix(hex, 16).ok().map(|rgb| 0xff00_0000 | rgb))?
+    (hex.len() == 6).then(|| {
+        u32::from_str_radix(hex, 16)
+            .ok()
+            .map(|rgb| 0xff00_0000 | rgb)
+    })?
 }
 
 fn main() -> ExitCode {
@@ -66,7 +72,9 @@ fn main() -> ExitCode {
             _ => false,
         };
         if !ok {
-            eprintln!("usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|tailwind|gpui|all] [--out DIR]");
+            eprintln!(
+                "usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|tailwind|gpui|all] [--out DIR]"
+            );
             return ExitCode::from(2);
         }
     }

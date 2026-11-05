@@ -109,13 +109,31 @@ mod tests {
 
     /// Every variable upstream `dx-components-theme.css` declares in `:root`.
     const UPSTREAM_VARIABLES: [&str; 25] = [
-        "--primary-color", "--primary-color-1", "--primary-color-2", "--primary-color-3",
-        "--primary-color-4", "--primary-color-5", "--primary-color-6", "--primary-color-7",
-        "--secondary-color", "--secondary-color-1", "--secondary-color-2", "--secondary-color-3",
-        "--secondary-color-4", "--secondary-color-5", "--secondary-color-6", "--focused-border-color",
-        "--primary-success-color", "--secondary-success-color", "--primary-warning-color",
-        "--secondary-warning-color", "--primary-error-color", "--secondary-error-color",
-        "--contrast-error-color", "--primary-info-color", "--secondary-info-color",
+        "--primary-color",
+        "--primary-color-1",
+        "--primary-color-2",
+        "--primary-color-3",
+        "--primary-color-4",
+        "--primary-color-5",
+        "--primary-color-6",
+        "--primary-color-7",
+        "--secondary-color",
+        "--secondary-color-1",
+        "--secondary-color-2",
+        "--secondary-color-3",
+        "--secondary-color-4",
+        "--secondary-color-5",
+        "--secondary-color-6",
+        "--focused-border-color",
+        "--primary-success-color",
+        "--secondary-success-color",
+        "--primary-warning-color",
+        "--secondary-warning-color",
+        "--primary-error-color",
+        "--secondary-error-color",
+        "--contrast-error-color",
+        "--primary-info-color",
+        "--secondary-info-color",
     ];
 
     #[test]
@@ -123,9 +141,17 @@ mod tests {
         for preset in YoloThemePreset::ALL {
             let css = emit_dioxus_components_theme(preset);
             for var in UPSTREAM_VARIABLES {
-                assert!(css.contains(&format!("  {var}: ")), "{} lacks {var}", preset.id());
+                assert!(
+                    css.contains(&format!("  {var}: ")),
+                    "{} lacks {var}",
+                    preset.id()
+                );
             }
-            assert_eq!(css.matches('{').count(), css.matches('}').count(), "balanced braces");
+            assert_eq!(
+                css.matches('{').count(),
+                css.matches('}').count(),
+                "balanced braces"
+            );
         }
     }
 

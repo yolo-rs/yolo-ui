@@ -115,16 +115,33 @@ mod tests {
                 assert!(css.contains(&format!("  --color-{name}: var(--{name});")));
             }
             assert!(css.contains("--radius: ") && css.contains("@theme inline {"));
-            assert_eq!(css.matches('{').count(), css.matches('}').count(), "balanced braces");
+            assert_eq!(
+                css.matches('{').count(),
+                css.matches('}').count(),
+                "balanced braces"
+            );
         }
     }
 
     #[test]
     fn required_shadcn_names_are_present() {
         for need in [
-            "background", "foreground", "card", "primary", "primary-foreground", "secondary",
-            "muted", "accent", "destructive", "border", "input", "ring", "chart-1", "chart-5",
-            "sidebar", "sidebar-ring",
+            "background",
+            "foreground",
+            "card",
+            "primary",
+            "primary-foreground",
+            "secondary",
+            "muted",
+            "accent",
+            "destructive",
+            "border",
+            "input",
+            "ring",
+            "chart-1",
+            "chart-5",
+            "sidebar",
+            "sidebar-ring",
         ] {
             assert!(SHADCN_ROLE_MAP.iter().any(|(n, _)| *n == need), "{need}");
         }
@@ -137,7 +154,11 @@ mod tests {
         let mut parts = a.split(".dark {");
         let light = parts.next().unwrap_or_default();
         let dark = parts.next().unwrap_or_default();
-        let bg = |s: &str| s.lines().find(|l| l.contains("--background:")).map(str::to_owned);
+        let bg = |s: &str| {
+            s.lines()
+                .find(|l| l.contains("--background:"))
+                .map(str::to_owned)
+        };
         assert_ne!(bg(light), bg(dark));
     }
 }

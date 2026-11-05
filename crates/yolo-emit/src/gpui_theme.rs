@@ -96,7 +96,10 @@ fn theme_object(
         ("danger.active.background", hex(mix(danger, fg, 0.16))),
         ("danger.foreground", hex(r(Role::OnError))),
         ("description_list.label.background", hex(panel)),
-        ("description_list.label.foreground", hex(r(Role::OnSurfaceVariant))),
+        (
+            "description_list.label.foreground",
+            hex(r(Role::OnSurfaceVariant)),
+        ),
         ("drag.border", hex(primary)),
         ("drop_target.background", hex_a(primary, 0x22)),
         ("foreground", hex(fg)),
@@ -131,8 +134,14 @@ fn theme_object(
         ("scrollbar.thumb.background", hex_a(fg, 0x4c)),
         ("scrollbar.thumb.hover.background", hex_a(fg, 0x80)),
         ("secondary.background", hex(secondary)),
-        ("secondary.hover.background", hex(mix(secondary, on_secondary, 0.08))),
-        ("secondary.active.background", hex(mix(secondary, on_secondary, 0.16))),
+        (
+            "secondary.hover.background",
+            hex(mix(secondary, on_secondary, 0.08)),
+        ),
+        (
+            "secondary.active.background",
+            hex(mix(secondary, on_secondary, 0.16)),
+        ),
         ("secondary.foreground", hex(on_secondary)),
         ("selection.background", hex_a(primary, 0x4d)),
         ("sidebar.background", hex(panel)),
@@ -247,12 +256,30 @@ mod tests {
 
     /// Keys the GPUI Kit examples and schema treat as essential for a usable theme.
     const REQUIRED: [&str; 24] = [
-        "background", "foreground", "border", "ring", "input.border", "accent.background",
-        "accent.foreground", "muted.background", "muted.foreground", "primary.background",
-        "primary.foreground", "primary.hover.background", "primary.active.background",
-        "secondary.background", "secondary.foreground", "danger.background", "danger.foreground",
-        "popover.background", "popover.foreground", "list.active.background", "sidebar.background",
-        "tab.active.background", "title_bar.background", "base.red",
+        "background",
+        "foreground",
+        "border",
+        "ring",
+        "input.border",
+        "accent.background",
+        "accent.foreground",
+        "muted.background",
+        "muted.foreground",
+        "primary.background",
+        "primary.foreground",
+        "primary.hover.background",
+        "primary.active.background",
+        "secondary.background",
+        "secondary.foreground",
+        "danger.background",
+        "danger.foreground",
+        "popover.background",
+        "popover.foreground",
+        "list.active.background",
+        "sidebar.background",
+        "tab.active.background",
+        "title_bar.background",
+        "base.red",
     ];
 
     #[test]
@@ -268,15 +295,26 @@ mod tests {
                     preset.id()
                 );
             }
-            assert_eq!(json.matches('{').count(), json.matches('}').count(), "balanced braces");
-            assert_eq!(json.matches('[').count(), json.matches(']').count(), "balanced brackets");
+            assert_eq!(
+                json.matches('{').count(),
+                json.matches('}').count(),
+                "balanced braces"
+            );
+            assert_eq!(
+                json.matches('[').count(),
+                json.matches(']').count(),
+                "balanced brackets"
+            );
             assert!(!json.contains(",\n      }"), "no trailing commas");
         }
     }
 
     #[test]
     fn presets_differ() {
-        assert_ne!(emit_gpui_theme(YoloThemePreset::M3), emit_gpui_theme(YoloThemePreset::Fluent));
+        assert_ne!(
+            emit_gpui_theme(YoloThemePreset::M3),
+            emit_gpui_theme(YoloThemePreset::Fluent)
+        );
     }
 
     #[test]

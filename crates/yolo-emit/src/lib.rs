@@ -15,9 +15,9 @@ pub mod tailwind;
 pub use gpui_theme::emit_gpui_theme;
 pub use tailwind::emit_tailwind_theme;
 pub use yolo_shared::{
-    apple_hig, ByronLovePetSpec, HyprlandDecorationSpec, OmarchySubTheme, OmarchyThemePalette,
-    YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens, BYRON_LOVE_PALETTE,
-    BYRON_LOVE_PET_SPEC, HYPRLAND_DECORATION_SPEC, OMARCHY_THEMES, YOLO_HYPRLAND_DARK_THEME,
+    BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC, ByronLovePetSpec, HYPRLAND_DECORATION_SPEC,
+    HyprlandDecorationSpec, OMARCHY_THEMES, OmarchySubTheme, OmarchyThemePalette,
+    YOLO_HYPRLAND_DARK_THEME, YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens, apple_hig,
 };
 use yolo_tokens::presets::variant_for_preset;
 use yolo_tokens::role::Role;
@@ -314,7 +314,12 @@ fn c(s: &DynamicScheme, role: Role) -> String {
 
 fn css_block(out: &mut String, s: &DynamicScheme, indent: &str) {
     for &role in ROLES {
-        let _ = writeln!(out, "{indent}--md-sys-color-{}: {};", role.name(), c(s, role));
+        let _ = writeln!(
+            out,
+            "{indent}--md-sys-color-{}: {};",
+            role.name(),
+            c(s, role)
+        );
     }
 }
 
@@ -463,8 +468,14 @@ fn cosmic(light: &DynamicScheme, dark: &DynamicScheme) -> String {
     );
     for (mode, s) in [("Light", light), ("Dark", dark)] {
         let fields: &[(&str, String)] = &[
-            ("accent", format!("Some({})", ron_srgb(s.argb(Role::Primary)))),
-            ("bg_color", format!("Some({})", ron_srgba(s.argb(Role::Surface)))),
+            (
+                "accent",
+                format!("Some({})", ron_srgb(s.argb(Role::Primary))),
+            ),
+            (
+                "bg_color",
+                format!("Some({})", ron_srgba(s.argb(Role::Surface))),
+            ),
             (
                 "primary_container_bg",
                 format!("Some({})", ron_srgba(s.argb(Role::SurfaceContainer))),
@@ -473,14 +484,32 @@ fn cosmic(light: &DynamicScheme, dark: &DynamicScheme) -> String {
                 "secondary_container_bg",
                 format!("Some({})", ron_srgba(s.argb(Role::SurfaceContainerHigh))),
             ),
-            ("text_tint", format!("Some({})", ron_srgb(s.argb(Role::OnSurface)))),
-            ("neutral_tint", format!("Some({})", ron_srgb(s.argb(Role::SurfaceTint)))),
-            ("destructive", format!("Some({})", ron_srgb(s.argb(Role::Error)))),
-            ("success", format!("Some({})", ron_srgb(s.argb(Role::Secondary)))),
-            ("warning", format!("Some({})", ron_srgb(s.argb(Role::Tertiary)))),
+            (
+                "text_tint",
+                format!("Some({})", ron_srgb(s.argb(Role::OnSurface))),
+            ),
+            (
+                "neutral_tint",
+                format!("Some({})", ron_srgb(s.argb(Role::SurfaceTint))),
+            ),
+            (
+                "destructive",
+                format!("Some({})", ron_srgb(s.argb(Role::Error))),
+            ),
+            (
+                "success",
+                format!("Some({})", ron_srgb(s.argb(Role::Secondary))),
+            ),
+            (
+                "warning",
+                format!("Some({})", ron_srgb(s.argb(Role::Tertiary))),
+            ),
         ];
         for (field, value) in fields {
-            let _ = writeln!(out, "com.system76.CosmicTheme.{mode}.Builder/v2/{field} = {value}");
+            let _ = writeln!(
+                out,
+                "com.system76.CosmicTheme.{mode}.Builder/v2/{field} = {value}"
+            );
         }
     }
     out
@@ -525,7 +554,10 @@ fn winui(light: &DynamicScheme, dark: &DynamicScheme) -> String {
         let _ = writeln!(out, "    <ResourceDictionary x:Key=\"{key}\">");
         for (name, role) in pairs {
             let (r, g, b) = rgb(s.argb(*role));
-            let _ = writeln!(out, "      <Color x:Key=\"{name}\">#FF{r:02X}{g:02X}{b:02X}</Color>");
+            let _ = writeln!(
+                out,
+                "      <Color x:Key=\"{name}\">#FF{r:02X}{g:02X}{b:02X}</Color>"
+            );
         }
         out.push_str(concat!(
             "      <SolidColorBrush x:Key=\"AccentFillColorDefaultBrush\" Color=\"{StaticResource SystemAccentColor}\" />\n",
@@ -692,7 +724,11 @@ fn omarchy(s: &DynamicScheme, subtheme: OmarchySubTheme) -> String {
         OMARCHY_THEMES.len()
     );
     for t in OMARCHY_THEMES {
-        let _ = writeln!(out, "/* - {}: bg={} fg={} accent={} */", t.id, t.background, t.foreground, t.accent);
+        let _ = writeln!(
+            out,
+            "/* - {}: bg={} fg={} accent={} */",
+            t.id, t.background, t.foreground, t.accent
+        );
     }
     out
 }
