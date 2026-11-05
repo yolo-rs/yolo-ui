@@ -2,7 +2,11 @@
 # wallpaper when one is added; until then the seed below drives the scheme.
 id = "aurora-terminal"
 name = "Aurora Terminal"
-title = "Yolo"
+
+[title]
+product_name = "Yolo"
+window_title_template = "{page} - Yolo"
+ntp_heading = "Yolo"
 
 [color]
 seed = "#2f8f9d"

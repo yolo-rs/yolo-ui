@@ -12,11 +12,11 @@ pub struct ThemePack {
     pub id: String,
     /// Display name in the theme picker.
     pub name: String,
-    /// Application title shown in the window and the shell while this pack is active.
-    pub title: String,
-    /// Logo file inside the pack directory (SVG with `currentColor` so it follows the scheme).
+    /// Product and window strings while this pack is active.
+    pub title: Titles,
+    /// Logo files inside the pack directory.
     #[serde(default)]
-    pub logo: Option<String>,
+    pub logo: Option<LogoSpec>,
     /// How colours are produced.
     pub color: ColorSpec,
     /// Icon set and style.
@@ -31,6 +31,50 @@ pub struct ThemePack {
     pub typography: Typography,
     /// Interface shape: layout, density, radii, glass and motion.
     pub shell: ShellSpec,
+}
+
+/// Product and window strings.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Titles {
+    /// Product name (about box, version strings, extension action title).
+    pub product_name: String,
+    /// Window title template; `{page}` is replaced by the current page title.
+    pub window_title_template: String,
+    /// Heading of the new tab page.
+    pub ntp_heading: String,
+}
+
+impl Titles {
+    /// Window title for `page`; the product name alone when `page` is empty.
+    #[must_use]
+    pub fn window_title(&self, page: &str) -> String {
+        if page.trim().is_empty() {
+            self.product_name.clone()
+        } else {
+            self.window_title_template.replace("{page}", page)
+        }
+    }
+}
+
+/// Logo files, relative to the pack directory. Raster sizes come from yolo-icons' favicon
+/// generator so every surface (extension manifest, Windows launcher, browser tab) has one.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct LogoSpec {
+    /// Coloured mark (SVG).
+    pub mark: String,
+    /// Single-colour mark using `currentColor` (SVG), for tinting by the scheme.
+    pub monochrome: String,
+    /// Wordmark (SVG), if the pack has one.
+    #[serde(default)]
+    pub wordmark: Option<String>,
+    /// PNG renders by pixel size (16, 32, 48, 128, ...).
+    #[serde(default)]
+    pub png: BTreeMap<u16, String>,
+    /// Multi-size `.ico` for Windows launchers.
+    #[serde(default)]
+    pub ico: Option<String>,
 }
 
 /// Colour rules of a pack.
@@ -149,6 +193,32 @@ pub struct Wallpaper {
     /// Credit line the licence requires, if any.
     #[serde(default)]
     pub attribution: Option<String>,
+    /// How the image fills the viewport.
+    #[serde(default)]
+    pub fit: WallpaperFit,
+    /// Focal point in percent of width and height (0..=100), kept visible when cropping.
+    #[serde(default = "default_focal")]
+    pub focal: [u8; 2],
+    /// SHA-256 of the file (lowercase hex), checked before use so offline packs stay intact.
+    #[serde(default)]
+    pub sha256: Option<String>,
+}
+
+fn default_focal() -> [u8; 2] {
+    [50, 50]
+}
+
+/// How a wallpaper fills the viewport.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum WallpaperFit {
+    /// Fill and crop around the focal point.
+    #[default]
+    Cover,
+    /// Fit entirely, letterboxed on the surface colour.
+    Contain,
+    /// Repeat at natural size.
+    Tile,
 }
 
 impl Wallpaper {
@@ -171,6 +241,29 @@ pub struct PetSpec {
     /// Where the pet sits by default (`bottom-right`, `bottom-left`, `dock`).
     #[serde(default = "default_anchor")]
     pub anchor: String,
+    /// Animation states the pet provides; shells map app activity onto them.
+    #[serde(default = "default_pet_states")]
+    pub states: Vec<String>,
+    /// Display size hint in CSS px (the longest side).
+    #[serde(default = "default_pet_size")]
+    pub size: u16,
+}
+
+fn default_pet_states() -> Vec<String> {
+    ["idle", "active", "sleep"].map(str::to_owned).to_vec()
+}
+
+fn default_pet_size() -> u16 {
+    96
+}
+
+impl PetSpec {
+    /// Asset directory of the pet, relative to the bundle root: `pets/<provider>/<id>/`, holding
+    /// one file per state (`<state>.webp` animated, or `<state>.json` for a sprite sheet spec).
+    #[must_use]
+    pub fn asset_dir(&self) -> String {
+        format!("pets/{}/{}/", self.provider, self.id)
+    }
 }
 
 fn default_anchor() -> String {

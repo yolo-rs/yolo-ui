@@ -13,7 +13,7 @@ use serde::Deserialize;
 
 use crate::manifest::{
     ColorSource, ColorSpec, IconSpec, IconStyle, Mode, MotionProfile, ShellLayout, ShellSpec,
-    ThemePack, Typography, Wallpaper,
+    ThemePack, Titles, Typography, Wallpaper, WallpaperFit,
 };
 
 #[derive(Deserialize)]
@@ -47,12 +47,19 @@ pub fn pack_from_colors(
             license: "unverified".to_owned(),
             source: format!("omarchy:themes/{id}/backgrounds/{file}"),
             attribution: None,
+            fit: WallpaperFit::Cover,
+            focal: [50, 50],
+            sha256: None,
         })
         .collect();
     Ok(ThemePack {
         id: format!("omarchy-{id}"),
         name: format!("Omarchy {id}"),
-        title: "Yolo".to_owned(),
+        title: Titles {
+            product_name: "Yolo".to_owned(),
+            window_title_template: "{page} - Yolo".to_owned(),
+            ntp_heading: "Yolo".to_owned(),
+        },
         logo: None,
         color: ColorSpec {
             seed: colors.accent,

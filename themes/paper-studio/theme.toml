@@ -1,7 +1,11 @@
 # Light, spacious, flat: a sidebar workspace on warm paper tones, no glass, calm motion.
 id = "paper-studio"
 name = "Paper Studio"
-title = "Yolo Studio"
+
+[title]
+product_name = "Yolo Studio"
+window_title_template = "{page} - Yolo Studio"
+ntp_heading = "Studio"
 
 [color]
 seed = "#b4532a"

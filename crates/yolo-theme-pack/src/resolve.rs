@@ -8,9 +8,12 @@ use yolo_tokens::role::Role;
 use yolo_tokens::scheme::{DynamicScheme, Variant};
 
 use crate::manifest::{
-    ColorSource, IconStyle, Mode, MotionProfile, PetSpec, ShellLayout, ThemePack, Typography,
-    parse_hex,
+    ColorSource, IconStyle, LogoSpec, Mode, MotionProfile, PetSpec, ShellLayout, ThemePack, Titles,
+    Typography, WallpaperFit, parse_hex,
 };
+
+/// Version of the resolved JSON layout; bumped on any breaking change.
+pub const SCHEMA_VERSION: u32 = 1;
 use crate::wallpaper::generated_wallpaper_svg;
 
 /// What the user changed on top of the pack. Every field is optional; `None` keeps the pack value.
@@ -38,6 +41,8 @@ pub struct UserPrefs {
     pub motion: Option<MotionProfile>,
     /// Per-role colour overrides, applied after the pack overrides.
     pub overrides: BTreeMap<String, String>,
+    /// Adjust `on-*` text roles that fall below AA instead of only reporting them.
+    pub clamp_text: bool,
 }
 
 /// The active wallpaper.
@@ -48,11 +53,19 @@ pub enum ActiveWallpaper {
     File {
         /// Path inside the pack.
         path: String,
+        /// Fill mode.
+        fit: WallpaperFit,
+        /// Focal point in percent.
+        focal: [u8; 2],
+        /// Expected SHA-256 of the file.
+        sha256: Option<String>,
     },
     /// The SVG generated from the scheme.
     Generated {
         /// SVG document.
         svg: String,
+        /// Seed the composition was derived from (`#RRGGBB`).
+        seed: String,
     },
 }
 
@@ -61,10 +74,10 @@ pub enum ActiveWallpaper {
 pub struct ResolvedTheme {
     /// Pack id.
     pub pack: String,
-    /// Window and shell title.
-    pub title: String,
-    /// Logo path inside the pack.
-    pub logo: Option<String>,
+    /// Product and window strings.
+    pub title: Titles,
+    /// Logo files inside the pack.
+    pub logo: Option<LogoSpec>,
     /// Whether the dark scheme is active.
     pub dark: bool,
     /// Seed actually used, `#RRGGBB`.
@@ -97,8 +110,10 @@ pub struct ResolvedTheme {
     pub glass_blur: u16,
     /// Motion duration in ms and easing.
     pub motion: (u16, &'static str),
-    /// Role pairs below WCAG AA (4.5:1) after overrides, as (`on-role`, `role`, ratio).
+    /// Role pairs still below WCAG AA (4.5:1), as (`on-role`, `role`, ratio).
     pub contrast_warnings: Vec<(String, String, f64)>,
+    /// `on-*` roles adjusted to reach AA because `clamp_text` was set.
+    pub clamped_roles: Vec<String>,
 }
 
 fn hex(argb: u32) -> String {
@@ -136,7 +151,13 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
         .or_else(|| wallpapers.first().copied());
 
     let pack_seed = parse_hex(&pack.color.seed).unwrap_or(0xFF67_50A4);
-    let seed = match prefs.color_source.unwrap_or(pack.color.source) {
+    // An explicit user seed wins unless the user explicitly chose the wallpaper as the source.
+    let source = prefs.color_source.unwrap_or(if prefs.seed.is_some() {
+        ColorSource::Seed
+    } else {
+        pack.color.source
+    });
+    let seed = match source {
         ColorSource::Wallpaper => chosen
             .and_then(|w| w.seed.as_deref().and_then(parse_hex))
             .or(prefs.wallpaper_seed)
@@ -157,12 +178,19 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
             slot.1 = hex(argb);
         }
     }
+    let clamped_roles = if prefs.clamp_text { clamp_text_roles(&mut roles) } else { Vec::new() };
     let contrast_warnings = contrast_warnings(&roles);
 
     let wallpaper = match chosen {
-        Some(w) => ActiveWallpaper::File { path: w.file.clone() },
+        Some(w) => ActiveWallpaper::File {
+            path: w.file.clone(),
+            fit: w.fit,
+            focal: w.focal,
+            sha256: w.sha256.clone(),
+        },
         None => ActiveWallpaper::Generated {
             svg: generated_wallpaper_svg(&roles, seed),
+            seed: hex(seed),
         },
     };
 
@@ -188,7 +216,43 @@ pub fn resolve(pack: &ThemePack, prefs: &UserPrefs, system_dark: bool) -> Resolv
         glass_blur: pack.shell.glass_blur,
         motion: motion_tokens(prefs.motion.unwrap_or(pack.shell.motion)),
         contrast_warnings,
+        clamped_roles,
     }
+}
+
+/// Moves each failing `on-*` role toward black or white, whichever direction its base calls for,
+/// until it reaches 4.5:1, keeping as much of the original colour as possible. Returns the names.
+fn clamp_text_roles(roles: &mut [(String, String)]) -> Vec<String> {
+    let snapshot: Vec<(String, String)> = roles.to_vec();
+    let get = |n: &str| snapshot.iter().find(|(r, _)| r == n).and_then(|(_, v)| parse_hex(v));
+    let mut clamped = Vec::new();
+    for (name, value) in roles.iter_mut() {
+        let Some(base) = name.strip_prefix("on-").and_then(get) else { continue };
+        let Some(fg) = parse_hex(value) else { continue };
+        if contrast_ratio(fg, base) >= 4.5 {
+            continue;
+        }
+        let toward = if luminance(base) > 0.18 { 0xFF00_0000 } else { 0xFFFF_FFFF };
+        let fixed = (1..=20)
+            .map(|step| mix(fg, toward, f64::from(step) / 20.0))
+            .find(|c| contrast_ratio(*c, base) >= 4.5)
+            .unwrap_or(toward);
+        *value = hex(fixed);
+        clamped.push(name.clone());
+    }
+    clamped
+}
+
+fn mix(a: u32, b: u32, t: f64) -> u32 {
+    let ch = |c: u32, shift: u32| f64::from((c >> shift) & 0xFF);
+    let lerp = |shift: u32| {
+        let v = ch(a, shift) + (ch(b, shift) - ch(a, shift)) * t;
+        // Rounded and clamped to 0..=255 first, so the cast cannot truncate or wrap.
+        #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+        let v = v.round().clamp(0.0, 255.0) as u32;
+        v << shift
+    };
+    0xFF00_0000 | lerp(16) | lerp(8) | lerp(0)
 }
 
 fn channel(c: u32) -> f64 {
@@ -274,12 +338,22 @@ impl ResolvedTheme {
         ]
     }
 
-    /// The resolved theme as JSON, for Bun and web surfaces.
+    /// The resolved theme as one JSON document for Bun and web surfaces: `schema_version`, a
+    /// `content_hash` (SHA-256 of the theme payload) to detect drift, and the `theme` itself.
+    /// Consumers read the whole document and apply it at once, so a switch is never partial.
     ///
     /// # Errors
     /// Fails only if serialization fails, which the types here do not allow.
     pub fn to_json(&self) -> serde_json::Result<String> {
-        serde_json::to_string_pretty(self)
+        use sha2::Digest as _;
+        let payload = serde_json::to_value(self)?;
+        let digest = sha2::Sha256::digest(serde_json::to_vec(&payload)?);
+        let content_hash: String = digest.iter().map(|b| format!("{b:02x}")).collect();
+        serde_json::to_string_pretty(&serde_json::json!({
+            "schema_version": SCHEMA_VERSION,
+            "content_hash": content_hash,
+            "theme": payload,
+        }))
     }
 }
 
@@ -339,17 +413,20 @@ mod tests {
             license: "CC0-1.0".into(),
             source: "original".into(),
             attribution: None,
+            fit: WallpaperFit::Cover,
+            focal: [50, 50],
+            sha256: None,
         }];
         let t = resolve(&p, &UserPrefs::default(), false);
         assert_eq!(t.seed, "#2f6f73");
-        assert_eq!(t.wallpaper, ActiveWallpaper::File { path: "w.webp".into() });
+        assert!(matches!(t.wallpaper, ActiveWallpaper::File { ref path, .. } if path == "w.webp"));
     }
 
     #[test]
     fn no_wallpaper_means_generated_svg() {
         let t = resolve(&pack(), &UserPrefs::default(), true);
         match t.wallpaper {
-            ActiveWallpaper::Generated { svg } => assert!(svg.starts_with("<svg")),
+            ActiveWallpaper::Generated { svg, .. } => assert!(svg.starts_with("<svg")),
             ActiveWallpaper::File { .. } => panic!("expected generated wallpaper"),
         }
     }
@@ -376,6 +453,29 @@ mod tests {
         let bad = resolve(&pack(), &UserPrefs { overrides, ..UserPrefs::default() }, true);
         assert_eq!(bad.role("on-primary"), clean.role("primary"));
         assert!(bad.contrast_warnings.iter().any(|(on, base, _)| on == "on-primary" && base == "primary"));
+    }
+
+    #[test]
+    fn clamp_text_repairs_failing_text_roles() {
+        let clean = resolve(&pack(), &UserPrefs::default(), true);
+        let mut overrides = BTreeMap::new();
+        overrides.insert("on-primary".to_owned(), clean.role("primary").unwrap_or("#000000").to_owned());
+        let fixed = resolve(&pack(), &UserPrefs { overrides, clamp_text: true, ..UserPrefs::default() }, true);
+        assert_eq!(fixed.clamped_roles, vec!["on-primary".to_owned()]);
+        assert!(fixed.contrast_warnings.is_empty(), "{:?}", fixed.contrast_warnings);
+    }
+
+    #[test]
+    fn json_carries_schema_version_and_stable_hash() {
+        let t = resolve(&pack(), &UserPrefs::default(), true);
+        let a: serde_json::Value = serde_json::from_str(&t.to_json().expect("json")).expect("parse");
+        let b: serde_json::Value = serde_json::from_str(&t.to_json().expect("json")).expect("parse");
+        assert_eq!(a["schema_version"], SCHEMA_VERSION);
+        assert_eq!(a["content_hash"], b["content_hash"]);
+        assert_eq!(a["theme"]["roles"].as_array().map(Vec::len), Some(49));
+        let other = resolve(&pack(), &UserPrefs { seed: Some("#e0a526".into()), ..UserPrefs::default() }, true);
+        let c: serde_json::Value = serde_json::from_str(&other.to_json().expect("json")).expect("parse");
+        assert_ne!(a["content_hash"], c["content_hash"]);
     }
 
     #[test]

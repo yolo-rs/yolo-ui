@@ -14,9 +14,12 @@
 pub mod manifest;
 pub mod omarchy;
 pub mod resolve;
+pub mod surfaces;
 pub mod wallpaper;
 
 pub use manifest::{
-    ColorSource, IconStyle, Mode, MotionProfile, PetSpec, ShellLayout, ThemePack, Wallpaper,
+    ColorSource, IconStyle, LogoSpec, Mode, MotionProfile, PetSpec, ShellLayout, ThemePack, Titles,
+    Wallpaper, WallpaperFit,
 };
-pub use resolve::{ResolvedTheme, UserPrefs, resolve};
+pub use resolve::{ActiveWallpaper, ResolvedTheme, SCHEMA_VERSION, UserPrefs, resolve};
+pub use surfaces::ROLE_SURFACES;
