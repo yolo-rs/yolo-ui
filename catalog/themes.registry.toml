@@ -1,0 +1,984 @@
+# Yolo UI theme systems and theme registries (GOAL.md, Phase 2).
+#
+# Catalog metadata and links only. No theme file, image, icon or font is copied into the repo from
+# any entry below; assets that do enter the repo go through `catalog/assets.lock.toml` first.
+#
+# [[system]]   a theming system, token source, theme format or icon set Yolo UI maps to or reads.
+# [[registry]] a place that lists themes (community or official); metadata and links only.
+#
+# Fields: id, name, section, kind, platforms, url, repo, license (SPDX where known, "" when not
+# verified), redistributable (may the source material itself ship with Yolo UI), checked, stars
+# (GitHub only), notes (what Yolo UI uses and which YoloThemePreset it maps to).
+# Icon crates add crate, last_release, last_release_date, downloads, recent_downloads (crates.io API).
+#
+# Verification: GitHub fields from `gh api repos/<owner>/<repo>`, crate fields from
+# `https://crates.io/api/v1/crates/<name>`, URLs fetched with HTTP 200 on the checked date.
+# Presets: neutral, m3, fluent, apple, omarchy, hyprland, aphrody, chromium.
+
+[meta]
+schema = 1
+updated = "2026-11-05"
+owner = "crates/yolo-emit"
+sections = ["android-m3", "chromium", "fluent", "apple", "gtk", "cosmic", "omarchy", "icons"]
+
+# =============================================================================================
+# 1. Android / Material 3
+# =============================================================================================
+
+[[system]]
+id = "material-color-utilities"
+name = "Material Color Utilities"
+section = "android-m3"
+kind = "color-engine"
+platforms = ["android", "web", "desktop"]
+url = "https://github.com/material-foundation/material-color-utilities"
+repo = "material-foundation/material-color-utilities"
+license = "Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 2303
+notes = "Reference for the HCT/CAM16 engine and dynamic scheme variants ported in crates/yolo-tokens (also submodules/material-color-utilities); preset m3, seeds every preset."
+
+[[system]]
+id = "material-theme-builder"
+name = "Material Theme Builder"
+section = "android-m3"
+kind = "theme-tool"
+platforms = ["web", "android"]
+url = "https://material-foundation.github.io/material-theme-builder/"
+repo = "material-foundation/material-theme-builder"
+license = "Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 595
+notes = "Export format (Compose Theme.kt, XML, JSON, DTCG) used as a cross-check for yolo-emit m3 output; preset m3. Repo last pushed 2025-05-21."
+
+[[system]]
+id = "m3-color-system"
+name = "Material 3 color system (m3.material.io)"
+section = "android-m3"
+kind = "platform-docs"
+platforms = ["android", "web"]
+url = "https://m3.material.io/styles/color/system/overview"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Role names and pairing rules for the 49 M3 color roles in yolo-tokens; structure and token names only; preset m3."
+
+[[system]]
+id = "android-dynamic-color"
+name = "Android dynamic color (Monet)"
+section = "android-m3"
+kind = "platform-docs"
+platforms = ["android"]
+url = "https://developer.android.com/develop/ui/views/theming/dynamic-colors"
+repo = ""
+license = "CC-BY-4.0"
+redistributable = true
+checked = "2026-11-05"
+notes = "Wallpaper-seeded scheme behavior that yolo-emit's Compose dynamicColor fallback mirrors; docs text CC-BY-4.0, code samples Apache-2.0 per page footer; preset m3."
+
+[[system]]
+id = "compose-material3"
+name = "Material Design 3 in Compose"
+section = "android-m3"
+kind = "platform-docs"
+platforms = ["android"]
+url = "https://developer.android.com/develop/ui/compose/designsystems/material3"
+repo = ""
+license = "CC-BY-4.0"
+redistributable = true
+checked = "2026-11-05"
+notes = "Target shape of the Compose ColorScheme, Typography and Shapes emitted by yolo-emit; preset m3."
+
+[[system]]
+id = "m3-expressive"
+name = "Material 3 Expressive"
+section = "android-m3"
+kind = "platform-docs"
+platforms = ["android", "web"]
+url = "https://m3.material.io/blog/building-with-m3-expressive"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Motion-physics, shape and emphasis guidance for the Expressive variant of the m3 preset; structure only."
+
+[[system]]
+id = "android-17"
+name = "Android 17 developer overview"
+section = "android-m3"
+kind = "platform-docs"
+platforms = ["android"]
+url = "https://developer.android.com/about/versions/17"
+repo = ""
+license = "CC-BY-4.0"
+redistributable = true
+checked = "2026-11-05"
+notes = "Current Android release page (Android 17 SDK and Beta devices listed); target version for the Compose emitter; preset m3."
+
+[[system]]
+id = "material-web"
+name = "Material Web components"
+section = "android-m3"
+kind = "design-tokens"
+platforms = ["web"]
+url = "https://github.com/material-components/material-web"
+repo = "material-components/material-web"
+license = "Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 11411
+notes = "--md-sys-color-* custom property names used by the web target in catalog/conversion.toml (submodules/material-web); preset m3."
+
+# =============================================================================================
+# 2. Chromium / Chrome
+# =============================================================================================
+
+[[system]]
+id = "chromium-color-pipeline"
+name = "Chromium Color Pipeline (ui/color)"
+section = "chromium"
+kind = "color-engine"
+platforms = ["chromium", "windows", "macos", "linux", "chromeos"]
+url = "https://chromium.googlesource.com/chromium/src/+/main/ui/color/README.md"
+repo = "chromium/chromium"
+license = "BSD-3-Clause"
+redistributable = true
+checked = "2026-11-05"
+stars = 25244
+notes = "ColorId, ColorProvider, mixers and ColorRecipe model that the yolo-chromium cef_color_id_t map targets (embedder mixers in chrome/browser/ui/color); preset chromium. Stars are the GitHub mirror."
+
+[[system]]
+id = "chrome-theme-manifest"
+name = "Chrome theme manifest (`theme` key)"
+section = "chromium"
+kind = "theme-format"
+platforms = ["chromium"]
+url = "https://developer.chrome.com/docs/extensions/develop/ui/themes"
+repo = ""
+license = ""
+redistributable = true
+checked = "2026-11-05"
+notes = "Format of the manifest.json yolo-emit writes (theme.colors frame/toolbar/ntp_*, tints, images, properties); format is an open spec, no artwork copied; presets chromium and all 8 via emitter."
+
+[[system]]
+id = "chrome-manifest-reference"
+name = "Chrome extension manifest reference"
+section = "chromium"
+kind = "platform-docs"
+platforms = ["chromium"]
+url = "https://developer.chrome.com/docs/extensions/reference/manifest"
+repo = ""
+license = ""
+redistributable = true
+checked = "2026-11-05"
+notes = "Manifest key list used to validate the emitted theme package and the MV3 extension in yolo-web; preset chromium."
+
+[[system]]
+id = "chromium-vector-icons"
+name = "Chromium vector icons (.icon)"
+section = "chromium"
+kind = "icon-set"
+platforms = ["chromium"]
+url = "https://chromium.googlesource.com/chromium/src/+/main/components/vector_icons/"
+repo = "chromium/chromium"
+license = "BSD-3-Clause"
+redistributable = true
+checked = "2026-11-05"
+stars = 25244
+notes = "Phase 1 importer input (.icon path commands) for toolbar and menu glyphs; merge order after Fluent; preset chromium."
+
+[[registry]]
+id = "chrome-web-store-themes"
+name = "Chrome Web Store, Themes category"
+section = "chromium"
+kind = "registry"
+platforms = ["chromium"]
+url = "https://chromewebstore.google.com/category/themes"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Listing metadata and links only (name, publisher, URL); theme artwork belongs to each publisher and is never downloaded or mirrored; preset chromium."
+
+# =============================================================================================
+# 3. Windows 11 / Fluent 2
+# =============================================================================================
+
+[[system]]
+id = "fluentui"
+name = "Fluent UI (tokens and web components)"
+section = "fluent"
+kind = "design-tokens"
+platforms = ["web", "windows"]
+url = "https://github.com/microsoft/fluentui"
+repo = "microsoft/fluentui"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 20390
+notes = "Fluent 2 token names (colorNeutral*, colorBrand*, borderRadius*, shadow*) mapped by the fluent emitter (submodules/fluentui); GitHub reports NOASSERTION, LICENSE file is MIT; preset fluent."
+
+[[system]]
+id = "fluent2-design-tokens"
+name = "Fluent 2 design tokens docs"
+section = "fluent"
+kind = "platform-docs"
+platforms = ["web", "windows"]
+url = "https://fluent2.microsoft.design/design-tokens"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Global vs alias token structure for the fluent preset; structure and token names only."
+
+[[system]]
+id = "winui-theme-resources"
+name = "WinUI 3 XAML theme resources"
+section = "fluent"
+kind = "theme-format"
+platforms = ["windows"]
+url = "https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/xaml-theme-resources"
+repo = "microsoft/microsoft-ui-xaml"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 8579
+notes = "ThemeDictionaries (Light, Dark, HighContrast) and resource key names written by the winui ResourceDictionary emitter; license is the repo's; preset fluent."
+
+[[system]]
+id = "windows-app-sdk"
+name = "Windows App SDK"
+section = "fluent"
+kind = "platform-sdk"
+platforms = ["windows"]
+url = "https://github.com/microsoft/WindowsAppSDK"
+repo = "microsoft/WindowsAppSDK"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 4720
+notes = "Host for Mica/Acrylic system backdrops consumed by yolo-shell window-vibrancy on Windows; preset fluent."
+
+[[system]]
+id = "windows-mica"
+name = "Mica material"
+section = "fluent"
+kind = "platform-docs"
+platforms = ["windows"]
+url = "https://learn.microsoft.com/en-us/windows/apps/design/style/mica"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Mica and Mica Alt layering rules for yolo-render backdrop tokens; structure only; preset fluent."
+
+[[system]]
+id = "windows-acrylic"
+name = "Acrylic material"
+section = "fluent"
+kind = "platform-docs"
+platforms = ["windows"]
+url = "https://learn.microsoft.com/en-us/windows/apps/design/style/acrylic"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Acrylic tint/luminosity/noise recipe reproduced with Kawase blur in yolo-render from own geometry; structure only; preset fluent."
+
+[[system]]
+id = "segoe-fluent-icons"
+name = "Segoe Fluent Icons font"
+section = "fluent"
+kind = "icon-font"
+platforms = ["windows"]
+url = "https://learn.microsoft.com/en-us/windows/apps/design/style/segoe-fluent-icons-font"
+repo = ""
+license = "LicenseRef-Microsoft-Proprietary"
+redistributable = false
+checked = "2026-11-05"
+notes = "Never vendored; only codepoint names as a lookup map to Fluent System Icons equivalents; preset fluent."
+
+[[system]]
+id = "windows-design-downloads"
+name = "Windows app design downloads (toolkits, fonts)"
+section = "fluent"
+kind = "platform-docs"
+platforms = ["windows"]
+url = "https://learn.microsoft.com/en-us/windows/apps/design/downloads/"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Pointer to the official Figma toolkit and Segoe font downloads; links only, files not redistributed; preset fluent."
+
+# =============================================================================================
+# 4. Apple macOS / iOS (structure only)
+# =============================================================================================
+
+[[system]]
+id = "apple-hig-color"
+name = "Apple HIG: Color"
+section = "apple"
+kind = "platform-docs"
+platforms = ["macos", "ios", "ipados", "visionos"]
+url = "https://developer.apple.com/design/human-interface-guidelines/color"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "System and semantic color names (label, systemBackground, separator...) for the SwiftUI asset catalog emitter; names only, values come from yolo-tokens; preset apple."
+
+[[system]]
+id = "apple-hig-materials"
+name = "Apple HIG: Materials"
+section = "apple"
+kind = "platform-docs"
+platforms = ["macos", "ios", "ipados", "visionos"]
+url = "https://developer.apple.com/design/human-interface-guidelines/materials"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Material thickness levels and vibrancy structure redrawn with yolo-render blur; structure only; preset apple."
+
+[[system]]
+id = "apple-hig-dark-mode"
+name = "Apple HIG: Dark Mode"
+section = "apple"
+kind = "platform-docs"
+platforms = ["macos", "ios"]
+url = "https://developer.apple.com/design/human-interface-guidelines/dark-mode"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "NSAppearance / elevated vs base dark surface structure for the apple preset; structure only."
+
+[[system]]
+id = "apple-liquid-glass"
+name = "Liquid Glass"
+section = "apple"
+kind = "platform-docs"
+platforms = ["macos", "ios", "ipados", "visionos"]
+url = "https://developer.apple.com/documentation/technologyoverviews/liquid-glass"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Layering and adaptivity behavior of the Liquid Glass material, re-implemented from own SDF geometry; structure only; preset apple."
+
+[[system]]
+id = "apple-sf-symbols"
+name = "SF Symbols"
+section = "apple"
+kind = "icon-set"
+platforms = ["macos", "ios", "ipados", "visionos"]
+url = "https://developer.apple.com/sf-symbols/"
+repo = ""
+license = "LicenseRef-Apple-Proprietary"
+redistributable = false
+checked = "2026-11-05"
+notes = "Never vendored, traced or forked; only rendering-mode and weight/scale names may inform the API; apple preset uses Phosphor/WhiteSur instead."
+
+[[system]]
+id = "apple-sf-fonts"
+name = "San Francisco fonts (SF Pro, SF Mono, New York)"
+section = "apple"
+kind = "font"
+platforms = ["macos", "ios"]
+url = "https://developer.apple.com/fonts/"
+repo = ""
+license = "LicenseRef-Apple-Proprietary"
+redistributable = false
+checked = "2026-11-05"
+notes = "Never shipped; the apple preset references the system font by name on Apple hosts only and uses an open font elsewhere."
+
+[[system]]
+id = "whitesur-gtk-theme"
+name = "WhiteSur GTK theme"
+section = "apple"
+kind = "theme-package"
+platforms = ["linux"]
+url = "https://github.com/vinceliuice/WhiteSur-gtk-theme"
+repo = "vinceliuice/WhiteSur-gtk-theme"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 9414
+notes = "Open macOS-like GTK theme (submodules/whitesur-gtk-theme) used as the Linux reference for the apple preset; last pushed 2026-09-11."
+
+# =============================================================================================
+# 5. GTK4 / libadwaita
+# =============================================================================================
+
+[[system]]
+id = "libadwaita"
+name = "libadwaita"
+section = "gtk"
+kind = "theme-format"
+platforms = ["linux"]
+url = "https://gitlab.gnome.org/GNOME/libadwaita"
+repo = "GNOME/libadwaita"
+license = "LGPL-2.1"
+redistributable = true
+checked = "2026-11-05"
+stars = 119
+notes = "Upstream on GitLab; stars are the GitHub mirror. Target of the gtk emitter and gtk4-rs/libadwaita-rs bridge in packages/yolo-gtk; presets neutral, m3, aphrody via accent and window colors."
+
+[[system]]
+id = "libadwaita-css-variables"
+name = "libadwaita CSS variables"
+section = "gtk"
+kind = "platform-docs"
+platforms = ["linux"]
+url = "https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html"
+repo = "GNOME/libadwaita"
+license = "LGPL-2.1"
+redistributable = true
+checked = "2026-11-05"
+notes = "Variable names (--accent-bg-color, --window-bg-color, --view-bg-color...) and legacy @define-color named colors written by the gtk emitter; the old named-colors.html page now returns 404."
+
+[[system]]
+id = "libadwaita-styles-appearance"
+name = "libadwaita styles and appearance"
+section = "gtk"
+kind = "platform-docs"
+platforms = ["linux"]
+url = "https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/styles-and-appearance.html"
+repo = "GNOME/libadwaita"
+license = "LGPL-2.1"
+redistributable = true
+checked = "2026-11-05"
+notes = "Color scheme, high-contrast and accent-color behavior AdwStyleManager exposes; mapped to yolo-contracts contrast levels."
+
+[[system]]
+id = "gtk4-css"
+name = "GTK 4 CSS overview"
+section = "gtk"
+kind = "platform-docs"
+platforms = ["linux", "windows", "macos"]
+url = "https://docs.gtk.org/gtk4/css-overview.html"
+repo = "GNOME/gtk"
+license = "LGPL-2.1-or-later"
+redistributable = true
+checked = "2026-11-05"
+stars = 1716
+notes = "Supported CSS subset and selector model the gtk stylesheet emitter must stay inside (SPDX from page source); stars are the GitHub mirror."
+
+[[registry]]
+id = "gnome-look-gtk-themes"
+name = "GNOME-Look.org, GTK3/4 themes"
+section = "gtk"
+kind = "registry"
+platforms = ["linux"]
+url = "https://www.gnome-look.org/browse?cat=135"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Community GTK theme listing (Pling/OpenDesktop network); HTTP 200 but served a bot check, so category content was not read; license varies per item; metadata and links only."
+
+[[registry]]
+id = "opendesktop-pling"
+name = "OpenDesktop.org / Pling store"
+section = "gtk"
+kind = "registry"
+platforms = ["linux"]
+url = "https://www.opendesktop.org/"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Parent store of gnome-look.org (pling.com redirects here); license per item; metadata and links only."
+
+# =============================================================================================
+# 6. COSMIC
+# =============================================================================================
+
+[[system]]
+id = "cosmic-theme"
+name = "libcosmic cosmic-theme"
+section = "cosmic"
+kind = "theme-format"
+platforms = ["linux"]
+url = "https://github.com/pop-os/libcosmic/tree/master/cosmic-theme"
+repo = "pop-os/libcosmic"
+license = "MPL-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 966
+notes = "Theme model (cosmic-theme/src/model, steps.rs, composite.rs) serialized as RON via cosmic-config; target of the cosmic emitter (submodules/libcosmic); presets neutral, m3, hyprland."
+
+[[system]]
+id = "cosmic-settings"
+name = "COSMIC Settings (appearance, theme import/export)"
+section = "cosmic"
+kind = "theme-tool"
+platforms = ["linux"]
+url = "https://github.com/pop-os/cosmic-settings"
+repo = "pop-os/cosmic-settings"
+license = "GPL-3.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 258
+notes = "Reference for the .ron theme export shape that emitted themes must import cleanly; read only, GPL code not linked."
+
+[[system]]
+id = "cosmic-epoch"
+name = "COSMIC desktop (cosmic-epoch)"
+section = "cosmic"
+kind = "platform-docs"
+platforms = ["linux"]
+url = "https://system76.com/cosmic"
+repo = "pop-os/cosmic-epoch"
+license = ""
+redistributable = false
+checked = "2026-11-05"
+stars = 6985
+notes = "Umbrella repo and product page; GitHub reports no license on cosmic-epoch itself; links only."
+
+[[registry]]
+id = "cosmic-themes-org"
+name = "COSMIC Themes"
+section = "cosmic"
+kind = "registry"
+platforms = ["linux"]
+url = "https://cosmic-themes.org/"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Community theme listing ('Community themes for the COSMIC desktop by System76'); not confirmed as System76-operated; no official System76 listing found; metadata and links only."
+
+# =============================================================================================
+# 7. Omarchy
+# =============================================================================================
+
+[[system]]
+id = "omarchy-themes"
+name = "Omarchy theme system"
+section = "omarchy"
+kind = "theme-format"
+platforms = ["linux"]
+url = "https://github.com/omacom/omarchy/tree/quattro/themes"
+repo = "omacom/omarchy"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 46265
+notes = "Per-theme dir (colors.toml, backgrounds/, icons.theme, neovim.lua, vscode.json, keyboard.rgb, preview.png); basecamp/omarchy redirects to omacom/omarchy, default branch quattro; preset omarchy, palette also feeds hyprland."
+
+[[system]]
+id = "omarchy-manual-themes"
+name = "The Omarchy Manual: Themes"
+section = "omarchy"
+kind = "platform-docs"
+platforms = ["linux"]
+url = "https://learn.omacom.io/2/the-omarchy-manual/52/themes"
+repo = ""
+license = ""
+redistributable = false
+checked = "2026-11-05"
+notes = "Official theme install and switching docs (Omarchy 3 manual); structure only; preset omarchy."
+
+[[registry]]
+id = "omarchy-official-themes"
+name = "Omarchy official themes (upstream themes/)"
+section = "omarchy"
+kind = "registry"
+platforms = ["linux"]
+url = "https://github.com/omacom/omarchy/tree/quattro/themes"
+repo = "omacom/omarchy"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 46265
+themes = ["catppuccin", "catppuccin-latte", "ethereal", "everforest", "flexoki-light", "gruvbox", "hackerman", "jade-horse", "kanagawa", "last-horizon", "lumon", "lupine", "matte-black", "miasma", "nord", "retro-82", "ristretto", "rose-pine", "solitude", "starship", "tokyo-night", "vantablack", "white"]
+notes = "23 upstream theme dirs match OmarchySubTheme::ALL in crates/yolo-shared one to one (jade-horse = OsakaJade); MIT covers code, background images keep their own credits; preset omarchy."
+
+[[registry]]
+id = "omarchy-site"
+name = "omarchy.org site theme gallery"
+section = "omarchy"
+kind = "registry"
+platforms = ["web"]
+url = "https://omarchy.org/"
+repo = "omacom/omarchy-site"
+license = ""
+redistributable = false
+checked = "2026-11-05"
+stars = 147
+notes = "Site source has no license file (GitHub license API 404), so treat as all rights reserved; site-themes.ts is read for names only; preset omarchy."
+
+[[registry]]
+id = "awesome-omarchy"
+name = "awesome-omarchy"
+section = "omarchy"
+kind = "registry"
+platforms = ["linux"]
+url = "https://github.com/aorumbayev/awesome-omarchy"
+repo = "aorumbayev/awesome-omarchy"
+license = "CC0-1.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 708
+notes = "Community index of Omarchy themes and tools (submodules/awesome-omarchy); the list is CC0, each linked theme keeps its own license; presets omarchy, hyprland."
+
+# =============================================================================================
+# 8. Icon sets and Rust icon crates
+# =============================================================================================
+
+[[system]]
+id = "material-symbols"
+name = "Material Symbols and Material Icons"
+section = "icons"
+kind = "icon-set"
+platforms = ["android", "web", "desktop"]
+url = "https://fonts.google.com/icons"
+repo = "google/material-design-icons"
+license = "Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 54234
+notes = "Base grid and variable axes (FILL, wght, GRAD, opsz) of Aphrody Symbols, Phase 1 importer input; presets m3, aphrody."
+
+[[system]]
+id = "fluentui-system-icons"
+name = "Fluent UI System Icons"
+section = "icons"
+kind = "icon-set"
+platforms = ["windows", "web", "android", "ios"]
+url = "https://github.com/microsoft/fluentui-system-icons"
+repo = "microsoft/fluentui-system-icons"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 10945
+notes = "Already at submodules/fluentui-system-icons; open replacement for Segoe Fluent Icons; merge order after Material; preset fluent."
+
+[[system]]
+id = "adwaita-icon-theme"
+name = "Adwaita icon theme"
+section = "icons"
+kind = "icon-set"
+platforms = ["linux"]
+url = "https://gitlab.gnome.org/GNOME/adwaita-icon-theme"
+repo = "GNOME/adwaita-icon-theme"
+license = "LGPL-3.0-only OR CC-BY-SA-3.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 200
+notes = "Dual licensed per COPYING (GitHub reports NOASSERTION); ship only as a separate theme package with attribution; presets neutral, m3 on GTK."
+
+[[system]]
+id = "cosmic-icons"
+name = "COSMIC icons"
+section = "icons"
+kind = "icon-set"
+platforms = ["linux"]
+url = "https://github.com/pop-os/cosmic-icons"
+repo = "pop-os/cosmic-icons"
+license = "CC-BY-SA-4.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 40
+notes = "Also under submodules/libcosmic; share-alike, ship as a separate package with attribution; preset neutral on COSMIC."
+
+[[system]]
+id = "whitesur-icon-theme"
+name = "WhiteSur icon theme"
+section = "icons"
+kind = "icon-set"
+platforms = ["linux"]
+url = "https://github.com/vinceliuice/WhiteSur-icon-theme"
+repo = "vinceliuice/WhiteSur-icon-theme"
+license = "GPL-3.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 2120
+notes = "submodules/whitesur-icon-theme; GPL-3, separate theme package only, never merged into Aphrody Symbols; preset apple on Linux."
+
+[[system]]
+id = "phosphor-core"
+name = "Phosphor Icons"
+section = "icons"
+kind = "icon-set"
+platforms = ["web", "desktop", "mobile"]
+url = "https://phosphoricons.com/"
+repo = "phosphor-icons/core"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 396
+notes = "Unified vector engine set (6 weights) for all presets; phosphor-icons/homepage has 7767 stars; core last pushed 2026-01-06; presets neutral, omarchy, hyprland, aphrody."
+
+[[system]]
+id = "lucide"
+name = "Lucide"
+section = "icons"
+kind = "icon-set"
+platforms = ["web", "desktop", "mobile"]
+url = "https://lucide.dev/"
+repo = "lucide-icons/lucide"
+license = "ISC"
+redistributable = true
+checked = "2026-11-05"
+stars = 25579
+notes = "Shadcn default icon set; yolo-migrator maps lucide-react imports to Rust icon crates; GitHub reports NOASSERTION, LICENSE file is ISC; preset neutral."
+
+[[system]]
+id = "iconify"
+name = "Iconify"
+section = "icons"
+kind = "icon-aggregator"
+platforms = ["web", "desktop"]
+url = "https://iconify.design/"
+repo = "iconify/iconify"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 6383
+notes = "Normalized JSON format for 200+ sets; tooling is MIT, each set keeps its own license (iconify/icon-sets has no repo-level license, 1074 stars); importer reference only; preset neutral."
+
+[[registry]]
+id = "iconify-icon-sets"
+name = "Iconify icon sets browser"
+section = "icons"
+kind = "registry"
+platforms = ["web"]
+url = "https://icon-sets.iconify.design/"
+repo = "iconify/icon-sets"
+license = ""
+redistributable = false
+checked = "2026-11-05"
+stars = 1074
+notes = "Index of icon sets with per-set license metadata; used to pick sets that pass the licensing gate; links only."
+
+[[system]]
+id = "crate-egui-phosphor"
+name = "egui-phosphor"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop", "web"]
+url = "https://crates.io/crates/egui-phosphor"
+repo = "amPerl/egui-phosphor"
+license = "MIT OR Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 172
+crate = "egui-phosphor"
+last_release = "0.14.0"
+last_release_date = "2026-09-10"
+downloads = 414780
+recent_downloads = 176655
+notes = "Phosphor font glyphs for egui; candidate for packages/yolo-egui; presets neutral, aphrody."
+
+[[system]]
+id = "crate-dioxus-icons"
+name = "dioxus-icons"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop", "mobile"]
+url = "https://crates.io/crates/dioxus-icons"
+repo = "DioxusLabs/dioxus-icons"
+license = "MIT AND ISC"
+redistributable = true
+checked = "2026-11-05"
+stars = 11
+crate = "dioxus-icons"
+last_release = "0.1.0"
+last_release_date = "2026-10-16"
+downloads = 41469
+recent_downloads = 30702
+notes = "Official DioxusLabs icon components (ISC portion from Lucide); first candidate for Dioxus 0.8 in packages/yolo-ui; preset neutral."
+
+[[system]]
+id = "crate-dioxus-free-icons"
+name = "dioxus-free-icons"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop", "mobile"]
+url = "https://crates.io/crates/dioxus-free-icons"
+repo = "dioxus-community/dioxus-free-icons"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 195
+crate = "dioxus-free-icons"
+last_release = "0.10.0"
+last_release_date = "2025-10-31"
+downloads = 378567
+recent_downloads = 180009
+notes = "Multi-set Dioxus icon components (bundled sets keep their own licenses); last release over a year old, check Dioxus 0.8 compatibility; preset neutral."
+
+[[system]]
+id = "crate-lucide-dioxus"
+name = "lucide-dioxus"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop", "mobile"]
+url = "https://crates.io/crates/lucide-dioxus"
+repo = "RustForWeb/lucide"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 86
+crate = "lucide-dioxus"
+last_release = "3.63.0"
+last_release_date = "2026-10-29"
+downloads = 62865
+recent_downloads = 11544
+notes = "Lucide as Dioxus components, tracks upstream Lucide versions; target for yolo-migrator lucide-react imports; preset neutral."
+
+[[system]]
+id = "crate-lucide-icons"
+name = "lucide-icons"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop"]
+url = "https://crates.io/crates/lucide-icons"
+repo = "WhySoBad/lucide-icons-rs"
+license = "MIT AND ISC"
+redistributable = true
+checked = "2026-11-05"
+stars = 10
+crate = "lucide-icons"
+last_release = "1.67.0"
+last_release_date = "2026-11-03"
+downloads = 234552
+recent_downloads = 86470
+notes = "Lucide icon font and enum for iced/egui hosts; candidate for packages/yolo-iced and yolo-cosmic; preset neutral."
+
+[[system]]
+id = "crate-icondata"
+name = "icondata"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop"]
+url = "https://crates.io/crates/icondata"
+repo = "carloskiki/icondata"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 82
+crate = "icondata"
+last_release = "0.7.0"
+last_release_date = "2026-01-04"
+downloads = 384315
+recent_downloads = 80074
+notes = "Framework-neutral SVG data for many sets (backs leptos_icons; icondata_core 457988 downloads); crates.io repo field still says Carlosted/icondata, GitHub redirects to carloskiki; candidate data layer for yolo-icons."
+
+[[system]]
+id = "crate-iconify"
+name = "iconify (iconify-rs)"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop"]
+url = "https://crates.io/crates/iconify"
+repo = "wrapperup/iconify-rs"
+license = "MIT OR Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 12
+crate = "iconify"
+last_release = "0.3.1"
+last_release_date = "2024-04-20"
+downloads = 24548
+recent_downloads = 1359
+notes = "Compile-time Iconify macro (fetches from the Iconify API at build time); stale since 2024 and network at build conflicts with offline builds; evaluate only, do not adopt as is."
+
+[[system]]
+id = "crate-egui-material-icons"
+name = "egui_material_icons"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop", "web"]
+url = "https://crates.io/crates/egui_material_icons"
+repo = "lucasmerlin/hello_egui"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 675
+crate = "egui_material_icons"
+last_release = "0.9.0"
+last_release_date = "2026-10-19"
+downloads = 118490
+recent_downloads = 49369
+notes = "Material Symbols font for egui (crate MIT, glyphs Apache-2.0); stars are the hello_egui monorepo; preset m3 in packages/yolo-egui."
+
+[[system]]
+id = "crate-material-icons"
+name = "material-icons"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop"]
+url = "https://crates.io/crates/material-icons"
+repo = "fschutt/material-icons"
+license = "Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+stars = 7
+crate = "material-icons"
+last_release = "0.3.0"
+last_release_date = "2026-01-17"
+downloads = 80289
+recent_downloads = 27240
+notes = "Material Icons codepoint enum and font; superseded by the Phase 1 Material Symbols import, evaluate for codepoint table only; preset m3."
+
+[[system]]
+id = "crate-iced-fonts"
+name = "iced_fonts"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop"]
+url = "https://crates.io/crates/iced_fonts"
+repo = "Redhawk18/iced_fonts"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+crate = "iced_fonts"
+last_release = "0.3.0"
+last_release_date = "2025-12-08"
+downloads = 569377
+recent_downloads = 143853
+notes = "Icon fonts (Bootstrap, Nerd, Lucide...) for iced; crates.io repo URL returns 404 on GitHub, so no stars; candidate for packages/yolo-iced; preset neutral."
+
+[[system]]
+id = "crate-phosphor-svgs"
+name = "phosphor-svgs"
+section = "icons"
+kind = "icon-crate"
+platforms = ["web", "desktop"]
+url = "https://crates.io/crates/phosphor-svgs"
+repo = "meadowsys/phosphor-svgs"
+license = "MIT"
+redistributable = true
+checked = "2026-11-05"
+stars = 1
+crate = "phosphor-svgs"
+last_release = "0.5.0"
+last_release_date = "2026-10-26"
+downloads = 6619
+recent_downloads = 831
+notes = "Raw Phosphor SVG strings as Rust consts; low adoption; yolo-icons importing phosphor-icons/core directly is preferred; presets neutral, aphrody."
+
+[[system]]
+id = "crate-egui-remixicon"
+name = "egui-remixicon"
+section = "icons"
+kind = "icon-crate"
+platforms = ["desktop", "web"]
+url = "https://crates.io/crates/egui-remixicon"
+repo = "get200/egui-remixicon"
+license = "MIT OR Apache-2.0"
+redistributable = true
+checked = "2026-11-05"
+crate = "egui-remixicon"
+last_release = "0.34.0"
+last_release_date = "2026-04-11"
+downloads = 107368
+recent_downloads = 9373
+notes = "Remix Icon font for egui; repo not queried on GitHub, so no stars; alternative only, not in the Phase 1 merge order; preset neutral."
