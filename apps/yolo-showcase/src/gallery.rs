@@ -463,20 +463,19 @@ pub fn render_gallery_html(dark: bool) -> String {
     let css = gallery_css(dark);
     let csp = gallery_csp(&css);
     let title = if dark { "Yolo UI components, dark" } else { "Yolo UI components" };
-    let body = dioxus_ssr::render_element(rsx! {
-        html { lang: "en",
-            head {
-                meta { charset: "utf-8" }
-                meta { "http-equiv": "Content-Security-Policy", content: "{csp}" }
-                meta { name: "viewport", content: "width=device-width, initial-scale=1" }
-                meta { name: "color-scheme", content: if dark { "dark" } else { "light" } }
-                title { "{title}" }
-                style { "{css}" }
-            }
-            body { Gallery { dark } }
-        }
-    });
-    format!("<!doctype html>{body}")
+    let scheme = if dark { "dark" } else { "light" };
+    // Dioxus renders the body. The head is written here because SSR escapes text nodes: the
+    // stylesheet must reach the page byte for byte to match its CSP hash. The CSS is generated
+    // from tokens and contains no `</style>`.
+    debug_assert!(!css.contains("</style"));
+    let body = dioxus_ssr::render_element(rsx! { Gallery { dark } });
+    format!(
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">\
+         <meta http-equiv=\"Content-Security-Policy\" content=\"{csp}\">\
+         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+         <meta name=\"color-scheme\" content=\"{scheme}\"><title>{title}</title>\
+         <style>{css}</style></head><body>{body}</body></html>"
+    )
 }
 
 #[cfg(test)]
