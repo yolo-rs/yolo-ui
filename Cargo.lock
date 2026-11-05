@@ -10677,6 +10677,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui_extras"
+version = "0.36.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05cbdc785020861553f230f23d330ba1fb72613b9d8e0e457f3bdc8ba6db6dcf"
+dependencies = [
+ "ahash 0.8.12",
+ "egui 0.36.2",
+ "enum-map",
+ "itertools 0.15.0",
+ "log 0.4.35",
+ "profiling",
+ "resvg 0.45.1",
+]
+
+[[package]]
 name = "egui_glow"
 version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10960,6 +10975,26 @@ name = "enum-iterator-derive"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "685adfa4d6f3d765a26bc5dbc936577de9abf756c1feeb3089b01dd395034842"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "enum-map"
+version = "2.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6866f3bfdf8207509a033af1a75a7b08abda06bbaaeae6669323fd5a097df2e9"
+dependencies = [
+ "enum-map-derive",
+]
+
+[[package]]
+name = "enum-map-derive"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f282cfdfe92516eb26c2af8589c274c7c17681f5ecc03c18255fe741c6aa64eb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -35739,6 +35774,7 @@ name = "yolo-craft"
 version = "0.8.0-alpha.3"
 dependencies = [
  "egui 0.36.2",
+ "egui_extras",
  "serde",
  "serde_json",
  "yolo-shared",
@@ -35952,6 +35988,10 @@ dependencies = [
 name = "yolo-showcase"
 version = "0.8.0-alpha.3"
 dependencies = [
+ "base64 0.22.1",
+ "dioxus",
+ "dioxus-ssr",
+ "sha2 0.10.9",
  "yolo-contracts",
  "yolo-craft",
  "yolo-emit",
@@ -35961,6 +36001,7 @@ dependencies = [
  "yolo-shared",
  "yolo-shell",
  "yolo-storyteller",
+ "yolo-theme-pack",
  "yolo-tokens",
  "yolo-ui",
 ]
@@ -35978,6 +36019,17 @@ name = "yolo-tauri"
 version = "0.8.0-alpha.3"
 dependencies = [
  "yolo-engines",
+]
+
+[[package]]
+name = "yolo-theme-pack"
+version = "0.8.0-alpha.3"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "toml 1.1.2+spec-1.1.0",
+ "yolo-tokens",
 ]
 
 [[package]]
