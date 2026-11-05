@@ -186,7 +186,7 @@ fn state_matches_mode_and_motion_has_a_pause_control() {
 }
 
 fn is_emoji(c: char) -> bool {
-    matches!(c as u32, 0x1F000..=0x1FAFF | 0x2600..=0x27BF | 0xFE0F | 0x1F1E6..=0x1F1FF)
+    matches!(c as u32, 0x1F000..=0x1FAFF | 0x2600..=0x27BF | 0xFE0F)
 }
 
 #[test]
