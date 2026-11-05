@@ -4,7 +4,7 @@ version = { workspace = true }
 edition.workspace = true
 rust-version.workspace = true
 license = "Apache-2.0"
-description = "Iced 0.14 & System76 libcosmic / cosmic-theme adapter for Yolo UI: 5-preset palettes (Neutral, M3, Fluent, Apple, Aphrody), RON builders, and widget styles"
+description = "Iced 0.14 & System76 libcosmic / cosmic-theme adapter for Yolo UI: 8-preset palettes (Neutral, M3, Fluent, Apple, Omarchy, Hyprland, Aphrody, Chromium), RON builders, and widget styles"
 repository = "https://github.com/yolo-rs/yolo-ui"
 
 [features]

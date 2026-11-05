@@ -4,7 +4,7 @@ version = { workspace = true }
 edition.workspace = true
 rust-version.workspace = true
 license = "Apache-2.0"
-description = "egui adapter for Yolo UI: 5-preset theme engine (Neutral, M3, Fluent, Apple, Aphrody), visuals, spacing, shapes, typography, and custom widgets"
+description = "egui adapter for Yolo UI: 8-preset theme engine (Neutral, M3, Fluent, Apple, Omarchy, Hyprland, Aphrody, Chromium), visuals, spacing, shapes, typography, and custom widgets"
 repository = "https://github.com/yolo-rs/yolo-ui"
 
 [dependencies]

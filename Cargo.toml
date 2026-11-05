@@ -483,6 +483,8 @@ dioxus_markdown = { path = "submodules/markdown", version = "0.3.0-alpha.1" }
 rsrpc = { path = "submodules/rsrpc/packages/lib", version = "0.1.0" }
 rsrpc-macro = { path = "submodules/rsrpc/packages/macro", version = "0.1.0" }
 dioxus-test = { path = "submodules/dioxus-test", version = "0.1.0" }
+# NOTE: `taffy` resolves to the dioxus-taffy fork (0.15.0). `submodules/taffy` (0.12.1) is stale and unused here;
+# upstream 0.15.1 exists. Unify the two submodules in a dedicated change (see docs/recon/DIOXUS.md).
 taffy = { path = "submodules/dioxus-taffy", version = "0.15.0" }
 
 # blitz / native
@@ -595,6 +597,7 @@ wgpu = { version = "30.0.1" }
 naga = { version = "30.0.0", features = ["spv-in", "wgsl-out"] }
 egui = { version = "0.36.2", default-features = false, features = ["default_fonts"] }
 eframe = { version = "0.36.2", default-features = false }
+egui_extras = { version = "0.36.2", default-features = false, features = ["svg"] }
 bevy = { version = "0.20.0", default-features = false }
 bevy_window = { version = "0.20.0", default-features = false }
 bevy_app = { version = "0.20.0", default-features = false }
@@ -927,6 +930,22 @@ opt-level = "z"
 codegen-units = 1
 lto = true
 strip = true
+
+# Cargo cannot set `lto` or `panic` per package, so Tauri app builds that need fat LTO and
+# `panic = "abort"` use named profiles: `cargo build --profile tauri-release` (see docs/recon/TAURI-BUN.md).
+# Spacedrive relies on unwinding; keep it on the default release profile unless its commands are audited.
+[profile.tauri-release]
+inherits = "release"
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+
+# Faster CI variant of tauri-release (thin LTO).
+[profile.tauri-ci]
+inherits = "release"
+lto = "thin"
 
 [profile.dev]
 debug = "line-tables-only"

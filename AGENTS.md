@@ -2,7 +2,7 @@
 
 Yolo UI (`yolo-rs/yolo-ui`) is a vendor-neutral, customizable fullstack Rust + Bun v1.4.4+ UI framework monorepo. It brings together 124 `yolo-rs/*` Git submodules (`submodules/*`) from 31 upstream UI and compiler ecosystems, 9 Rust UI toolkits, 8 built-in theme presets (`YoloThemePreset`), a Shadcn/BaseUI/Radix/Tailwind-to-Rust compiler (`yolo-migrator`), a Full-Bun + Rust React 19 and React Native/Expo engine (`yolo-react`), and one CLI, plugin and MCP server (`bun ui` / `@yolo-rs/ui-plugin` / `@yolo-rs/ui-mcp`).
 
-## 1. The 7 first-class theme presets (`YoloThemePreset`)
+## 1. The 8 built-in theme presets (`YoloThemePreset`)
 
 `yolo-ui` is neutral by default (`YoloManifest::default()` uses `YoloThemePreset::Neutral` with `pet_companion: None`):
 
@@ -13,6 +13,7 @@ Yolo UI (`yolo-rs/yolo-ui`) is a vendor-neutral, customizable fullstack Rust + B
 5. `yolo-omarchy` (`YoloThemePreset::Omarchy`, `#7AA2F7`): Omacom Omarchy Linux and the `omarchy-site` TUI-modern design system, with all 23 official subthemes (`OmarchySubTheme::ALL`).
 6. `yolo-hyprland` (`YoloThemePreset::Hyprland`, `#33CCFF`): Hyprwm / Hyprland Wayland compositor (`#33CCFF -> #00FF99` `45deg` active border, `8×3` Kawase blur, `hyprtoolkit`, `hyprqt6engine`).
 7. `yolo-aphrody` (`YoloThemePreset::Aphrody`, `#17335C`): the Byron Love (Afuro Terumi / Aphrody) signature pet and brand theme (10 measured Oklch sprite-atlas colors `#F7F3F0`..`#131420`, `#FFD700` gold, `#7C5CFF` violet, `#00D4FF` cyan, `8×11` `ByronLovePetSpec`).
+8. `yolo-chromium` (`YoloThemePreset::Chromium`, `#1A73E8`): Chromium Views + WebUI palette, 8px card geometry, 56px toolbar baseline and an editable HCT accent seed.
 
 ## 2. Flattened monorepo structure
 
@@ -21,9 +22,9 @@ yolo-ui/
 ├── Cargo.toml                  # Unified Cargo workspace (all crates/*, packages/*, apps/*)
 ├── Justfile                    # Unified task runner (just + bun + cargo + sccache + gh)
 ├── package.json                # Root Bun v1.4.4+ workspace (@yolo-rs/yolo-ui)
-├── catalog/conversion.toml     # Cross-host M3 + 7-preset role conversion matrix
+├── catalog/conversion.toml     # Cross-host M3 + 8-preset role conversion matrix
 ├── crates/
-│   ├── yolo-shared/            # Neutral manifest (YoloManifest), 7 presets, Omarchy (23), Hyprland, Byron Love
+│   ├── yolo-shared/            # Neutral manifest (YoloManifest), 8 presets, Omarchy (23), Hyprland, Byron Love
 │   ├── yolo-tokens/            # CAM16 / HCT dynamic color engine, 49 M3 roles, shape/motion/typography
 │   ├── yolo-contracts/         # WCAG contrast solver, 31 widget contracts, adaptive window classes
 │   ├── yolo-emit/              # 11-target theme emitter (css, gtk, kde, cosmic, qml, winui, fluent, apple, omarchy, hyprland, dtcg)
@@ -51,7 +52,7 @@ yolo-ui/
 │   ├── yolo-ui-plugin/         # @yolo-rs/ui-plugin Single Bun.plugin for .yolo.toml, .shadcn.tsx, .tailwind.css
 │   └── yolo-ui-mcp/            # @yolo-rs/ui-mcp Single MCP server for UI search, theme emit, migration & devtools
 ├── skills/
-│   └── yolo-ui-pro-max/        # UI/UX Pro Max skill (34 stacks, 13 domains, 7 presets, BM25 search)
+│   └── yolo-ui-pro-max/        # UI/UX Pro Max skill (34 stacks, 13 domains, 8 presets, BM25 search)
 ├── scripts/
 │   ├── ui.ts                   # Single unified UI command (`bun run ui <subcommand>`)
 │   ├── react-bun.ts            # Full-Bun React 19 & Expo patcher, node-purger & bundler
@@ -66,9 +67,9 @@ yolo-ui/
 ## 3. Core toolchain commands (`bun ui` + `just` + `cargo` + `sccache`)
 
 ```bash
-bun run ui doctor     # Verify the submodule fleet, 7 theme presets, 34 UI/UX Pro Max stacks, and toolchains
+bun run ui doctor     # Verify the submodule fleet, 8 theme presets, 34 UI/UX Pro Max stacks, and toolchains
 bun run ui search <q> # Query the 13-domain UI/UX Pro Max BM25 engine across 34 stacks
-bun run ui theme      # Emit any of the 7 YoloThemePresets to 11 targets (css, gtk, cosmic, qml, fluent, apple, omarchy, hyprland, dtcg)
+bun run ui theme      # Emit any of the 8 YoloThemePresets to 11 targets (css, gtk, cosmic, qml, fluent, apple, omarchy, hyprland, dtcg)
 bun run ui migrate    # Compile Shadcn/Tailwind/Radix/BaseUI TSX into Dioxus, WGPU, Egui, Cosmic, GTK4, or QML
 bun run react:status  # Inspect the 12 React/Expo/Rust submodules and Full-Bun React pipeline
 just check            # Run bun check (tsgo) + cargo metadata + cargo check

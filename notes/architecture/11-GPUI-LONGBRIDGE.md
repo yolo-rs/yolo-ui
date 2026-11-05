@@ -1,36 +1,36 @@
 # GPUI and Longbridge stack architecture (`11-GPUI-LONGBRIDGE.md`)
 
-Yolo UI brings the Zed GPUI (`zed-industries/*`) and Longbridge (`longbridge/*`) ecosystems together under `aphrody-labs/*` submodules and the `packages/yolo-gpui` bridge crate. Both are GPU-accelerated and cover desktop, mobile, terminal, localization and embedded browser work.
+Yolo UI brings the Zed GPUI (`zed-industries/*`) and Longbridge (`longbridge/*`) ecosystems together under `yolo-rs/*` submodules and the `packages/yolo-gpui` bridge crate. Both are GPU-accelerated and cover desktop, mobile, terminal, localization and embedded browser work.
 
-## 1. Forked `aphrody-labs/*` repository fleet (Longbridge and Zed Industries)
+## 1. Forked `yolo-rs/*` repository fleet (Longbridge and Zed Industries)
 
-### Longbridge ecosystem (`longbridge/*` to `aphrody-labs/*`)
+### Longbridge ecosystem (`longbridge/*` to `yolo-rs/*`)
 
 | Upstream repository              | Aphrody Labs fork                  | Submodule path           | Role in Yolo UI                                                                                                                                                    |
 | :------------------------------- | :--------------------------------- | :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `longbridge/gpui-kit`            | `aphrody-labs/gpui-kit`            | `submodules/gpui-kit`    | Rich desktop & workspace UI component kit for GPUI (DockArea, Panels, Tabs, Table, VirtualList, Tree, Charts, Markdown, CodeEditor, Theme, TitleBar, Modal/Drawer) |
-| `longbridge/gpui-fast`           | `aphrody-labs/gpui-fast`           | `submodules/gpui-fast`   | Fast-compiling standalone GPUI workspace extracted from Zed (`gpui`, `gpui_macros`, `collections`, `util`, `sum_tree`, `scheduler`, `http_client`, `refineable`)   |
-| `longbridge/gpui-mobile`         | `aphrody-labs/gpui-mobile`         | `submodules/gpui-mobile` | Cross-platform GPUI mobile backend targeting iOS (Metal/UIKit) and Android (Vulkan/GLES/JNI)                                                                       |
-| `longbridge/nsh`                 | `aphrody-labs/nsh`                 | `submodules/nsh`         | GPU-accelerated native shell & terminal emulator built on GPUI                                                                                                     |
-| `longbridge/rust-i18n`           | `aphrody-labs/rust-i18n`           | `submodules/rust-i18n`   | Compile-time codegen & runtime YAML/JSON/TOML localization (`t!` macro, pluralization, locale fallback)                                                            |
-| `longbridge/wef`                 | `aphrody-labs/wef`                 | `submodules/wef`         | Web Embedded Framework (CEF / Wry hybrid embedding for GPUI and native Rust windows)                                                                               |
-| `longbridge/autocorrect`         | `aphrody-labs/autocorrect`         | `submodules/autocorrect` | CJK + Latin copywriting linter and auto-spacer (`autocorrect`, `autocorrect-derive`, `autocorrect-lsp`)                                                            |
-| `longbridge/openapi`             | `aphrody-labs/longbridge-openapi`  | _(on-demand)_            | Longbridge financial & market data OpenAPI Rust SDK (quotes, trading, portfolio streams)                                                                           |
-| `longbridge/longbridge-terminal` | `aphrody-labs/longbridge-terminal` | _(on-demand)_            | Terminal-based market quote & portfolio workstation                                                                                                                |
-| `longbridge/feishu-pages`        | `aphrody-labs/feishu-pages`        | _(on-demand)_            | Feishu/Lark document static site exporter                                                                                                                          |
+| `longbridge/gpui-kit`            | `yolo-rs/gpui-kit`            | `submodules/gpui-kit`    | Rich desktop & workspace UI component kit for GPUI (DockArea, Panels, Tabs, Table, VirtualList, Tree, Charts, Markdown, CodeEditor, Theme, TitleBar, Modal/Drawer) |
+| `longbridge/gpui-fast`           | `yolo-rs/gpui-fast`           | `submodules/gpui-fast`   | Fast-compiling standalone GPUI workspace extracted from Zed (`gpui`, `gpui_macros`, `collections`, `util`, `sum_tree`, `scheduler`, `http_client`, `refineable`)   |
+| `longbridge/gpui-mobile`         | `yolo-rs/gpui-mobile`         | `submodules/gpui-mobile` | Cross-platform GPUI mobile backend targeting iOS (Metal/UIKit) and Android (Vulkan/GLES/JNI)                                                                       |
+| `longbridge/nsh`                 | `yolo-rs/nsh`                 | `submodules/nsh`         | GPU-accelerated native shell & terminal emulator built on GPUI                                                                                                     |
+| `longbridge/rust-i18n`           | `yolo-rs/rust-i18n`           | `submodules/rust-i18n`   | Compile-time codegen & runtime YAML/JSON/TOML localization (`t!` macro, pluralization, locale fallback)                                                            |
+| `longbridge/wef`                 | `yolo-rs/wef`                 | `submodules/wef`         | Web Embedded Framework (CEF / Wry hybrid embedding for GPUI and native Rust windows)                                                                               |
+| `longbridge/autocorrect`         | `yolo-rs/autocorrect`         | `submodules/autocorrect` | CJK + Latin copywriting linter and auto-spacer (`autocorrect`, `autocorrect-derive`, `autocorrect-lsp`)                                                            |
+| `longbridge/openapi`             | `yolo-rs/longbridge-openapi`  | _(on-demand)_            | Longbridge financial & market data OpenAPI Rust SDK (quotes, trading, portfolio streams)                                                                           |
+| `longbridge/longbridge-terminal` | `yolo-rs/longbridge-terminal` | _(on-demand)_            | Terminal-based market quote & portfolio workstation                                                                                                                |
+| `longbridge/feishu-pages`        | `yolo-rs/feishu-pages`        | _(on-demand)_            | Feishu/Lark document static site exporter                                                                                                                          |
 
-### Zed Industries ecosystem (`zed-industries/*` to `aphrody-labs/*`)
+### Zed Industries ecosystem (`zed-industries/*` to `yolo-rs/*`)
 
 | Upstream repository               | Aphrody Labs fork               | Submodule path                | Role in Yolo UI                                                                                |
 | :-------------------------------- | :------------------------------ | :---------------------------- | :--------------------------------------------------------------------------------------------- |
-| `zed-industries/zed`              | `aphrody-labs/zed`              | _(via `gpui-fast`)_           | Upstream Zed editor & GPUI origin repository                                                   |
-| `zed-industries/awesome-gpui`     | `aphrody-labs/awesome-gpui`     | `submodules/awesome-gpui`     | Curated directory of GPUI applications, libraries, and architectural patterns                  |
-| `zed-industries/create-gpui-app`  | `aphrody-labs/create-gpui-app`  | `submodules/create-gpui-app`  | Official GPUI application starter template                                                     |
-| `zed-industries/zed-fonts`        | `aphrody-labs/zed-fonts`        | `submodules/zed-fonts`        | Zed Plex Sans & Zed Plex Mono ligature fonts for code and high-density UI                      |
-| `zed-industries/font-kit`         | `aphrody-labs/font-kit`         | `submodules/font-kit`         | Cross-platform system font loading & DirectWrite/CoreText/FreeType rasterization               |
-| `zed-industries/scap`             | `aphrody-labs/scap`             | `submodules/scap`             | High-FPS native screen & window capture (ScreenCaptureKit, Windows.Graphics.Capture, PipeWire) |
-| `zed-industries/async-dispatcher` | `aphrody-labs/async-dispatcher` | `submodules/async-dispatcher` | Lightweight task dispatcher bridging async futures with UI main threads                        |
-| `zed-industries/extensions`       | `aphrody-labs/zed-extensions`   | _(on-demand)_                 | WebAssembly extension registry for languages, themes, and slash commands                       |
+| `zed-industries/zed`              | `yolo-rs/zed`              | _(via `gpui-fast`)_           | Upstream Zed editor & GPUI origin repository                                                   |
+| `zed-industries/awesome-gpui`     | `yolo-rs/awesome-gpui`     | `submodules/awesome-gpui`     | Curated directory of GPUI applications, libraries, and architectural patterns                  |
+| `zed-industries/create-gpui-app`  | `yolo-rs/create-gpui-app`  | `submodules/create-gpui-app`  | Official GPUI application starter template                                                     |
+| `zed-industries/zed-fonts`        | `yolo-rs/zed-fonts`        | `submodules/zed-fonts`        | Zed Plex Sans & Zed Plex Mono ligature fonts for code and high-density UI                      |
+| `zed-industries/font-kit`         | `yolo-rs/font-kit`         | `submodules/font-kit`         | Cross-platform system font loading & DirectWrite/CoreText/FreeType rasterization               |
+| `zed-industries/scap`             | `yolo-rs/scap`             | `submodules/scap`             | High-FPS native screen & window capture (ScreenCaptureKit, Windows.Graphics.Capture, PipeWire) |
+| `zed-industries/async-dispatcher` | `yolo-rs/async-dispatcher` | `submodules/async-dispatcher` | Lightweight task dispatcher bridging async futures with UI main threads                        |
+| `zed-industries/extensions`       | `yolo-rs/zed-extensions`   | _(on-demand)_                 | WebAssembly extension registry for languages, themes, and slash commands                       |
 
 ## 2. Crate topology and layering
 
@@ -38,7 +38,7 @@ Yolo UI brings the Zed GPUI (`zed-industries/*`) and Longbridge (`longbridge/*`)
 flowchart TD
     YoloUI["packages/yolo-ui (Dioxus 0.8 + Blitz + AnyRender)"]
     YoloGPUI["packages/yolo-gpui (Theme, DockArea, I18nContext Bridge)"]
-    GpuiKit["submodules/gpui-kit (60+ GPUI Workspace & Trading Widgets)"]
+    GpuiKit["submodules/gpui-kit (75+ GPUI Components and Primitives)"]
     GpuiFast["submodules/gpui-fast (Standalone GPUI Engine from Zed)"]
     GpuiMobile["submodules/gpui-mobile (iOS Metal / Android Vulkan GPUI)"]
     Nsh["submodules/nsh (GPUI Terminal & Shell)"]

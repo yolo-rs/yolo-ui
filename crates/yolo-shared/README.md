@@ -1,4 +1,4 @@
-# `yolo-shared`: neutral foundation, manifest and 7-preset theme engine (`crates/yolo-shared`)
+# `yolo-shared`: neutral foundation, manifest and 8-preset theme engine (`crates/yolo-shared`)
 
 `yolo-shared` is the zero-overhead, vendor-neutral foundation crate at the bottom of the `yolo-rs/yolo-ui` dependency graph.
 

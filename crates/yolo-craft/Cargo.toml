@@ -15,6 +15,7 @@ serde = ["dep:serde", "egui/serde"]
 yolo-shared = { workspace = true }
 yolo-tokens = { workspace = true }
 egui = { workspace = true }
+egui_extras = { workspace = true, features = ["svg"] }
 serde = { workspace = true, features = ["derive"], optional = true }
 
 [dev-dependencies]
