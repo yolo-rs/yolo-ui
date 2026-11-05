@@ -126,6 +126,8 @@ pub fn gallery_css(dark: bool) -> String {
     let chrome = YoloThemePreset::Neutral.tokens(dark);
     let chrome_style = YoloThemePreset::Neutral.style();
     let target = MIN_TARGET_DP;
+    // Height reserved for the sticky preset headers; also the scroll padding that keeps focus visible (WCAG 2.4.11).
+    let sticky: u32 = 176;
     let mut css = format!(
         "*{{box-sizing:border-box}}\
          body{{margin:0;background:{bg};color:{text};font:16px/1.5 {font}}}\
@@ -135,7 +137,8 @@ pub fn gallery_css(dark: bool) -> String {
          .top h1{{font-size:28px;line-height:1.2;font-weight:600;margin:0 0 8px;letter-spacing:-0.01em}}\
          .top p{{margin:0 0 12px;color:{muted}}}\
          .matrix{{display:grid;grid-template-columns:minmax(200px,240px) repeat(8,minmax(0,1fr));border-top:1px solid {rule}}}\
-         .head{{position:sticky;top:0;z-index:2;padding:14px 12px;border-bottom:1px solid var(--rule)}}\
+         html{{scroll-padding-top:{sticky}px}}\
+         .head{{position:sticky;top:0;z-index:2;min-height:{sticky}px;padding:14px 12px;border-bottom:1px solid var(--rule)}}\
          .head h2{{font-size:16px;font-weight:600;margin:0;line-height:1.3}}\
          .head p{{font-size:12px;margin:4px 0 0;color:var(--muted);line-height:1.35}}\
          .head dl{{display:grid;grid-template-columns:auto auto;gap:2px 8px;margin:8px 0 0;font-size:12px}}\
@@ -181,7 +184,7 @@ pub fn gallery_css(dark: bool) -> String {
          .card.filled{{background:var(--surface)}} .card.elevated{{background:var(--elevated)}} .card.outlined{{border:var(--bw) solid var(--rule)}}\
          .menu{{list-style:none;margin:0;padding:6px 0;width:100%;background:var(--elevated);border-radius:var(--r-md);border:var(--bw) solid var(--rule)}}\
          .menu li{{min-height:{target}px;display:flex;align-items:center;padding:0 14px;font-size:14px}}\
-         .menu li[aria-disabled=true]{{opacity:.38}}\
+         .tabpanel{{width:100%;font-size:13px;color:var(--muted);margin:0}}\
          .dialog{{width:100%;padding:20px;border-radius:var(--r-lg);background:var(--elevated);border:var(--bw) solid var(--rule)}}\
          .dialog h4{{margin:0 0 8px;font-size:17px}} .dialog p{{margin:0 0 16px;font-size:14px;color:var(--muted)}}\
          .dialog .actions{{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}}\
@@ -323,14 +326,17 @@ fn text_fields(preset: YoloThemePreset) -> Element {
     }
 }
 
-fn navigation(_: YoloThemePreset) -> Element {
+fn navigation(preset: YoloThemePreset) -> Element {
+    let id = preset.id();
+    let name = short_name(preset);
     rsx! {
-        div { class: "tabs", role: "tablist", "aria-label": "Library",
-            button { role: "tab", "aria-selected": "true", r#type: "button", "Songs" }
-            button { role: "tab", "aria-selected": "false", r#type: "button", "Albums" }
-            button { role: "tab", "aria-selected": "false", r#type: "button", "Artists" }
+        div { class: "tabs", role: "tablist", "aria-label": "Library, {name} sample",
+            button { role: "tab", id: "tab-songs-{id}", "aria-selected": "true", "aria-controls": "panel-{id}", r#type: "button", "Songs" }
+            button { role: "tab", id: "tab-albums-{id}", "aria-selected": "false", "aria-controls": "panel-{id}", tabindex: "-1", r#type: "button", "Albums" }
+            button { role: "tab", id: "tab-artists-{id}", "aria-selected": "false", "aria-controls": "panel-{id}", tabindex: "-1", r#type: "button", "Artists" }
         }
-        nav { class: "nav", "aria-label": "Main",
+        p { class: "tabpanel", role: "tabpanel", id: "panel-{id}", "aria-labelledby": "tab-songs-{id}", "312 songs" }
+        nav { class: "nav", "aria-label": "Main, {name} sample",
             a { href: "#home", "aria-current": "page", Icon { d: HOME } "Home" }
             a { href: "#search", Icon { d: SEARCH } "Search" }
             a { href: "#alerts", Icon { d: BELL } "Alerts" }
@@ -352,10 +358,11 @@ fn overlays(preset: YoloThemePreset) -> Element {
     let id = preset.id();
     rsx! {
         div { class: "stack",
-            ul { class: "menu", role: "menu", "aria-label": "Track actions",
-                li { role: "menuitem", "Add to queue" }
-                li { role: "menuitem", "Share" }
-                li { role: "menuitem", "aria-disabled": "true", "Download" }
+            // Plain list: a static sample cannot honour the keyboard contract that role="menu" promises.
+            ul { class: "menu", "aria-label": "Track actions sample",
+                li { "Add to queue" }
+                li { "Share" }
+                li { "Show album" }
             }
             section { class: "dialog", "aria-labelledby": "dlg-{id}",
                 h4 { id: "dlg-{id}", "Delete playlist?" }
