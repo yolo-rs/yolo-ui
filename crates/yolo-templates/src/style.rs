@@ -31,11 +31,11 @@ pub const LAYOUT_CSS: &str = r"
 .yt-sections { display: flex; flex-direction: column; gap: 64px; padding: 64px 24px; }
 .yt-channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .yt-channel { display: flex; flex-direction: column; gap: 12px; padding: 24px; }
-.yt-docs { display: grid; grid-template-columns: 280px minmax(0px, 1fr); grid-template-rows: 64px minmax(0px, 1fr); min-height: 720px; }
+.yt-docs { width: 100%; display: grid; grid-template-columns: 280px minmax(0px, 1fr); grid-template-rows: 64px minmax(0px, 1fr); min-height: 720px; }
 .yt-docs-top { grid-column: 1 / span 2; grid-row: 1; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; padding: 0px 24px; }
 .yt-docs-tree { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: 2px; padding: 16px; }
 .yt-docs-main { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 24px; padding: 40px 48px; }
-.yt-app { display: grid; grid-template-columns: 72px minmax(0px, 1fr); grid-template-rows: 56px minmax(0px, 1fr); min-height: 720px; }
+.yt-app { width: 100%; display: grid; grid-template-columns: 72px minmax(0px, 1fr); grid-template-rows: 56px minmax(0px, 1fr); min-height: 720px; }
 .yt-app-bar { grid-column: 1 / span 2; grid-row: 1; display: grid; grid-template-columns: minmax(0px, 1fr) minmax(0px, 640px) minmax(0px, 1fr); align-items: center; gap: 16px; padding: 0px 16px; }
 .yt-app-start { display: flex; flex-direction: row; align-items: center; gap: 12px; }
 .yt-search { display: flex; flex-direction: row; align-items: center; gap: 8px; height: 44px; }
@@ -51,7 +51,7 @@ pub const LAYOUT_CSS: &str = r"
 .yt-thumb { aspect-ratio: 16 / 9; }
 .yt-media-meta { display: flex; flex-direction: row; gap: 12px; }
 .yt-avatar { width: 36px; height: 36px; flex-shrink: 0; }
-.yt-editorial-grid { display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 24px; }
+.yt-editorial-grid { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 24px; }
 .yt-story { display: flex; flex-direction: column; gap: 12px; padding: 24px; }
 .yt-story-lead { grid-column: 1 / span 2; grid-row: 1 / span 2; }
 ";

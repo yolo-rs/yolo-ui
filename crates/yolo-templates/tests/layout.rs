@@ -45,7 +45,7 @@ fn media_grid_fills_columns_on_desktop_and_one_column_on_phones() {
     let d = app_chrome(&SITES[1].app, DESKTOP.0, DESKTOP.1).unwrap();
     let columns = d.tiles.iter().filter(|t| (t.y - d.tiles[0].y).abs() < 0.5).count();
     // 1440 - 72 rail - 48 padding = 1320 px: four 300 px minimum tracks with 16 px gaps.
-    assert_eq!(columns, yolo_templates::app::auto_fill_columns(1320.0, 300.0, 16.0));
+    assert_eq!(columns, yolo_templates::app::auto_fill_columns(1320.0, 300.0, 16.0), "tiles {:?}", d.tiles.iter().map(|t| (t.x, t.y, t.width)).collect::<Vec<_>>());
     for t in &d.tiles {
         assert!(t.width >= 300.0 - 0.5);
     }
