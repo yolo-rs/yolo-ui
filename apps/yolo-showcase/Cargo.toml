@@ -21,3 +21,5 @@ yolo-shell = { workspace = true }
 yolo-craft = { workspace = true }
 yolo-storyteller = { workspace = true }
 yolo-react = { workspace = true }
+dioxus = { workspace = true, default-features = false, features = ["lib"] }
+dioxus-ssr = { workspace = true }
