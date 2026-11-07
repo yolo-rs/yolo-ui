@@ -1,0 +1,30 @@
+{
+   : https://turbo.build/schema.json,
+  ui: stream,
+  globalDependencies: [bunfig.toml, tsconfig.json],
+  tasks: {
+    build: {
+      dependsOn: [^build],
+      outputs: [dist/**, build/**],
+      cache: true
+    },
+    check: {
+      dependsOn: [^build],
+      cache: true
+    },
+    typecheck: {
+      dependsOn: [^build],
+      cache: true
+    },
+    lint: {
+      cache: true
+    },
+    test: {
+      cache: true
+    },
+    dev: {
+      cache: false,
+      persistent: true
+    }
+  }
+}
