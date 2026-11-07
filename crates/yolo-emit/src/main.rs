@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: Apache-2.0
-//! `yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#6750a4'] [--variant tonal-spot] [--contrast 0] [--target gtk|fluent|apple|omarchy|hyprland|tailwind|gpui|all] [--out DIR]`
+//! `yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#6750a4'] [--variant tonal-spot] [--contrast 0] [--target NAME|gpui|all] [--out DIR] [--list-targets] [--audit]`
+//!
+//! Without `--out`, prints the primary file of each target. With `--out`, writes every file of
+//! the target under `DIR` (or `DIR/<target>/` with `--target all`) and prints the written paths.
+//! `--audit` prints the WCAG contrast of the main role pairs in both modes and fails below AA.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
-use yolo_emit::{
-    Target, Theme, YoloThemePreset, emit, emit_gpui_theme, emit_preset, emit_tailwind_theme,
-};
+use yolo_emit::contrast::{AA_TEXT, audit};
+use yolo_emit::{Target, Theme, ThemeSource, YoloThemePreset, emit_files, emit_gpui_theme};
 use yolo_tokens::scheme::Variant;
+
+const USAGE: &str = "usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|gpui|all] [--out DIR] [--list-targets] [--audit]";
 
 fn parse_seed(text: &str) -> Option<u32> {
     let hex = text.trim_start_matches('#');
@@ -17,17 +22,50 @@ fn parse_seed(text: &str) -> Option<u32> {
     })?
 }
 
+fn write_files(dir: &Path, source: &ThemeSource, target: Target) -> std::io::Result<()> {
+    for file in emit_files(source, target) {
+        let path = file
+            .path
+            .split('/')
+            .fold(dir.to_path_buf(), |p, part| p.join(part));
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent)?;
+        }
+        std::fs::write(&path, file.contents)?;
+        println!("{}", path.display());
+    }
+    Ok(())
+}
+
 fn main() -> ExitCode {
     let mut preset: Option<YoloThemePreset> = None;
     let mut seed = YoloThemePreset::Neutral.seed_argb();
     let mut variant = Variant::Neutral;
     let mut contrast = 0.0;
     let mut target = None;
-    // Preset-only targets outside `Target`: "tailwind" or "gpui".
+    // Preset-only target outside `Target`: "gpui".
     let mut extra: Option<&'static str> = None;
     let mut out: Option<PathBuf> = None;
+    let mut run_audit = false;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--list-targets" => {
+                for t in Target::ALL {
+                    println!("{}", t.name());
+                }
+                return ExitCode::SUCCESS;
+            }
+            "--audit" => {
+                run_audit = true;
+                continue;
+            }
+            "-h" | "--help" => {
+                println!("{USAGE}");
+                return ExitCode::SUCCESS;
+            }
+            _ => {}
+        }
         let value = args.next();
         let ok = match (arg.as_str(), value.as_deref()) {
             ("--preset", Some(v)) => YoloThemePreset::from_id(v)
@@ -54,9 +92,9 @@ fn main() -> ExitCode {
                 extra = None;
                 true
             }
-            ("--target", Some(v @ ("tailwind" | "gpui"))) => {
+            ("--target", Some("gpui")) => {
                 target = None;
-                extra = Some(if v == "tailwind" { "tailwind" } else { "gpui" });
+                extra = Some("gpui");
                 true
             }
             ("--target", Some(v)) => Target::from_name(v)
@@ -72,25 +110,45 @@ fn main() -> ExitCode {
             _ => false,
         };
         if !ok {
-            eprintln!(
-                "usage: yolo-emit [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium] [--seed '#rrggbb'] [--variant NAME] [--contrast N] [--target NAME|tailwind|gpui|all] [--out DIR]"
-            );
+            eprintln!("{USAGE}");
             return ExitCode::from(2);
         }
     }
-    let theme = Theme {
-        seed,
-        variant,
-        contrast,
+    let source = match preset {
+        Some(p) => ThemeSource::from_preset(p),
+        None => ThemeSource::from_theme(Theme {
+            seed,
+            variant,
+            contrast,
+        }),
     };
-    if let Some(kind) = extra {
-        // These emitters are preset-driven; without --preset the Neutral preset is used.
-        let p = preset.unwrap_or(YoloThemePreset::Neutral);
-        let (text, file) = if kind == "tailwind" {
-            (emit_tailwind_theme(p), "globals.css")
+    if run_audit {
+        let mut failed = false;
+        for dark in [false, true] {
+            for pair in audit(source.scheme(dark)) {
+                let pass = pair.ratio >= AA_TEXT;
+                failed |= !pass;
+                println!(
+                    "{} {} {} on {} {:.2} {}",
+                    source.slug,
+                    if dark { "dark" } else { "light" },
+                    pair.foreground,
+                    pair.background,
+                    pair.ratio,
+                    if pass { "AA" } else { "FAIL" }
+                );
+            }
+        }
+        return if failed {
+            ExitCode::FAILURE
         } else {
-            (emit_gpui_theme(p), "gpui-theme.json")
+            ExitCode::SUCCESS
         };
+    }
+    if let Some(kind) = extra {
+        let p = preset.unwrap_or(YoloThemePreset::Neutral);
+        let text = emit_gpui_theme(p);
+        let file = "gpui-theme.json";
         return match &out {
             Some(dir) => match std::fs::create_dir_all(dir)
                 .and_then(|()| std::fs::write(dir.join(file), text))
@@ -107,22 +165,22 @@ fn main() -> ExitCode {
             }
         };
     }
+    let all = target.is_none();
     let targets: Vec<Target> = target.map_or_else(|| Target::ALL.to_vec(), |t| vec![t]);
     for t in targets {
-        let text = match preset {
-            Some(p) => emit_preset(p, t),
-            None => emit(&theme, t),
-        };
         match &out {
             Some(dir) => {
-                if let Err(e) = std::fs::create_dir_all(dir)
-                    .and_then(|()| std::fs::write(dir.join(t.file_name()), text))
-                {
+                let dir = if all { dir.join(t.name()) } else { dir.clone() };
+                if let Err(e) = write_files(&dir, &source, t) {
                     eprintln!("yolo-emit: {}: {e}", t.name());
                     return ExitCode::FAILURE;
                 }
             }
-            None => print!("{text}"),
+            None => {
+                if let Some(file) = emit_files(&source, t).into_iter().next() {
+                    print!("{}", file.contents);
+                }
+            }
         }
     }
     ExitCode::SUCCESS

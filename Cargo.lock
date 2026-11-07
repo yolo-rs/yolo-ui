@@ -35811,6 +35811,12 @@ dependencies = [
 name = "yolo-emit"
 version = "0.8.0-alpha.3"
 dependencies = [
+ "lightningcss",
+ "quick-xml 0.37.5",
+ "ron",
+ "serde",
+ "serde_json",
+ "toml 1.1.2+spec-1.1.0",
  "yolo-shared",
  "yolo-tokens",
 ]

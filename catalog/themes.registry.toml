@@ -5,20 +5,17 @@
 #
 # [[system]]   a theming system, token source, theme format or icon set Yolo UI maps to or reads.
 # [[registry]] a place that lists themes (community or official); metadata and links only.
+# [[source]]   verified theme source entry (`validate.rs` checks `checked`, `method`, `[[source]]`).
 #
-# Fields: id, name, section, kind, platforms, url, repo, license (SPDX where known, "" when not
-# verified), redistributable (may the source material itself ship with Yolo UI), checked, stars
-# (GitHub only), notes (what Yolo UI uses and which YoloThemePreset it maps to).
-# Icon crates add crate, last_release, last_release_date, downloads, recent_downloads (crates.io API).
-#
-# Verification: GitHub fields from `gh api repos/<owner>/<repo>`, crate fields from
-# `https://crates.io/api/v1/crates/<name>`, URLs fetched with HTTP 200 on the checked date.
 # Presets: neutral, m3, fluent, apple, omarchy, hyprland, aphrody, chromium.
 
 [meta]
 schema = 1
 updated = "2026-11-05"
+checked = "2026-11-05"
+method = "curl -s -L -o /dev/null --max-time 20 -w '%{http_code} %{url_effective}'"
 owner = "crates/yolo-emit"
+consumers = ["crates/yolo-emit", "bun ui theme emit"]
 sections = ["android-m3", "chromium", "fluent", "apple", "gtk", "cosmic", "omarchy", "icons"]
 
 # =============================================================================================
@@ -982,3 +979,358 @@ last_release_date = "2026-04-11"
 downloads = 107368
 recent_downloads = 9373
 notes = "Remix Icon font for egui; repo not queried on GitHub, so no stars; alternative only, not in the Phase 1 merge order; preset neutral."
+
+# =============================================================================================
+# 9. Verified HTTP 200 Theme Sources (`[[source]]` for `crates/yolo-emit/tests/validate.rs`)
+# =============================================================================================
+
+# --- Omarchy / Hyprland -----------------------------------------------------------------------
+
+[[source]]
+name = "Omarchy (built-in themes, colors.toml schema, themed templates)"
+url = "https://github.com/basecamp/omarchy"
+license = "MIT"
+platform = "omarchy"
+kind = "repo"
+status = "200"
+notes = "Pinned as submodules/omarchy (6ba05d77). Theme dirs: themes/<name>/colors.toml, icons.theme, backgrounds/; default/themed/*.tpl render the app configs."
+
+[[source]]
+name = "Omarchy built-in theme directory"
+url = "https://github.com/omacom/omarchy/tree/quattro/themes"
+license = "MIT"
+platform = "omarchy"
+kind = "repo"
+status = "200"
+notes = "23 built-in themes; their palettes are recorded in yolo-shared OMARCHY_THEMES."
+
+[[source]]
+name = "The Omarchy Manual: Extra themes (community themes)"
+url = "https://learn.omacom.io/2/the-omarchy-manual/90/extra-themes"
+license = "listing only"
+platform = "omarchy"
+kind = "listing"
+status = "200"
+
+[[source]]
+name = "awesome-omarchy (community themes and tools)"
+url = "https://github.com/aorumbayev/awesome-omarchy"
+license = "CC0-1.0 (list); entries carry their own licenses"
+platform = "omarchy"
+kind = "listing"
+status = "200"
+
+[[source]]
+name = "Hyprland"
+url = "https://github.com/hyprwm/Hyprland"
+license = "BSD-3-Clause"
+platform = "hyprland"
+kind = "repo"
+status = "200"
+
+[[source]]
+name = "Hyprland wiki (configuration variables, decoration, colors)"
+url = "https://github.com/hyprwm/hyprland-wiki"
+license = "BSD-3-Clause"
+platform = "hyprland"
+kind = "docs"
+status = "200"
+
+# --- Material 3 -------------------------------------------------------------------------------
+
+[[source]]
+name = "Material Theme Builder (web)"
+url = "https://material-foundation.github.io/material-theme-builder/"
+license = "listing only"
+platform = "material"
+kind = "tool"
+status = "200"
+notes = "m3.material.io/theme-builder redirects here. Exports Compose, Views XML, Web CSS and DSP JSON."
+
+[[source]]
+name = "material-theme-builder (Figma plugin source, archived)"
+url = "https://github.com/material-foundation/material-theme-builder"
+license = "Apache-2.0"
+platform = "material"
+kind = "repo"
+status = "200"
+notes = "Archived upstream."
+
+[[source]]
+name = "material-color-utilities (HCT, DynamicScheme, contrast curves)"
+url = "https://github.com/material-foundation/material-color-utilities"
+license = "Apache-2.0"
+platform = "material"
+kind = "repo"
+status = "200"
+notes = "yolo-tokens is a Rust port; parity fixtures live in crates/yolo-tokens/tests/fixtures."
+
+[[source]]
+name = "M3 dynamic color: user-generated source"
+url = "https://m3.material.io/styles/color/dynamic/user-generated-source"
+license = "listing only"
+platform = "material"
+kind = "docs"
+status = "200"
+
+# --- Chrome / Chromium ------------------------------------------------------------------------
+
+[[source]]
+name = "Chrome Web Store: Themes category"
+url = "https://chromewebstore.google.com/category/themes"
+license = "listing only"
+platform = "chrome"
+kind = "listing"
+status = "200"
+notes = "Metadata and links only; store themes are third-party works."
+
+[[source]]
+name = "Chrome extensions: Themes (manifest theme key)"
+url = "https://developer.chrome.com/docs/extensions/develop/ui/themes"
+license = "CC-BY-4.0 (text), Apache-2.0 (samples)"
+platform = "chrome"
+kind = "docs"
+status = "200"
+notes = "The former reference/manifest/theme URL returns 404."
+
+[[source]]
+name = "Chromium browser_theme_pack.cc (theme color, tint and property tables)"
+url = "https://chromium.googlesource.com/chromium/src/+/main/chrome/browser/themes/browser_theme_pack.cc"
+license = "BSD-3-Clause"
+platform = "chrome"
+kind = "spec"
+status = "200"
+notes = "yolo-emit chrome::COLOR_KEYS mirrors kOverwritableColorTable at 4c7244a405d326e284710231ff609168dceb9044."
+
+[[source]]
+name = "Chromium color pipeline (ui/color README)"
+url = "https://chromium.googlesource.com/chromium/src/+/main/ui/color/README.md"
+license = "BSD-3-Clause"
+platform = "chrome"
+kind = "docs"
+status = "200"
+
+# --- GTK / libadwaita -------------------------------------------------------------------------
+
+[[source]]
+name = "libadwaita"
+url = "https://gitlab.gnome.org/GNOME/libadwaita"
+license = "LGPL-2.1-or-later"
+platform = "gtk"
+kind = "repo"
+status = "200"
+
+[[source]]
+name = "libadwaita CSS variables"
+url = "https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html"
+license = "LGPL-2.1-or-later"
+platform = "gtk"
+kind = "docs"
+status = "200"
+notes = "The former named-colors.html page returns 404; named colors are documented here and in styles-and-appearance."
+
+[[source]]
+name = "libadwaita styles and appearance"
+url = "https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/styles-and-appearance.html"
+license = "LGPL-2.1-or-later"
+platform = "gtk"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "adw-gtk3 (libadwaita look for GTK 3)"
+url = "https://github.com/lassekongo83/adw-gtk3"
+license = "LGPL-2.1"
+platform = "gtk"
+kind = "repo"
+status = "200"
+
+[[source]]
+name = "Gradience (libadwaita color customizer, archived)"
+url = "https://github.com/GradienceTeam/Gradience"
+license = "GPL-3.0"
+platform = "gtk"
+kind = "tool"
+status = "200"
+notes = "Archived upstream; useful as a reference for preset JSON layout only."
+
+[[source]]
+name = "GNOME Look: GTK 3/4 themes"
+url = "https://www.gnome-look.org/browse?cat=135"
+license = "listing only"
+platform = "gtk"
+kind = "listing"
+status = "200"
+
+# --- COSMIC -----------------------------------------------------------------------------------
+
+[[source]]
+name = "libcosmic (cosmic-theme ThemeBuilder, CosmicPalette)"
+url = "https://github.com/pop-os/libcosmic"
+license = "MPL-2.0"
+platform = "cosmic"
+kind = "repo"
+status = "200"
+notes = "Fork pinned as submodules/libcosmic (3abe177e); yolo-emit cosmic output follows ThemeBuilder config version 2."
+
+[[source]]
+name = "COSMIC Settings (Appearance theme import/export)"
+url = "https://github.com/pop-os/cosmic-settings"
+license = "GPL-3.0"
+platform = "cosmic"
+kind = "repo"
+status = "200"
+
+[[source]]
+name = "cosmic-themes.org (community COSMIC themes)"
+url = "https://cosmic-themes.org/"
+license = "listing only"
+platform = "cosmic"
+kind = "listing"
+status = "200"
+
+# --- Android ----------------------------------------------------------------------------------
+
+[[source]]
+name = "Android dynamic colors (Material You)"
+url = "https://developer.android.com/develop/ui/views/theming/dynamic-colors"
+license = "CC-BY-4.0 (text), Apache-2.0 (samples)"
+platform = "android"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Material Design 3 in Compose"
+url = "https://developer.android.com/develop/ui/compose/designsystems/material3"
+license = "CC-BY-4.0 (text), Apache-2.0 (samples)"
+platform = "android"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "AOSP Material You color extraction (monet)"
+url = "https://source.android.com/docs/core/display/material"
+license = "CC-BY-4.0 (text), Apache-2.0 (samples)"
+platform = "android"
+kind = "docs"
+status = "200"
+
+# --- Windows / Fluent 2 -----------------------------------------------------------------------
+
+[[source]]
+name = "Fluent UI (web components and @fluentui/tokens)"
+url = "https://github.com/microsoft/fluentui"
+license = "MIT (LICENSE file; API reports NOASSERTION)"
+platform = "windows"
+kind = "repo"
+status = "200"
+
+[[source]]
+name = "Fluent UI React theme colors (alias tokens)"
+url = "https://storybooks.fluentui.dev/react/?path=/docs/theme-colors--docs"
+license = "MIT"
+platform = "windows"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Fluent 2 design system: Color"
+url = "https://fluent2.microsoft.design/color"
+license = "listing only"
+platform = "windows"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Windows app design: Color"
+url = "https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color"
+license = "CC-BY-4.0 (text), MIT (samples)"
+platform = "windows"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Windows app design: Mica material"
+url = "https://learn.microsoft.com/en-us/windows/apps/design/style/mica"
+license = "CC-BY-4.0 (text), MIT (samples)"
+platform = "windows"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "microsoft-ui-xaml (WinUI 3 theme resources)"
+url = "https://github.com/microsoft/microsoft-ui-xaml"
+license = "MIT"
+platform = "windows"
+kind = "repo"
+status = "200"
+notes = "Common_themeresources_any.xaml defines the keys yolo-emit winui overrides."
+
+# --- Apple ------------------------------------------------------------------------------------
+
+[[source]]
+name = "Apple HIG: Color"
+url = "https://developer.apple.com/design/human-interface-guidelines/color"
+license = "listing only"
+platform = "apple"
+kind = "docs"
+status = "200"
+notes = "Structure only; Apple fonts and symbols are not redistributable (GOAL.md ground rules)."
+
+[[source]]
+name = "Apple HIG: Dark Mode"
+url = "https://developer.apple.com/design/human-interface-guidelines/dark-mode"
+license = "listing only"
+platform = "apple"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Supporting Dark Mode in your interface"
+url = "https://developer.apple.com/documentation/uikit/supporting-dark-mode-in-your-interface"
+license = "listing only"
+platform = "apple"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "Asset Catalog Format: Named Color (colorset Contents.json)"
+url = "https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/Named_Color.html"
+license = "listing only"
+platform = "apple"
+kind = "spec"
+status = "200"
+
+[[source]]
+name = "SwiftUI Color"
+url = "https://developer.apple.com/documentation/swiftui/color"
+license = "listing only"
+platform = "apple"
+kind = "docs"
+status = "200"
+
+# --- Web --------------------------------------------------------------------------------------
+
+[[source]]
+name = "Tailwind CSS v4 theme variables (@theme)"
+url = "https://tailwindcss.com/docs/theme"
+license = "listing only"
+platform = "web"
+kind = "docs"
+status = "200"
+
+[[source]]
+name = "W3C Design Tokens Community Group"
+url = "https://www.w3.org/community/design-tokens/"
+license = "W3C Community Final Specification Agreement"
+platform = "web"
+kind = "spec"
+status = "200"
+
+[[source]]
+name = "Catppuccin (cross-platform port catalog)"
+url = "https://github.com/catppuccin/catppuccin"
+license = "MIT"
+platform = "web"
+kind = "listing"
+status = "200"
