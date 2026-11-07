@@ -1856,4 +1856,84 @@ mod tests {
         let back: Document3d = serde_json::from_str(&json).unwrap();
         assert_eq!(back.stats(), e.doc.stats());
     }
+
+    #[test]
+    fn skinned_glb_roundtrips_rig_weights_and_animations() {
+        let e = built();
+        let view = ViewSpec::default();
+        let glb = e.doc.export_skinned_glb(&view).unwrap();
+        assert_eq!(&glb[0..4], b"glTF");
+
+        let imported = Document3d::import_gltf(&glb, None).unwrap();
+        let stats = imported.stats();
+        assert_eq!(stats.bones.len(), e.doc.stats().bones.len());
+        assert_eq!(stats.clips.len(), e.doc.stats().clips.len());
+        assert!(stats.objects.iter().any(|o| o.skinned));
+    }
+
+    #[test]
+    fn bevel_loop_cut_bridge_geodesic_dqs_and_ik_ops_work() {
+        use super::super::poly::{EdgeSelection, VertexSelection};
+
+        let mut e = Editor::default();
+        e.apply(&Op::AddObject {
+            name: "box".into(),
+            primitive: Primitive::Cube { size: [1.0; 3] },
+            transform: TransformSpec::default(),
+            material: Some("gold".into()),
+            shading: Shading::Smooth,
+        })
+        .unwrap();
+        e.apply(&Op::LoopCut {
+            object: "box".into(),
+            edge: [0, 1],
+            factor: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::Bevel {
+            object: "box".into(),
+            edges: EdgeSelection::All,
+            vertices: VertexSelection::None,
+            width: 0.15,
+        })
+        .unwrap();
+
+        e.apply(&Op::AddBone {
+            name: "root".into(),
+            parent: None,
+            rest: TransformSpec::default(),
+            length: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::AddBone {
+            name: "tip".into(),
+            parent: Some("root".into()),
+            rest: TransformSpec {
+                translation: [0.0, 0.5, 0.0],
+                ..TransformSpec::default()
+            },
+            length: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::BindSkinGeodesic {
+            object: "box".into(),
+            falloff: 2.0,
+        })
+        .unwrap();
+        e.apply(&Op::SetSkinningMethod {
+            object: "box".into(),
+            method: SkinningMethod::DualQuaternion,
+        })
+        .unwrap();
+        e.apply(&Op::SolveIk {
+            chain: vec!["root".into(), "tip".into()],
+            target: [0.4, 0.6, 0.0],
+            tolerance: 1e-3,
+            max_iterations: 16,
+        })
+        .unwrap();
+
+        let nodes = e.doc.nodes(None, 0.0).unwrap();
+        assert_eq!(nodes.len(), 1);
+    }
 }

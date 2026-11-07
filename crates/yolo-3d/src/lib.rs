@@ -14,8 +14,10 @@
 //!    - Assimp, meshopt compression, and Draco geometry asset pipelines.
 
 use serde::{Deserialize, Serialize};
+pub use yolo_render::author3d;
 use yolo_render::{
     mesh3d::Geometry,
+    model::{load_model, parse_gltf, parse_obj},
     scene::{Paint, Rgba8},
     scene3d::{Camera, Light, Material, Node3d, Projection, Scene3d, Transform},
 };
@@ -407,9 +409,10 @@ impl ThreeSceneDocument {
                     radial_segments,
                     tubular_segments,
                 },
-                ThreeGeometry::CustomMesh { .. } => Geometry::Box {
-                    size: [1.0, 1.0, 1.0],
-                },
+                ThreeGeometry::CustomMesh {
+                    ref uri,
+                    submesh_index,
+                } => resolve_custom_mesh(uri, submesh_index, material),
             };
 
             nodes.push(Node3d::Mesh {
@@ -438,6 +441,37 @@ impl ThreeSceneDocument {
             shadows: Default::default(),
             nodes,
         }
+    }
+}
+
+/// Resolve a [`ThreeGeometry::CustomMesh`] URI (inline OBJ string, `.obj`/`.gltf`/`.glb` file path)
+/// into a [`Geometry`], selecting `submesh_index` or falling back to a unit box on I/O failure.
+fn resolve_custom_mesh(uri: &str, submesh_index: usize, material: Material) -> Geometry {
+    let trimmed = uri.trim();
+    let loaded = if trimmed.starts_with("v ") || trimmed.contains("\nv ") {
+        parse_obj(trimmed.as_bytes(), material)
+    } else if trimmed.starts_with('{') && trimmed.contains("\"asset\"") {
+        parse_gltf(trimmed.as_bytes(), None, material)
+    } else {
+        load_model(std::path::Path::new(trimmed), material)
+    };
+    if let Ok(nodes) = loaded {
+        let mut meshes: Vec<Geometry> = Vec::new();
+        for node in nodes {
+            if let Node3d::Mesh { geometry, .. } = node {
+                meshes.push(geometry);
+            }
+        }
+        if let Some(geom) = meshes
+            .get(submesh_index)
+            .cloned()
+            .or_else(|| meshes.into_iter().next())
+        {
+            return geom;
+        }
+    }
+    Geometry::Box {
+        size: [1.0, 1.0, 1.0],
     }
 }
 
@@ -510,5 +544,31 @@ mod tests {
         let blender_point = [1.0, 2.0, 3.0];
         let wgpu_point = blender_to_wgpu_coords(blender_point);
         assert_eq!(wgpu_point, [1.0, 3.0, -2.0]);
+    }
+
+    #[test]
+    fn test_custom_mesh_resolution() {
+        let mut doc = ThreeSceneDocument::sample_studio();
+        doc.meshes.push(ThreeMeshNode {
+            name: "custom_quad".into(),
+            geometry: ThreeGeometry::CustomMesh {
+                uri: "v 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nf 1 2 3 4\n".into(),
+                submesh_index: 0,
+            },
+            ..ThreeMeshNode::default()
+        });
+        let wgpu_scene = doc.to_wgpu_scene();
+        if let Node3d::Mesh {
+            geometry: Geometry::Mesh {
+                positions, indices, ..
+            },
+            ..
+        } = &wgpu_scene.nodes[3]
+        {
+            assert_eq!(positions.len(), 4);
+            assert_eq!(indices.len(), 6);
+        } else {
+            panic!("Expected resolved Geometry::Mesh for CustomMesh");
+        }
     }
 }

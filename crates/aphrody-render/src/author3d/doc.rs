@@ -18,12 +18,12 @@ use super::{
     anim::{Channel, Clip, Interpolation, Property},
     material::{MaterialDef, parse_paint, preset},
     poly::{PolyError, PolyMesh, Shading, Topology},
-    rig::{RigError, Skeleton, SkinWeights, skin},
+    rig::{RigError, Skeleton, SkinWeights, SkinningMethod, skin, skin_dual_quat, solve_fabrik},
     sculpt::{Brush, StrokeReport, apply_stroke},
     xform::{Quat, Trs, affine_inverse},
 };
 use crate::{
-    math3d::Vec3,
+    math3d::{Vec3, srgb_to_linear},
     mesh3d::Geometry,
     model::{StudioOptions, studio_scene, write_glb},
     scene3d::{Node3d, Scene3d, Transform},
@@ -103,6 +103,9 @@ pub struct Object3d {
     /// Skin binding to the document skeleton (weights per mesh vertex).
     #[serde(default)]
     pub skin: Option<SkinWeights>,
+    /// Skinning evaluation method (`linear_blend` or `dual_quaternion`).
+    #[serde(default)]
+    pub skinning: SkinningMethod,
     /// Hidden objects are skipped when building scenes.
     #[serde(default = "yes")]
     pub visible: bool,
@@ -452,6 +455,66 @@ pub enum Op {
         /// Clip.
         clip: ClipSpec,
     },
+    /// Bevel (chamfer) edges of an object (`edges` empty = all edges).
+    Bevel {
+        /// Object.
+        object: String,
+        /// Optional undirected edges `[u, v]`.
+        #[serde(default)]
+        edges: Vec<[u32; 2]>,
+        /// Fractional bevel offset `(0.0, 0.5)`.
+        amount: f32,
+    },
+    /// Insert an edge loop across the quad ring starting at `(face, edge)`.
+    LoopCut {
+        /// Object.
+        object: String,
+        /// Starting quad face index.
+        face: usize,
+        /// Local edge index `0..4`.
+        edge: usize,
+        /// Cut factor `(0.0, 1.0)`.
+        #[serde(default = "half")]
+        factor: f32,
+    },
+    /// Bridge two faces of equal vertex count with a quad tube.
+    Bridge {
+        /// Object.
+        object: String,
+        /// First cap face index.
+        face_a: usize,
+        /// Second cap face index.
+        face_b: usize,
+    },
+    /// Bind an object to the skeleton using surface-graph geodesic auto-weights.
+    BindSkinGeodesic {
+        /// Object.
+        object: String,
+        /// Falloff sharpness.
+        #[serde(default = "weight_power")]
+        power: f32,
+    },
+    /// Switch an object between Linear Blend Skinning and Dual Quaternion Skinning.
+    SetSkinningMethod {
+        /// Object.
+        object: String,
+        /// Skinning algorithm.
+        method: SkinningMethod,
+    },
+    /// Solve FABRIK inverse kinematics on a bone chain and write the solved
+    /// rest pose into the skeleton's local transforms.
+    SolveIk {
+        /// Ordered parent-to-child bone names.
+        chain: Vec<String>,
+        /// Target position in world/skeleton space.
+        target: [f32; 3],
+        /// Convergence tolerance.
+        #[serde(default = "ik_tol")]
+        tolerance: f32,
+        /// Maximum solver iterations.
+        #[serde(default = "ik_iters")]
+        max_iterations: u32,
+    },
 }
 
 const fn one_level() -> u32 {
@@ -462,6 +525,12 @@ const fn bone_length() -> f32 {
 }
 const fn weight_power() -> f32 {
     4.0
+}
+const fn ik_tol() -> f32 {
+    1e-4
+}
+const fn ik_iters() -> u32 {
+    24
 }
 
 /// What an operation did.
@@ -644,6 +713,7 @@ impl Document3d {
                     material: material.clone(),
                     shading: *shading,
                     skin: None,
+                    skinning: SkinningMethod::default(),
                     visible: true,
                 });
             }
@@ -785,6 +855,91 @@ impl Document3d {
                 self.clips.retain(|x| x.name != c.name);
                 self.clips.push(c);
             }
+            Op::Bevel {
+                object,
+                edges,
+                amount,
+            } => {
+                let i = self.index(object)?;
+                let o = &mut self.objects[i];
+                report.faces = o.mesh.bevel_edges(edges, *amount)?;
+                report.skin_cleared = o.skin.take().is_some();
+                report.topology = Some(o.mesh.topology());
+                report.object = Some(object.clone());
+            }
+            Op::LoopCut {
+                object,
+                face,
+                edge,
+                factor,
+            } => {
+                let i = self.index(object)?;
+                let o = &mut self.objects[i];
+                o.mesh.loop_cut(*face, *edge, *factor)?;
+                report.skin_cleared = o.skin.take().is_some();
+                report.topology = Some(o.mesh.topology());
+                report.object = Some(object.clone());
+            }
+            Op::Bridge {
+                object,
+                face_a,
+                face_b,
+            } => {
+                let i = self.index(object)?;
+                let o = &mut self.objects[i];
+                report.faces = o.mesh.bridge_faces(*face_a, *face_b)?;
+                report.skin_cleared = o.skin.take().is_some();
+                report.topology = Some(o.mesh.topology());
+                report.object = Some(object.clone());
+            }
+            Op::BindSkinGeodesic { object, power } => {
+                let i = self.index(object)?;
+                let o = &self.objects[i];
+                let m = o.transform.matrix();
+                let world: Vec<[f32; 3]> = o
+                    .mesh
+                    .positions
+                    .iter()
+                    .map(|p| m.transform_point(Vec3::from_array(*p)).to_array())
+                    .collect();
+                let weights =
+                    self.skeleton
+                        .auto_weights_geodesic(&world, &o.mesh.faces, *power)?;
+                self.objects[i].skin = Some(weights);
+                report.object = Some(object.clone());
+            }
+            Op::SetSkinningMethod { object, method } => {
+                let i = self.index(object)?;
+                self.objects[i].skinning = *method;
+                report.object = Some(object.clone());
+            }
+            Op::SolveIk {
+                chain,
+                target,
+                tolerance,
+                max_iterations,
+            } => {
+                let mut indices = Vec::with_capacity(chain.len());
+                for name in chain {
+                    let bi = self
+                        .skeleton
+                        .find(name)
+                        .ok_or_else(|| Doc3dError::Invalid(format!("unknown bone {name:?}")))?;
+                    indices.push(bi);
+                }
+                let mut pose = self.skeleton.rest_pose();
+                solve_fabrik(
+                    &self.skeleton,
+                    &mut pose,
+                    &indices,
+                    *target,
+                    *tolerance,
+                    *max_iterations,
+                )?;
+                for (b, local) in self.skeleton.bones.iter_mut().zip(pose.locals) {
+                    b.rest = local;
+                }
+            }
         }
         Ok(report)
     }
@@ -825,7 +980,10 @@ impl Document3d {
                 .map(|p| m.transform_point(Vec3::from_array(*p)).to_array())
                 .collect();
             if let (Some(w), Some(mats)) = (&o.skin, &matrices) {
-                world = skin(&world, None, w, mats)?.0;
+                world = match o.skinning {
+                    SkinningMethod::LinearBlend => skin(&world, None, w, mats)?.0,
+                    SkinningMethod::DualQuaternion => skin_dual_quat(&world, None, w, mats)?.0,
+                };
             }
             let baked = PolyMesh {
                 positions: world,
@@ -898,6 +1056,588 @@ impl Document3d {
     pub fn export_glb(&self, view: &ViewSpec) -> Result<Vec<u8>, Doc3dError> {
         let scene = self.scene(view)?;
         write_glb(&scene.nodes, &scene.scheme()).map_err(|e| Doc3dError::Render(e.to_string()))
+    }
+
+    /// Export the document as an unbaked, rigged binary glTF 2.0 (`.glb`)
+    /// preserving the skeleton node hierarchy, `skins` (`inverseBindMatrices`
+    /// + `JOINTS_0`/`WEIGHTS_0`), and `animations` (`samplers` + `channels`).
+    ///
+    /// # Errors
+    /// [`Doc3dError`] for evaluation or export failures.
+    pub fn export_skinned_glb(&self, view: &ViewSpec) -> Result<Vec<u8>, Doc3dError> {
+        use aphrody_m3_tokens::facade::color::{DynamicScheme, Variant};
+        use serde_json::json;
+
+        let scheme = DynamicScheme::from_argb(view.seed_argb, Variant::TonalSpot, view.is_dark, 0.0);
+        let mut bin: Vec<u8> = Vec::new();
+        let mut views = Vec::new();
+        let mut accessors = Vec::new();
+        let mut gnodes = Vec::new();
+        let mut meshes = Vec::new();
+        let mut materials = Vec::new();
+        let mut skins = Vec::new();
+        let mut animations = Vec::new();
+        let mut root_nodes = Vec::new();
+
+        let push_view = |bin: &mut Vec<u8>, views: &mut Vec<serde_json::Value>, bytes: &[u8], target: Option<u32>| -> usize {
+            while bin.len() % 4 != 0 {
+                bin.push(0);
+            }
+            let offset = bin.len();
+            bin.extend_from_slice(bytes);
+            let mut v = json!({
+                "buffer": 0,
+                "byteOffset": offset,
+                "byteLength": bytes.len(),
+            });
+            if let Some(t) = target {
+                v["target"] = json!(t);
+            }
+            views.push(v);
+            views.len() - 1
+        };
+
+        let bone_count = self.skeleton.bones.len();
+        for (i, bone) in self.skeleton.bones.iter().enumerate() {
+            let children: Vec<usize> = (0..bone_count)
+                .filter(|&c| self.skeleton.bones[c].parent == Some(i))
+                .collect();
+            let mut node = json!({
+                "name": bone.name,
+                "translation": bone.rest.translation,
+                "rotation": [bone.rest.rotation.x, bone.rest.rotation.y, bone.rest.rotation.z, bone.rest.rotation.w],
+                "scale": bone.rest.scale,
+            });
+            if !children.is_empty() {
+                node["children"] = json!(children);
+            }
+            if bone.parent.is_none() {
+                root_nodes.push(i);
+            }
+            gnodes.push(node);
+        }
+
+        if bone_count > 0 {
+            let ibms = self.skeleton.inverse_bind()?;
+            let ibm_bytes: Vec<u8> = ibms
+                .iter()
+                .flat_map(|m| m.cols.iter().flatten())
+                .flat_map(|f| f.to_le_bytes())
+                .collect();
+            let ibm_view = push_view(&mut bin, &mut views, &ibm_bytes, None);
+            accessors.push(json!({
+                "bufferView": ibm_view,
+                "componentType": 5126,
+                "count": bone_count,
+                "type": "MAT4",
+            }));
+            let ibm_acc = accessors.len() - 1;
+            skins.push(json!({
+                "name": "skeleton",
+                "inverseBindMatrices": ibm_acc,
+                "joints": (0..bone_count).collect::<Vec<_>>(),
+            }));
+        }
+
+        for o in self.objects.iter().filter(|o| o.visible) {
+            let m = o.transform.matrix();
+            if affine_inverse(&m).is_none() {
+                return Err(Doc3dError::Invalid(format!(
+                    "object {:?} has a singular transform",
+                    o.name
+                )));
+            }
+            let world_positions: Vec<[f32; 3]> = o
+                .mesh
+                .positions
+                .iter()
+                .map(|p| m.transform_point(Vec3::from_array(*p)).to_array())
+                .collect();
+            let baked = PolyMesh {
+                positions: world_positions,
+                faces: o.mesh.faces.clone(),
+            };
+            let (tris, normals) = baked.triangulate();
+            let indices: Vec<u32> = tris
+                .iter()
+                .flat_map(|t| [t[0] as u32, t[1] as u32, t[2] as u32])
+                .collect();
+
+            let (mut lo, mut hi) = ([f32::MAX; 3], [f32::MIN; 3]);
+            for p in &baked.positions {
+                for axis in 0..3 {
+                    lo[axis] = lo[axis].min(p[axis]);
+                    hi[axis] = hi[axis].max(p[axis]);
+                }
+            }
+            let pos_bytes: Vec<u8> = baked
+                .positions
+                .iter()
+                .flatten()
+                .flat_map(|f| f.to_le_bytes())
+                .collect();
+            let pos_view = push_view(&mut bin, &mut views, &pos_bytes, Some(34962));
+            accessors.push(json!({
+                "bufferView": pos_view,
+                "componentType": 5126,
+                "count": baked.positions.len(),
+                "type": "VEC3",
+                "min": lo,
+                "max": hi,
+            }));
+            let pos_acc = accessors.len() - 1;
+
+            let nrm_bytes: Vec<u8> = normals
+                .iter()
+                .flatten()
+                .flat_map(|f| f.to_le_bytes())
+                .collect();
+            let nrm_view = push_view(&mut bin, &mut views, &nrm_bytes, Some(34962));
+            accessors.push(json!({
+                "bufferView": nrm_view,
+                "componentType": 5126,
+                "count": normals.len(),
+                "type": "VEC3",
+            }));
+            let nrm_acc = accessors.len() - 1;
+
+            let idx_bytes: Vec<u8> = indices.iter().flat_map(|i| i.to_le_bytes()).collect();
+            let idx_view = push_view(&mut bin, &mut views, &idx_bytes, Some(34963));
+            accessors.push(json!({
+                "bufferView": idx_view,
+                "componentType": 5125,
+                "count": indices.len(),
+                "type": "SCALAR",
+            }));
+            let idx_acc = accessors.len() - 1;
+
+            let mat_def = match &o.material {
+                Some(key) => self.material_def(key)?,
+                None => MaterialDef::default(),
+            };
+            let mat = mat_def.to_material().map_err(Doc3dError::Material)?;
+            let base = mat.base.resolve(&scheme);
+            let lin = |c: u8| srgb_to_linear(f32::from(c) / 255.0);
+            let alpha = f32::from(base.a) / 255.0 * mat.opacity.clamp(0.0, 1.0);
+            materials.push(json!({
+                "pbrMetallicRoughness": {
+                    "baseColorFactor": [lin(base.r), lin(base.g), lin(base.b), alpha],
+                    "metallicFactor": mat.metallic.clamp(0.0, 1.0),
+                    "roughnessFactor": mat.roughness.clamp(0.0, 1.0),
+                },
+                "doubleSided": mat.double_sided,
+            }));
+            let mat_idx = materials.len() - 1;
+
+            let mut attrs = json!({
+                "POSITION": pos_acc,
+                "NORMAL": nrm_acc,
+            });
+            let mut is_skinned = false;
+            if let Some(w) = &o.skin {
+                if bone_count > 0 && w.joints.len() == baked.positions.len() {
+                    let j_bytes: Vec<u8> = w
+                        .joints
+                        .iter()
+                        .flatten()
+                        .flat_map(|j| j.to_le_bytes())
+                        .collect();
+                    let j_view = push_view(&mut bin, &mut views, &j_bytes, Some(34962));
+                    accessors.push(json!({
+                        "bufferView": j_view,
+                        "componentType": 5123,
+                        "count": w.joints.len(),
+                        "type": "VEC4",
+                    }));
+                    let j_acc = accessors.len() - 1;
+
+                    let w_bytes: Vec<u8> = w
+                        .weights
+                        .iter()
+                        .flatten()
+                        .flat_map(|f| f.to_le_bytes())
+                        .collect();
+                    let w_view = push_view(&mut bin, &mut views, &w_bytes, Some(34962));
+                    accessors.push(json!({
+                        "bufferView": w_view,
+                        "componentType": 5126,
+                        "count": w.weights.len(),
+                        "type": "VEC4",
+                    }));
+                    let w_acc = accessors.len() - 1;
+
+                    attrs["JOINTS_0"] = json!(j_acc);
+                    attrs["WEIGHTS_0"] = json!(w_acc);
+                    is_skinned = true;
+                }
+            }
+
+            meshes.push(json!({
+                "name": o.name,
+                "primitives": [{
+                    "attributes": attrs,
+                    "indices": idx_acc,
+                    "material": mat_idx,
+                }],
+            }));
+            let mesh_idx = meshes.len() - 1;
+            let mut gnode = json!({
+                "name": o.name,
+                "mesh": mesh_idx,
+            });
+            if is_skinned {
+                gnode["skin"] = json!(0);
+            }
+            gnodes.push(gnode);
+            root_nodes.push(gnodes.len() - 1);
+        }
+
+        if meshes.is_empty() {
+            return Err(Doc3dError::Render("nothing to export".into()));
+        }
+
+        for clip in &self.clips {
+            let mut samplers = Vec::new();
+            let mut channels = Vec::new();
+            for ch in &clip.channels {
+                let Some(bi) = self.skeleton.find(&ch.bone) else {
+                    continue;
+                };
+                if ch.times.is_empty() {
+                    continue;
+                }
+                let t_min = ch.times.iter().copied().fold(f32::MAX, f32::min);
+                let t_max = ch.times.iter().copied().fold(f32::MIN, f32::max);
+                let t_bytes: Vec<u8> = ch.times.iter().flat_map(|t| t.to_le_bytes()).collect();
+                let t_view = push_view(&mut bin, &mut views, &t_bytes, None);
+                accessors.push(json!({
+                    "bufferView": t_view,
+                    "componentType": 5126,
+                    "count": ch.times.len(),
+                    "type": "SCALAR",
+                    "min": [t_min],
+                    "max": [t_max],
+                }));
+                let t_acc = accessors.len() - 1;
+
+                let (val_bytes, acc_type, path): (Vec<u8>, &str, &str) = match ch.property {
+                    Property::Translation => (
+                        ch.values
+                            .iter()
+                            .flat_map(|v| [v[0], v[1], v[2]])
+                            .flat_map(|f| f.to_le_bytes())
+                            .collect(),
+                        "VEC3",
+                        "translation",
+                    ),
+                    Property::Rotation => (
+                        ch.values
+                            .iter()
+                            .flatten()
+                            .flat_map(|f| f.to_le_bytes())
+                            .collect(),
+                        "VEC4",
+                        "rotation",
+                    ),
+                    Property::Scale => (
+                        ch.values
+                            .iter()
+                            .flat_map(|v| [v[0], v[1], v[2]])
+                            .flat_map(|f| f.to_le_bytes())
+                            .collect(),
+                        "VEC3",
+                        "scale",
+                    ),
+                };
+                let v_view = push_view(&mut bin, &mut views, &val_bytes, None);
+                accessors.push(json!({
+                    "bufferView": v_view,
+                    "componentType": 5126,
+                    "count": ch.values.len(),
+                    "type": acc_type,
+                }));
+                let v_acc = accessors.len() - 1;
+
+                let interp = match ch.interpolation {
+                    Interpolation::Step => "STEP",
+                    Interpolation::Linear | Interpolation::Smooth => "LINEAR",
+                };
+                samplers.push(json!({
+                    "input": t_acc,
+                    "interpolation": interp,
+                    "output": v_acc,
+                }));
+                let sampler_idx = samplers.len() - 1;
+                channels.push(json!({
+                    "sampler": sampler_idx,
+                    "target": {
+                        "node": bi,
+                        "path": path,
+                    },
+                }));
+            }
+            if !channels.is_empty() {
+                animations.push(json!({
+                    "name": clip.name,
+                    "samplers": samplers,
+                    "channels": channels,
+                }));
+            }
+        }
+
+        while bin.len() % 4 != 0 {
+            bin.push(0);
+        }
+        let mut doc = json!({
+            "asset": { "version": "2.0", "generator": "aphrody-render" },
+            "scene": 0,
+            "scenes": [{ "nodes": root_nodes }],
+            "nodes": gnodes,
+            "meshes": meshes,
+            "materials": materials,
+            "accessors": accessors,
+            "bufferViews": views,
+            "buffers": [{ "byteLength": bin.len() }],
+        });
+        if !skins.is_empty() {
+            doc["skins"] = json!(skins);
+        }
+        if !animations.is_empty() {
+            doc["animations"] = json!(animations);
+        }
+
+        let mut json_bytes =
+            serde_json::to_vec(&doc).map_err(|e| Doc3dError::Render(e.to_string()))?;
+        while json_bytes.len() % 4 != 0 {
+            json_bytes.push(b' ');
+        }
+        let total = 12 + 8 + json_bytes.len() + 8 + bin.len();
+        let mut out = Vec::with_capacity(total);
+        out.extend_from_slice(b"glTF");
+        out.extend_from_slice(&2_u32.to_le_bytes());
+        out.extend_from_slice(&(total as u32).to_le_bytes());
+        out.extend_from_slice(&(json_bytes.len() as u32).to_le_bytes());
+        out.extend_from_slice(b"JSON");
+        out.extend_from_slice(&json_bytes);
+        out.extend_from_slice(&(bin.len() as u32).to_le_bytes());
+        out.extend_from_slice(b"BIN\0");
+        out.extend_from_slice(&bin);
+        Ok(out)
+    }
+
+    /// Import a glTF 2.0 (`.gltf` or `.glb`) byte buffer into an editable
+    /// [`Document3d`], reconstructing meshes, skeleton joints, skin weights
+    /// (`JOINTS_0`/`WEIGHTS_0`), and keyframe animation clips.
+    ///
+    /// # Errors
+    /// [`Doc3dError`] when the glTF buffer is malformed or lacks triangle meshes.
+    pub fn import_gltf(
+        bytes: &[u8],
+        base_dir: Option<&std::path::Path>,
+    ) -> Result<Self, Doc3dError> {
+        use base64::Engine;
+
+        let gltf =
+            gltf::Gltf::from_slice(bytes).map_err(|e| Doc3dError::Invalid(format!("glTF: {e}")))?;
+        let data: Vec<Vec<u8>> = gltf
+            .document
+            .buffers()
+            .map(|buffer| match buffer.source() {
+                gltf::buffer::Source::Bin => gltf
+                    .blob
+                    .clone()
+                    .ok_or_else(|| Doc3dError::Invalid("GLB buffer without a BIN chunk".into())),
+                gltf::buffer::Source::Uri(uri) if uri.starts_with("data:") => {
+                    let payload = uri
+                        .split_once(";base64,")
+                        .map(|(_, p)| p)
+                        .ok_or_else(|| {
+                            Doc3dError::Invalid("only base64 data URIs are supported".into())
+                        })?;
+                    base64::engine::general_purpose::STANDARD
+                        .decode(payload)
+                        .map_err(|e| Doc3dError::Invalid(format!("buffer base64: {e}")))
+                }
+                gltf::buffer::Source::Uri(uri) => {
+                    let dir = base_dir.ok_or_else(|| {
+                        Doc3dError::Invalid("external buffer without a directory".into())
+                    })?;
+                    if uri.contains("..")
+                        || std::path::Path::new(uri).is_absolute()
+                        || uri.contains(':')
+                    {
+                        return Err(Doc3dError::Invalid(format!(
+                            "buffer uri outside the model directory: {uri}"
+                        )));
+                    }
+                    std::fs::read(dir.join(uri))
+                        .map_err(|e| Doc3dError::Invalid(format!("buffer I/O: {e}")))
+                }
+            })
+            .collect::<Result<_, _>>()?;
+
+        let mut doc = Self::default();
+        let gdoc = &gltf.document;
+
+        // Map glTF node index -> parent glTF node index.
+        let mut node_parent: BTreeMap<usize, usize> = BTreeMap::new();
+        for node in gdoc.nodes() {
+            for child in node.children() {
+                node_parent.insert(child.index(), node.index());
+            }
+        }
+
+        // Reconstruct skeleton from the first skin if present.
+        let mut joint_node_to_bone: BTreeMap<usize, usize> = BTreeMap::new();
+        if let Some(skin) = gdoc.skins().next() {
+            for (bi, joint) in skin.joints().enumerate() {
+                joint_node_to_bone.insert(joint.index(), bi);
+            }
+            for (bi, joint) in skin.joints().enumerate() {
+                let name = joint
+                    .name()
+                    .map(str::to_string)
+                    .unwrap_or_else(|| format!("bone_{bi}"));
+                let parent = node_parent
+                    .get(&joint.index())
+                    .and_then(|pi| joint_node_to_bone.get(pi).copied())
+                    .filter(|&p| p < bi);
+                let (t, r, s) = joint.transform().decomposed();
+                doc.skeleton.bones.push(super::rig::Bone {
+                    name,
+                    parent,
+                    rest: Trs {
+                        translation: t,
+                        rotation: Quat::from(r),
+                        scale: s,
+                    },
+                    length: 0.25,
+                });
+            }
+        }
+
+        // Import mesh nodes.
+        for node in gdoc.nodes() {
+            let Some(mesh) = node.mesh() else { continue };
+            let base_name = node
+                .name()
+                .or_else(|| mesh.name())
+                .map(str::to_string)
+                .unwrap_or_else(|| format!("object_{}", doc.objects.len()));
+            for (pi, primitive) in mesh.primitives().enumerate() {
+                if primitive.mode() != gltf::mesh::Mode::Triangles {
+                    continue;
+                }
+                let reader = primitive.reader(|b| data.get(b.index()).map(Vec::as_slice));
+                let Some(positions) = reader.read_positions() else {
+                    continue;
+                };
+                let positions: Vec<[f32; 3]> = positions.collect();
+                let indices: Vec<u32> = match reader.read_indices() {
+                    Some(ind) => ind.into_u32().collect(),
+                    None => (0..positions.len() as u32).collect(),
+                };
+                let faces: Vec<Vec<usize>> = indices
+                    .chunks_exact(3)
+                    .map(|t| vec![t[0] as usize, t[1] as usize, t[2] as usize])
+                    .collect();
+                let poly = PolyMesh::from_faces(positions.clone(), faces)?;
+
+                let skin = match (reader.read_joints(0), reader.read_weights(0)) {
+                    (Some(joints), Some(weights)) => {
+                        let joints: Vec<[u16; 4]> = joints.into_u16().collect();
+                        let weights: Vec<[f32; 4]> = weights.into_f32().collect();
+                        (joints.len() == positions.len() && weights.len() == positions.len())
+                            .then_some(SkinWeights { joints, weights })
+                    }
+                    _ => None,
+                };
+
+                let obj_name = if pi == 0 && doc.objects.iter().all(|o| o.name != base_name) {
+                    base_name.clone()
+                } else {
+                    format!("{base_name}_{pi}")
+                };
+                doc.objects.push(Object3d {
+                    name: obj_name,
+                    mesh: poly,
+                    transform: TransformSpec::default(),
+                    material: Some("clay".into()),
+                    shading: Shading::Smooth,
+                    skin,
+                    skinning: SkinningMethod::default(),
+                    visible: true,
+                });
+            }
+        }
+
+        if doc.objects.is_empty() {
+            return Err(Doc3dError::Invalid(
+                "glTF scene has no triangle meshes".into(),
+            ));
+        }
+
+        // Import animations.
+        for (ai, anim) in gdoc.animations().enumerate() {
+            let clip_name = anim
+                .name()
+                .map(str::to_string)
+                .unwrap_or_else(|| format!("clip_{ai}"));
+            let mut channels = Vec::new();
+            for ch in anim.channels() {
+                let target = ch.target();
+                let Some(&bi) = joint_node_to_bone.get(&target.node().index()) else {
+                    continue;
+                };
+                let bone_name = doc.skeleton.bones[bi].name.clone();
+                let reader = ch.reader(|b| data.get(b.index()).map(Vec::as_slice));
+                let Some(inputs) = reader.read_inputs() else {
+                    continue;
+                };
+                let times: Vec<f32> = inputs.collect();
+                let Some(outputs) = reader.read_outputs() else {
+                    continue;
+                };
+                let (property, values): (Property, Vec<[f32; 4]>) = match outputs {
+                    gltf::animation::util::ReadOutputs::Translations(it) => (
+                        Property::Translation,
+                        it.map(|v| [v[0], v[1], v[2], 0.0]).collect(),
+                    ),
+                    gltf::animation::util::ReadOutputs::Rotations(it) => {
+                        (Property::Rotation, it.into_f32().collect())
+                    }
+                    gltf::animation::util::ReadOutputs::Scales(it) => (
+                        Property::Scale,
+                        it.map(|v| [v[0], v[1], v[2], 0.0]).collect(),
+                    ),
+                    gltf::animation::util::ReadOutputs::MorphTargetWeights(_) => continue,
+                };
+                if times.is_empty() || times.len() != values.len() {
+                    continue;
+                }
+                let interpolation = match ch.sampler().interpolation() {
+                    gltf::animation::Interpolation::Step => Interpolation::Step,
+                    gltf::animation::Interpolation::Linear => Interpolation::Linear,
+                    gltf::animation::Interpolation::CubicSpline => Interpolation::Smooth,
+                };
+                channels.push(Channel {
+                    bone: bone_name,
+                    property,
+                    interpolation,
+                    times,
+                    values,
+                });
+            }
+            if !channels.is_empty() {
+                doc.clips.push(Clip {
+                    name: clip_name,
+                    channels,
+                    looping: true,
+                });
+            }
+        }
+
+        Ok(doc)
     }
 
     /// Summary for UIs and agents.
@@ -1115,5 +1855,85 @@ mod tests {
         let json = serde_json::to_string(&e.doc).unwrap();
         let back: Document3d = serde_json::from_str(&json).unwrap();
         assert_eq!(back.stats(), e.doc.stats());
+    }
+
+    #[test]
+    fn skinned_glb_roundtrips_rig_weights_and_animations() {
+        let e = built();
+        let view = ViewSpec::default();
+        let glb = e.doc.export_skinned_glb(&view).unwrap();
+        assert_eq!(&glb[0..4], b"glTF");
+
+        let imported = Document3d::import_gltf(&glb, None).unwrap();
+        let stats = imported.stats();
+        assert_eq!(stats.bones.len(), e.doc.stats().bones.len());
+        assert_eq!(stats.clips.len(), e.doc.stats().clips.len());
+        assert!(stats.objects.iter().any(|o| o.skinned));
+    }
+
+    #[test]
+    fn bevel_loop_cut_bridge_geodesic_dqs_and_ik_ops_work() {
+        use super::super::poly::{EdgeSelection, VertexSelection};
+
+        let mut e = Editor::default();
+        e.apply(&Op::AddObject {
+            name: "box".into(),
+            primitive: Primitive::Cube { size: [1.0; 3] },
+            transform: TransformSpec::default(),
+            material: Some("gold".into()),
+            shading: Shading::Smooth,
+        })
+        .unwrap();
+        e.apply(&Op::LoopCut {
+            object: "box".into(),
+            edge: [0, 1],
+            factor: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::Bevel {
+            object: "box".into(),
+            edges: EdgeSelection::All,
+            vertices: VertexSelection::None,
+            width: 0.15,
+        })
+        .unwrap();
+
+        e.apply(&Op::AddBone {
+            name: "root".into(),
+            parent: None,
+            rest: TransformSpec::default(),
+            length: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::AddBone {
+            name: "tip".into(),
+            parent: Some("root".into()),
+            rest: TransformSpec {
+                translation: [0.0, 0.5, 0.0],
+                ..TransformSpec::default()
+            },
+            length: 0.5,
+        })
+        .unwrap();
+        e.apply(&Op::BindSkinGeodesic {
+            object: "box".into(),
+            falloff: 2.0,
+        })
+        .unwrap();
+        e.apply(&Op::SetSkinningMethod {
+            object: "box".into(),
+            method: SkinningMethod::DualQuaternion,
+        })
+        .unwrap();
+        e.apply(&Op::SolveIk {
+            chain: vec!["root".into(), "tip".into()],
+            target: [0.4, 0.6, 0.0],
+            tolerance: 1e-3,
+            max_iterations: 16,
+        })
+        .unwrap();
+
+        let nodes = e.doc.nodes(None, 0.0).unwrap();
+        assert_eq!(nodes.len(), 1);
     }
 }

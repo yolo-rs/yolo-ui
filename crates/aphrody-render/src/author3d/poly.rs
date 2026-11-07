@@ -97,6 +97,20 @@ pub struct PolyMesh {
     pub faces: Vec<Vec<u32>>,
 }
 
+/// Explicit vertex index selection for modeling operators.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct VertexSelection {
+    /// Selected vertex indices.
+    pub vertices: Vec<u32>,
+}
+
+/// Explicit undirected edge selection (`[u, v]`) for modeling operators.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EdgeSelection {
+    /// Selected undirected edges `[u, v]`.
+    pub edges: Vec<[u32; 2]>,
+}
+
 type EdgeKey = (u32, u32);
 
 fn key(a: u32, b: u32) -> EdgeKey {
@@ -707,14 +721,479 @@ impl PolyMesh {
         self.positions = positions;
     }
 
-    /// Fan-triangulated index list.
+    /// Bevel (chamfer) the vertices incident to `edges` (or all edges when
+    /// `edges` is empty) by fractional offset `amount` in `(0.0, 0.5)`.
+    /// Returns the indices of newly created bevel and corner faces.
+    ///
+    /// # Errors
+    /// [`PolyError`] when `amount` is outside `(0.0, 0.5)` or the mesh is invalid.
+    pub fn bevel_edges(&mut self, edges: &[[u32; 2]], amount: f32) -> Result<Vec<usize>, PolyError> {
+        if !(amount > 0.0 && amount < 0.5 && amount.is_finite()) {
+            return Err(invalid("bevel amount must be in (0.0, 0.5)"));
+        }
+        self.validate()?;
+        let mut v_bevel: HashSet<u32> = HashSet::new();
+        if edges.is_empty() {
+            for f in &self.faces {
+                v_bevel.extend(f.iter().copied());
+            }
+        } else {
+            for &[a, b] in edges {
+                if a as usize >= self.positions.len() || b as usize >= self.positions.len() || a == b {
+                    return Err(invalid("bevel edge references an invalid vertex"));
+                }
+                v_bevel.insert(a);
+                v_bevel.insert(b);
+            }
+        }
+        if v_bevel.is_empty() {
+            return Err(invalid("no vertices selected for bevel"));
+        }
+
+        // Map directed half-edges (u, v) -> face index, and corner (fi, v) -> new vertex index.
+        let mut half_edge_face: HashMap<(u32, u32), usize> = HashMap::new();
+        for (fi, f) in self.faces.iter().enumerate() {
+            for i in 0..f.len() {
+                let u = f[i];
+                let v = f[(i + 1) % f.len()];
+                if half_edge_face.insert((u, v), fi).is_some() {
+                    return Err(invalid("bevel requires a manifold mesh with consistent winding"));
+                }
+            }
+        }
+
+        let mut corner_map: HashMap<(usize, u32), u32> = HashMap::new();
+        for (fi, f) in self.faces.iter().enumerate() {
+            if !f.iter().any(|v| v_bevel.contains(v)) {
+                continue;
+            }
+            let c = scale(
+                f.iter().fold([0.0; 3], |acc, &v| add(acc, self.positions[v as usize])),
+                1.0 / f.len() as f32,
+            );
+            for &v in f {
+                if v_bevel.contains(&v) {
+                    let p = self.positions[v as usize];
+                    let np = add(p, scale(sub(c, p), amount));
+                    let idx = self.positions.len() as u32;
+                    self.positions.push(np);
+                    corner_map.insert((fi, v), idx);
+                }
+            }
+        }
+
+        // Collect undirected edges before mutating face loops.
+        let mut undirected_edges: Vec<(u32, u32)> = Vec::new();
+        let mut seen_edges: HashSet<EdgeKey> = HashSet::new();
+        for f in &self.faces {
+            for i in 0..f.len() {
+                let u = f[i];
+                let v = f[(i + 1) % f.len()];
+                if seen_edges.insert(key(u, v)) {
+                    undirected_edges.push((u, v));
+                }
+            }
+        }
+
+        // Record incoming/outgoing neighbors per (face, vertex) for corner polygon walking.
+        let mut incoming_edge: HashMap<(usize, u32), u32> = HashMap::new();
+        let mut outgoing_face: HashMap<(u32, u32), usize> = HashMap::new();
+        for (fi, f) in self.faces.iter().enumerate() {
+            for i in 0..f.len() {
+                let prev = f[(i + f.len() - 1) % f.len()];
+                let curr = f[i];
+                let next = f[(i + 1) % f.len()];
+                incoming_edge.insert((fi, curr), prev);
+                outgoing_face.insert((curr, next), fi);
+            }
+        }
+
+        // Update original faces with corner vertices.
+        for (fi, f) in self.faces.iter_mut().enumerate() {
+            for v in f.iter_mut() {
+                if let Some(&cv) = corner_map.get(&(fi, *v)) {
+                    *v = cv;
+                }
+            }
+        }
+
+        let mut new_faces: Vec<usize> = Vec::new();
+
+        // Add edge bevel quads / transition triangles.
+        for (u, v) in undirected_edges {
+            let u_in = v_bevel.contains(&u);
+            let v_in = v_bevel.contains(&v);
+            if !u_in && !v_in {
+                continue;
+            }
+            let (Some(&f_left), Some(&f_right)) =
+                (half_edge_face.get(&(u, v)), half_edge_face.get(&(v, u)))
+            else {
+                continue;
+            };
+            match (u_in, v_in) {
+                (true, true) => {
+                    let cl_u = corner_map[&(f_left, u)];
+                    let cl_v = corner_map[&(f_left, v)];
+                    let cr_u = corner_map[&(f_right, u)];
+                    let cr_v = corner_map[&(f_right, v)];
+                    new_faces.push(self.faces.len());
+                    self.faces.push(vec![cl_v, cl_u, cr_u, cr_v]);
+                }
+                (true, false) => {
+                    let cl_u = corner_map[&(f_left, u)];
+                    let cr_u = corner_map[&(f_right, u)];
+                    new_faces.push(self.faces.len());
+                    self.faces.push(vec![v, cl_u, cr_u]);
+                }
+                (false, true) => {
+                    let cl_v = corner_map[&(f_left, v)];
+                    let cr_v = corner_map[&(f_right, v)];
+                    new_faces.push(self.faces.len());
+                    self.faces.push(vec![u, cr_v, cl_v]);
+                }
+                (false, false) => {}
+            }
+        }
+
+        // Add vertex corner faces for interior beveled vertices.
+        let mut sorted_verts: Vec<u32> = v_bevel.into_iter().collect();
+        sorted_verts.sort_unstable();
+        for u in sorted_verts {
+            let incident: Vec<usize> = corner_map
+                .keys()
+                .filter_map(|&(fi, v)| (v == u).then_some(fi))
+                .collect();
+            if incident.len() < 3 {
+                continue;
+            }
+            let start_f = *incident.iter().min().unwrap();
+            let mut ring = Vec::with_capacity(incident.len());
+            let mut curr_f = start_f;
+            let mut closed = false;
+            for _ in 0..incident.len() {
+                ring.push(corner_map[&(curr_f, u)]);
+                let Some(&v_in) = incoming_edge.get(&(curr_f, u)) else {
+                    break;
+                };
+                let Some(&next_f) = outgoing_face.get(&(u, v_in)) else {
+                    break;
+                };
+                if next_f == start_f {
+                    closed = true;
+                    break;
+                }
+                curr_f = next_f;
+            }
+            if closed && ring.len() >= 3 {
+                new_faces.push(self.faces.len());
+                self.faces.push(ring);
+            }
+        }
+
+        self.compact();
+        Ok(new_faces)
+    }
+
+    /// Insert an edge loop across the quad strip containing `(face_hint, edge_local)`
+    /// at relative position `factor` in `(0.0, 1.0)`. Returns the newly created
+    /// vertex indices along the cut.
+    ///
+    /// # Errors
+    /// [`PolyError`] when `face_hint` is out of range, not a quad, or `factor` is invalid.
+    pub fn loop_cut(
+        &mut self,
+        face_hint: usize,
+        edge_local: usize,
+        factor: f32,
+    ) -> Result<Vec<u32>, PolyError> {
+        if !(factor > 0.0 && factor < 1.0 && factor.is_finite()) {
+            return Err(invalid("loop cut factor must be in (0.0, 1.0)"));
+        }
+        self.validate()?;
+        let Some(f0) = self.faces.get(face_hint) else {
+            return Err(invalid("face_hint out of range"));
+        };
+        if f0.len() != 4 {
+            return Err(invalid("loop_cut requires a quad starting face"));
+        }
+        let e0 = edge_local % 4;
+        let u0 = f0[e0];
+        let v0 = f0[(e0 + 1) % 4];
+
+        // Map undirected edges to incident faces.
+        let mut edge_faces: HashMap<EdgeKey, Vec<usize>> = HashMap::new();
+        for (fi, f) in self.faces.iter().enumerate() {
+            for i in 0..f.len() {
+                edge_faces
+                    .entry(key(f[i], f[(i + 1) % f.len()]))
+                    .or_default()
+                    .push(fi);
+            }
+        }
+
+        // Walk the quad ring in both directions from `(u0, v0)`, keeping directed orientation `(a, b)`
+        // so `factor` interpolates from rail A to rail B consistently.
+        let mut split_vertex: HashMap<EdgeKey, u32> = HashMap::new();
+        let mut created: Vec<u32> = Vec::new();
+        let mut insert_split = |a: u32, b: u32, positions: &mut Vec<[f32; 3]>| -> u32 {
+            let k = key(a, b);
+            if let Some(&idx) = split_vertex.get(&k) {
+                return idx;
+            }
+            let pa = positions[a as usize];
+            let pb = positions[b as usize];
+            let p = add(pa, scale(sub(pb, pa), factor));
+            let idx = positions.len() as u32;
+            positions.push(p);
+            split_vertex.insert(k, idx);
+            created.push(idx);
+            idx
+        };
+
+        insert_split(u0, v0, &mut self.positions);
+
+        // Walk across quads starting at `start_face` with entry directed edge `(ea, eb)`.
+        for (start_f, start_edge) in [
+            (Some(face_hint), (u0, v0)),
+            (
+                edge_faces
+                    .get(&key(u0, v0))
+                    .and_then(|fs| fs.iter().copied().find(|&fi| fi != face_hint)),
+                (u0, v0),
+            ),
+        ] {
+            let Some(mut curr_f) = start_f else { continue };
+            let mut curr_edge = start_edge;
+            loop {
+                let f = &self.faces[curr_f];
+                if f.len() != 4 {
+                    break;
+                }
+                // Find local index of `curr_edge` (either forward or reverse).
+                let Some(local_idx) = (0..4).find(|&i| {
+                    key(f[i], f[(i + 1) % 4]) == key(curr_edge.0, curr_edge.1)
+                }) else {
+                    break;
+                };
+                let forward = f[local_idx] == curr_edge.0;
+                let opp_idx = (local_idx + 2) % 4;
+                // Opposite edge in the same rail direction (rail A -> rail B):
+                // In quad [v0, v1, v2, v3], edge 0 is v0->v1 and opposite edge 2 is v2->v3,
+                // so the parallel rail direction to v0->v1 is v3->v2.
+                let opp_directed = if forward {
+                    (f[(opp_idx + 1) % 4], f[opp_idx])
+                } else {
+                    (f[opp_idx], f[(opp_idx + 1) % 4])
+                };
+                let opp_key = key(opp_directed.0, opp_directed.1);
+                let already = split_vertex.contains_key(&opp_key);
+                insert_split(opp_directed.0, opp_directed.1, &mut self.positions);
+                if already {
+                    break;
+                }
+                let next_f = edge_faces
+                    .get(&opp_key)
+                    .and_then(|fs| fs.iter().copied().find(|&fi| fi != curr_f));
+                let Some(nf) = next_f else { break };
+                curr_f = nf;
+                curr_edge = opp_directed;
+            }
+        }
+
+        // Rebuild faces: quads with two opposite split edges become two quads;
+        // any other face touching a split edge gets the midpoint vertex inserted along that edge.
+        let old_faces = std::mem::take(&mut self.faces);
+        for f in old_faces {
+            if f.len() == 4 {
+                let s0 = split_vertex.get(&key(f[0], f[1])).copied();
+                let s1 = split_vertex.get(&key(f[1], f[2])).copied();
+                let s2 = split_vertex.get(&key(f[2], f[3])).copied();
+                let s3 = split_vertex.get(&key(f[3], f[0])).copied();
+                if let (Some(m0), None, Some(m2), None) = (s0, s1, s2, s3) {
+                    self.faces.push(vec![f[0], m0, m2, f[3]]);
+                    self.faces.push(vec![m0, f[1], f[2], m2]);
+                    continue;
+                }
+                if let (None, Some(m1), None, Some(m3)) = (s0, s1, s2, s3) {
+                    self.faces.push(vec![f[0], f[1], m1, m3]);
+                    self.faces.push(vec![m3, m1, f[2], f[3]]);
+                    continue;
+                }
+            }
+            let mut expanded = Vec::with_capacity(f.len() + 2);
+            for i in 0..f.len() {
+                let u = f[i];
+                let v = f[(i + 1) % f.len()];
+                expanded.push(u);
+                if let Some(&m) = split_vertex.get(&key(u, v)) {
+                    expanded.push(m);
+                }
+            }
+            self.faces.push(expanded);
+        }
+        Ok(created)
+    }
+
+    /// Bridge two faces `face_a` and `face_b` of equal vertex count with a tube
+    /// of quad faces, removing the two cap faces. Returns the indices of the
+    /// newly created bridge quads.
+    ///
+    /// # Errors
+    /// [`PolyError`] when the faces are out of range, identical, share vertices,
+    /// or have different vertex counts.
+    pub fn bridge_faces(&mut self, face_a: usize, face_b: usize) -> Result<Vec<usize>, PolyError> {
+        self.validate()?;
+        if face_a == face_b || face_a >= self.faces.len() || face_b >= self.faces.len() {
+            return Err(invalid("bridge_faces requires two distinct valid face indices"));
+        }
+        let loop_a = self.faces[face_a].clone();
+        let loop_b = self.faces[face_b].clone();
+        let k = loop_a.len();
+        if k != loop_b.len() || k < 3 {
+            return Err(invalid("bridge_faces requires two faces with the same vertex count"));
+        }
+        if loop_a.iter().any(|v| loop_b.contains(v)) {
+            return Err(invalid("bridge_faces faces must not share vertices"));
+        }
+
+        // Reverse loop_b so its cyclic orientation around the bridge axis matches loop_a,
+        // then pick the cyclic shift that minimizes total edge length.
+        let b_rev: Vec<u32> = loop_b.into_iter().rev().collect();
+        let mut best_shift = 0usize;
+        let mut best_cost = f32::MAX;
+        for shift in 0..k {
+            let cost: f32 = (0..k)
+                .map(|i| {
+                    let pa = self.positions[loop_a[i] as usize];
+                    let pb = self.positions[b_rev[(i + shift) % k] as usize];
+                    let d = sub(pa, pb);
+                    dot(d, d)
+                })
+                .sum();
+            if cost < best_cost {
+                best_cost = cost;
+                best_shift = shift;
+            }
+        }
+
+        let b_aligned: Vec<u32> = (0..k).map(|i| b_rev[(i + best_shift) % k]).collect();
+
+        // Remove the two cap faces (higher index first).
+        let (hi, lo) = if face_a > face_b {
+            (face_a, face_b)
+        } else {
+            (face_b, face_a)
+        };
+        self.faces.remove(hi);
+        self.faces.remove(lo);
+
+        let mut bridge_indices = Vec::with_capacity(k);
+        for i in 0..k {
+            let next = (i + 1) % k;
+            bridge_indices.push(self.faces.len());
+            self.faces.push(vec![
+                loop_a[i],
+                loop_a[next],
+                b_aligned[next],
+                b_aligned[i],
+            ]);
+        }
+        Ok(bridge_indices)
+    }
+
+    /// Triangulate a single face loop into `out` using 2D ear-clipping projected
+    /// onto the face's Newell normal plane (with fan fallback for degenerate faces).
+    fn triangulate_face(&self, f: &[u32], out: &mut Vec<u32>) {
+        if f.len() < 3 {
+            return;
+        }
+        if f.len() == 3 {
+            out.extend_from_slice(f);
+            return;
+        }
+        // Compute Newell normal.
+        let mut n = [0.0_f32; 3];
+        for i in 0..f.len() {
+            let a = self.positions[f[i] as usize];
+            let b = self.positions[f[(i + 1) % f.len()] as usize];
+            n[0] += (a[1] - b[1]) * (a[2] + b[2]);
+            n[1] += (a[2] - b[2]) * (a[0] + b[0]);
+            n[2] += (a[0] - b[0]) * (a[1] + b[1]);
+        }
+        let n = normalize(n);
+        if length(n) < 1e-6 {
+            for i in 1..f.len() - 1 {
+                out.extend_from_slice(&[f[0], f[i], f[i + 1]]);
+            }
+            return;
+        }
+        // Check if polygon is already strictly convex: if so, fast fan triangulation is exact.
+        let ref_axis = if n[0].abs() < 0.9 {
+            [1.0, 0.0, 0.0]
+        } else {
+            [0.0, 1.0, 0.0]
+        };
+        let u_axis = normalize(cross(n, ref_axis));
+        let v_axis = cross(n, u_axis);
+        let project = |vid: u32| -> [f32; 2] {
+            let p = self.positions[vid as usize];
+            [dot(p, u_axis), dot(p, v_axis)]
+        };
+        let cross2 = |a: [f32; 2], b: [f32; 2], c: [f32; 2]| -> f32 {
+            (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+        };
+        let point_in_tri = |p: [f32; 2], a: [f32; 2], b: [f32; 2], c: [f32; 2]| -> bool {
+            let c1 = cross2(a, b, p);
+            let c2 = cross2(b, c, p);
+            let c3 = cross2(c, a, p);
+            c1 >= -1e-6 && c2 >= -1e-6 && c3 >= -1e-6
+        };
+
+        let mut ring: Vec<u32> = f.to_vec();
+        let mut guard = ring.len() * 3;
+        while ring.len() > 3 && guard > 0 {
+            guard -= 1;
+            let m = ring.len();
+            let mut clipped = false;
+            for i in 0..m {
+                let prev = ring[(i + m - 1) % m];
+                let curr = ring[i];
+                let next = ring[(i + 1) % m];
+                let (pa, pb, pc) = (project(prev), project(curr), project(next));
+                if cross2(pa, pb, pc) <= 1e-7 {
+                    continue;
+                }
+                let has_inside = (0..m).any(|j| {
+                    let v = ring[j];
+                    v != prev && v != curr && v != next && point_in_tri(project(v), pa, pb, pc)
+                });
+                if !has_inside {
+                    out.extend_from_slice(&[prev, curr, next]);
+                    ring.remove(i);
+                    clipped = true;
+                    break;
+                }
+            }
+            if !clipped {
+                break;
+            }
+        }
+        if ring.len() == 3 {
+            out.extend_from_slice(&ring);
+        } else {
+            for i in 1..ring.len() - 1 {
+                out.extend_from_slice(&[ring[0], ring[i], ring[i + 1]]);
+            }
+        }
+    }
+
+    /// Ear-clipped triangulated index list (handles both convex and concave n-gons).
     #[must_use]
     pub fn triangulate(&self) -> Vec<u32> {
         let mut out = Vec::new();
         for f in &self.faces {
-            for i in 1..f.len() - 1 {
-                out.extend_from_slice(&[f[0], f[i], f[i + 1]]);
-            }
+            self.triangulate_face(f, &mut out);
         }
         out
     }
@@ -778,12 +1257,20 @@ impl PolyMesh {
                 for (fi, f) in self.faces.iter().enumerate() {
                     let n = self.face_normal(fi);
                     let base = positions.len() as u32;
-                    for &v in f {
+                    let mut local_ring = Vec::with_capacity(f.len());
+                    for (k, &v) in f.iter().enumerate() {
                         positions.push(self.positions[v as usize]);
                         normals.push(n);
+                        local_ring.push((v, base + k as u32));
                     }
-                    for i in 1..f.len() as u32 - 1 {
-                        indices.extend_from_slice(&[base, base + i, base + i + 1]);
+                    let mut face_tris = Vec::new();
+                    self.triangulate_face(f, &mut face_tris);
+                    for vid in face_tris {
+                        let mapped = local_ring
+                            .iter()
+                            .find_map(|&(orig, loc)| (orig == vid).then_some(loc))
+                            .unwrap_or(base);
+                        indices.push(mapped);
                     }
                 }
                 Geometry::Mesh {
@@ -986,5 +1473,69 @@ mod tests {
         assert!(c.extrude_region(&[99], 1.0).is_err());
         assert!(c.inset_faces(&[0], 1.5).is_err());
         assert!(PolyMesh::quad_sphere(1.0, 9).is_err());
+    }
+
+    #[test]
+    fn bevel_all_cube_edges_stays_closed_manifold() {
+        let mut c = PolyMesh::cube([2.0, 2.0, 2.0]);
+        let created = c.bevel_edges(&[], 0.2).unwrap();
+        assert_eq!(created.len(), 20); // 12 edge quads + 8 corner triangles
+        let t = c.topology();
+        assert_eq!((t.vertices, t.edges, t.faces, t.euler), (24, 48, 26, 2));
+        assert_eq!(t.boundary_edges, 0);
+        assert_eq!(t.non_manifold_edges, 0);
+    }
+
+    #[test]
+    fn loop_cut_splits_cube_ring_into_manifold_quads() {
+        let mut c = PolyMesh::cube([2.0, 2.0, 2.0]);
+        let cut_verts = c.loop_cut(0, 0, 0.5).unwrap();
+        assert_eq!(cut_verts.len(), 4);
+        let t = c.topology();
+        assert_eq!((t.vertices, t.faces, t.boundary_edges, t.euler), (12, 10, 0, 2));
+        assert_eq!(t.non_manifold_edges, 0);
+    }
+
+    #[test]
+    fn bridge_faces_punches_genus_one_tunnel() {
+        let mut c = PolyMesh::cube([2.0, 2.0, 2.0]);
+        let top = c.faces_facing([0.0, 1.0, 0.0], 1.0)[0];
+        let bot = c.faces_facing([0.0, -1.0, 0.0], 1.0)[0];
+        let inner = c.inset_faces(&[top, bot], 0.4).unwrap();
+        let bridged = c.bridge_faces(inner[0], inner[1]).unwrap();
+        assert_eq!(bridged.len(), 4);
+        let t = c.topology();
+        assert_eq!(t.boundary_edges, 0);
+        assert_eq!(t.non_manifold_edges, 0);
+        assert_eq!(t.euler, 0); // Genus-1 torus topology: V - E + F = 0
+    }
+
+    #[test]
+    fn ear_clipping_triangulates_concave_ngon() {
+        // Concave L-shaped 6-gon in the XZ plane facing +Y.
+        let m = PolyMesh {
+            positions: vec![
+                [0.0, 0.0, 0.0],
+                [0.0, 0.0, 2.0],
+                [2.0, 0.0, 2.0],
+                [2.0, 0.0, 1.0],
+                [1.0, 0.0, 1.0],
+                [1.0, 0.0, 0.0],
+            ],
+            faces: vec![vec![0, 1, 2, 3, 4, 5]],
+        };
+        let tris = m.triangulate();
+        assert_eq!(tris.len(), 12); // 4 triangles * 3 indices
+        // Total area of the L-shape is 3.0; sum of oriented triangle areas must equal 3.0.
+        let mut area = 0.0_f32;
+        for tri in tris.chunks_exact(3) {
+            let a = m.positions[tri[0] as usize];
+            let b = m.positions[tri[1] as usize];
+            let c = m.positions[tri[2] as usize];
+            let n = cross(sub(b, a), sub(c, a));
+            assert!(n[1] > 0.0, "triangle flipped: {tri:?}");
+            area += 0.5 * n[1];
+        }
+        assert!((area - 3.0).abs() < 1e-5, "area={area}");
     }
 }
