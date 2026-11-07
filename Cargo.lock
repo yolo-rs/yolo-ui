@@ -35801,6 +35801,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "yolo-dashboard"
+version = "0.8.0-alpha.3"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "yolo-engines",
+ "yolo-shared",
+ "yolo-tokens",
+]
+
+[[package]]
 name = "yolo-egui"
 version = "0.8.0-alpha.3"
 dependencies = [

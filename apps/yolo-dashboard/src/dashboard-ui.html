@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YOLO & Aphrody — GPUI Unified Desktop Dashboard</title>
+  <style>
+    :root {
+      --bg-primary: #090b10;
+      --bg-surface: #111520;
+      --bg-elevated: #181e2e;
+      --text-primary: #f3f6fc;
+      --text-secondary: #9ba6bf;
+      --accent-blue: #4285f4;
+      --accent-red: #ea4335;
+      --accent-yellow: #fbbc05;
+      --accent-green: #34a853;
+      --accent-primary: #7c5cff;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --font-family-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Google Sans", sans-serif;
+      --font-family-mono: "JetBrains Mono", Consolas, monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-family-ui);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar / Dock Area */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: white;
+    }
+
+    .brand-text h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+    .brand-text p { font-size: 11px; color: var(--text-secondary); }
+
+    .nav-list {
+      list-style: none;
+      padding: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); }
+    .nav-item.active { background: rgba(124, 92, 255, 0.16); color: var(--accent-primary); font-weight: 600; }
+
+    /* Main Canvas */
+    .main-canvas {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      height: 56px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .top-title { font-size: 16px; font-weight: 600; }
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(52, 168, 83, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(52, 168, 83, 0.3);
+    }
+
+    .content-area {
+      padding: 24px;
+      flex: 1;
+    }
+
+    /* Grid Layouts */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .stat-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-val { font-size: 24px; font-weight: 700; margin-top: 6px; }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title { font-size: 15px; font-weight: 600; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 500;
+    }
+
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .code-tag {
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .badge-clean {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-green);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-header">
+      <div class="brand-logo">Y</div>
+      <div class="brand-text">
+        <h1>YOLO Studio</h1>
+        <p>GPUI Desktop Dashboard</p>
+      </div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" onclick="switchTab('overview')">System Overview</li>
+      <li class="nav-item" onclick="switchTab('monorepos')">Monorepos & Git</li>
+      <li class="nav-item" onclick="switchTab('orgs')">GitHub Orgs & Purge</li>
+      <li class="nav-item" onclick="switchTab('fleet')">VPS Fleet</li>
+      <li class="nav-item" onclick="switchTab('registries')">Registries</li>
+      <li class="nav-item" onclick="switchTab('arena')">A2A Arena Telemetry</li>
+    </ul>
+  </aside>
+
+  <!-- Main Canvas -->
+  <main class="main-canvas">
+    <header class="top-bar">
+      <div class="top-title" id="page-title">System Overview</div>
+      <div class="status-badge">ZHITL AUTONOMOUS ACTIVE</div>
+    </header>
+
+    <div class="content-area">
+      <!-- 1. System Overview -->
+      <section id="tab-overview" class="tab-content active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Git Commits</div>
+            <div class="stat-val" id="total-commits">63,836</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">GitHub Repositories</div>
+            <div class="stat-val" id="total-repos">423</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Crates.io Crates Ready</div>
+            <div class="stat-val">1,021</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">npm Packages Ready</div>
+            <div class="stat-val">213</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Ecosystem Architecture & Identity Hierarchy</div>
+          </div>
+          <p style="color: var(--text-secondary); line-height: 1.6; font-size: 13px;">
+            <strong>Aphrody</strong> is the sovereign consumer-facing public product (<a href="https://aphrody.com" style="color: var(--accent-blue);">aphrody.com</a>, 16 Workspace apps, 2026 GoogleBook Laptop OS).<br>
+            <strong>YOLO</strong> is the core Chromium/AOSP open-source engine (Rust crates, Upstream Bun v1.4.4+, isolated Chromium V8 Isolates, Brave Shields, and standards compliance).
+          </p>
+        </div>
+      </section>
+
+      <!-- 2. Monorepos -->
+      <section id="tab-monorepos" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Active YOLO Workspaces (C:\src)</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Workspace</th>
+                <th>Branch</th>
+                <th>Status</th>
+                <th>Filesystem Path</th>
+              </tr>
+            </thead>
+            <tbody id="workspaces-table">
+              <tr>
+                <td><strong>yolo</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-ui</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-ui</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-web</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-web</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-ai</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-ai</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-os</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-os</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-bun</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-bun</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-standards</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-standards</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-plugins</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-plugins</span></td>
+              </tr>
+              <tr>
+                <td><strong>yolo-vps</strong></td>
+                <td><span class="code-tag">main</span></td>
+                <td><span class="badge-clean">CLEAN</span></td>
+                <td><span class="code-tag">C:\src\yolo-vps</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. GitHub Orgs -->
+      <section id="tab-orgs" class="tab-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">aphrody-labs (Products)</div>
+            <div class="stat-val">200 repos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">yolo-rs (Engine)</div>
+            <div class="stat-val">200 repos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">aphrody-dev (Maintainer)</div>
+            <div class="stat-val">23 repos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Purge / Archive Candidates</div>
+            <div class="stat-val" style="color: var(--accent-yellow);">319 repos</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Governance & Profile Readiness</div>
+          </div>
+          <ul style="color: var(--text-secondary); line-height: 2; font-size: 13px; list-style: square; padding-left: 20px;">
+            <li><strong>aphrody-labs/.github</strong>: Profile README, Waffle suite catalog & Google comparison ready.</li>
+            <li><strong>yolo-rs/.github</strong>: Profile README, Chromium/AOSP architecture & standards ready.</li>
+            <li><strong>aphrody-dev</strong>: Personal profile & Ed25519 signing key directory ready.</li>
+            <li><strong>Google OSS Alignment</strong>: CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, GOVERNANCE, SUPPORT ready.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4. VPS Fleet -->
+      <section id="tab-fleet" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Multi-Cloud VPS Fleet Infrastructure</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Node Name</th>
+                <th>Region</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>Latency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>host-eu-1</strong></td>
+                <td>Frankfurt, Germany</td>
+                <td><span class="code-tag">185.196.21.32</span></td>
+                <td><span class="badge-clean">ONLINE</span></td>
+                <td>12 ms</td>
+              </tr>
+              <tr>
+                <td><strong>host-fr-1</strong></td>
+                <td>Paris, France</td>
+                <td><span class="code-tag">51.159.14.99</span></td>
+                <td><span class="badge-clean">ONLINE</span></td>
+                <td>8 ms</td>
+              </tr>
+              <tr>
+                <td><strong>host-us-1</strong></td>
+                <td>Ashburn, VA (US)</td>
+                <td><span class="code-tag">144.126.240.18</span></td>
+                <td><span class="badge-clean">ONLINE</span></td>
+                <td>78 ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. Registries -->
+      <section id="tab-registries" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Multi-Registry Publishing Matrix</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Registry</th>
+                <th>Scope</th>
+                <th>Artifacts Count</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>npm</strong></td>
+                <td><span class="code-tag">@yolo-rs, @aphrody</span></td>
+                <td>213 packages</td>
+                <td><span class="badge-clean">READY</span></td>
+              </tr>
+              <tr>
+                <td><strong>crates.io</strong></td>
+                <td><span class="code-tag">yolo-*, aphrody-*</span></td>
+                <td>1,021 crates</td>
+                <td><span class="badge-clean">READY</span></td>
+              </tr>
+              <tr>
+                <td><strong>PyPI</strong></td>
+                <td><span class="code-tag">aphrody, yolo-cli</span></td>
+                <td>2 packages</td>
+                <td><span class="badge-clean">READY</span></td>
+              </tr>
+              <tr>
+                <td><strong>Google Cloud</strong></td>
+                <td><span class="code-tag">aphrody-cloud</span></td>
+                <td>6 services</td>
+                <td><span class="badge-clean">READY</span></td>
+              </tr>
+              <tr>
+                <td><strong>GitHub Packages</strong></td>
+                <td><span class="code-tag">ghcr.io/aphrody-labs</span></td>
+                <td>12 container images</td>
+                <td><span class="badge-clean">READY</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. A2A Arena -->
+      <section id="tab-arena" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">A2A Multi-Agent Coordination Scoreboard</div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Claude (Agent SDK)</div>
+              <div class="stat-val" style="color: var(--accent-blue);">808 pts</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">OpenCode (session_v2)</div>
+              <div class="stat-val" style="color: var(--accent-green);">573 pts</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">AGY (Antigravity CLI)</div>
+              <div class="stat-val" style="color: var(--accent-primary);">422 pts</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Codex (CLI)</div>
+              <div class="stat-val" style="color: var(--accent-yellow);">145 pts</div>
+            </div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+            All agents coordinate asynchronously across the shared coordination bus (<span class="code-tag">.yolo/coord/tasks.jsonl</span>). Zero human in the loop.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+
+      const titles = {
+        overview: 'System Overview',
+        monorepos: 'Monorepos & Git Status',
+        orgs: 'GitHub Organizations & Purge',
+        fleet: 'VPS Fleet Infrastructure',
+        registries: 'Multi-Registry Publishing Matrix',
+        arena: 'A2A Arena Telemetry'
+      };
+      document.getElementById('page-title').textContent = titles[tabId] || 'Dashboard';
+      event.currentTarget.classList.add('active');
+    }
+
+    // Dynamic data polling
+    async function loadTelemetry() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data.gitHistorySummary) {
+          document.getElementById('total-commits').textContent = data.gitHistorySummary.totalCommits.toLocaleString();
+        }
+      } catch {}
+    }
+    loadTelemetry();
+  </script>
+</body>
+</html>

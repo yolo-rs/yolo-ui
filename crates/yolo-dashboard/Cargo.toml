@@ -1,0 +1,21 @@
+[package]
+name = "yolo-dashboard"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yolo-rs/yolo-ui"
+description = "Native GPUI and desktop dashboard for the YOLO and Aphrody ecosystem."
+publish = false
+
+[[bin]]
+name = "yolo-dashboard"
+path = "src/main.rs"
+
+[dependencies]
+yolo-shared = { workspace = true }
+yolo-tokens = { workspace = true }
+yolo-engines = { workspace = true, features = ["gpui"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

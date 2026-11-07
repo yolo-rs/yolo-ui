@@ -1,0 +1,21 @@
+{
+  "name": "@yolo-ui/dashboard",
+  "version": "1.0.0-canary.20261107",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "description": "Unified GPUI and Fullstack Desktop Dashboard for the YOLO & Aphrody Ecosystem",
+  "scripts": {
+    "start": "bun src/server.ts",
+    "dev": "bun --watch src/server.ts",
+    "test": "bun test",
+    "check": "bun check"
+  },
+  "dependencies": {
+    "@yolo-web/auth": "workspace:*",
+    "hono": "^4.13.16"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4"
+  }
+}
