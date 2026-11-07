@@ -45,15 +45,12 @@ fuzz_mutator!(|data: &mut [u8], size: usize, max_size: usize, seed: u32| {
     let mut case = decode_case(&data[..size]).unwrap_or_default();
     let minimizing = cargo_fuzz_minimizing();
 
-    if let Some(options) = cargo_fuzz_semantic_reduction_options() {
-        if claim_semantic_reduction_attempt() {
-            if let Some(reduced) =
-                cached_semantic_reduction(&case, &data[..size], max_size, options)
-            {
-                data[..reduced.len()].copy_from_slice(&reduced);
-                return reduced.len();
-            }
-        }
+    if let Some(options) = cargo_fuzz_semantic_reduction_options()
+        && claim_semantic_reduction_attempt()
+        && let Some(reduced) = cached_semantic_reduction(&case, &data[..size], max_size, options)
+    {
+        data[..reduced.len()].copy_from_slice(&reduced);
+        return reduced.len();
     }
 
     let additional_mutations = if minimizing {

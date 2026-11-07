@@ -8,7 +8,7 @@ fn app() -> Element {
 
     // make sure to emit funky closure code in this module to test wasm-bindgen handling
     let _closures = wasm_bindgen::closure::Closure::<dyn FnMut(web_sys::MouseEvent)>::new(
-        move |event: web_sys::MouseEvent| {},
+        move |_event: web_sys::MouseEvent| {},
     );
 
     rsx! {
