@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-templates"
+version = { workspace = true }
+edition.workspace = true
+rust-version.workspace = true
+authors = ["Yolo UI Contributors"]
+repository = "https://github.com/yolo-rs/yolo-ui"
+license = "MIT OR Apache-2.0"
+description = "Shared Dioxus 0.8 page templates for every Aphrody site: stage hero, global nav with flyouts and mega menu, sticky section tabs, product page, design-system docs shell, download channels, release pill, rail app chrome, media and editorial grids, scroll-driven 3D reveal and a pausable starfield."
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[dependencies]
+dioxus = { workspace = true, default-features = false, features = ["macro", "html", "signals", "hooks"] }
+dioxus-ssr = { workspace = true }
+yolo-shared = { workspace = true }
+yolo-layout = { workspace = true }
+
+[dev-dependencies]
+naga = { workspace = true, features = ["wgsl-in"] }
+
+[[example]]
+name = "showcase"
+path = "examples/showcase.rs"
