@@ -1871,8 +1871,6 @@ mod tests {
 
     #[test]
     fn bevel_loop_cut_bridge_geodesic_dqs_and_ik_ops_work() {
-        use super::super::poly::{EdgeSelection, VertexSelection};
-
         let mut e = Editor::default();
         e.apply(&Op::AddObject {
             name: "box".into(),

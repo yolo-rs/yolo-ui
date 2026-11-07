@@ -936,22 +936,15 @@ impl PolyMesh {
         // so `factor` interpolates from rail A to rail B consistently.
         let mut split_vertex: HashMap<EdgeKey, u32> = HashMap::new();
         let mut created: Vec<u32> = Vec::new();
-        let mut insert_split = |a: u32, b: u32, positions: &mut Vec<[f32; 3]>| -> u32 {
-            let k = key(a, b);
-            if let Some(&idx) = split_vertex.get(&k) {
-                return idx;
-            }
-            let pa = positions[a as usize];
-            let pb = positions[b as usize];
-            let p = add(pa, scale(sub(pb, pa), factor));
-            let idx = positions.len() as u32;
-            positions.push(p);
-            split_vertex.insert(k, idx);
-            created.push(idx);
-            idx
-        };
 
-        insert_split(u0, v0, &mut self.positions);
+        let k0 = key(u0, v0);
+        let pa0 = self.positions[u0 as usize];
+        let pb0 = self.positions[v0 as usize];
+        let p0 = add(pa0, scale(sub(pb0, pa0), factor));
+        let idx0 = self.positions.len() as u32;
+        self.positions.push(p0);
+        split_vertex.insert(k0, idx0);
+        created.push(idx0);
 
         // Walk across quads starting at `start_face` with entry directed edge `(ea, eb)`.
         for (start_f, start_edge) in [
@@ -987,12 +980,16 @@ impl PolyMesh {
                     (f[opp_idx], f[(opp_idx + 1) % 4])
                 };
                 let opp_key = key(opp_directed.0, opp_directed.1);
-                let already = split_vertex.contains_key(&opp_key);
-                if !already {
-                    insert_split(opp_directed.0, opp_directed.1, &mut self.positions);
-                } else {
+                if split_vertex.contains_key(&opp_key) {
                     break;
                 }
+                let pa = self.positions[opp_directed.0 as usize];
+                let pb = self.positions[opp_directed.1 as usize];
+                let p = add(pa, scale(sub(pb, pa), factor));
+                let idx = self.positions.len() as u32;
+                self.positions.push(p);
+                split_vertex.insert(opp_key, idx);
+                created.push(idx);
                 let next_f = edge_faces
                     .get(&opp_key)
                     .and_then(|fs| fs.iter().copied().find(|&fi| fi != curr_f));
