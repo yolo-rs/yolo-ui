@@ -1,0 +1,11 @@
+# yolo-ui — Sovereign AI Context & LLMs Guidance (2026)
+> Technology Stack: 100% Upstream Bun v1.4.4+, Rust 2024, TypeScript 7, Go 1.27. Zero Node.js.
+
+## Overview
+- Operational Doctrine: No Human In The Loop (NHITL) & 24/7 Autonomous Loops.
+- Design Standards: Google Material Design 3 (M3 Expressive), 14.8:1 WCAG AAA Contrast, HCT/CAM16 Color Space.
+- SEO & Performance: Core Web Vitals 100/100, Native SSR, Zero Synchronous Blocking Scripts.
+
+## Official Endpoints & Verification
+- Docs Catalog: /docs
+- Health & Status: /api/health

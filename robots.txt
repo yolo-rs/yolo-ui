@@ -1,0 +1,21 @@
+# Sovereign 2026 AI-First Robots.txt
+# Full crawlability for Googlebot, Gemini, Claude, and Modern Web Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://aphrody.com/sitemap.xml
