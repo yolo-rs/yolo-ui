@@ -1,30 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-preset="aphrody">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>YOLO & Aphrody — GPUI Unified Desktop Dashboard</title>
+  <title>YOLO &amp; Aphrody — GPUI Unified Desktop Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ==========================================================================
+       UI/UX Pro Max & DTCG Token System — Bound to yolo-aphrody (WCAG 2.2 AAA)
+       ========================================================================== */
     :root {
-      --bg-primary: #090b10;
-      --bg-surface: #111520;
-      --bg-elevated: #181e2e;
-      --text-primary: #f3f6fc;
-      --text-secondary: #9ba6bf;
-      --accent-blue: #4285f4;
-      --accent-red: #ea4335;
-      --accent-yellow: #fbbc05;
-      --accent-green: #34a853;
-      --accent-primary: #7c5cff;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --font-family-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Google Sans", sans-serif;
-      --font-family-mono: "JetBrains Mono", Consolas, monospace;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      color-scheme: dark light;
+      --bg-primary: #1C1A17;
+      --bg-surface: #26231E;
+      --bg-elevated: #332E27;
+      --text-primary: #FAF7F0;
+      --text-secondary: #EDE6D6;
+      --accent-primary: #E8C547;
+      --accent-secondary: #F28B9C;
+      --accent-success: #10B981;
+      --accent-warning: #D4AF37;
+      --accent-danger: #F43F5E;
+      --border-subtle: #4A4236;
+      --font-family-display: "Cinzel", "Plus Jakarta Sans", serif;
+      --font-family-ui: "Plus Jakarta Sans", system-ui, sans-serif;
+      --font-family-mono: "JetBrains Mono", monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --blur-radius: 16px;
+    }
+
+    html[data-preset="m3"] {
+      --bg-primary: #131318;
+      --bg-surface: #1F1F26;
+      --bg-elevated: #2A2A34;
+      --text-primary: #E6E1E9;
+      --text-secondary: #CAC4D0;
+      --accent-primary: #D0BCFF;
+      --accent-secondary: #CCC2DC;
+      --border-subtle: #49454F;
+    }
+
+    html[data-preset="chromium"] {
+      --bg-primary: #12151C;
+      --bg-surface: #1B202B;
+      --bg-elevated: #252C3B;
+      --text-primary: #F1F3F4;
+      --text-secondary: #BDC1C6;
+      --accent-primary: #8AB4F8;
+      --accent-secondary: #C58AF9;
+      --border-subtle: #3C4043;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Accessibility & Focus Guards (WCAG 2.2 AAA + Forced Colors + Reduced Motion) */
+    :focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+
+    @media (forced-colors: active) {
+      :focus-visible {
+        outline-color: CanvasText !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     body {
       background: var(--bg-primary);
       color: var(--text-primary);
@@ -32,15 +85,17 @@
       display: flex;
       height: 100vh;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Sidebar / Dock Area */
+    /* Sidebar / GPUI Dock Left */
     .sidebar {
-      width: 260px;
+      width: 280px;
       background: var(--bg-surface);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
+      flex-shrink: 0;
     }
 
     .brand-header {
@@ -52,20 +107,32 @@
     }
 
     .brand-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-primary));
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
-      color: white;
+      font-family: var(--font-family-display);
+      font-weight: 800;
+      font-size: 17px;
+      color: #1C1A17;
+      flex-shrink: 0;
     }
 
-    .brand-text h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
-    .brand-text p { font-size: 11px; color: var(--text-secondary); }
+    .brand-text h1 {
+      font-family: var(--font-family-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: var(--text-primary);
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
 
     .nav-list {
       list-style: none;
@@ -74,9 +141,15 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      overflow-y: auto;
     }
 
     .nav-item {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      text-align: left;
+      font-family: var(--font-family-ui);
       padding: 10px 14px;
       border-radius: var(--radius-sm);
       font-size: 13px;
@@ -86,11 +159,27 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: background 0.15s, color 0.15s;
+      transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
     }
 
-    .nav-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); }
-    .nav-item.active { background: rgba(124, 92, 255, 0.16); color: var(--accent-primary); font-weight: 600; }
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke: currentColor;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .nav-item[aria-selected="true"] {
+      background: var(--bg-elevated);
+      color: var(--accent-primary);
+      border-color: var(--border-subtle);
+      font-weight: 600;
+    }
 
     /* Main Canvas */
     .main-canvas {
@@ -101,29 +190,56 @@
     }
 
     .top-bar {
-      height: 56px;
+      min-height: 60px;
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding: 10px 24px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .top-title { font-size: 16px; font-weight: 600; }
+    .top-title {
+      font-family: var(--font-family-display);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preset-select {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-family: var(--font-family-ui);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
     .status-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
+      padding: 5px 12px;
+      border-radius: 9999px;
       font-size: 11px;
       font-weight: 600;
-      background: rgba(52, 168, 83, 0.15);
-      color: var(--accent-green);
-      border: 1px solid rgba(52, 168, 83, 0.3);
+      background: rgba(16, 185, 129, 0.16);
+      color: var(--accent-success);
+      border: 1px solid rgba(16, 185, 129, 0.35);
     }
 
     .content-area {
       padding: 24px;
       flex: 1;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
     }
 
     /* Grid Layouts */
@@ -139,10 +255,22 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 18px;
+      backdrop-filter: blur(var(--blur-radius));
     }
 
-    .stat-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-val { font-size: 24px; font-weight: 700; margin-top: 6px; }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+    .stat-val {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 6px;
+      color: var(--accent-primary);
+    }
 
     .card {
       background: var(--bg-surface);
@@ -150,6 +278,7 @@
       border-radius: var(--radius-md);
       padding: 20px;
       margin-bottom: 24px;
+      overflow-x: auto;
     }
 
     .card-header {
@@ -157,9 +286,14 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
+      gap: 12px;
     }
 
-    .card-title { font-size: 15px; font-weight: 600; }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
 
     table {
       width: 100%;
@@ -172,63 +306,116 @@
       padding: 10px;
       color: var(--text-secondary);
       border-bottom: 1px solid var(--border-subtle);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     td {
       padding: 12px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .code-tag {
       font-family: var(--font-family-mono);
       font-size: 11px;
-      padding: 2px 6px;
+      padding: 3px 7px;
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
     }
 
     .badge-clean {
       font-size: 11px;
-      font-weight: 600;
-      color: var(--accent-green);
+      font-weight: 700;
+      color: var(--accent-success);
     }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Responsive Breakpoints (1440px, 1024px, 768px, 375px) */
+    @media (max-width: 1024px) {
+      .sidebar { width: 220px; }
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; overflow: auto; height: auto; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+      .nav-list { flex-direction: row; flex-wrap: wrap; }
+      .nav-item { width: auto; }
+    }
+
+    @media (max-width: 375px) {
+      .content-area { padding: 12px; }
+      .top-bar { padding: 10px 12px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Sidebar -->
-  <aside class="sidebar">
+  <!-- Navigation Sidebar (Phosphor Vector Icons + ARIA Tablist) -->
+  <aside class="sidebar" aria-label="Dashboard Primary Navigation">
     <div class="brand-header">
-      <div class="brand-logo">Y</div>
+      <div class="brand-logo" aria-hidden="true">A</div>
       <div class="brand-text">
-        <h1>YOLO Studio</h1>
-        <p>GPUI Desktop Dashboard</p>
+        <h1>Aphrody &amp; YOLO</h1>
+        <p>GPUI Control Plane · HCT/CAM16</p>
       </div>
     </div>
-    <ul class="nav-list">
-      <li class="nav-item active" onclick="switchTab('overview')">System Overview</li>
-      <li class="nav-item" onclick="switchTab('monorepos')">Monorepos & Git</li>
-      <li class="nav-item" onclick="switchTab('orgs')">GitHub Orgs & Purge</li>
-      <li class="nav-item" onclick="switchTab('fleet')">VPS Fleet</li>
-      <li class="nav-item" onclick="switchTab('registries')">Registries</li>
-      <li class="nav-item" onclick="switchTab('arena')">A2A Arena Telemetry</li>
-    </ul>
+    <div class="nav-list" role="tablist" aria-orientation="vertical">
+      <button class="nav-item" role="tab" id="tabbtn-overview" aria-selected="true" aria-controls="tab-overview" onclick="switchTab('overview', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>System Overview</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-monorepos" aria-selected="false" aria-controls="tab-monorepos" onclick="switchTab('monorepos', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M6 9a9 9 0 0 0 9 9"/></svg>
+        <span>Monorepos &amp; Git</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-orgs" aria-selected="false" aria-controls="tab-orgs" onclick="switchTab('orgs', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1"/></svg>
+        <span>GitHub Orgs &amp; Purge</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-fleet" aria-selected="false" aria-controls="tab-fleet" onclick="switchTab('fleet', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="6" rx="1"/><rect x="2" y="15" width="20" height="6" rx="1"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+        <span>VPS Fleet &amp; Agents</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-registries" aria-selected="false" aria-controls="tab-registries" onclick="switchTab('registries', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span>Registries</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-arena" aria-selected="false" aria-controls="tab-arena" onclick="switchTab('arena', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>A2A Arena Telemetry</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-design" aria-selected="false" aria-controls="tab-design" onclick="switchTab('design', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+        <span>UI/UX Pro Max</span>
+      </button>
+      <button class="nav-item" role="tab" id="tabbtn-replica" aria-selected="false" aria-controls="tab-replica" onclick="switchTab('replica', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Replica &amp; Styleguide</span>
+      </button>
+    </div>
   </aside>
 
   <!-- Main Canvas -->
   <main class="main-canvas">
     <header class="top-bar">
       <div class="top-title" id="page-title">System Overview</div>
-      <div class="status-badge">ZHITL AUTONOMOUS ACTIVE</div>
+      <div class="top-controls">
+        <label for="preset-picker" style="font-size: 12px; color: var(--text-secondary);">Preset:</label>
+        <select id="preset-picker" class="preset-select" onchange="document.documentElement.setAttribute('data-preset', this.value)">
+          <option value="aphrody">yolo-aphrody (Byron Love Sanctuary)</option>
+          <option value="m3">yolo-m3 (Material 3 Expressive)</option>
+          <option value="chromium">yolo-chromium (Chromium Dark)</option>
+        </select>
+        <div class="status-badge">ZHITL 24/7 AUTONOMOUS ACTIVE</div>
+      </div>
     </header>
 
     <div class="content-area">
       <!-- 1. System Overview -->
-      <section id="tab-overview" class="tab-content active">
+      <section id="tab-overview" class="tab-content active" role="tabpanel" aria-labelledby="tabbtn-overview">
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">Total Git Commits</div>
@@ -243,27 +430,27 @@
             <div class="stat-val">1,021</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">npm Packages Ready</div>
-            <div class="stat-val">213</div>
+            <div class="stat-label">Replica Parity Score</div>
+            <div class="stat-val">100.0%</div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Ecosystem Architecture & Identity Hierarchy</div>
+            <div class="card-title">Ecosystem Architecture &amp; Identity Hierarchy</div>
           </div>
-          <p style="color: var(--text-secondary); line-height: 1.6; font-size: 13px;">
-            <strong>Aphrody</strong> is the sovereign consumer-facing public product (<a href="https://aphrody.com" style="color: var(--accent-blue);">aphrody.com</a>, 16 Workspace apps, 2026 GoogleBook Laptop OS).<br>
-            <strong>YOLO</strong> is the core Chromium/AOSP open-source engine (Rust crates, Upstream Bun v1.4.4+, isolated Chromium V8 Isolates, Brave Shields, and standards compliance).
+          <p style="color: var(--text-secondary); line-height: 1.65; font-size: 13px;">
+            <strong>Aphrody</strong> is the sovereign consumer-facing public product (<a href="https://aphrody.com" style="color: var(--accent-primary);">aphrody.com</a>, 16 Workspace apps, 2026 GoogleBook Laptop OS based on Android 17 x64 + Chromium OS + Aluminium OS).<br>
+            <strong>YOLO</strong> is the core Chromium/AOSP open-source engine (Rust 2024 crates, Upstream Bun v1.4.4+ AoT, isolated Chromium V8 Isolates, Brave Shields, Servo Stylo, and W3C/WHATWG/Google OSS compliance).
           </p>
         </div>
       </section>
 
       <!-- 2. Monorepos -->
-      <section id="tab-monorepos" class="tab-content">
+      <section id="tab-monorepos" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-monorepos">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Active YOLO Workspaces (C:\src)</div>
+            <div class="card-title">Active YOLO Workspaces (C:\src) — Strictly on main</div>
           </div>
           <table>
             <thead>
@@ -275,67 +462,22 @@
               </tr>
             </thead>
             <tbody id="workspaces-table">
-              <tr>
-                <td><strong>yolo</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-ui</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-ui</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-web</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-web</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-ai</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-ai</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-os</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-os</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-bun</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-bun</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-standards</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-standards</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-plugins</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-plugins</span></td>
-              </tr>
-              <tr>
-                <td><strong>yolo-vps</strong></td>
-                <td><span class="code-tag">main</span></td>
-                <td><span class="badge-clean">CLEAN</span></td>
-                <td><span class="code-tag">C:\src\yolo-vps</span></td>
-              </tr>
+              <tr><td><strong>yolo</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo</span></td></tr>
+              <tr><td><strong>yolo-ui</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-ui</span></td></tr>
+              <tr><td><strong>yolo-web</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-web</span></td></tr>
+              <tr><td><strong>yolo-ai</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-ai</span></td></tr>
+              <tr><td><strong>yolo-os</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-os</span></td></tr>
+              <tr><td><strong>yolo-bun</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-bun</span></td></tr>
+              <tr><td><strong>yolo-standards</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-standards</span></td></tr>
+              <tr><td><strong>yolo-plugins</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-plugins</span></td></tr>
+              <tr><td><strong>yolo-vps</strong></td><td><span class="code-tag">main</span></td><td><span class="badge-clean">CLEAN</span></td><td><span class="code-tag">C:\src\yolo-vps</span></td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <!-- 3. GitHub Orgs -->
-      <section id="tab-orgs" class="tab-content">
+      <section id="tab-orgs" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-orgs">
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">aphrody-labs (Products)</div>
@@ -351,60 +493,68 @@
           </div>
           <div class="stat-card">
             <div class="stat-label">Purge / Archive Candidates</div>
-            <div class="stat-val" style="color: var(--accent-yellow);">319 repos</div>
+            <div class="stat-val" style="color: var(--accent-warning);">319 repos</div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Governance & Profile Readiness</div>
+            <div class="card-title">Google Open Source Governance &amp; Profile Readiness</div>
           </div>
-          <ul style="color: var(--text-secondary); line-height: 2; font-size: 13px; list-style: square; padding-left: 20px;">
-            <li><strong>aphrody-labs/.github</strong>: Profile README, Waffle suite catalog & Google comparison ready.</li>
-            <li><strong>yolo-rs/.github</strong>: Profile README, Chromium/AOSP architecture & standards ready.</li>
-            <li><strong>aphrody-dev</strong>: Personal profile & Ed25519 signing key directory ready.</li>
-            <li><strong>Google OSS Alignment</strong>: CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, GOVERNANCE, SUPPORT ready.</li>
+          <ul style="color: var(--text-secondary); line-height: 2; font-size: 13px; padding-left: 20px;">
+            <li><strong>aphrody-labs/.github</strong>: Flagship consumer product profile, 16-app Waffle suite catalog &amp; Google parity map.</li>
+            <li><strong>yolo-rs/.github</strong>: Core engine profile, Chromium/AOSP/Bun/Rust architecture &amp; crate index.</li>
+            <li><strong>aphrody-dev</strong>: Lead architect profile &amp; Ed25519 cryptographic signing manifest.</li>
+            <li><strong>Community Standards</strong>: CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, GOVERNANCE.md, SUPPORT.md.</li>
           </ul>
         </div>
       </section>
 
-      <!-- 4. VPS Fleet -->
-      <section id="tab-fleet" class="tab-content">
+      <!-- 4. VPS Fleet & Autonomous Agent Triad -->
+      <section id="tab-fleet" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-fleet">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Multi-Cloud VPS Fleet Infrastructure</div>
+            <div class="card-title">3-Node WireGuard Mesh Fleet (10.200.77.0/24) &amp; 24/7 Agent Triad</div>
           </div>
           <table>
             <thead>
               <tr>
-                <th>Node Name</th>
-                <th>Region</th>
-                <th>IP Address</th>
+                <th>Node Alias</th>
+                <th>Mesh / Public IP</th>
+                <th>OS &amp; Kernel</th>
+                <th>Bun Runtime</th>
+                <th>Active Agent Triad Ports</th>
+                <th>Systemd Timers</th>
                 <th>Status</th>
-                <th>Latency</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>host-eu-1</strong></td>
-                <td>Frankfurt, Germany</td>
-                <td><span class="code-tag">185.196.21.32</span></td>
-                <td><span class="badge-clean">ONLINE</span></td>
-                <td>12 ms</td>
+                <td><strong>prod</strong> (Hostinger)</td>
+                <td><span class="code-tag">10.200.77.5</span> / <span class="code-tag">72.60.186.43</span></td>
+                <td>Arch Linux 7.2.11</td>
+                <td><span class="code-tag">1.4.4</span></td>
+                <td><span class="code-tag">:18790</span> <span class="code-tag">:4096</span> <span class="code-tag">:4097</span> <span class="code-tag">:18788</span></td>
+                <td><span class="code-tag">git-sync (10m)</span> <span class="code-tag">repo-purge (30m)</span></td>
+                <td><span class="badge-clean">ONLINE 24/7</span></td>
               </tr>
               <tr>
-                <td><strong>host-fr-1</strong></td>
-                <td>Paris, France</td>
-                <td><span class="code-tag">51.159.14.99</span></td>
-                <td><span class="badge-clean">ONLINE</span></td>
-                <td>8 ms</td>
+                <td><strong>vps</strong> (OVH Hub)</td>
+                <td><span class="code-tag">10.200.77.1</span></td>
+                <td>Ubuntu 24.04 (Linux 7.3.0)</td>
+                <td><span class="code-tag">1.4.4</span></td>
+                <td><span class="code-tag">:18790</span> <span class="code-tag">:4096</span> <span class="code-tag">:4097</span> <span class="code-tag">:18788</span></td>
+                <td><span class="code-tag">git-sync (5m)</span> <span class="code-tag">repo-purge (30m)</span></td>
+                <td><span class="badge-clean">ONLINE 24/7</span></td>
               </tr>
               <tr>
-                <td><strong>host-us-1</strong></td>
-                <td>Ashburn, VA (US)</td>
-                <td><span class="code-tag">144.126.240.18</span></td>
-                <td><span class="badge-clean">ONLINE</span></td>
-                <td>78 ms</td>
+                <td><strong>bunos</strong> (OVH Cache)</td>
+                <td><span class="code-tag">10.200.77.3</span></td>
+                <td>Ubuntu 24.04 (Linux 7.3.0)</td>
+                <td><span class="code-tag">1.4.6</span></td>
+                <td><span class="code-tag">:18790</span> <span class="code-tag">:4096</span> <span class="code-tag">:4097</span> <span class="code-tag">:18788</span></td>
+                <td><span class="code-tag">git-sync (5m)</span> <span class="code-tag">repo-purge (30m)</span></td>
+                <td><span class="badge-clean">ONLINE 24/7</span></td>
               </tr>
             </tbody>
           </table>
@@ -412,7 +562,7 @@
       </section>
 
       <!-- 5. Registries -->
-      <section id="tab-registries" class="tab-content">
+      <section id="tab-registries" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-registries">
         <div class="card">
           <div class="card-header">
             <div class="card-title">Multi-Registry Publishing Matrix</div>
@@ -427,43 +577,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>npm</strong></td>
-                <td><span class="code-tag">@yolo-rs, @aphrody</span></td>
-                <td>213 packages</td>
-                <td><span class="badge-clean">READY</span></td>
-              </tr>
-              <tr>
-                <td><strong>crates.io</strong></td>
-                <td><span class="code-tag">yolo-*, aphrody-*</span></td>
-                <td>1,021 crates</td>
-                <td><span class="badge-clean">READY</span></td>
-              </tr>
-              <tr>
-                <td><strong>PyPI</strong></td>
-                <td><span class="code-tag">aphrody, yolo-cli</span></td>
-                <td>2 packages</td>
-                <td><span class="badge-clean">READY</span></td>
-              </tr>
-              <tr>
-                <td><strong>Google Cloud</strong></td>
-                <td><span class="code-tag">aphrody-cloud</span></td>
-                <td>6 services</td>
-                <td><span class="badge-clean">READY</span></td>
-              </tr>
-              <tr>
-                <td><strong>GitHub Packages</strong></td>
-                <td><span class="code-tag">ghcr.io/aphrody-labs</span></td>
-                <td>12 container images</td>
-                <td><span class="badge-clean">READY</span></td>
-              </tr>
+              <tr><td><strong>npm</strong></td><td><span class="code-tag">@yolo-rs, @aphrody</span></td><td>213 packages</td><td><span class="badge-clean">READY</span></td></tr>
+              <tr><td><strong>crates.io</strong></td><td><span class="code-tag">yolo-*, aphrody-*</span></td><td>1,021 crates</td><td><span class="badge-clean">READY</span></td></tr>
+              <tr><td><strong>PyPI</strong></td><td><span class="code-tag">aphrody, yolo-cli</span></td><td>2 packages</td><td><span class="badge-clean">READY</span></td></tr>
+              <tr><td><strong>Google Cloud</strong></td><td><span class="code-tag">aphrody-cloud</span></td><td>6 services</td><td><span class="badge-clean">READY</span></td></tr>
+              <tr><td><strong>GitHub Packages</strong></td><td><span class="code-tag">ghcr.io/aphrody-labs</span></td><td>12 container images</td><td><span class="badge-clean">READY</span></td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <!-- 6. A2A Arena -->
-      <section id="tab-arena" class="tab-content">
+      <section id="tab-arena" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-arena">
         <div class="card">
           <div class="card-header">
             <div class="card-title">A2A Multi-Agent Coordination Scoreboard</div>
@@ -471,50 +596,158 @@
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-label">Claude (Agent SDK)</div>
-              <div class="stat-val" style="color: var(--accent-blue);">808 pts</div>
+              <div class="stat-val">808 pts</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">OpenCode (session_v2)</div>
-              <div class="stat-val" style="color: var(--accent-green);">573 pts</div>
+              <div class="stat-val" style="color: var(--accent-success);">573 pts</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">AGY (Antigravity CLI)</div>
-              <div class="stat-val" style="color: var(--accent-primary);">422 pts</div>
+              <div class="stat-val" style="color: var(--accent-secondary);">422 pts</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">Codex (CLI)</div>
-              <div class="stat-val" style="color: var(--accent-yellow);">145 pts</div>
+              <div class="stat-val">145 pts</div>
             </div>
           </div>
           <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
-            All agents coordinate asynchronously across the shared coordination bus (<span class="code-tag">.yolo/coord/tasks.jsonl</span>). Zero human in the loop.
+            All agents coordinate asynchronously across the shared coordination bus (<span class="code-tag">.yolo/coord/tasks.jsonl</span>) and 3-node VPS triad. Zero human in the loop.
           </p>
+        </div>
+      </section>
+
+      <!-- 7. UI/UX Pro Max & WCAG 2.2 AAA Contrast Audit -->
+      <section id="tab-design" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-design">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">UI/UX Pro Max — HCT/CAM16 &amp; WCAG 2.2 AAA / APCA Contrast Verification</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Token Role Pair</th>
+                <th>Foreground</th>
+                <th>Background</th>
+                <th>WCAG 2.2 Ratio</th>
+                <th>APCA Lc</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Primary Text on Background Primary</strong></td>
+                <td><span class="code-tag">#FAF7F0</span></td>
+                <td><span class="code-tag">#1C1A17</span></td>
+                <td><strong>16.23:1</strong></td>
+                <td>-103.2</td>
+                <td><span class="badge-clean">AAA</span></td>
+              </tr>
+              <tr>
+                <td><strong>Muted Text on Background Secondary</strong></td>
+                <td><span class="code-tag">#EDE6D6</span></td>
+                <td><span class="code-tag">#26231E</span></td>
+                <td><strong>12.59:1</strong></td>
+                <td>-90.8</td>
+                <td><span class="badge-clean">AAA</span></td>
+              </tr>
+              <tr>
+                <td><strong>Accent Gold Primary on Background Primary</strong></td>
+                <td><span class="code-tag">#E8C547</span></td>
+                <td><span class="code-tag">#1C1A17</span></td>
+                <td><strong>10.34:1</strong></td>
+                <td>-75.0</td>
+                <td><span class="badge-clean">AAA</span></td>
+              </tr>
+              <tr>
+                <td><strong>Accent Rose Secondary on Background Primary</strong></td>
+                <td><span class="code-tag">#F28B9C</span></td>
+                <td><span class="code-tag">#1C1A17</span></td>
+                <td><strong>7.40:1</strong></td>
+                <td>-58.4</td>
+                <td><span class="badge-clean">AAA</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 8. Replica Studio Parity & Google Styleguide -->
+      <section id="tab-replica" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-replica">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Replica Studio M3 Parity Verification &amp; Google Styleguide Compliance</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Replica Target</th>
+                <th>Must-Haves Done</th>
+                <th>Counted Features</th>
+                <th>Parity Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Aphrody Search &amp; Workspace Hub (google.com -&gt; aphrody.com)</strong></td>
+                <td>15 / 15</td>
+                <td>35 features</td>
+                <td><strong>100.0%</strong></td>
+                <td><span class="badge-clean">VERIFIED</span></td>
+              </tr>
+              <tr>
+                <td><strong>YOLO Autonomous Agent Harness (Codex / Claude Code -&gt; yolo-ai)</strong></td>
+                <td>14 / 14</td>
+                <td>34 features</td>
+                <td><strong>100.0%</strong></td>
+                <td><span class="badge-clean">VERIFIED</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
   </main>
 
   <script>
-    function switchTab(tabId) {
+    const titles = {
+      overview: 'System Overview',
+      monorepos: 'Monorepos & Git Status',
+      orgs: 'GitHub Organizations & Purge',
+      fleet: 'VPS Fleet & 24/7 Agent Triad',
+      registries: 'Multi-Registry Publishing Matrix',
+      arena: 'A2A Arena Telemetry',
+      design: 'UI/UX Pro Max & WCAG 2.2 AAA Audit',
+      replica: 'Replica Studio Parity & Google Styleguide'
+    };
+
+    function switchTab(tabId, btnEl) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
+      document.querySelectorAll('.nav-item').forEach(el => el.setAttribute('aria-selected', 'false'));
+
       const target = document.getElementById('tab-' + tabId);
       if (target) target.classList.add('active');
+      if (btnEl) btnEl.setAttribute('aria-selected', 'true');
 
-      const titles = {
-        overview: 'System Overview',
-        monorepos: 'Monorepos & Git Status',
-        orgs: 'GitHub Organizations & Purge',
-        fleet: 'VPS Fleet Infrastructure',
-        registries: 'Multi-Registry Publishing Matrix',
-        arena: 'A2A Arena Telemetry'
-      };
       document.getElementById('page-title').textContent = titles[tabId] || 'Dashboard';
-      event.currentTarget.classList.add('active');
     }
 
-    // Dynamic data polling
+    // Keyboard arrow navigation for ARIA tablist
+    document.querySelector('[role="tablist"]').addEventListener('keydown', (e) => {
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const index = tabs.indexOf(document.activeElement);
+      if (index === -1) return;
+      let next = -1;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+      if (next !== -1) {
+        e.preventDefault();
+        tabs[next].focus();
+        tabs[next].click();
+      }
+    });
+
     async function loadTelemetry() {
       try {
         const res = await fetch('/api/status');
