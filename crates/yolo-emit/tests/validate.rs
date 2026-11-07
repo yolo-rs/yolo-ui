@@ -74,10 +74,10 @@ fn defined_vars(code: &str) -> BTreeSet<String> {
     let mut out = BTreeSet::new();
     for line in code.lines() {
         let line = line.trim();
-        if let Some(rest) = line.strip_prefix("--") {
-            if let Some((name, _)) = rest.split_once(':') {
-                out.insert(name.trim().to_owned());
-            }
+        if let Some(rest) = line.strip_prefix("--")
+            && let Some((name, _)) = rest.split_once(':')
+        {
+            out.insert(name.trim().to_owned());
         }
     }
     out
@@ -575,6 +575,7 @@ mod cosmic_schema {
 
     #[derive(Deserialize, Debug)]
     #[serde(deny_unknown_fields)]
+    #[allow(dead_code)]
     pub struct PaletteInner {
         pub name: String,
         pub bright_red: Srgba,
@@ -612,6 +613,7 @@ mod cosmic_schema {
     }
 
     #[derive(Deserialize, Debug)]
+    #[allow(dead_code)]
     pub enum Palette {
         Dark(PaletteInner),
         Light(PaletteInner),
@@ -621,6 +623,7 @@ mod cosmic_schema {
 
     #[derive(Deserialize, Debug)]
     #[serde(deny_unknown_fields)]
+    #[allow(dead_code)]
     pub struct Spacing {
         pub space_none: u16,
         pub space_xxxs: u16,
@@ -636,6 +639,7 @@ mod cosmic_schema {
 
     #[derive(Deserialize, Debug)]
     #[serde(deny_unknown_fields)]
+    #[allow(dead_code)]
     pub struct CornerRadii {
         pub radius_0: [f32; 4],
         pub radius_xs: [f32; 4],
