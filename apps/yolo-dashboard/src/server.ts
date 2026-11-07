@@ -268,6 +268,50 @@ export function createDashboardRoutes() {
         },
       });
     },
+    "/api/unified-dashboards": () => {
+      return Response.json({
+        unified: true,
+        version: "1.4.7",
+        dashboards: [
+          {
+            id: "yolo-gpui-desktop",
+            name: "YOLO GPUI Desktop Dashboard",
+            role: "Native Rust GPUI / Bun Fullstack Hybrid Operating Console",
+            port: 8794,
+            url: "http://localhost:8794",
+            status: "active",
+            type: "desktop-gpui",
+          },
+          {
+            id: "aphrody-webos",
+            name: "Aphrody WebOS & Workspace Hub",
+            role: "Sovereign Cloud Web Desktop & Multi-Window Agent Workspace",
+            port: 8787,
+            url: "https://os.aphrody.com",
+            status: "active",
+            type: "webos-cloud",
+          },
+          {
+            id: "shenron-monitor",
+            name: "Shenron Crawl & Fleet Monitor",
+            role: "Distributed High-Concurrency Stealth Crawler & Fleet Observer",
+            port: 8790,
+            url: "http://localhost:8790",
+            status: "active",
+            type: "monitor-crawler",
+          },
+        ],
+        distribution: {
+          cdn: "https://cdn.aphrody.com/releases/v1.4.7",
+          downloads: "https://downloads.aphrody.com",
+          apt: "https://apt.aphrody.app",
+          winget: "Aphrody.Aphrody",
+          aur: "aphrody-bin",
+          bun: "@aphrody/cli",
+          cargo: "aphrody",
+        },
+      });
+    },
   };
 }
 

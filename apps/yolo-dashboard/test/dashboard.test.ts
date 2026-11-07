@@ -89,7 +89,22 @@ describe("YOLO & Aphrody GPUI Desktop Dashboard Server", () => {
     expect(data.parityMatrices.every((m) => m.score === 100.0 && m.mustHaveDone === m.mustHaveTotal)).toBe(true);
   });
 
-  test("8. dashboard-ui.html complies with Modern Web Guidelines, UI/UX Pro Max, and Zero-Emoji / Zero-Roboto rules", () => {
+  test("8. GET /api/unified-dashboards returns YOLO GPUI, Aphrody WebOS, and Shenron Monitor", async () => {
+    const res = (routes as any)["/api/unified-dashboards"]();
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as any;
+
+    expect(data.unified).toBe(true);
+    expect(data.dashboards.length).toBe(3);
+    const ids = data.dashboards.map((d: any) => d.id);
+    expect(ids).toContain("yolo-gpui-desktop");
+    expect(ids).toContain("aphrody-webos");
+    expect(ids).toContain("shenron-monitor");
+    expect(data.distribution.winget).toBe("Aphrody.Aphrody");
+    expect(data.distribution.cdn).toContain("https://cdn.aphrody.com/releases");
+  });
+
+  test("9. dashboard-ui.html complies with Modern Web Guidelines, UI/UX Pro Max, and Zero-Emoji / Zero-Roboto rules", () => {
     const html = readFileSync(join(import.meta.dir, "../src/dashboard-ui.html"), "utf-8");
     const emojis = html.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu) ?? [];
     expect(emojis.length).toBe(0);
