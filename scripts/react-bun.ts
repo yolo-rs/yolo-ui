@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // scripts/react-bun.ts — 100% Native Bun v1.4.4+ CLI for Yolo React 19 & Expo SDK 53/54 + Rust Engine
 // Commands:
-//   bun run scripts/react-bun.ts create <app-dir> [--template web|expo|universal|tauri] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody]
+//   bun run scripts/react-bun.ts create <app-dir> [--template web|expo|universal|tauri] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium]
 //   bun run scripts/react-bun.ts purge-node [target-dir]
 //   bun run scripts/react-bun.ts patch-expo [target-dir] [--preset <preset>]
 //   bun run scripts/react-bun.ts build [entry] [--outdir <dir>] [--preset <preset>]
@@ -355,7 +355,7 @@ if (import.meta.main) {
     const targetDir = args[1];
     if (!targetDir) {
       console.error(
-        "Usage: bun run scripts/react-bun.ts create <app-dir> [--template web|expo|universal|tauri] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody]",
+        "Usage: bun run scripts/react-bun.ts create <app-dir> [--template web|expo|universal|tauri] [--preset neutral|m3|fluent|apple|omarchy|hyprland|aphrody|chromium]",
       );
       process.exit(1);
     }

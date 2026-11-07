@@ -27,6 +27,7 @@ describe("@yolo-rs/shadcn-bun", () => {
       "omarchy",
       "hyprland",
       "aphrody",
+      "chromium",
     ]);
   });
 

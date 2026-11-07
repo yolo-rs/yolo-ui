@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
-// @yolo-rs/react/core — Universal 7-Preset Theme Engine, Context Contract & React Web + React Native Token Bridge
+// @yolo-rs/react/core — Universal 8-Preset Theme Engine, Context Contract & React Web + React Native Token Bridge
 // Unifies @aphrody/m3-theme, @aphrody/m3-tokens, and crates/yolo-shared + crates/yolo-tokens.
 
 export type YoloPresetId =
-  "neutral" | "m3" | "fluent" | "apple" | "omarchy" | "hyprland" | "aphrody";
+  | "neutral"
+  | "m3"
+  | "fluent"
+  | "apple"
+  | "omarchy"
+  | "hyprland"
+  | "aphrody"
+  | "chromium";
 
 export type CanonicalYoloPresetId =
   | "yolo-neutral"
@@ -12,7 +19,8 @@ export type CanonicalYoloPresetId =
   | "yolo-apple"
   | "yolo-omarchy"
   | "yolo-hyprland"
-  | "yolo-aphrody";
+  | "yolo-aphrody"
+  | "yolo-chromium";
 
 export type OmarchySubThemeId =
   | "tokyo-night"
@@ -312,7 +320,7 @@ const PRESET_CATALOG: Record<YoloPresetId, PresetRecord> = {
       bgSurface: "#28282a",
       bgElevated: "#323236",
       textPrimary: "#ffffff",
-      textSecondary: "#98989d",
+      textSecondary: "#a1a1a6",
       accentPrimary: "#0a84ff",
       accentSecondary: "#30d158",
       borderSubtle: "rgba(255, 255, 255, 0.14)",
@@ -323,7 +331,7 @@ const PRESET_CATALOG: Record<YoloPresetId, PresetRecord> = {
       bgSurface: "#ffffff",
       bgElevated: "#ebebf0",
       textPrimary: "#1d1d1f",
-      textSecondary: "#86868b",
+      textSecondary: "#56565c",
       accentPrimary: "#007aff",
       accentSecondary: "#34c759",
       borderSubtle: "rgba(0, 0, 0, 0.10)",
@@ -475,6 +483,48 @@ const PRESET_CATALOG: Record<YoloPresetId, PresetRecord> = {
       windowVibrancy: "acrylic-dark-glass",
     },
   },
+  chromium: {
+    preset: "chromium",
+    canonicalId: "yolo-chromium",
+    displayName: "Chromium Views + WebUI (customizable HCT)",
+    seedHex: "#1A73E8",
+    seedArgb: 0xff1a73e8,
+    dark: {
+      name: "yolo-chromium-dark",
+      bgPrimary: "#202124",
+      bgSurface: "#292a2d",
+      bgElevated: "#35363a",
+      textPrimary: "#e8eaed",
+      textSecondary: "#9aa0a6",
+      accentPrimary: "#8ab4f8",
+      accentSecondary: "#a8c7fa",
+      borderSubtle: "rgba(255, 255, 255, 0.10)",
+    },
+    light: {
+      name: "yolo-chromium-light",
+      bgPrimary: "#f8f9fa",
+      bgSurface: "#ffffff",
+      bgElevated: "#f1f3f4",
+      textPrimary: "#202124",
+      textSecondary: "#5f6368",
+      accentPrimary: "#1a73e8",
+      accentSecondary: "#1967d2",
+      borderSubtle: "#dadce0",
+    },
+    style: {
+      radiusSmPx: 4,
+      radiusMdPx: 8,
+      radiusLgPx: 12,
+      radiusPillPx: 9999,
+      spacingGridPx: 8,
+      fontFamilyUi: "Arial, system-ui, sans-serif",
+      fontFamilyMono: "'Roboto Mono', ui-monospace, monospace",
+      backdropBlurPx: 0,
+      elevationLevel: 1,
+      borderWidthPx: 1,
+      windowVibrancy: "none",
+    },
+  },
 };
 
 export const YOLO_PRESET_IDS: readonly YoloPresetId[] = [
@@ -485,6 +535,7 @@ export const YOLO_PRESET_IDS: readonly YoloPresetId[] = [
   "omarchy",
   "hyprland",
   "aphrody",
+  "chromium",
 ] as const;
 
 export function parseYoloPreset(input?: string): YoloPresetId {
@@ -527,6 +578,11 @@ export function parseYoloPreset(input?: string): YoloPresetId {
     case "byron-love":
     case "byron":
       return "aphrody";
+    case "chromium":
+    case "yolo-chromium":
+    case "chrome":
+    case "chrome-webui":
+      return "chromium";
     default:
       throw new RangeError(
         `Unknown YoloThemePreset "${input}". Expected one of: ${YOLO_PRESET_IDS.join(", ")}`,

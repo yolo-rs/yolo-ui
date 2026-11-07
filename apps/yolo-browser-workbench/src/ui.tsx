@@ -119,7 +119,7 @@ function WorkbenchView({
         fontFamily: "system-ui, sans-serif",
       }}
     >
-      <a href="#browser-main" style={hiddenLabel}>
+      <a href="#browser-main" class="skip-link" style={hiddenLabel}>
         Skip to browser workspace
       </a>
       <header
@@ -310,6 +310,12 @@ export function renderHumanBrowserHtml(
   const preset = resolveThemePreset(page.themePreset ?? config.themePreset);
   const renderConfig = { ...config, themePreset: preset };
   const renderPage = { ...page, themePreset: preset };
+  const color = yoloThemePresets.themes[preset].colors;
+  const a11yCss = [
+    `.skip-link:focus-visible { position: fixed !important; inset-block-start: 0.75rem !important; inset-inline-start: 0.75rem !important; z-index: 100 !important; inline-size: auto !important; block-size: auto !important; padding: 0.5rem 0.875rem !important; clip-path: none !important; overflow: visible !important; border-radius: 0.5rem; background: ${color.accent}; color: ${color.canvas}; font-weight: 700; text-decoration: none; outline: 2px solid ${color.text}; outline-offset: 2px; }`,
+    `a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, pre:focus-visible { outline: 2px solid ${color.accent}; outline-offset: 2px; }`,
+    `@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }`,
+  ].join("\n");
   return `<!doctype html>${renderToString(
     <html lang="en">
       <head>
@@ -321,6 +327,7 @@ export function renderHumanBrowserHtml(
           content="A Bun-hosted browser research workbench for controlling Chromium over the Chrome DevTools Protocol."
         />
         <title>YOLO-Web Browser Workbench</title>
+        <style>{a11yCss}</style>
       </head>
       <body style={{ margin: 0 }}>
         <WorkbenchView config={renderConfig} page={renderPage} />

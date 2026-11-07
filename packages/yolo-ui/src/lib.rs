@@ -135,16 +135,20 @@ pub mod engine {
 }
 
 /// Yolo UI Neutral & Multi-Preset Design System Tokens (`yolo-neutral`, `yolo-m3`,
-/// `yolo-fluent`, `yolo-apple`, `yolo-omarchy`, `yolo-hyprland`, `yolo-aphrody`).
+/// `yolo-fluent`, `yolo-apple`, `yolo-omarchy`, `yolo-hyprland`, `yolo-aphrody`, `yolo-chromium`).
 /// Re-exported from the shared foundation crate [`yolo_shared`].
 pub mod theme {
     pub use yolo_shared::{
         APHRODY_DARK_THEME, AphrodyThemeTokens, BYRON_LOVE_PALETTE, BYRON_LOVE_PET_SPEC,
         ByronLovePetSpec, HYPRLAND_DECORATION_SPEC, HyprlandDecorationSpec, OMARCHY_THEMES,
-        OmarchySubTheme, OmarchyThemePalette, RgbaColor, YOLO_APPLE_DARK_THEME,
-        YOLO_FLUENT_DARK_THEME, YOLO_HYPRLAND_DARK_THEME, YOLO_M3_DARK_THEME,
-        YOLO_NEUTRAL_DARK_THEME, YOLO_OMARCHY_DARK_THEME, YoloManifest, YoloStyle,
-        YoloThemePreset, YoloThemeTokens, css_preset_variables, css_variables,
+        OmarchySubTheme, OmarchyThemePalette, RgbaColor, YOLO_APHRODY_DARK_THEME,
+        YOLO_APHRODY_LIGHT_THEME, YOLO_APPLE_DARK_THEME, YOLO_APPLE_LIGHT_THEME,
+        YOLO_CHROMIUM_DARK_THEME, YOLO_CHROMIUM_LIGHT_THEME, YOLO_DEFAULT_THEME,
+        YOLO_FLUENT_DARK_THEME, YOLO_FLUENT_LIGHT_THEME, YOLO_HYPRLAND_DARK_THEME,
+        YOLO_HYPRLAND_LIGHT_THEME, YOLO_M3_DARK_THEME, YOLO_M3_LIGHT_THEME,
+        YOLO_NEUTRAL_DARK_THEME, YOLO_NEUTRAL_LIGHT_THEME, YOLO_OMARCHY_DARK_THEME,
+        YOLO_OMARCHY_LIGHT_THEME, YoloManifest, YoloStyle, YoloThemePreset, YoloThemeTokens,
+        css_preset_variables, css_variables,
     };
 }
 

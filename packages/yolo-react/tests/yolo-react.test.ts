@@ -44,6 +44,7 @@ describe("@yolo-rs/react — Core 7-Preset Theme Engine", () => {
       "omarchy",
       "hyprland",
       "aphrody",
+      "chromium",
     ]);
     expect(OMARCHY_SUBTHEME_IDS.length).toBe(23);
 

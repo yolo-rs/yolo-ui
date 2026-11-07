@@ -1,7 +1,7 @@
 {
   "name": "@yolo-rs/yolo-ui",
   "version": "0.8.0-alpha.3",
-  "description": "Yolo UI (yolo-rs/yolo-ui) Unified Multi-Engine Fullstack Rust + Bun UI Framework Monorepo (Dioxus 0.8 + Blitz + GPUI + Iced/Cosmic + Egui + GTK4 + Qt6 + Tauri v3 + React 19/Expo + 7 Theme Presets)",
+  "description": "Yolo UI (yolo-rs/yolo-ui) Unified Multi-Engine Fullstack Rust + Bun UI Framework Monorepo (Dioxus 0.8 + Blitz + GPUI + Iced/Cosmic + Egui + GTK4 + Qt6 + Tauri v3 + React 19/Expo + 8 Theme Presets)",
   "private": true,
   "type": "module",
   "sideEffects": false,

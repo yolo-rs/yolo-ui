@@ -108,6 +108,12 @@ impl CraftBrand {
         Self::for_preset(YoloThemePreset::Aphrody)
     }
 
+    /// Chromium Views + WebUI Craft brand (`#1A73E8`).
+    #[must_use]
+    pub fn chromium() -> Self {
+        Self::for_preset(YoloThemePreset::Chromium)
+    }
+
     /// Formats a window title for a Craft capability (e.g. `"Yolo Craft — CAD"`).
     #[must_use]
     pub fn title_for(&self, capability: &str) -> String {

@@ -3,6 +3,8 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { runIconsCli } from "./ui-icons";
 
+const REPO_ROOT = join(import.meta.dir, "..");
+
 // The MCP, plugin and skill modules load lazily so `bun ui icons` runs without the workspace packages installed.
 async function loadUiCore() {
   const [mcp, plugin, core] = await Promise.all([

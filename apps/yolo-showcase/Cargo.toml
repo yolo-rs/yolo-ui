@@ -4,7 +4,7 @@ version = { workspace = true }
 authors = ["Yolo UI Contributors <contact@aphrody.com>"]
 edition = "2024"
 rust-version.workspace = true
-description = "Unified multi-engine & 7-theme showcase app for Yolo UI (Dioxus 0.8, GPUI, Iced, Cosmic, Egui, GTK4, Qt6, Tauri v3, Craft, Storyteller, Migrator & React 19/Expo)."
+description = "Unified multi-engine & 8-theme showcase app for Yolo UI (Dioxus 0.8, GPUI, Iced, Cosmic, Egui, GTK4, Qt6, Tauri v3, Craft, Storyteller, Migrator & React 19/Expo)."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/yolo-rs/yolo-ui"
 publish = false

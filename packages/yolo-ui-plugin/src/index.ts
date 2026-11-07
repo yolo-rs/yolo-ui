@@ -418,7 +418,7 @@ export const YOLO_THEME_PRESETS: Record<NormalizedPresetId, YoloThemeTokens> = {
     backgroundSecondary: "#1C1C1E",
     surfaceElevated: "#2C2C2E",
     textPrimary: "#FFFFFF",
-    textMuted: "#8E8E93",
+    textMuted: "#A1A1A6",
     accentPrimary: "#0A84FF",
     accentSecondary: "#5E5CE6",
     accentSuccess: "#30D158",
@@ -1078,7 +1078,7 @@ export const DEVTOOLS_REGISTRY: Record<DevtoolsEngineId, DevtoolsDescriptor> = {
     name: "Dioxus 0.8 Subsecond Hot-Patch & Devtools",
     ecosystem: "DioxusLabs",
     crateBridge: "packages/dioxus",
-    submodulePath: "submodules/subsecond",
+    submodulePath: "packages/subsecond",
     launchCommand: "dx serve --hot-reload --subsecond",
     envVars: { DIOXUS_LOG: "debug", SUBSECOND_HOTPATCH: "1" },
     features: [
@@ -1095,7 +1095,7 @@ export const DEVTOOLS_REGISTRY: Record<DevtoolsEngineId, DevtoolsDescriptor> = {
     name: "Zed GPUI Inspector & Longbridge GPUI-Component Catalog",
     ecosystem: "Zed Industries + Longbridge",
     crateBridge: "packages/yolo-gpui",
-    submodulePath: "submodules/gpui-component",
+    submodulePath: "submodules/gpui-kit",
     launchCommand: "cargo run -p yolo-showcase -- --engine gpui --devtools",
     envVars: { GPUI_DEBUG_LAYOUT: "1", WGPU_BACKEND: "primary" },
     features: [

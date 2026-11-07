@@ -3,14 +3,27 @@ declare module "node:path" {
   export function resolve(...paths: string[]): string;
   export function dirname(path: string): string;
   export function basename(path: string, ext?: string): string;
+  export function relative(from: string, to: string): string;
 }
 
 declare module "node:fs" {
+  export interface Dirent {
+    name: string;
+    isDirectory(): boolean;
+    isFile(): boolean;
+  }
   export function existsSync(path: string): boolean;
   export function readFileSync(
     path: string,
     encoding: "utf8" | "utf-8",
   ): string;
+  export function readdirSync(
+    path: string,
+    options: { withFileTypes: true },
+  ): Dirent[];
+  export function readdirSync(path: string): string[];
+  export function renameSync(oldPath: string, newPath: string): void;
+  export function statSync(path: string): { size: number; mtimeMs: number; isDirectory(): boolean };
 }
 
 declare module "node:fs/promises" {
@@ -199,6 +212,12 @@ declare namespace Bun {
     constructor(options?: { loader?: "ts" | "tsx" | "js" | "jsx" });
     transformSync(code: string): string;
   }
+  class CryptoHasher {
+    constructor(algorithm: string);
+    update(data: string | Uint8Array): this;
+    digest(encoding: "hex" | "base64"): string;
+    digest(): Uint8Array;
+  }
 }
 
 interface ImportMeta {
@@ -211,6 +230,7 @@ interface ImportMeta {
 declare const process: {
   readonly argv: string[];
   readonly pid: number;
+  readonly platform: string;
   readonly execPath: string;
   readonly env: Record<string, string | undefined>;
   cwd(): string;

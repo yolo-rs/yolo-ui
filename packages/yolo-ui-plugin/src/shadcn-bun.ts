@@ -15,7 +15,14 @@ export type YoloMigrationTarget =
 
 /** All 8 Yolo UI theme presets (`yolo-shared::YoloThemePreset`). */
 export type YoloThemePresetId =
-  "neutral" | "m3" | "fluent" | "apple" | "omarchy" | "hyprland" | "aphrody";
+  | "neutral"
+  | "m3"
+  | "fluent"
+  | "apple"
+  | "omarchy"
+  | "hyprland"
+  | "aphrody"
+  | "chromium";
 
 export const YOLO_MIGRATION_TARGETS: readonly YoloMigrationTarget[] = [
   "dioxus",
@@ -34,6 +41,7 @@ export const YOLO_THEME_PRESETS: readonly YoloThemePresetId[] = [
   "omarchy",
   "hyprland",
   "aphrody",
+  "chromium",
 ] as const;
 
 /** Parsed Shadcn UI `components.json` configuration. */
@@ -504,6 +512,8 @@ function presetToRustVariant(preset: YoloThemePresetId): string {
       return "YoloThemePreset::Hyprland";
     case "aphrody":
       return "YoloThemePreset::Aphrody";
+    case "chromium":
+      return "YoloThemePreset::Chromium";
   }
 }
 

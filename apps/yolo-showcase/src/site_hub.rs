@@ -676,7 +676,7 @@ pub fn render_yolo_aphrody_com_html() -> String {
             <span class="badge-outline">Dioxus 0.8 • Iced 0.14 • Egui 0.36 • Taffy 0.15 • WGPUI 30/29 • Zed GPUI</span>
         </div>
         <nav>
-            <a href="#showcase">Showcase (7 Presets &amp; 9 Engines)</a>
+            <a href="#showcase">Showcase (8 Presets &amp; 9 Engines)</a>
             <a href="#migration">Plan de Migration (6 Piliers)</a>
             <a href="#templates">Starter Templates (8)</a>
             <a href="#awesome">Awesome Hub (124 Submodules)</a>
@@ -695,7 +695,7 @@ pub fn render_yolo_aphrody_com_html() -> String {
                 <strong>Outils en Rust Natif</strong>.
             </p>
             <p>
-                <strong>7 Presets Thèmes</strong> (Neutral par défaut, M3, Fluent, Apple, Omarchy {omarchy_count} sous-thèmes, Hyprland {hypr_angle}deg, Aphrody Byron Love {byron_cols}x{byron_rows} {byron_teintes} teintes) •
+                <strong>8 Presets Thèmes</strong> (Neutral par défaut, M3, Fluent, Apple, Omarchy {omarchy_count} sous-thèmes, Hyprland {hypr_angle}deg, Aphrody Byron Love {byron_cols}x{byron_rows} {byron_teintes} teintes, Chromium WebUI) •
                 <strong>124 Sous-modules <code>yolo-rs/*</code></strong>.
             </p>
         </div>
@@ -745,7 +745,8 @@ pub fn render_yolo_aphrody_com_html() -> String {
             "yolo-apple":    {{ bg: "#1c1c1e", surface: "#2c2c2e", elevated: "#3a3a3c", accent: "#0a84ff", radius: "10px" }},
             "yolo-omarchy":  {{ bg: "#1a1b26", surface: "#24283b", elevated: "#414868", accent: "#7aa2f7", radius: "0px" }},
             "yolo-hyprland": {{ bg: "#0b0e14", surface: "#111622", elevated: "#192030", accent: "#33ccff", radius: "10px" }},
-            "yolo-aphrody":  {{ bg: "#090b10", surface: "#111520", elevated: "#181e2e", accent: "#7c5cff", radius: "12px" }}
+            "yolo-aphrody":  {{ bg: "#090b10", surface: "#111520", elevated: "#181e2e", accent: "#7c5cff", radius: "12px" }},
+            "yolo-chromium": {{ bg: "#202124", surface: "#292a2d", elevated: "#35363a", accent: "#8ab4f8", radius: "8px" }}
         }};
         window.setYoloPreset = function(id) {{
             const p = PRESET_VARS[id] || PRESET_VARS["yolo-neutral"];

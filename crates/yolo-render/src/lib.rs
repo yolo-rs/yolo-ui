@@ -69,6 +69,9 @@ pub mod pipeline3d;
 /// OBJ and glTF 2.0 (`.gltf`/`.glb`) model import into the 3D scene graph.
 pub mod model;
 
+/// Native 3D authoring: polygon modeling, sculpting, skeletal rigging, keyframe animation, and skinned glTF 2.0 I/O.
+pub mod author3d;
+
 /// Deterministic benchmark and test scenes.
 pub mod fixtures;
 

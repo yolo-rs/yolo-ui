@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-//! 7-Preset Universal Theme Bridge for React 19 Web CSS + React Native `StyleSheet` / `PlatformColor`.
+//! 8-Preset Universal Theme Bridge for React 19 Web CSS + React Native `StyleSheet` / `PlatformColor`.
 //!
 //! Bridges `yolo-shared` (`YoloThemePreset`, `OmarchySubTheme`, `HYPRLAND_DECORATION_SPEC`,
 //! `BYRON_LOVE_PALETTE`) and `yolo-tokens` (`scheme_for_preset`, `Role`) into:
@@ -18,7 +18,7 @@ use yolo_tokens::role::Role;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReactNativeThemePayload {
-    /// Canonical preset id (`"yolo-neutral"`, `"yolo-m3"`, `"yolo-fluent"`, `"yolo-apple"`, `"yolo-omarchy"`, `"yolo-hyprland"`, `"yolo-aphrody"`).
+    /// Canonical preset id (`"yolo-neutral"`, `"yolo-m3"`, `"yolo-fluent"`, `"yolo-apple"`, `"yolo-omarchy"`, `"yolo-hyprland"`, `"yolo-aphrody"`, `"yolo-chromium"`).
     pub preset_id: String,
     /// Human-readable display name.
     pub display_name: String,

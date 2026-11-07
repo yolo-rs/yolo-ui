@@ -1,6 +1,6 @@
-//! Unified multi-engine & 7-theme showcase binary (`apps/yolo-showcase`) verifying that
-//! `yolo-shared` (Neutral default + 7 presets: Neutral, M3, Fluent, Apple, Omarchy + 23 subthemes,
-//! Hyprland, and Aphrody Byron Love), `yolo-ui` (Dioxus 0.8), and `yolo-engines` adapters for
+//! Unified multi-engine & 8-theme showcase binary (`apps/yolo-showcase`) verifying that
+//! `yolo-shared` (Neutral default + 8 presets: Neutral, M3, Fluent, Apple, Omarchy + 23 subthemes,
+//! Hyprland, Aphrody Byron Love, and Chromium), `yolo-ui` (Dioxus 0.8), and `yolo-engines` adapters for
 //! GPUI, Iced/Cosmic, Egui, GTK, Qt, and Tauri,
 //! `yolo-craft` (13 Creative Workbenches), `yolo-storyteller` (10 Storyteller Modules),
 //! `yolo-migrator` (Shadcn/Tailwind/Radix/BaseUI TSX -> 6 Rust targets), and
@@ -46,12 +46,12 @@ fn main() {
     i18n.catalog.insert(
         "en",
         "app.title",
-        "Yolo UI Unified Multi-Engine & 7-Theme Monorepo",
+        "Yolo UI Unified Multi-Engine & 8-Theme Monorepo",
     );
     i18n.catalog.insert(
         "fr",
         "app.title",
-        "Monorepo Unifié Multi-Moteur & 7 Thèmes Yolo UI",
+        "Monorepo Unifié Multi-Moteur & 8 Thèmes Yolo UI",
     );
 
     let freq = FreqRange::audible_spectrum();
@@ -96,7 +96,7 @@ fn main() {
         manifest.app_id,
         manifest.theme_preset.as_str()
     );
-    println!("7 Theme Presets  :");
+    println!("8 Theme Presets  :");
     for preset in YoloThemePreset::ALL {
         let style = YoloStyle::for_preset(preset);
         let css = css_preset_variables(preset, true);
