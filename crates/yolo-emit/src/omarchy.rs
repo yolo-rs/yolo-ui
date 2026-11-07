@@ -81,8 +81,8 @@ pub fn colors_toml(src: &ThemeSource, dark: bool) -> String {
         let h = HYPRLAND_DECORATION_SPEC;
         format!(
             "rgb({}) rgb({}) {}deg",
-            &h.active_border_start_hex[1..].to_ascii_lowercase(),
-            &h.active_border_end_hex[1..].to_ascii_lowercase(),
+            h.active_border_start_hex[1..].to_ascii_lowercase(),
+            h.active_border_end_hex[1..].to_ascii_lowercase(),
             h.active_border_angle_deg
         )
     } else {
