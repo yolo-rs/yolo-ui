@@ -106,6 +106,88 @@ pub const APHRODY_RED: u32 = 0xFFE5_3935;
 /// (Material You green-600 `#34A853`).
 pub const APHRODY_GREEN_DEEP: u32 = 0xFF34_A853;
 
+// ---------------------------------------------------------------------------
+// Evolving Google Identity (2025-2026) & Aphrody Signature 4-Color Gradients
+// Reference: <https://design.google/library/evolving-google-identity>
+// ---------------------------------------------------------------------------
+
+/// Google's evolved 4-color gradient stop 1: Google Blue (`#4285F4`).
+pub const EVOLVING_GOOGLE_BLUE: u32 = 0xFF42_85F4;
+/// Google's evolved 4-color gradient transition stop: Gemini Purple (`#9B72CB`).
+pub const EVOLVING_GOOGLE_PURPLE: u32 = 0xFF9B_72CB;
+/// Google's evolved 4-color gradient stop 2: Coral / Red (`#D96570`).
+pub const EVOLVING_GOOGLE_CORAL: u32 = 0xFFD9_6570;
+/// Google's evolved 4-color gradient stop 3: Google Yellow (`#F4B400`).
+pub const EVOLVING_GOOGLE_YELLOW: u32 = 0xFFF4_B400;
+/// Google's evolved 4-color gradient stop 4: Google Green (`#34A853`).
+pub const EVOLVING_GOOGLE_GREEN: u32 = 0xFF34_A853;
+
+/// Aphrody's signature 4-color gradient stop 1: Deep Navy / Byron Love Royal Azur (`#17335C`).
+pub const APHRODY_SIGNATURE_NAVY: u32 = 0xFF17_335C;
+/// Aphrody's signature 4-color gradient stop 2: Electric Violet (`#7C5CFF`).
+pub const APHRODY_SIGNATURE_VIOLET: u32 = 0xFF7C_5CFF;
+/// Aphrody's signature 4-color gradient stop 3: Celestial Cyan (`#00D4FF`).
+pub const APHRODY_SIGNATURE_CYAN: u32 = 0xFF00_D4FF;
+/// Aphrody's signature 4-color gradient stop 4: Divine Gold (`#FFD700`).
+pub const APHRODY_SIGNATURE_GOLD: u32 = 0xFFFF_D700;
+
+/// Google's Evolving Identity (2025-2026) 5-stop gradient system:
+/// Blue (`#4285F4`) -> Purple (`#9B72CB`) -> Coral/Red (`#D96570`) -> Yellow (`#F4B400`) -> Green (`#34A853`).
+pub const EVOLVING_GOOGLE_IDENTITY_GRADIENT: LinearGradient = LinearGradient {
+    angle_deg: 135.0,
+    stops: [
+        GradientStop {
+            position: 0.00,
+            argb: EVOLVING_GOOGLE_BLUE,
+        },
+        GradientStop {
+            position: 0.25,
+            argb: EVOLVING_GOOGLE_PURPLE,
+        },
+        GradientStop {
+            position: 0.50,
+            argb: EVOLVING_GOOGLE_CORAL,
+        },
+        GradientStop {
+            position: 0.75,
+            argb: EVOLVING_GOOGLE_YELLOW,
+        },
+        GradientStop {
+            position: 1.00,
+            argb: EVOLVING_GOOGLE_GREEN,
+        },
+        NAN_STOP,
+    ],
+    count: 5,
+};
+
+/// Aphrody's signature 4-color gradient system:
+/// Deep Navy (`#17335C`) -> Electric Violet (`#7C5CFF`) -> Celestial Cyan (`#00D4FF`) -> Divine Gold (`#FFD700`).
+pub const APHRODY_SIGNATURE_GRADIENT: LinearGradient = LinearGradient {
+    angle_deg: 135.0,
+    stops: [
+        GradientStop {
+            position: 0.00,
+            argb: APHRODY_SIGNATURE_NAVY,
+        },
+        GradientStop {
+            position: 0.33,
+            argb: APHRODY_SIGNATURE_VIOLET,
+        },
+        GradientStop {
+            position: 0.67,
+            argb: APHRODY_SIGNATURE_CYAN,
+        },
+        GradientStop {
+            position: 1.00,
+            argb: APHRODY_SIGNATURE_GOLD,
+        },
+        NAN_STOP,
+        NAN_STOP,
+    ],
+    count: 4,
+};
+
 /// The four-color dot lineage colors cited in the article as the visual
 /// reference point for Gemini's rounded language. Order: blue, red,
 /// yellow, green — matches the Google logo lineage.
@@ -236,6 +318,63 @@ pub fn gradient_to_css(gradient: &LinearGradient) -> String {
             "{} {:.0}%",
             argb_to_css(stop.argb),
             stop.position * 100.0
+        ));
+    }
+    format!("linear-gradient({})", parts.join(", "))
+}
+
+/// Interpolate between two opaque ARGB colors in perceptual CAM16 / HCT space (`t` in `0.0..=1.0`).
+///
+/// Shortest-arc hue interpolation combined with linear chroma and L* tone interpolation ensures
+/// multi-stop brand gradients never muddy in the middle (unlike naive sRGB interpolation).
+#[cfg(feature = "std")]
+#[must_use]
+pub fn interpolate_hct(start_argb: u32, end_argb: u32, t: f64) -> u32 {
+    use crate::{
+        color_math::{difference_degrees, lerp, rotation_direction, sanitize_degrees},
+        hct::Hct,
+    };
+    let t = t.clamp(0.0, 1.0);
+    let a = Hct::from_argb(start_argb);
+    let b = Hct::from_argb(end_argb);
+    let delta = difference_degrees(a.hue, b.hue) * rotation_direction(a.hue, b.hue);
+    let hue = sanitize_degrees(a.hue + delta * t);
+    let chroma = lerp(a.chroma, b.chroma, t);
+    let tone = lerp(a.tone, b.tone, t);
+    Hct::new(hue, chroma, tone).to_argb()
+}
+
+/// Sample a [`LinearGradient`] at `steps_per_segment` intermediate CAM16 / HCT stops and serialize
+/// a perceptual CSS `linear-gradient(in oklch, ...)` with explicit HCT-solved hex fallback stops.
+#[cfg(feature = "std")]
+#[must_use]
+pub fn gradient_to_perceptual_css(gradient: &LinearGradient, steps_per_segment: usize) -> String {
+    let count = usize::from(gradient.count);
+    if count == 0 {
+        return String::from("linear-gradient(90deg, transparent 0%, transparent 100%)");
+    }
+    let steps = steps_per_segment.max(1);
+    let mut parts: Vec<String> = Vec::with_capacity(count * steps + 2);
+    parts.push(format!("in oklch {:.0}deg", gradient.angle_deg));
+    for idx in 0..(count - 1) {
+        let s0 = gradient.stops[idx];
+        let s1 = gradient.stops[idx + 1];
+        if s0.position.is_nan() || s1.position.is_nan() {
+            continue;
+        }
+        for step in 0..steps {
+            let t = (step as f64) / (steps as f64);
+            let pos = f64::from(s0.position) + (f64::from(s1.position) - f64::from(s0.position)) * t;
+            let argb = interpolate_hct(s0.argb, s1.argb, t);
+            parts.push(format!("{} {:.1}%", argb_to_css(argb), pos * 100.0));
+        }
+    }
+    let last = gradient.stops[count - 1];
+    if !last.position.is_nan() {
+        parts.push(format!(
+            "{} {:.1}%",
+            argb_to_css(last.argb),
+            f64::from(last.position) * 100.0
         ));
     }
     format!("linear-gradient({})", parts.join(", "))
@@ -448,6 +587,14 @@ pub fn export_aphrody_brand_css() -> String {
         "  --aphrody-shimmer: linear-gradient(90deg, transparent 0%, color-mix(in srgb, white \
          35%, transparent) 50%, transparent 100%);\n",
     );
+    s.push_str(&format!(
+        "  --google-evolving-identity-gradient: {};\n",
+        gradient_to_perceptual_css(&EVOLVING_GOOGLE_IDENTITY_GRADIENT, 2)
+    ));
+    s.push_str(&format!(
+        "  --aphrody-signature-gradient: {};\n",
+        gradient_to_perceptual_css(&APHRODY_SIGNATURE_GRADIENT, 2)
+    ));
 
     // ── Aphrody M3 extension tokens ────────────────────────────────────────
     s.push_str("\n  /* Aphrody M3 extension tokens */\n");
@@ -684,5 +831,40 @@ mod tests {
             1,
             "exactly one `:root {{` block expected"
         );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn evolving_google_and_aphrody_signature_gradients_never_muddy_in_hct() {
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.count, 5);
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[0].argb, 0xFF42_85F4);
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[1].argb, 0xFF9B_72CB);
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[2].argb, 0xFFD9_6570);
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[3].argb, 0xFFF4_B400);
+        assert_eq!(EVOLVING_GOOGLE_IDENTITY_GRADIENT.stops[4].argb, 0xFF34_A853);
+
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.count, 4);
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[0].argb, 0xFF17_335C);
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[1].argb, 0xFF7C_5CFF);
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[2].argb, 0xFF00_D4FF);
+        assert_eq!(APHRODY_SIGNATURE_GRADIENT.stops[3].argb, 0xFFFF_D700);
+
+        let mid_google = interpolate_hct(EVOLVING_GOOGLE_BLUE, EVOLVING_GOOGLE_CORAL, 0.5);
+        assert_eq!(mid_google >> 24, 0xFF);
+        assert!(crate::hct::Hct::from_argb(mid_google).chroma > 35.0);
+
+        let mid_aphrody = interpolate_hct(APHRODY_SIGNATURE_VIOLET, APHRODY_SIGNATURE_CYAN, 0.5);
+        assert_eq!(mid_aphrody >> 24, 0xFF);
+        assert!(crate::hct::Hct::from_argb(mid_aphrody).chroma > 35.0);
+
+        let google_css = gradient_to_perceptual_css(&EVOLVING_GOOGLE_IDENTITY_GRADIENT, 2);
+        assert!(google_css.starts_with("linear-gradient(in oklch 135deg, "));
+        assert!(google_css.contains("#4285f4 0.0%"));
+        assert!(google_css.contains("#34a853 100.0%"));
+
+        let aphrody_css = gradient_to_perceptual_css(&APHRODY_SIGNATURE_GRADIENT, 2);
+        assert!(aphrody_css.starts_with("linear-gradient(in oklch 135deg, "));
+        assert!(aphrody_css.contains("#17335c 0.0%"));
+        assert!(aphrody_css.contains("#ffd700 100.0%"));
     }
 }
