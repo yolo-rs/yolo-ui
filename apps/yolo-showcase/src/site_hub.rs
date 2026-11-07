@@ -666,9 +666,35 @@ pub fn render_yolo_aphrody_com_html() -> String {
         .pro-tag {{ font-weight: 600; }}
         .con-tag {{ font-weight: 600; }}
         .table-responsive {{ overflow-x: auto; -webkit-overflow-scrolling: touch; }}
+        .skip-link {{
+            position: absolute;
+            left: -9999px;
+            top: 10px;
+            z-index: 9999;
+            padding: 8px 16px;
+            background: var(--yolo-accent);
+            color: #09090b;
+            border-radius: var(--yolo-radius);
+            font-weight: 700;
+            text-decoration: none;
+        }}
+        .skip-link:focus-visible {{
+            left: 20px;
+        }}
+        a:focus-visible, button:focus-visible, input:focus-visible {{
+            outline: 2px solid var(--yolo-accent);
+            outline-offset: 2px;
+        }}
+        @media (prefers-reduced-motion: reduce) {{
+            *, *::before, *::after {{
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }}
+        }}
     </style>
 </head>
 <body>
+    <a href="#showcase" class="skip-link">Skip to showcase content</a>
     <header>
         <div class="brand">
             <span class="brand-dot"></span>

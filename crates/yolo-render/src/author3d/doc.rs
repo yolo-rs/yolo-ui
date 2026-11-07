@@ -1157,11 +1157,9 @@ impl Document3d {
                 positions: world_positions,
                 faces: o.mesh.faces.clone(),
             };
-            let (tris, normals) = baked.triangulate();
-            let indices: Vec<u32> = tris
-                .iter()
-                .flat_map(|t| [t[0] as u32, t[1] as u32, t[2] as u32])
-                .collect();
+            let tris = baked.triangulate();
+            let normals = baked.vertex_normals();
+            let indices: Vec<u32> = tris;
 
             let (mut lo, mut hi) = ([f32::MAX; 3], [f32::MIN; 3]);
             for p in &baked.positions {
@@ -1537,17 +1535,17 @@ impl Document3d {
                     Some(ind) => ind.into_u32().collect(),
                     None => (0..positions.len() as u32).collect(),
                 };
-                let faces: Vec<Vec<usize>> = indices
+                let faces: Vec<Vec<u32>> = indices
                     .chunks_exact(3)
-                    .map(|t| vec![t[0] as usize, t[1] as usize, t[2] as usize])
+                    .map(|t| vec![t[0], t[1], t[2]])
                     .collect();
-                let poly = PolyMesh::from_faces(positions.clone(), faces)?;
+                let poly = PolyMesh { positions, faces };
 
                 let skin = match (reader.read_joints(0), reader.read_weights(0)) {
                     (Some(joints), Some(weights)) => {
                         let joints: Vec<[u16; 4]> = joints.into_u16().collect();
                         let weights: Vec<[f32; 4]> = weights.into_f32().collect();
-                        (joints.len() == positions.len() && weights.len() == positions.len())
+                        (joints.len() == poly.positions.len() && weights.len() == poly.positions.len())
                             .then_some(SkinWeights { joints, weights })
                     }
                     _ => None,
@@ -1561,7 +1559,7 @@ impl Document3d {
                 doc.objects.push(Object3d {
                     name: obj_name,
                     mesh: poly,
-                    transform: TransformSpec::default(),
+                    transform: Trs::IDENTITY,
                     material: Some("clay".into()),
                     shading: Shading::Smooth,
                     skin,
@@ -1886,29 +1884,29 @@ mod tests {
         .unwrap();
         e.apply(&Op::LoopCut {
             object: "box".into(),
-            edge: [0, 1],
+            face: 0,
+            edge: 0,
             factor: 0.5,
         })
         .unwrap();
         e.apply(&Op::Bevel {
             object: "box".into(),
-            edges: EdgeSelection::All,
-            vertices: VertexSelection::None,
-            width: 0.15,
+            edges: vec![],
+            amount: 0.15,
         })
         .unwrap();
 
         e.apply(&Op::AddBone {
             name: "root".into(),
             parent: None,
-            rest: TransformSpec::default(),
+            transform: TransformSpec::default(),
             length: 0.5,
         })
         .unwrap();
         e.apply(&Op::AddBone {
             name: "tip".into(),
             parent: Some("root".into()),
-            rest: TransformSpec {
+            transform: TransformSpec {
                 translation: [0.0, 0.5, 0.0],
                 ..TransformSpec::default()
             },
@@ -1917,7 +1915,7 @@ mod tests {
         .unwrap();
         e.apply(&Op::BindSkinGeodesic {
             object: "box".into(),
-            falloff: 2.0,
+            power: 2.0,
         })
         .unwrap();
         e.apply(&Op::SetSkinningMethod {

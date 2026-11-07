@@ -988,8 +988,9 @@ impl PolyMesh {
                 };
                 let opp_key = key(opp_directed.0, opp_directed.1);
                 let already = split_vertex.contains_key(&opp_key);
-                insert_split(opp_directed.0, opp_directed.1, &mut self.positions);
-                if already {
+                if !already {
+                    insert_split(opp_directed.0, opp_directed.1, &mut self.positions);
+                } else {
                     break;
                 }
                 let next_f = edge_faces
