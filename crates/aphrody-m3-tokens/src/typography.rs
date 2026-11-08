@@ -27,6 +27,9 @@ pub struct TypeStyle {
     pub letter_spacing_dp: f32,
 }
 
+/// Alias for [`TypeStyle`] used by toolkit adapters (`yolo-egui`, `yolo-cosmic`).
+pub type TypeToken = TypeStyle;
+
 // ── Display ─────────────────────────────────────────────────────────────────
 
 /// Display Large — the largest display style, used for short, important text.

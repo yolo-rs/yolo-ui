@@ -1,0 +1,8 @@
+@import "tailwindcss" source(none);
+/* styles.css registers its own sources (@source "." in the kit). */
+@import "../../.kits/shenron/packages/ui/src/styles.css";
+@import "../../.kits/shenron/packages/ui/src/site.css";
+@import "../../.kits/shenron/packages/ui/src/toriyama.css";
+@import "../../shared/bench.css";
+
+@source "./*.tsx";

@@ -1,0 +1,26 @@
+.pricing-hud {
+  font-family: var(--font-geist-mono, "Geist Mono"), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.pricing-sale-badge {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.website-plan-card {
+  min-width: 0;
+  background: var(--md-sys-color-surface-container);
+}
+.website-plan-card[data-highlight] {
+  box-shadow: inset 0 0 0 2px var(--md-sys-color-secondary);
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.website-plan-check {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}

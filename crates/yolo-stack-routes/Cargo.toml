@@ -1,0 +1,13 @@
+[package]
+name = "yolo-stack-routes"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Shared showcase route set for the yolo-stack benchmark apps (Rust side)."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[dependencies]

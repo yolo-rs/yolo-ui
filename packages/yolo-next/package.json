@@ -1,0 +1,80 @@
+{
+  "name": "@yolo-rs/next",
+  "version": "0.1.0",
+  "description": "Next.js 16 replacement on Bun 1.4.4: App Router on Bun.serve, React 19 Server Components and Server Actions, next/font and next/image compatible shims, Turbopack config translated to Bun.build + OXC plugins, TanStack Router/Query bridge, CDN output.",
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yolo-rs/yolo-stack.git",
+    "directory": "packages/yolo-next"
+  },
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "bin": {
+    "yolo-next": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./config": "./src/config.ts",
+    "./router": "./src/router.ts",
+    "./segments": "./src/segments.ts",
+    "./metadata": "./src/metadata.ts",
+    "./rules": "./src/rules.ts",
+    "./turbopack": "./src/turbopack.ts",
+    "./plugin": "./src/plugin.ts",
+    "./build": "./src/build.ts",
+    "./cdn": "./src/cdn.ts",
+    "./migrate": "./src/migrate.ts",
+    "./rsc-engine": "./src/rsc-engine.ts",
+    "./server": "./src/server.ts",
+    "./rsc": "./src/rsc.ts",
+    "./actions": "./src/actions.ts",
+    "./cache": "./src/cache.ts",
+    "./headers": "./src/headers.ts",
+    "./navigation": "./src/navigation.ts",
+    "./link": "./src/link.ts",
+    "./image": "./src/image.ts",
+    "./fonts": "./src/fonts.ts",
+    "./og": "./src/og.ts",
+    "./tanstack": "./src/tanstack.ts",
+    "./shims/*": "./src/shims/*.ts",
+    "./cli": "./src/cli.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "check": "bun check",
+    "fmt": "bun fmt src tests",
+    "lint": "bun lint src tests"
+  },
+  "peerDependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "@tanstack/react-query": "5.106.0",
+    "@tanstack/react-query-devtools": "5.106.0",
+    "@tanstack/react-router": "1.170.46",
+    "oxc-parser": "0.157.0",
+    "oxc-transform": "0.157.0",
+    "react-server-dom-webpack": "19.3.1",
+    "satori": "0.63.2"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "bun-types": "1.4.4"
+  }
+}

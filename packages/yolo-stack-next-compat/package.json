@@ -1,0 +1,13 @@
+{
+  "name": "@yolo-rs/stack-next-compat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Next.js App Router migration path: thin consumer of @yolo-rs/fullstack (planned).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@yolo-rs/stack-routes": "workspace:*"
+  }
+}

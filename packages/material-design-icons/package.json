@@ -1,0 +1,44 @@
+{
+  "name": "@aphrody/material-design-icons",
+  "version": "1.4.7",
+  "description": "Material Symbols SVG catalogue (vendor/material-design-icons) with SVG to ICO/ICNS sync for Tauri desktop icons.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aphrody-labs/bun-distribution.git",
+    "directory": "packages/material-design-icons"
+  },
+  "homepage": "https://github.com/aphrody-labs/bun-distribution/tree/os/packages/material-design-icons#readme",
+  "bugs": {
+    "url": "https://github.com/aphrody-labs/bun-distribution/issues"
+  },
+  "bin": {
+    "m3-svg-to-ico": "./scripts/svg-to-ico.ts"
+  },
+  "files": [
+    "README.md",
+    "scripts",
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "bun check -p tsconfig.json --noEmit",
+    "icons:ico": "bun scripts/svg-to-ico.ts",
+    "icons:sync": "bun scripts/sync-catalogue.ts",
+    "icons:check": "bun scripts/sync-catalogue.ts --check",
+    "icons:export": "bun scripts/export-theme.ts"
+  },
+  "devDependencies": {
+    "@aphrody/m3-config": "workspace:*"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

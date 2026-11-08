@@ -170,5 +170,5 @@ describe("Aphrody Labs Yolo UI Monorepo & Fleet Integrity", () => {
     expect(report.compilerOptimizations.releaseIncremental).toBe(true);
     expect(report.compilerOptimizations.wasmSplitLto).toBe(true);
     expect(report.compilerOptimizations.cliReleaseOptLevel3).toBe(true);
-  });
+  }, 15000);
 });

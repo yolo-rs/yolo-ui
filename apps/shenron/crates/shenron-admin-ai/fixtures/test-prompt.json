@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "query": "Broly DBZ 1993",
+  "backend": { "value": "aphrody", "raw": "aphrody", "engine": "Aphrody AI" },
+  "latencyMs": 412,
+  "rag": { "status": "ok", "label": "Aphrody AI", "target": "GET /api/v1/shenron/rag/search", "latencyMs": 168, "data": { "mode": "hybrid+rerank", "results": [
+    { "title": "Broly (film 1993)", "snippet": "Long métrage Toei sorti en mars 1993 ; Toriyama n'a pas écrit le scénario.", "url": "/wiki/broly-1993", "score": 0.91 },
+    { "title": "Dragon Ball Super : Broly", "snippet": "Film de 2018 écrit par Akira Toriyama, qui réintroduit Broly dans le canon.", "url": "/wiki/dbs-broly", "score": 0.84 },
+    { "title": "Films Dragon Ball Z", "snippet": "Les films Toei de 1989 à 1995 forment des continuités parallèles.", "url": "/wiki/films-dbz", "score": 0.62 }
+  ] }, "error": null },
+  "canon": {
+    "tier": "NON_CANON_DERIVE",
+    "tierLabel": "Non canon (dérivé Toei)",
+    "score": 15,
+    "color": "#ef4444",
+    "verdict": "Le Broly de 1993 n'appartient pas au canon : c'est un film Toei sans scénario de Toriyama.",
+    "explanation": "Les films vintage Toei 1986-1995 sont des dimensions parallèles.",
+    "nature": "verdict",
+    "origine": "entry:broly-1993",
+    "origin": "entry:broly-1993",
+    "toriyamaQuote": { "text": "J'ai dessiné Broly, mais l'histoire du film n'est pas de moi.", "source": "Dragon Ball Super Broly, livret de presse", "year": 2018 },
+    "sources": ["Daizenshuu 6"],
+    "matchedKeywords": ["broly", "1993"],
+    "suggestions": ["Broly (2018) est-il canon ?"]
+  },
+  "manga": { "status": "ok", "label": "Recherche manga", "target": "manga OCR", "latencyMs": 74, "data": [
+    { "series": "dbs", "volume": "5", "page": 112, "excerpt": "Je suis <mark>Broly</mark>, un Saiyan…", "score": 7.4 },
+    { "series": "db", "volume": "17", "page": 45, "excerpt": "Les <mark>Saiyans</mark> sont un peuple guerrier <b>(note)</b>", "score": 3.1 }
+  ], "error": null }
+}

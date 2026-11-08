@@ -75,7 +75,7 @@ impl Breakpoint {
     /// Classify a window width (dp) into its M3 breakpoint.
     ///
     /// ```rust
-    /// use aphrody_m3_tokens::adaptive::Breakpoint;
+    /// use yolo_tokens::adaptive::Breakpoint;
     /// assert_eq!(Breakpoint::from_width_dp(599), Breakpoint::Compact);
     /// assert_eq!(Breakpoint::from_width_dp(600), Breakpoint::Medium);
     /// assert_eq!(Breakpoint::from_width_dp(840), Breakpoint::Expanded);
@@ -186,7 +186,7 @@ impl Breakpoint {
 
 /// Emits the M3 breakpoint minimums as CSS custom properties **and** Tailwind
 /// v4 `--breakpoint-*` tokens (so `@media` / responsive utilities resolve to
-/// the canonical M3 widths). Pairs with `aphrody_m3_tokens::color::export_*` in the UI
+/// the canonical M3 widths). Pairs with `yolo_tokens::color::export_*` in the UI
 /// fusion (see `docs/design/FUSION-PLAN.md`).
 ///
 /// Only available with the `std` feature.
@@ -194,7 +194,7 @@ impl Breakpoint {
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::adaptive::export_breakpoints_css;
+/// use yolo_tokens::adaptive::export_breakpoints_css;
 /// let css = export_breakpoints_css();
 /// assert!(css.contains("--md-sys-breakpoint-medium: 600px;"));
 /// assert!(css.contains("--breakpoint-expanded: 840px;"));
@@ -277,7 +277,7 @@ impl Breakpoint {
     /// here is logical (leading → trailing), not physical.
     ///
     /// ```rust
-    /// use aphrody_m3_tokens::adaptive::{Breakpoint, PaneKind};
+    /// use yolo_tokens::adaptive::{Breakpoint, PaneKind};
     /// assert_eq!(Breakpoint::Compact.pane_layout(), &[PaneKind::Flexible]);
     /// assert_eq!(Breakpoint::Expanded.pane_layout(), &[PaneKind::Fixed, PaneKind::Flexible],);
     /// assert_eq!(Breakpoint::ExtraLarge.pane_layout().len(), 3);

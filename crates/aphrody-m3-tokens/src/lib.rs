@@ -19,7 +19,7 @@
 //! # Quick start
 //!
 //! ```rust
-//! use aphrody_m3_tokens::color::BASELINE;
+//! use yolo_tokens::color::BASELINE;
 //! // primary color role — 0xFF6750A4
 //! assert_eq!(BASELINE.primary, 0xFF6750A4);
 //! ```
@@ -68,6 +68,10 @@ pub mod image;
 pub mod motion;
 #[cfg(feature = "std")]
 pub mod palette;
+/// Ready-to-use `DynamicScheme` and `ThemeRequest` builders for the 5 built-in `YoloThemePreset`s
+/// (`yolo_neutral`, `yolo_m3`, `yolo_fluent`, `yolo_apple`, `yolo_aphrody` + `BYRON_LOVE_PALETTE`).
+#[cfg(feature = "std")]
+pub mod presets;
 /// Image color quantization (`QuantizerCelebi`): [`quantize_wu`] seeds [`quantize_wsmeans`].
 #[cfg(feature = "std")]
 pub mod quantize;
@@ -91,7 +95,7 @@ pub mod shape;
 #[cfg(feature = "std")]
 pub mod sheets;
 /// SpaceUI → M3 fusion: the SpaceUI semantic vocabulary mapped onto M3 roles and state layers,
-/// and its seven themes as M3 dynamic-scheme seeds.
+/// and its seven dedicated SpaceUI themes as M3 dynamic-scheme seeds.
 pub mod spaceui;
 pub mod state;
 /// Validated, versioned native/Bun/WASM theme exports over the canonical color engine.

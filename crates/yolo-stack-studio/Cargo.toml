@@ -1,0 +1,19 @@
+[package]
+name = "yolo-stack-studio"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "yolo-stack facade over the Yolo UI Craft workbenches and Storyteller modules, usable natively and on wasm32."
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+yolo-craft = { workspace = true }
+yolo-storyteller = { workspace = true }
+yolo-shared = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

@@ -1,0 +1,14 @@
+{
+  "name": "@yolo-rs/showcase-tanstack",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo planned: bun --hot src/server.ts",
+    "build": "echo planned: bun run scripts/build.ts",
+    "start": "echo planned: bun run dist/server.js"
+  },
+  "dependencies": {
+    "@yolo-rs/stack-routes": "workspace:*"
+  }
+}

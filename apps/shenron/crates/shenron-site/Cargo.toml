@@ -1,0 +1,97 @@
+[package]
+name = "shenron-site"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+description = "Shenron (dragonballfr.com) rebuilt in pure Rust: Leptos 0.8 SSR + Axum, static route tree fr/en/ja"
+license = "MIT OR Apache-2.0"
+publish = false
+build = "build.rs"
+
+# Standalone: ignore any parent workspace (same convention as shenron-reader-poc).
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "shenron-site"
+path = "src/main.rs"
+required-features = ["ssr"]
+
+[dependencies]
+leptos = { version = "0.8.23" }
+yolo-stack-theme = { path = "../../../../crates/yolo-stack-theme" }
+leptos_router = { version = "0.8.17" }
+leptos_meta = { version = "0.8.7" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# --- server (ssr) ---
+leptos_axum = { version = "0.8.10", optional = true }
+axum = { version = "0.8", optional = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"], optional = true }
+tower = { version = "0.5", optional = true }
+tower-http = { version = "0.6", features = ["fs"], optional = true }
+
+# --- client (hydrate, wasm32) ---
+wasm-bindgen = { version = "0.2", optional = true }
+web-sys = { version = "0.3", optional = true, features = ["Window", "Document", "Element", "HtmlDocument", "HtmlElement", "Storage", "MediaQueryList", "PointerEvent", "Node", "EventTarget"] }
+console_error_panic_hook = { version = "0.1", optional = true }
+
+[build-dependencies]
+yolo-stack-theme = { path = "../../../../crates/yolo-stack-theme" }
+
+[dev-dependencies]
+futures = "0.3"
+tokio = { version = "1", features = ["rt", "macros"] }
+
+[features]
+default = []
+hydrate = [
+  "leptos/hydrate",
+  "leptos/islands",
+  "dep:wasm-bindgen",
+  "dep:web-sys",
+  "dep:console_error_panic_hook",
+]
+ssr = [
+  "leptos/ssr",
+  "leptos/islands",
+  "leptos_router/ssr",
+  "leptos_meta/ssr",
+  "dep:leptos_axum",
+  "dep:axum",
+  "dep:tokio",
+  "dep:tower",
+  "dep:tower-http",
+]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[package.metadata.leptos]
+output-name = "shenron-site"
+site-root = "target/site"
+site-pkg-dir = "pkg"
+# Single generated stylesheet (build.rs -> style/main.css). No Tailwind, no framework.
+style-file = "style/main.css"
+assets-dir = "public"
+site-addr = "127.0.0.1:3000"
+reload-port = 3001
+browserquery = "defaults"
+env = "DEV"
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false
+lib-profile-release = "wasm-release"

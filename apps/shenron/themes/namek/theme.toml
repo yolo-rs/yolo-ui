@@ -1,0 +1,59 @@
+# Namek: placeholder bundle. Format: yolo-theme-pack (yolo-ui). Colours are computed from the seed.
+id = "namek"
+name = "Namek"
+
+[title]
+product_name = "Namek"
+window_title_template = "{page} - Namek"
+ntp_heading = "Namek"
+
+[logo]
+mark = "brand/logo.svg"
+monochrome = "brand/logo-mono.svg"
+wordmark = "brand/wordmark.svg"
+
+[color]
+seed = "#4aa23c"
+source = "seed"
+variant = "fidelity"
+contrast = 0.0
+mode = "system"
+
+[icons]
+set = "phosphor"
+style = "outlined"
+weight = 300
+
+[[wallpapers]]
+file = "wallpapers/main-light-1280.svg"
+mode = "light"
+seed = "#4aa23c"
+license = "CC0-1.0"
+source = "original"
+sha256 = "17a95a8e48697751e5c06b680e54264c6fc985d5c8eb40ad5bc2c04dc5bf463e"
+
+[[wallpapers]]
+file = "wallpapers/main-dark-1280.svg"
+mode = "dark"
+seed = "#8fe07a"
+license = "CC0-1.0"
+source = "original"
+sha256 = "efe79a1ce7f20d31ae176b4516c1c05c483547d873ba02a9cdebac381a7846da"
+
+[pet]
+id = "pousse-sprout"
+provider = "pack"
+anchor = "bottom-right"
+size = 96
+
+[typography]
+display = "Young Serif"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "dock"
+density = 0
+radius = [6, 14, 24]
+glass_blur = 0
+motion = "calm"

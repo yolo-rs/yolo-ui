@@ -250,7 +250,7 @@ pub const APHRODY: ColorRoles = ColorRoles {
 };
 
 /// aphrody brand dark-theme color roles (rust seed `#CE422B`). Dark-first
-/// default for aphrody UIs. See `docs/design/aphrody-m3-tokens.md`.
+/// default for aphrody UIs. See `docs/design/yolo-tokens.md`.
 pub const APHRODY_DARK: ColorRoles = ColorRoles {
     primary: 0xFFFFB4A6,
     on_primary: 0xFF561E14,
@@ -302,7 +302,7 @@ pub const APHRODY_DARK: ColorRoles = ColorRoles {
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::color::{BASELINE, export_css};
+/// use yolo_tokens::color::{BASELINE, export_css};
 /// let css = export_css(&BASELINE);
 /// assert!(css.contains("--md-sys-color-primary:"));
 /// ```
@@ -419,7 +419,7 @@ pub const FUSION_ALIAS_MAP: &[(&str, &str)] = &[
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::color::export_shadcn_aliases;
+/// use yolo_tokens::color::export_shadcn_aliases;
 /// let css = export_shadcn_aliases();
 /// assert!(css.contains("--primary: var(--md-sys-color-primary);"));
 /// ```
@@ -444,7 +444,7 @@ pub fn export_shadcn_aliases() -> std::string::String {
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::color::export_tailwind_theme;
+/// use yolo_tokens::color::export_tailwind_theme;
 /// let css = export_tailwind_theme();
 /// assert!(css.starts_with("@theme inline {"));
 /// assert!(css.contains("--color-primary: var(--md-sys-color-primary);"));
@@ -473,7 +473,7 @@ pub fn export_tailwind_theme() -> std::string::String {
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::color::{BASELINE, export_fusion_css};
+/// use yolo_tokens::color::{BASELINE, export_fusion_css};
 /// let css = export_fusion_css(&BASELINE);
 /// assert!(css.contains("--md-sys-color-primary:"));
 /// assert!(css.contains("--primary: var(--md-sys-color-primary);"));
@@ -501,7 +501,7 @@ pub fn export_fusion_css(theme: &ColorRoles) -> std::string::String {
 /// # Example
 ///
 /// ```rust
-/// use aphrody_m3_tokens::color::{BASELINE, color_vars};
+/// use yolo_tokens::color::{BASELINE, color_vars};
 /// let vars = color_vars(&BASELINE);
 /// assert_eq!(vars.len(), 36);
 /// assert!(vars.iter().any(|(k, v)| *k == "primary" && v == "#6750A4"));

@@ -71,6 +71,36 @@ pub const EXTRA_EXTRA_LARGE: CornerRadius = CornerRadius { dp: 48 };
 /// same visual result.
 pub const FULL: CornerRadius = CornerRadius { dp: 9999 };
 
+/// Floating-point M3 corner radius scale (`f32` dp) for toolkit adapters (`yolo-egui`, `yolo-cosmic`, `yolo-qt`).
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ShapeScale {
+    /// 0 dp.
+    pub none: f32,
+    /// 4 dp.
+    pub extra_small: f32,
+    /// 8 dp.
+    pub small: f32,
+    /// 12 dp.
+    pub medium: f32,
+    /// 16 dp.
+    pub large: f32,
+    /// 28 dp.
+    pub extra_large: f32,
+    /// 9999 dp (pill).
+    pub full: f32,
+}
+
+/// Canonical M3 floating-point corner radius scale.
+pub const SCALE: ShapeScale = ShapeScale {
+    none: NONE.dp as f32,
+    extra_small: EXTRA_SMALL.dp as f32,
+    small: SMALL.dp as f32,
+    medium: MEDIUM.dp as f32,
+    large: LARGE.dp as f32,
+    extra_large: EXTRA_LARGE.dp as f32,
+    full: FULL.dp as f32,
+};
+
 /// All ten corner-radius tokens in canonical M3 (Expressive) order.
 pub const ALL: [CornerRadius; 10] = [
     NONE,
@@ -147,7 +177,7 @@ pub const GEMINI_ONLY_NAMES: [&str; 4] = [
 /// ```
 /// # #[cfg(feature = "std")]
 /// # {
-/// let css = aphrody_m3_tokens::shape::export_css();
+/// let css = yolo_tokens::shape::export_css();
 /// assert!(css.contains("--md-sys-shape-corner-medium: 12dp;"));
 /// # }
 /// ```

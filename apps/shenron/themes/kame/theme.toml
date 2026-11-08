@@ -1,0 +1,59 @@
+# Kame: placeholder bundle. Format: yolo-theme-pack (yolo-ui). Colours are computed from the seed.
+id = "kame"
+name = "Kame"
+
+[title]
+product_name = "Kame House"
+window_title_template = "{page} - Kame House"
+ntp_heading = "Kame House"
+
+[logo]
+mark = "brand/logo.svg"
+monochrome = "brand/logo-mono.svg"
+wordmark = "brand/wordmark.svg"
+
+[color]
+seed = "#1f6fb8"
+source = "seed"
+variant = "tonal-spot"
+contrast = 0.0
+mode = "system"
+
+[icons]
+set = "phosphor"
+style = "outlined"
+weight = 300
+
+[[wallpapers]]
+file = "wallpapers/main-light-1280.svg"
+mode = "light"
+seed = "#1f6fb8"
+license = "CC0-1.0"
+source = "original"
+sha256 = "07d619cea67912e7d8c7a78236a049a813e8488b26f4f98e79c4fa46326aff1f"
+
+[[wallpapers]]
+file = "wallpapers/main-dark-1280.svg"
+mode = "dark"
+seed = "#7fb2ff"
+license = "CC0-1.0"
+source = "original"
+sha256 = "ee242579896f3f09b2eb1decf84c0cca0b4f36e4543e609959335277910baf8d"
+
+[pet]
+id = "tortue-shell"
+provider = "pack"
+anchor = "bottom-left"
+size = 96
+
+[typography]
+display = "Fraunces"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "floating"
+density = 1
+radius = [8, 16, 28]
+glass_blur = 14
+motion = "calm"

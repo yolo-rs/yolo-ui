@@ -1,0 +1,60 @@
+{
+  "backend": { "value": "aphrody", "raw": "aphrody", "engine": "Aphrody AI" },
+  "sources": {
+    "aphrodyHealth": { "status": "ok", "label": "Aphrody AI", "target": "GET /api/v1/shenron/health", "latencyMs": 42, "data": { "rag": true, "llm": true, "ocr": true }, "error": null },
+    "aphrodyRagStats": { "status": "ok", "label": "Index RAG Aphrody", "target": "GET /api/v1/shenron/rag/stats", "latencyMs": 88, "data": { "chunks": 184213, "vectors": 181907, "vectorsStored": 183340, "sources": 46, "kinds": [ { "kind": "wiki", "count": 92311, "vectors": 91870 }, { "kind": "manga", "count": 51022, "vectors": 50110 }, { "kind": "databook", "count": 28740, "vectors": 27990 }, { "kind": "news", "count": 8120, "vectors": 8070 }, { "kind": "interview", "count": 4020, "vectors": 3867 } ] }, "error": null },
+    "aphrodyRagProbe": { "status": "ok", "label": "Sonde de recherche Aphrody", "target": "GET /api/v1/shenron/rag/search", "latencyMs": 131, "data": { "query": "Kamehameha", "mode": "hybrid+rerank", "hits": 5 }, "error": null },
+    "aphrodyWeb": { "status": "unconfigured", "label": "Aphrody Web (crawl)", "target": "GET /api/v1/web/crawl/stats", "latencyMs": null, "data": null, "error": "APHRODY_BXC_API_TOKEN absent de l'environnement du site" },
+    "botRag": { "status": "ok", "label": "Bot Shenron (index local)", "target": "GET /api/ia/status", "latencyMs": 17, "data": { "chunks": 61204, "vectors": 0, "mode": "lexical", "builtAt": "2026-11-05T06:12:44.000Z", "gatewayReady": true }, "error": null },
+    "evalHistory": { "status": "ok", "label": "Historique d'évaluation", "target": "bot.rag_eval_history (miroir PostgreSQL)", "latencyMs": 9, "data": [
+      { "id": 312, "createdAt": "2026-11-05T06:00:03.000Z", "casesCount": 25, "recall1": 0.64, "recall3": 0.8, "recall5": 0.88, "recall10": 0.92, "mrr": 0.7313, "ndcg": 0.7702, "durationMs": 8123, "sidecarOnline": true, "missesCount": 2 },
+      { "id": 311, "createdAt": "2026-11-05T00:00:02.000Z", "casesCount": 25, "recall1": 0.6, "recall3": 0.76, "recall5": 0.84, "recall10": 0.92, "mrr": 0.7011, "ndcg": 0.7465, "durationMs": 8410, "sidecarOnline": true, "missesCount": 2 },
+      { "id": 310, "createdAt": "2026-11-04T18:00:04.000Z", "casesCount": 25, "recall1": 0.68, "recall3": 0.84, "recall5": 0.92, "recall10": 0.96, "mrr": 0.7652, "ndcg": 0.8011, "durationMs": 7902, "sidecarOnline": true, "missesCount": 1 },
+      { "id": 309, "createdAt": "2026-11-04T12:00:01.000Z", "casesCount": 10, "recall1": 0.7, "recall3": 0.9, "recall5": 1, "recall10": 1, "mrr": 0.8167, "ndcg": 0.8512, "durationMs": 3120, "sidecarOnline": false, "missesCount": 0 }
+    ], "error": null },
+    "goldSet": { "status": "ok", "label": "Jeu doré", "target": "data/rag/gold.jsonl", "latencyMs": 3, "data": { "cases": 148, "sample": [
+      { "q": "Qui est la mère de Goku ?", "expected": ["/wiki/gine"] },
+      { "q": "Broly 1993 est-il canon ?", "expected": ["/wiki/broly-1993", "Broly (film 1993)"] },
+      { "q": "Niveau de puissance de Freezer lors de sa première transformation", "expected": ["/wiki/freezer"] },
+      { "q": "Qui a inventé le Kamehameha ?", "expected": ["/wiki/kamehameha", "Muten Roshi"] },
+      { "q": "Gogeta et Vegito sont-ils la même fusion ?", "expected": ["/wiki/gogeta", "/wiki/vegito"] },
+      { "q": "Où se trouve la planète Namek ?", "expected": ["/wiki/namek"] }
+    ] }, "error": null },
+    "feedbacks": { "status": "ok", "label": "Retours RAG", "target": "bot.rag_training_feedback (miroir PostgreSQL)", "latencyMs": 6, "data": { "total": 57, "pending": 3, "rows": [
+      { "id": 91, "userTag": "Vegeta#0001", "type": "wrong_source", "query": "Combien de tomes compte Dragon Ball ?", "status": "pending", "expected": "/wiki/manga-dragon-ball", "comment": "La réponse citait l'anime au lieu du manga.", "createdAt": "2026-11-05T09:41:12.000Z" },
+      { "id": 90, "userTag": "Bulma#4242", "type": "missing", "query": "Date de naissance de Bulma", "status": "pending", "expected": "Daizenshuu 7", "comment": null, "createdAt": "2026-11-05T08:02:55.000Z" },
+      { "id": 89, "userTag": null, "type": "wrong_answer", "query": "Gine apparaît-elle dans le manga original ?", "status": "pending", "expected": null, "comment": "Elle apparaît dans le one-shot de 2014.", "createdAt": "2026-11-04T22:10:01.000Z" },
+      { "id": 88, "userTag": "Trunks#2045", "type": "wrong_source", "query": "Freezer 530 000", "status": "gold_added", "expected": "/wiki/freezer", "comment": null, "createdAt": "2026-11-04T19:33:40.000Z" },
+      { "id": 87, "userTag": "Yamcha#0420", "type": "spam", "query": "test", "status": "rejected", "expected": null, "comment": null, "createdAt": "2026-11-04T15:00:00.000Z" }
+    ] }, "error": null },
+    "goals": { "status": "ok", "label": "Objectifs de session", "target": "bot.admin_goals (miroir PostgreSQL)", "latencyMs": 5, "data": { "active": 2, "rows": [
+      { "id": 14, "title": "Optimiser le reranker", "description": "Viser Recall@5 ≥ 0,92 sur le jeu doré complet.", "priority": "high", "status": "pending", "createdAt": "2026-11-04T10:00:00.000Z" },
+      { "id": 13, "title": "Relire les databooks OCR à faible confiance", "description": null, "priority": "medium", "status": "in_progress", "createdAt": "2026-11-03T16:20:00.000Z" }
+    ] }, "error": null },
+    "labMessages": { "status": "ok", "label": "Salon lab-ia-admin", "target": "Discord REST /channels/…/messages", "latencyMs": 211, "data": [
+      { "id": "1549001", "author": "Shenron Bot", "content": "Auto-évaluation rag-auto-eval : Recall@5 88,0 % (25 cas), 2 échecs.", "timestamp": "2026-11-05T06:00:09.000Z" },
+      { "id": "1549000", "author": "aphrody", "content": "Relancez l'évaluation complète après l'ingestion des databooks.", "timestamp": "2026-11-05T05:41:30.000Z" }
+    ], "error": null },
+    "agentKeys": { "status": "ok", "label": "Clés d'agents", "target": "public.agent_api_keys", "latencyMs": 4, "data": [
+      { "id": "key_01", "name": "Claude Code (wiki)", "scopes": ["read:wiki", "write:articles"], "createdAt": "2026-10-12T08:00:00.000Z" },
+      { "id": "key_02", "name": "Codex (modération)", "scopes": ["moderate"], "createdAt": "2026-10-20T14:30:00.000Z" }
+    ], "error": null }
+  },
+  "summary": {
+    "status": "degraded",
+    "failing": [ { "key": "aphrodyWeb", "label": "Aphrody Web (crawl)", "status": "unconfigured", "error": "APHRODY_BXC_API_TOKEN absent de l'environnement du site" } ],
+    "serving": { "engine": "Aphrody AI", "source": "aphrodyRagProbe", "status": "ok", "error": null },
+    "documents": 184213,
+    "vectors": 181907,
+    "mode": "hybrid+rerank",
+    "countsSource": "aphrodyRagStats",
+    "goldCases": 148,
+    "latestEval": { "id": 312, "createdAt": "2026-11-05T06:00:03.000Z", "casesCount": 25, "recall1": 0.64, "recall3": 0.8, "recall5": 0.88, "recall10": 0.92, "mrr": 0.7313, "ndcg": 0.7702, "durationMs": 8123, "sidecarOnline": true, "missesCount": 2 },
+    "pendingFeedbacks": 3,
+    "activeGoals": 2
+  },
+  "canonConfig": { "version": 1, "intro": "dropped by the hub before fan-out" },
+  "canonExpected": "3f1c9e0a7b2d4c6e8f0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f6a",
+  "canonDefaults": { "version": 1, "intro": "dropped by the hub before fan-out" },
+  "timestamp": "2026-11-05T10:00:00.000Z"
+}

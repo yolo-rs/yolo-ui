@@ -6,7 +6,7 @@
 //! deliberately contains no duplicate color, typography or breakpoint tables.
 //!
 //! ```rust
-//! use aphrody_m3_tokens::facade::{export_css, layout::Breakpoint, platform::LayoutContract};
+//! use yolo_tokens::facade::{export_css, layout::Breakpoint, platform::LayoutContract};
 //!
 //! let layout = LayoutContract::from_width_dp(1280);
 //! assert_eq!(layout.breakpoint, Breakpoint::Large);

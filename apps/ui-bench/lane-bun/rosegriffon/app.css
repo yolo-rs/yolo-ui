@@ -1,0 +1,8 @@
+@import "tailwindcss" source(none);
+@import "../../.kits/rosegriffon/packages/rg-ui/src/styles.css";
+@import "../../shared/bench.css";
+
+/* rg-ui declares no @source of its own: register the kit sources and this lane's pages. */
+@source "../../.kits/rosegriffon/packages/rg-ui/src/components";
+@source "../../.kits/rosegriffon/packages/rg-ui/src/lib";
+@source "./*.tsx";

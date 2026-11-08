@@ -1,0 +1,22 @@
+[package]
+name = "yolo-stack-theme"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Theme bundles for yolo-stack: yolo-theme-pack plus content-hashed assets, contrast gates and CSS, DTCG and native emitters. No I/O, wasm32 compatible."
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[dependencies]
+yolo-theme-pack = { workspace = true }
+yolo-tokens = { workspace = true, features = ["std"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+toml = "1.1.2"
+thiserror = { workspace = true }
+
+[dev-dependencies]
+proptest = "1.7.0"

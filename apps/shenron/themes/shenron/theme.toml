@@ -1,0 +1,59 @@
+# Shenron: placeholder bundle. Format: yolo-theme-pack (yolo-ui). Colours are computed from the seed.
+id = "shenron"
+name = "Shenron"
+
+[title]
+product_name = "Shenron"
+window_title_template = "{page} - Shenron"
+ntp_heading = "Shenron"
+
+[logo]
+mark = "brand/logo.svg"
+monochrome = "brand/logo-mono.svg"
+wordmark = "brand/wordmark.svg"
+
+[color]
+seed = "#e8641b"
+source = "seed"
+variant = "vibrant"
+contrast = 0.0
+mode = "system"
+
+[icons]
+set = "phosphor"
+style = "outlined"
+weight = 300
+
+[[wallpapers]]
+file = "wallpapers/main-light-1280.svg"
+mode = "light"
+seed = "#e8641b"
+license = "CC0-1.0"
+source = "original"
+sha256 = "c0b91aad66c2018e59a1f8505f909d1041d4b7e700186b9f859e6de0cec69bb4"
+
+[[wallpapers]]
+file = "wallpapers/main-dark-1280.svg"
+mode = "dark"
+seed = "#ff9a4d"
+license = "CC0-1.0"
+source = "original"
+sha256 = "78bd5d2eb5acc2416c73d5de616a793ef990fca63f636862a39d0b13530d57a7"
+
+[pet]
+id = "ryu-wisp"
+provider = "pack"
+anchor = "bottom-right"
+size = 96
+
+[typography]
+display = "Bricolage Grotesque"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "top-bar"
+density = 0
+radius = [4, 10, 18]
+glass_blur = 0
+motion = "lively"

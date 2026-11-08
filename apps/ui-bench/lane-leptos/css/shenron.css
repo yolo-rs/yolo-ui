@@ -1,0 +1,44 @@
+@import "tailwindcss" source(none);
+@import "../../.kits/shenron/packages/ui/src/styles.css";
+@import "../../.kits/shenron/packages/ui/src/site.css";
+@import "../../.kits/shenron/packages/ui/src/toriyama.css";
+@import "../../shared/bench.css";
+
+/* The kit's styles.css registers its whole source tree (@source "."). This lane renders none
+   of its React components, so only the Leptos markup is scanned. */
+@source not "../../.kits/shenron/packages/ui/src";
+@source "../src/shenron.rs";
+
+.zt-panel {
+  display: none;
+}
+.zt:has(.zt-radio[data-tab="0"]:checked) .zt-panel[data-tab="0"],
+.zt:has(.zt-radio[data-tab="1"]:checked) .zt-panel[data-tab="1"],
+.zt:has(.zt-radio[data-tab="2"]:checked) .zt-panel[data-tab="2"] {
+  display: block;
+}
+.zt:has(.zt-radio[data-tab="0"]:checked) .zt-tab[data-tab="0"],
+.zt:has(.zt-radio[data-tab="1"]:checked) .zt-tab[data-tab="1"],
+.zt:has(.zt-radio[data-tab="2"]:checked) .zt-tab[data-tab="2"] {
+  @apply border-black bg-dbz-orange text-black;
+}
+.sh-check,
+.sh-range {
+  accent-color: var(--color-dbz-orange);
+}
+.sh-switch {
+  @apply relative h-6 w-11 cursor-pointer appearance-none rounded-full border-2 border-black bg-[#121218] transition-colors;
+}
+.sh-switch::after {
+  @apply absolute top-0.5 left-0.5 size-4 rounded-full bg-white/80 transition-transform;
+  content: "";
+}
+.sh-switch:checked {
+  @apply bg-dbz-orange;
+}
+.sh-switch:checked::after {
+  transform: translateX(1.25rem);
+}
+.sh-pop::backdrop {
+  background: rgb(0 0 0 / 0.7);
+}

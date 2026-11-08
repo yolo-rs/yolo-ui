@@ -1,0 +1,10 @@
+{
+  "transcription": {
+    "databooks": { "transcribedPages": 4182, "defectivePages": 37 },
+    "manga": { "ocrPages": 9030, "ocrWithText": 8871 }
+  },
+  "status": {
+    "total": { "books": 21 },
+    "local": { "databooks": { "state": "idle" }, "manga": { "state": { "status": "running" } } }
+  }
+}

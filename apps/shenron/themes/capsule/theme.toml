@@ -1,0 +1,59 @@
+# Capsule: placeholder bundle. Format: yolo-theme-pack (yolo-ui). Colours are computed from the seed.
+id = "capsule"
+name = "Capsule"
+
+[title]
+product_name = "Capsule Corp"
+window_title_template = "{page} - Capsule Corp"
+ntp_heading = "Capsule Corp"
+
+[logo]
+mark = "brand/logo.svg"
+monochrome = "brand/logo-mono.svg"
+wordmark = "brand/wordmark.svg"
+
+[color]
+seed = "#1aa39a"
+source = "seed"
+variant = "expressive"
+contrast = 0.0
+mode = "system"
+
+[icons]
+set = "phosphor"
+style = "outlined"
+weight = 300
+
+[[wallpapers]]
+file = "wallpapers/main-light-1280.svg"
+mode = "light"
+seed = "#1aa39a"
+license = "CC0-1.0"
+source = "original"
+sha256 = "1d1db39ac1d8a92d2c79426a189d2bd17584920573365d2216995a23930109a1"
+
+[[wallpapers]]
+file = "wallpapers/main-dark-1280.svg"
+mode = "dark"
+seed = "#5fe0d4"
+license = "CC0-1.0"
+source = "original"
+sha256 = "bb424e663460759cbe308491b93adeff6643a2aacbf9cfaa64e2994fb99fab55"
+
+[pet]
+id = "capsy-bot"
+provider = "pack"
+anchor = "dock"
+size = 96
+
+[typography]
+display = "Space Grotesk"
+body = "Google Sans Flex"
+mono = "Google Sans Code"
+
+[shell]
+layout = "sidebar"
+density = -1
+radius = [2, 6, 12]
+glass_blur = 8
+motion = "calm"

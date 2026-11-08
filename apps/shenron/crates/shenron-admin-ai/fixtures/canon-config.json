@@ -1,0 +1,1117 @@
+{
+  "config": {
+    "version": 1,
+    "intro": "Pose une question de canonicité : le verdict vient d'une table curée à la main, adossée au manga, aux databooks et aux déclarations d'Akira Toriyama. Aucun wiki de fans, aucune génération automatique.",
+    "placeholder": "Broly est-il canonique ?",
+    "doctrine": [
+      "Source de vérité suprême : le manga original en 42 tomes d'Akira Toriyama.",
+      "Validité secondaire : révélations SEG / Daizenshuu et scripts originaux (Broly, Super Hero, Daima).",
+      "Règle de séparation : les fillers et les films Toei des années 90 sont des dimensions alternatives.",
+      "En cas de contradiction entre deux sources, la plus proche de la main de Toriyama l'emporte.",
+      "Une affirmation sans source imprimée n'est pas fausse : elle est non établie. On le dit plutôt que de trancher."
+    ],
+    "sourcesAdmises": [
+      "Manga Dragon Ball, tomes 1 à 42 (édition japonaise et traduction officielle)",
+      "Dragon Ball Super (manga) et Dragon Ball Minus / Jaco",
+      "Daizenshuu 1 à 7, Chōzenshū, Super Exciting Guide et guides Shueisha",
+      "Interviews et Q&A signés d'Akira Toriyama (V-Jump, Saikyō Jump, Dragon Box)",
+      "Catalogues des éditeurs, AniList et Jikan pour les métadonnées de sortie"
+    ],
+    "sourcesInterdites": [
+      "Wikis de fans (Fandom, miroirs et copies)",
+      "Forums, réseaux sociaux et « leaks » non sourcés",
+      "Fausses interviews et citations non datées",
+      "Réponses générées par un modèle de langage sans source imprimée"
+    ],
+    "tiers": [
+      {
+        "id": "CANON_ABSOLU",
+        "label": "Canon Absolu (Tier 1 — Manga & Toriyama pur)",
+        "court": "Canon absolu",
+        "couleur": "#22c55e",
+        "score": 100,
+        "definition": "Écrit, dessiné ou explicitement révélé par Akira Toriyama lui-même. Le manga original des 42 tomes prime sur tout le reste : quand une autre source le contredit, c'est l'autre source qui a tort.",
+        "inclut": [
+          "Manga Dragon Ball, tomes 1 à 42 (chapitres 1 à 519)",
+          "Jaco the Galactic Patrolman et Dragon Ball Minus",
+          "Chapitres et histoires courtes signés Toriyama (Neko Majin, bonus Jump)",
+          "Réponses de Toriyama en interview ou Q&A signée (SEG, V-Jump, Saikyō Jump)"
+        ]
+      },
+      {
+        "id": "CANON_SUPERVISE",
+        "label": "Canon Supervisé (Tier 2 — DBS, Films récents & Daima)",
+        "court": "Canon supervisé",
+        "couleur": "#3b82f6",
+        "score": 88,
+        "definition": "Œuvres de la continuité officielle dont Toriyama a fourni la trame, le scénario ou les designs, mais qu'il n'a pas dessinées lui-même. Elles font autorité tant qu'elles ne contredisent pas le manga original.",
+        "inclut": [
+          "Manga Dragon Ball Super (Toyotaro, storyboards annotés par Toriyama)",
+          "Films Battle of Gods, La Résurrection de F, Broly, Super Hero",
+          "Dragon Ball Daima (concept, histoire et designs de Toriyama)",
+          "OAV et histoires originales écrites par Toriyama (Jump Super Anime Tour 2008)"
+        ]
+      },
+      {
+        "id": "EXTENSION_OFFICIELLE",
+        "label": "Extension Officielle (Tier 3 — Daizenshuu & SEG)",
+        "court": "Extension officielle",
+        "couleur": "#eab308",
+        "score": 70,
+        "definition": "Documentation éditée par Shueisha et supervisée par Bird Studio. Elle décrit l'œuvre et complète ses marges (chiffres, chronologies, fiches), mais elle ne crée pas d'histoire et cède devant le manga.",
+        "inclut": [
+          "Daizenshuu 1 à 7 et guides Chōzenshū",
+          "Super Exciting Guide (2009)",
+          "Guides officiels de série, artbooks et Landmark/Forever",
+          "Fiches de personnages et chronologies éditoriales"
+        ]
+      },
+      {
+        "id": "NON_CANON_DERIVE",
+        "label": "Non-Canon Dérivé (Tier 4 — Fillers, Films Toei & GT)",
+        "court": "Non-canon dérivé",
+        "couleur": "#f97316",
+        "score": 20,
+        "definition": "Produit officiellement sous licence, mais écrit hors de la plume de Toriyama : l'animation Toei et ses films se contredisent avec le manga et se déroulent, selon l'auteur lui-même, dans une dimension parallèle.",
+        "inclut": [
+          "Épisodes hors-trame (fillers) de Dragon Ball, DBZ, Kai et DBS",
+          "Films Toei de 1986 à 1995 et téléfilms spéciaux",
+          "Dragon Ball GT (« grand side-story » selon Toriyama)",
+          "Jeux vidéo, Super Dragon Ball Heroes, Xenoverse et leurs personnages"
+        ]
+      },
+      {
+        "id": "APOCRYPHE_FANON",
+        "label": "Apocryphe / Fanon (Tier 5 — Rumeurs & Inventions)",
+        "court": "Apocryphe",
+        "couleur": "#ef4444",
+        "score": 0,
+        "definition": "Aucune existence officielle : invention de fans, fausse interview, image détournée, doujinshi. À citer uniquement pour dire d'où vient la rumeur et pourquoi elle est fausse.",
+        "inclut": [
+          "Dragon Ball AF, Super Saiyan 5, Xicor",
+          "Fausses interviews et citations attribuées à Toriyama",
+          "Doujinshi et suites amateurs",
+          "Niveaux de puissance inventés et « scans » retouchés"
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "id": "broly",
+        "title": "Broly (Dragon Ball Super, 2018)",
+        "category": "character",
+        "tier": "CANON_SUPERVISE",
+        "score": 85,
+        "keywords": [
+          "broly",
+          "broli",
+          "broly dbs",
+          "broly 2018",
+          "broly super",
+          "dbs broly",
+          "ブロリー",
+          "paragus",
+          "super saiyan legendaire",
+          "berserk"
+        ],
+        "verdict": "Canonique dans sa réinvention DBS (2018), Non-canonique dans les films Z (1993-1994).",
+        "explanation": "La version originale de 1993 (scénarisée par Takao Koyama) est hors de la trame canonique bien que Toriyama en ait signé le design initial. En 2018, Akira Toriyama a personnellement réécrit et intégré Broly dans la continuité officielle avec le film Dragon Ball Super: Broly.",
+        "toriyamaQuote": {
+          "text": "Broly est un personnage incroyablement populaire. Tout en préservant son image de base pour ne pas décevoir les fans, j'ai apporté une nouvelle facette à son histoire pour en faire une aventure encore plus fascinante.",
+          "source": "Commentaire officiel de production de Dragon Ball Super: Broly",
+          "year": 2018
+        },
+        "sources": [
+          "Film Dragon Ball Super: Broly (2018)",
+          "Daizenshuu 6 (Films Z)",
+          "Manga DBS"
+        ]
+      },
+      {
+        "id": "broly-dbz-1993",
+        "title": "Broly (Version DBZ 1993 / Films Z de Takao Koyama)",
+        "category": "character",
+        "tier": "NON_CANON_DERIVE",
+        "score": 20,
+        "keywords": [
+          "broly 1993",
+          "broly dbz 1993",
+          "broly dbz",
+          "broly z",
+          "broly film 1993",
+          "broly le super saiyan legendaire 1993",
+          "dbz 1993",
+          "bio-broly",
+          "bio broly",
+          "broly second coming",
+          "broly kakarotto pleure"
+        ],
+        "verdict": "Non-canonique. Antagoniste exclusif des films Toei Z (1993-1994) scénarisés par Takao Koyama.",
+        "explanation": "L'incarnation originale de Broly dans les films 8, 10 et 11 de Dragon Ball Z est hors de la continuité canonique du manga, bien que son design graphique initial ait été dessiné par Akira Toriyama. Son traumatisme lié aux pleurs de Goku et sa folie destructrice appartiennent à la chronologie parallèle de Toei Animation. Seul le Broly redéfini et réécrit par Akira Toriyama dans Dragon Ball Super: Broly (2018) est canonique.",
+        "toriyamaQuote": {
+          "text": "J'avais complètement oublié l'histoire des anciens films de Broly. En 2018, j'ai repris le personnage à zéro en conservant son apparence essentielle mais en réécrivant son histoire pour l'intégrer à la série officielle.",
+          "source": "Paraphrase, pas une citation littérale — Commentaire de production Dragon Ball Super: Broly",
+          "year": 2018
+        },
+        "sources": [
+          "Daizenshuu 6 : Movies & TV Specials",
+          "Films DBZ 8, 10, 11 (Toei Animation)",
+          "Film DBS Broly (2018)"
+        ]
+      },
+      {
+        "id": "gogeta",
+        "title": "Gogeta",
+        "category": "character",
+        "tier": "CANON_SUPERVISE",
+        "score": 85,
+        "keywords": [
+          "gogeta",
+          "fusion metamol",
+          "stardust breaker",
+          "soul punisher",
+          "janemba"
+        ],
+        "verdict": "Canonisé dans Dragon Ball Super: Broly (2018). Ses apparitions dans Fusions (1995) et DBGT sont non-canoniques.",
+        "explanation": "La fusion Métamol entre Goku et Vegeta a été inventée par Toriyama dans le manga, mais Gogeta n'apparaissait originellement que dans le film Toei de 1995 et dans GT. Toriyama l'a officiellement réintroduit et validé dans la trame principale lors du combat contre Broly en 2018.",
+        "sources": [
+          "Film Dragon Ball Super: Broly (2018)",
+          "Manga DB Tome 41 (principe de la danse)"
+        ]
+      },
+      {
+        "id": "vegetto",
+        "title": "Vegetto (Vegito)",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "vegetto",
+          "vegito",
+          "potara",
+          "potaras",
+          "potalas",
+          "potala",
+          "fusion potara",
+          "fusion potala"
+        ],
+        "verdict": "100% Canon absolu. Créé, nommé et dessiné par Akira Toriyama dans le manga original.",
+        "explanation": "Né des boucles d'oreilles Potaras données par le Vieux Kaïoshin. Toriyama a imaginé la fusion Potara pour surprendre ses lecteurs après que le staff de l'anime lui a révélé préparer la fusion Métamol pour le film de Gogeta.",
+        "sources": [
+          "Manga Dragon Ball Tome 42 (Chapitres 503-506)",
+          "Daizenshuu 2"
+        ]
+      },
+      {
+        "id": "bardock",
+        "title": "Bardock",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 95,
+        "keywords": [
+          "bardock",
+          "barduk",
+          "dragon ball minus",
+          "pere de goku",
+          "tatta hitori no saishū kessen"
+        ],
+        "verdict": "Canon absolu. Validé dans le manga par Toriyama, développé dans Dragon Ball Minus et DBS Broly.",
+        "explanation": "Bien qu'initialement conçu par Toei Animation pour le téléfilm de 1990, Toriyama a tellement adoré le personnage qu'il l'a canonisé en dessinant son visage dans deux cases du manga original (Chapitre 307). Il a ensuite réécrit son départ dans Dragon Ball Minus (2014) aux côtés de sa compagne Gine.",
+        "toriyamaQuote": {
+          "text": "Ce téléfilm m'a tellement ému que j'ai voulu intégrer Bardock dans mon manga. C'est l'un des rares cas où l'anime m'a directement inspiré.",
+          "source": "Daizenshuu 6 : Movies & TV Specials",
+          "year": 1995
+        },
+        "sources": [
+          "Manga DB Tome 26 (Chapitre 307)",
+          "Jaco the Galactic Patrolman (DB Minus)",
+          "DBS Broly"
+        ]
+      },
+      {
+        "id": "bardock-tv-special-1990",
+        "title": "Téléfilm Bardock (Le Père de Son Goku, 1990) vs Dragon Ball Minus",
+        "category": "work",
+        "tier": "NON_CANON_DERIVE",
+        "score": 30,
+        "keywords": [
+          "bardock tv special",
+          "bardock telefilm",
+          "bardock 1990",
+          "tatta hitori no saishu kessen",
+          "bardock vs minus",
+          "bardock tv special vs minus",
+          "premonition de bardock",
+          "don de prescience bardock",
+          "bandana ensanglante bardock"
+        ],
+        "verdict": "Non-canonique dans son déroulement narratif. Remplacé dans la trame officielle par Dragon Ball Minus et DBS Broly.",
+        "explanation": "Le téléfilm de 1990 'Le Père de Son Goku' (scénarisé par Katsuyuki Sumisawa chez Toei) a tellement plu à Toriyama qu'il a intégré le visage de Bardock dans deux cases du manga (Chapitre 307). Cependant, les événements du téléfilm (le don de voir l'avenir transmis par un Kanassan, l'escouade de Toma massacrée sur Meat, le bandana ensanglanté, et Goku bébé nu envoyé sur Terre) ont été officiellement remplacés par Akira Toriyama dans Dragon Ball Minus (2014) et le film DBS Broly : Bardock y a une intuition lucide, sa compagne Gine existe, et Goku part plus âgé vêtu d'une armure saiyanne.",
+        "sources": [
+          "Manga Dragon Ball Tome 26 (Chapitre 307)",
+          "Dragon Ball Minus (2014)",
+          "Film DBS Broly (2018)",
+          "Daizenshuu 6"
+        ]
+      },
+      {
+        "id": "goku-saiyan-kakarotto",
+        "title": "Son Goku : Origine Saiyan (Kakarotto)",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "goku est-il un saiyan",
+          "goku saiyan",
+          "goku est un saiyan",
+          "kakarotto",
+          "kakarot",
+          "origine saiyan goku",
+          "nature saiyanne de goku",
+          "vrai nom de goku",
+          "nom saiyan de goku",
+          "goku extraterrestre",
+          "カカロット"
+        ],
+        "verdict": "100% Canon absolu. Révélé par Raditz dans le manga original (Chapitre 195).",
+        "explanation": "Son Goku est un Saiyan de basse classe né sur la planète Vegeta sous le nom de Kakarotto (Kakarot). Envoyé sur Terre dans une capsule spatiale pour survivre aux soupçons pesant sur Freezer (Dragon Ball Minus / Jaco / DBS Broly), il a été recueilli par Grand-Père Son Gohan. Sa véritable nature extraterrestre et son nom de naissance saiyan sont révélés dès l'arrivée de son frère Raditz au chapitre 195 du manga.",
+        "toriyamaQuote": {
+          "text": "Goku est un Saiyan envoyé depuis la planète Vegeta. J'ai pensé que révéler ses origines extraterrestres donnerait un nouvel élan spectaculaire à l'histoire.",
+          "source": "Paraphrase, pas une citation littérale — Daizenshuu 2 : Story Guide",
+          "year": 1995
+        },
+        "sources": [
+          "Manga Dragon Ball Tome 17 (Chapitre 195)",
+          "Dragon Ball Minus",
+          "Film DBS Broly (2018)"
+        ]
+      },
+      {
+        "id": "destruction-planete-vegeta",
+        "title": "Destruction de la planète Vegeta par Freezer",
+        "category": "lore",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "destruction planete vegeta",
+          "freezer a detruit la planete vegeta",
+          "freezer detruit vegeta",
+          "destruction de vegeta",
+          "planete vegeta freezer",
+          "pourquoi freezer a detruit la planete vegeta",
+          "genocide saiyan freezer"
+        ],
+        "verdict": "100% Canon absolu. Établi dans le manga original (Chapitre 257) et illustré dans Dragon Ball Minus et DBS Broly.",
+        "explanation": "Freezer a anéanti la planète Vegeta et la quasi-totalité du peuple Saiyan avec une gigantesque Supernova par crainte de la légende du Super Saiyan et du Super Saiyan God. Bien que Freezer ait prétendu aux survivants (Vegeta, Nappa, Raditz) qu'un météore géant avait détruit leur monde, la vérité est révélée par Dodoria à Vegeta au chapitre 257 du manga. Dragon Ball Super a précisé que Beerus avait préalablement donné son accord ou suggéré cette destruction.",
+        "sources": [
+          "Manga Dragon Ball Tome 22 (Chapitre 257)",
+          "Dragon Ball Minus",
+          "Film DBS Broly (2018)",
+          "Manga DBS Chapitre 69"
+        ]
+      }
+    ],
+    "heuristics": [
+      {
+        "id": "manga-original",
+        "label": "Renvoi au manga original",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "manga original",
+          "chapitre",
+          "tome 1",
+          "tome 42",
+          "42 tomes",
+          "akira toriyama a dessine"
+        ],
+        "verdict": "Fortement présumé 100% Canon absolu.",
+        "explanation": "Les éléments issus directement des 42 volumes du manga original ou des écrits autographes de Toriyama constituent le cœur intouchable du canon Dragon Ball.",
+        "sources": [
+          "Manga Dragon Ball (Tomes 1 à 42)",
+          "Bird Studio / Shueisha"
+        ]
+      },
+      {
+        "id": "production-toei",
+        "label": "Renvoi à la production animée",
+        "tier": "NON_CANON_DERIVE",
+        "score": 20,
+        "keywords": [
+          "filler",
+          "hors-serie",
+          "hors serie",
+          "oav",
+          "episode inedit",
+          "toei"
+        ],
+        "verdict": "Élément dérivé produit pour l'animation sans écriture de Toriyama.",
+        "explanation": "Ces segments appartiennent à la continuité animée Toei Animation et ne sont pas inclus dans l'univers canonique rédigé par Akira Toriyama.",
+        "sources": [
+          "Archives Toei Animation",
+          "Daizenshuu 6"
+        ]
+      },
+      {
+        "id": "jeux-video",
+        "label": "Renvoi aux jeux vidéo",
+        "tier": "NON_CANON_DERIVE",
+        "score": 15,
+        "keywords": [
+          "jeu video",
+          "xenoverse",
+          "kakarot",
+          "budokai",
+          "fighterz",
+          "sdbh",
+          "heroes"
+        ],
+        "verdict": "Contenu de jeu vidéo : hors de la continuité écrite par Toriyama.",
+        "explanation": "Les jeux inventent librement personnages, transformations et scénarios alternatifs. Ils sont officiels commercialement, jamais canoniques narrativement, sauf reprise explicite dans le manga.",
+        "sources": [
+          "Catalogues éditeurs",
+          "Daizenshuu 7 (Jeux)"
+        ]
+      },
+      {
+        "id": "supervision-officielle",
+        "label": "Renvoi aux guides et interviews officielles",
+        "tier": "EXTENSION_OFFICIELLE",
+        "score": 85,
+        "keywords": [
+          "daizenshuu",
+          "chozenshu",
+          "super exciting guide",
+          "seg",
+          "interview toriyama",
+          "entretien toriyama",
+          "v-jump",
+          "saikyo jump",
+          "guide officiel"
+        ],
+        "verdict": "Information issue des guides officiels ou déclarations de l'auteur.",
+        "explanation": "Les guides publiés par Shueisha (Daizenshuu, SEG, Chōzenshū) et les entretiens avec Akira Toriyama apportent des précisions et des éclairages canoniques de premier ordre validés par l'auteur.",
+        "sources": [
+          "Daizenshuu 1-7",
+          "Super Exciting Guide",
+          "Chōzenshū 1-4",
+          "Archives V-Jump & Saikyō Jump"
+        ]
+      }
+    ],
+    "references": [
+      {
+        "id": "ref-manuel-1",
+        "subject": "Broly (1993)",
+        "keywords": [
+          "broly"
+        ],
+        "text": "ブロリーのデザインは僕です。",
+        "textFr": "Le design de Broly est de moi.",
+        "source": "Dragon Ball Super Broly, livret",
+        "year": 2018,
+        "document": "manuel",
+        "lang": "ja",
+        "provenance": "manuel"
+      },
+      {
+        "id": "ref-aphrody-2",
+        "subject": "Dragon Ball GT",
+        "keywords": [
+          "gt"
+        ],
+        "text": "GT is a side story.",
+        "source": "Daizenshuu",
+        "year": 1996,
+        "document": "guides/daizenshuu.md",
+        "lang": "en",
+        "provenance": "aphrody",
+        "visible": true
+      }
+    ],
+    "powerScaling": {
+      "enabled": true,
+      "kiriToBpRate": 50000,
+      "planetDestructionKiriFloor": 200,
+      "multipliers": [
+        {
+          "form": "Oozaru (Grand Singe)",
+          "multiplier": 10,
+          "baseForm": "Base",
+          "source": "Manga DB Chapitre 233 & Daizenshuu 7",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Multiplication brute de la puissance du Saiyan possédant sa queue sous les rayons Blutz."
+        },
+        {
+          "form": "Kaio-ken (x2 à x20)",
+          "multiplier": 2,
+          "baseForm": "Base",
+          "source": "Manga DB Chapitres 229 & 315",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Technique de Maître Kaio multipliant force, vitesse et ki d'un facteur exact (jusqu'à x20)."
+        },
+        {
+          "form": "Super Saiyan (SSJ1)",
+          "multiplier": 50,
+          "baseForm": "Base",
+          "source": "Daizenshuu 7 (p. 83) & Super Exciting Guide",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Éveil légendaire. Propulse Goku de 3 000 000 à 150 000 000 BP contre Freezer (120 000 000)."
+        },
+        {
+          "form": "Super Saiyan 2 (SSJ2)",
+          "multiplier": 100,
+          "baseForm": "Base (x2 de SSJ1)",
+          "source": "Super Exciting Guide : Story Volume (2009)",
+          "canonTier": "EXTENSION_OFFICIELLE",
+          "notes": "Dépassement du Super Saiyan initié par Gohan. Double la puissance du SSJ1 (x100 de la base)."
+        }
+      ],
+      "officialBps": [
+        {
+          "character": "Fermier au fusil",
+          "saga": "Saga Saiyans",
+          "state": "Normal",
+          "bp": 5,
+          "scouter": true,
+          "source": "Manga Ch. 195",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Son Goku",
+          "characterId": 1,
+          "saga": "Saga Saiyans",
+          "state": "Vêtements lourds",
+          "bp": 334,
+          "scouter": true,
+          "source": "Manga Ch. 199",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Piccolo",
+          "saga": "Saga Saiyans",
+          "state": "Vêtements lourds",
+          "bp": 322,
+          "scouter": true,
+          "source": "Manga Ch. 199",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Piccolo",
+          "saga": "Saga Saiyans",
+          "state": "Makankosappo (max)",
+          "bp": 1440,
+          "scouter": true,
+          "source": "Manga Ch. 201",
+          "canonTier": "CANON_ABSOLU"
+        }
+      ],
+      "tiers": [
+        {
+          "tierNumber": 1,
+          "name": "Humain d'Élite & Art Martial",
+          "description": "Guerriers de niveau terrien, maîtres d'arts martiaux et soldats réguliers de l'armée de Freezer.",
+          "examples": [
+            "Fermier au fusil (5)",
+            "Tortue Géniale au repos (139)",
+            "Son Goku au 21e Tenkaichi Budokai"
+          ]
+        },
+        {
+          "tierNumber": 2,
+          "name": "Surhumain / Destructeur de Lune",
+          "description": "Puissance capable d'oblitérer un satellite naturel (Lune détruite par Roshi et Piccolo à ~140-300 BP).",
+          "examples": [
+            "Piccolo Makankosappo (1 440)",
+            "Raditz (1 500)",
+            "Saibaimen (1 200)"
+          ]
+        },
+        {
+          "tierNumber": 3,
+          "name": "Planétaire / Menace Extraterrestre",
+          "description": "Capacité prouvée de détruire une planète tellurique de taille standard comme la Terre (Galick Ho de Vegeta à 18 000 BP).",
+          "examples": [
+            "Vegeta Saga Saiyans (18 000)",
+            "Goku Kaio-ken x3/x4 (24 000 - 32 000)",
+            "Kiwi (18 000)",
+            "Nail (42 000)"
+          ]
+        }
+      ]
+    },
+    "fallback": {
+      "tier": "EXTENSION_OFFICIELLE",
+      "score": 50,
+      "verdict": "Affirmation nécessitant une vérification croisée dans les archives.",
+      "explanation": "Le sujet saisi ne correspond à aucun point de divergence répertorié. Dans la doctrine Shenron, une affirmation sans source manga, databook vérifié ou déclaration signée de Toriyama est considérée comme non établie.",
+      "sources": [
+        "Manga Dragon Ball",
+        "Daizenshuu 1-7",
+        "Super Exciting Guide"
+      ]
+    },
+    "vide": {
+      "verdict": "Saisis un texte, un personnage, un film ou une affirmation.",
+      "explanation": "Le moteur analysera sa canonicité selon les règles du manga, des databooks et des déclarations de l'auteur — telles qu'elles sont écrites dans les paramètres du site."
+    }
+  },
+  "expected": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "defaults": {
+    "version": 1,
+    "intro": "Pose une question de canonicité : le verdict vient d'une table curée à la main, adossée au manga, aux databooks et aux déclarations d'Akira Toriyama. Aucun wiki de fans, aucune génération automatique.",
+    "placeholder": "Broly est-il canonique ?",
+    "doctrine": [
+      "Source de vérité suprême : le manga original en 42 tomes d'Akira Toriyama.",
+      "Validité secondaire : révélations SEG / Daizenshuu et scripts originaux (Broly, Super Hero, Daima).",
+      "Règle de séparation : les fillers et les films Toei des années 90 sont des dimensions alternatives.",
+      "En cas de contradiction entre deux sources, la plus proche de la main de Toriyama l'emporte.",
+      "Une affirmation sans source imprimée n'est pas fausse : elle est non établie. On le dit plutôt que de trancher."
+    ],
+    "sourcesAdmises": [
+      "Manga Dragon Ball, tomes 1 à 42 (édition japonaise et traduction officielle)",
+      "Dragon Ball Super (manga) et Dragon Ball Minus / Jaco",
+      "Daizenshuu 1 à 7, Chōzenshū, Super Exciting Guide et guides Shueisha",
+      "Interviews et Q&A signés d'Akira Toriyama (V-Jump, Saikyō Jump, Dragon Box)",
+      "Catalogues des éditeurs, AniList et Jikan pour les métadonnées de sortie"
+    ],
+    "sourcesInterdites": [
+      "Wikis de fans (Fandom, miroirs et copies)",
+      "Forums, réseaux sociaux et « leaks » non sourcés",
+      "Fausses interviews et citations non datées",
+      "Réponses générées par un modèle de langage sans source imprimée"
+    ],
+    "tiers": [
+      {
+        "id": "CANON_ABSOLU",
+        "label": "Canon Absolu (Tier 1 — Manga & Toriyama pur)",
+        "court": "Canon absolu",
+        "couleur": "#22c55e",
+        "score": 100,
+        "definition": "Écrit, dessiné ou explicitement révélé par Akira Toriyama lui-même. Le manga original des 42 tomes prime sur tout le reste : quand une autre source le contredit, c'est l'autre source qui a tort.",
+        "inclut": [
+          "Manga Dragon Ball, tomes 1 à 42 (chapitres 1 à 519)",
+          "Jaco the Galactic Patrolman et Dragon Ball Minus",
+          "Chapitres et histoires courtes signés Toriyama (Neko Majin, bonus Jump)",
+          "Réponses de Toriyama en interview ou Q&A signée (SEG, V-Jump, Saikyō Jump)"
+        ]
+      },
+      {
+        "id": "CANON_SUPERVISE",
+        "label": "Canon Supervisé (Tier 2 — DBS, Films récents & Daima)",
+        "court": "Canon supervisé",
+        "couleur": "#3b82f6",
+        "score": 88,
+        "definition": "Œuvres de la continuité officielle dont Toriyama a fourni la trame, le scénario ou les designs, mais qu'il n'a pas dessinées lui-même. Elles font autorité tant qu'elles ne contredisent pas le manga original.",
+        "inclut": [
+          "Manga Dragon Ball Super (Toyotaro, storyboards annotés par Toriyama)",
+          "Films Battle of Gods, La Résurrection de F, Broly, Super Hero",
+          "Dragon Ball Daima (concept, histoire et designs de Toriyama)",
+          "OAV et histoires originales écrites par Toriyama (Jump Super Anime Tour 2008)"
+        ]
+      },
+      {
+        "id": "EXTENSION_OFFICIELLE",
+        "label": "Extension Officielle (Tier 3 — Daizenshuu & SEG)",
+        "court": "Extension officielle",
+        "couleur": "#eab308",
+        "score": 70,
+        "definition": "Documentation éditée par Shueisha et supervisée par Bird Studio. Elle décrit l'œuvre et complète ses marges (chiffres, chronologies, fiches), mais elle ne crée pas d'histoire et cède devant le manga.",
+        "inclut": [
+          "Daizenshuu 1 à 7 et guides Chōzenshū",
+          "Super Exciting Guide (2009)",
+          "Guides officiels de série, artbooks et Landmark/Forever",
+          "Fiches de personnages et chronologies éditoriales"
+        ]
+      },
+      {
+        "id": "NON_CANON_DERIVE",
+        "label": "Non-Canon Dérivé (Tier 4 — Fillers, Films Toei & GT)",
+        "court": "Non-canon dérivé",
+        "couleur": "#f97316",
+        "score": 20,
+        "definition": "Produit officiellement sous licence, mais écrit hors de la plume de Toriyama : l'animation Toei et ses films se contredisent avec le manga et se déroulent, selon l'auteur lui-même, dans une dimension parallèle.",
+        "inclut": [
+          "Épisodes hors-trame (fillers) de Dragon Ball, DBZ, Kai et DBS",
+          "Films Toei de 1986 à 1995 et téléfilms spéciaux",
+          "Dragon Ball GT (« grand side-story » selon Toriyama)",
+          "Jeux vidéo, Super Dragon Ball Heroes, Xenoverse et leurs personnages"
+        ]
+      },
+      {
+        "id": "APOCRYPHE_FANON",
+        "label": "Apocryphe / Fanon (Tier 5 — Rumeurs & Inventions)",
+        "court": "Apocryphe",
+        "couleur": "#ef4444",
+        "score": 0,
+        "definition": "Aucune existence officielle : invention de fans, fausse interview, image détournée, doujinshi. À citer uniquement pour dire d'où vient la rumeur et pourquoi elle est fausse.",
+        "inclut": [
+          "Dragon Ball AF, Super Saiyan 5, Xicor",
+          "Fausses interviews et citations attribuées à Toriyama",
+          "Doujinshi et suites amateurs",
+          "Niveaux de puissance inventés et « scans » retouchés"
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "id": "broly",
+        "title": "Broly (Dragon Ball Super, 2018)",
+        "category": "character",
+        "tier": "CANON_SUPERVISE",
+        "score": 85,
+        "keywords": [
+          "broly",
+          "broli",
+          "broly dbs",
+          "broly 2018",
+          "broly super",
+          "dbs broly",
+          "ブロリー",
+          "paragus",
+          "super saiyan legendaire",
+          "berserk"
+        ],
+        "verdict": "Canonique dans sa réinvention DBS (2018), Non-canonique dans les films Z (1993-1994).",
+        "explanation": "La version originale de 1993 (scénarisée par Takao Koyama) est hors de la trame canonique bien que Toriyama en ait signé le design initial. En 2018, Akira Toriyama a personnellement réécrit et intégré Broly dans la continuité officielle avec le film Dragon Ball Super: Broly.",
+        "toriyamaQuote": {
+          "text": "Broly est un personnage incroyablement populaire. Tout en préservant son image de base pour ne pas décevoir les fans, j'ai apporté une nouvelle facette à son histoire pour en faire une aventure encore plus fascinante.",
+          "source": "Commentaire officiel de production de Dragon Ball Super: Broly",
+          "year": 2018
+        },
+        "sources": [
+          "Film Dragon Ball Super: Broly (2018)",
+          "Daizenshuu 6 (Films Z)",
+          "Manga DBS"
+        ]
+      },
+      {
+        "id": "broly-dbz-1993",
+        "title": "Broly (Version DBZ 1993 / Films Z de Takao Koyama)",
+        "category": "character",
+        "tier": "NON_CANON_DERIVE",
+        "score": 20,
+        "keywords": [
+          "broly 1993",
+          "broly dbz 1993",
+          "broly dbz",
+          "broly z",
+          "broly film 1993",
+          "broly le super saiyan legendaire 1993",
+          "dbz 1993",
+          "bio-broly",
+          "bio broly",
+          "broly second coming",
+          "broly kakarotto pleure"
+        ],
+        "verdict": "Non-canonique. Antagoniste exclusif des films Toei Z (1993-1994) scénarisés par Takao Koyama.",
+        "explanation": "L'incarnation originale de Broly dans les films 8, 10 et 11 de Dragon Ball Z est hors de la continuité canonique du manga, bien que son design graphique initial ait été dessiné par Akira Toriyama. Son traumatisme lié aux pleurs de Goku et sa folie destructrice appartiennent à la chronologie parallèle de Toei Animation. Seul le Broly redéfini et réécrit par Akira Toriyama dans Dragon Ball Super: Broly (2018) est canonique.",
+        "toriyamaQuote": {
+          "text": "J'avais complètement oublié l'histoire des anciens films de Broly. En 2018, j'ai repris le personnage à zéro en conservant son apparence essentielle mais en réécrivant son histoire pour l'intégrer à la série officielle.",
+          "source": "Paraphrase, pas une citation littérale — Commentaire de production Dragon Ball Super: Broly",
+          "year": 2018
+        },
+        "sources": [
+          "Daizenshuu 6 : Movies & TV Specials",
+          "Films DBZ 8, 10, 11 (Toei Animation)",
+          "Film DBS Broly (2018)"
+        ]
+      },
+      {
+        "id": "gogeta",
+        "title": "Gogeta",
+        "category": "character",
+        "tier": "CANON_SUPERVISE",
+        "score": 85,
+        "keywords": [
+          "gogeta",
+          "fusion metamol",
+          "stardust breaker",
+          "soul punisher",
+          "janemba"
+        ],
+        "verdict": "Canonisé dans Dragon Ball Super: Broly (2018). Ses apparitions dans Fusions (1995) et DBGT sont non-canoniques.",
+        "explanation": "La fusion Métamol entre Goku et Vegeta a été inventée par Toriyama dans le manga, mais Gogeta n'apparaissait originellement que dans le film Toei de 1995 et dans GT. Toriyama l'a officiellement réintroduit et validé dans la trame principale lors du combat contre Broly en 2018.",
+        "sources": [
+          "Film Dragon Ball Super: Broly (2018)",
+          "Manga DB Tome 41 (principe de la danse)"
+        ]
+      },
+      {
+        "id": "vegetto",
+        "title": "Vegetto (Vegito)",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "vegetto",
+          "vegito",
+          "potara",
+          "potaras",
+          "potalas",
+          "potala",
+          "fusion potara",
+          "fusion potala"
+        ],
+        "verdict": "100% Canon absolu. Créé, nommé et dessiné par Akira Toriyama dans le manga original.",
+        "explanation": "Né des boucles d'oreilles Potaras données par le Vieux Kaïoshin. Toriyama a imaginé la fusion Potara pour surprendre ses lecteurs après que le staff de l'anime lui a révélé préparer la fusion Métamol pour le film de Gogeta.",
+        "sources": [
+          "Manga Dragon Ball Tome 42 (Chapitres 503-506)",
+          "Daizenshuu 2"
+        ]
+      },
+      {
+        "id": "bardock",
+        "title": "Bardock",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 95,
+        "keywords": [
+          "bardock",
+          "barduk",
+          "dragon ball minus",
+          "pere de goku",
+          "tatta hitori no saishū kessen"
+        ],
+        "verdict": "Canon absolu. Validé dans le manga par Toriyama, développé dans Dragon Ball Minus et DBS Broly.",
+        "explanation": "Bien qu'initialement conçu par Toei Animation pour le téléfilm de 1990, Toriyama a tellement adoré le personnage qu'il l'a canonisé en dessinant son visage dans deux cases du manga original (Chapitre 307). Il a ensuite réécrit son départ dans Dragon Ball Minus (2014) aux côtés de sa compagne Gine.",
+        "toriyamaQuote": {
+          "text": "Ce téléfilm m'a tellement ému que j'ai voulu intégrer Bardock dans mon manga. C'est l'un des rares cas où l'anime m'a directement inspiré.",
+          "source": "Daizenshuu 6 : Movies & TV Specials",
+          "year": 1995
+        },
+        "sources": [
+          "Manga DB Tome 26 (Chapitre 307)",
+          "Jaco the Galactic Patrolman (DB Minus)",
+          "DBS Broly"
+        ]
+      },
+      {
+        "id": "bardock-tv-special-1990",
+        "title": "Téléfilm Bardock (Le Père de Son Goku, 1990) vs Dragon Ball Minus",
+        "category": "work",
+        "tier": "NON_CANON_DERIVE",
+        "score": 30,
+        "keywords": [
+          "bardock tv special",
+          "bardock telefilm",
+          "bardock 1990",
+          "tatta hitori no saishu kessen",
+          "bardock vs minus",
+          "bardock tv special vs minus",
+          "premonition de bardock",
+          "don de prescience bardock",
+          "bandana ensanglante bardock"
+        ],
+        "verdict": "Non-canonique dans son déroulement narratif. Remplacé dans la trame officielle par Dragon Ball Minus et DBS Broly.",
+        "explanation": "Le téléfilm de 1990 'Le Père de Son Goku' (scénarisé par Katsuyuki Sumisawa chez Toei) a tellement plu à Toriyama qu'il a intégré le visage de Bardock dans deux cases du manga (Chapitre 307). Cependant, les événements du téléfilm (le don de voir l'avenir transmis par un Kanassan, l'escouade de Toma massacrée sur Meat, le bandana ensanglanté, et Goku bébé nu envoyé sur Terre) ont été officiellement remplacés par Akira Toriyama dans Dragon Ball Minus (2014) et le film DBS Broly : Bardock y a une intuition lucide, sa compagne Gine existe, et Goku part plus âgé vêtu d'une armure saiyanne.",
+        "sources": [
+          "Manga Dragon Ball Tome 26 (Chapitre 307)",
+          "Dragon Ball Minus (2014)",
+          "Film DBS Broly (2018)",
+          "Daizenshuu 6"
+        ]
+      },
+      {
+        "id": "goku-saiyan-kakarotto",
+        "title": "Son Goku : Origine Saiyan (Kakarotto)",
+        "category": "character",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "goku est-il un saiyan",
+          "goku saiyan",
+          "goku est un saiyan",
+          "kakarotto",
+          "kakarot",
+          "origine saiyan goku",
+          "nature saiyanne de goku",
+          "vrai nom de goku",
+          "nom saiyan de goku",
+          "goku extraterrestre",
+          "カカロット"
+        ],
+        "verdict": "100% Canon absolu. Révélé par Raditz dans le manga original (Chapitre 195).",
+        "explanation": "Son Goku est un Saiyan de basse classe né sur la planète Vegeta sous le nom de Kakarotto (Kakarot). Envoyé sur Terre dans une capsule spatiale pour survivre aux soupçons pesant sur Freezer (Dragon Ball Minus / Jaco / DBS Broly), il a été recueilli par Grand-Père Son Gohan. Sa véritable nature extraterrestre et son nom de naissance saiyan sont révélés dès l'arrivée de son frère Raditz au chapitre 195 du manga.",
+        "toriyamaQuote": {
+          "text": "Goku est un Saiyan envoyé depuis la planète Vegeta. J'ai pensé que révéler ses origines extraterrestres donnerait un nouvel élan spectaculaire à l'histoire.",
+          "source": "Paraphrase, pas une citation littérale — Daizenshuu 2 : Story Guide",
+          "year": 1995
+        },
+        "sources": [
+          "Manga Dragon Ball Tome 17 (Chapitre 195)",
+          "Dragon Ball Minus",
+          "Film DBS Broly (2018)"
+        ]
+      },
+      {
+        "id": "destruction-planete-vegeta",
+        "title": "Destruction de la planète Vegeta par Freezer",
+        "category": "lore",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "destruction planete vegeta",
+          "freezer a detruit la planete vegeta",
+          "freezer detruit vegeta",
+          "destruction de vegeta",
+          "planete vegeta freezer",
+          "pourquoi freezer a detruit la planete vegeta",
+          "genocide saiyan freezer"
+        ],
+        "verdict": "100% Canon absolu. Établi dans le manga original (Chapitre 257) et illustré dans Dragon Ball Minus et DBS Broly.",
+        "explanation": "Freezer a anéanti la planète Vegeta et la quasi-totalité du peuple Saiyan avec une gigantesque Supernova par crainte de la légende du Super Saiyan et du Super Saiyan God. Bien que Freezer ait prétendu aux survivants (Vegeta, Nappa, Raditz) qu'un météore géant avait détruit leur monde, la vérité est révélée par Dodoria à Vegeta au chapitre 257 du manga. Dragon Ball Super a précisé que Beerus avait préalablement donné son accord ou suggéré cette destruction.",
+        "sources": [
+          "Manga Dragon Ball Tome 22 (Chapitre 257)",
+          "Dragon Ball Minus",
+          "Film DBS Broly (2018)",
+          "Manga DBS Chapitre 69"
+        ]
+      }
+    ],
+    "heuristics": [
+      {
+        "id": "manga-original",
+        "label": "Renvoi au manga original",
+        "tier": "CANON_ABSOLU",
+        "score": 100,
+        "keywords": [
+          "manga original",
+          "chapitre",
+          "tome 1",
+          "tome 42",
+          "42 tomes",
+          "akira toriyama a dessine"
+        ],
+        "verdict": "Fortement présumé 100% Canon absolu.",
+        "explanation": "Les éléments issus directement des 42 volumes du manga original ou des écrits autographes de Toriyama constituent le cœur intouchable du canon Dragon Ball.",
+        "sources": [
+          "Manga Dragon Ball (Tomes 1 à 42)",
+          "Bird Studio / Shueisha"
+        ]
+      },
+      {
+        "id": "production-toei",
+        "label": "Renvoi à la production animée",
+        "tier": "NON_CANON_DERIVE",
+        "score": 20,
+        "keywords": [
+          "filler",
+          "hors-serie",
+          "hors serie",
+          "oav",
+          "episode inedit",
+          "toei"
+        ],
+        "verdict": "Élément dérivé produit pour l'animation sans écriture de Toriyama.",
+        "explanation": "Ces segments appartiennent à la continuité animée Toei Animation et ne sont pas inclus dans l'univers canonique rédigé par Akira Toriyama.",
+        "sources": [
+          "Archives Toei Animation",
+          "Daizenshuu 6"
+        ]
+      },
+      {
+        "id": "jeux-video",
+        "label": "Renvoi aux jeux vidéo",
+        "tier": "NON_CANON_DERIVE",
+        "score": 15,
+        "keywords": [
+          "jeu video",
+          "xenoverse",
+          "kakarot",
+          "budokai",
+          "fighterz",
+          "sdbh",
+          "heroes"
+        ],
+        "verdict": "Contenu de jeu vidéo : hors de la continuité écrite par Toriyama.",
+        "explanation": "Les jeux inventent librement personnages, transformations et scénarios alternatifs. Ils sont officiels commercialement, jamais canoniques narrativement, sauf reprise explicite dans le manga.",
+        "sources": [
+          "Catalogues éditeurs",
+          "Daizenshuu 7 (Jeux)"
+        ]
+      },
+      {
+        "id": "supervision-officielle",
+        "label": "Renvoi aux guides et interviews officielles",
+        "tier": "EXTENSION_OFFICIELLE",
+        "score": 85,
+        "keywords": [
+          "daizenshuu",
+          "chozenshu",
+          "super exciting guide",
+          "seg",
+          "interview toriyama",
+          "entretien toriyama",
+          "v-jump",
+          "saikyo jump",
+          "guide officiel"
+        ],
+        "verdict": "Information issue des guides officiels ou déclarations de l'auteur.",
+        "explanation": "Les guides publiés par Shueisha (Daizenshuu, SEG, Chōzenshū) et les entretiens avec Akira Toriyama apportent des précisions et des éclairages canoniques de premier ordre validés par l'auteur.",
+        "sources": [
+          "Daizenshuu 1-7",
+          "Super Exciting Guide",
+          "Chōzenshū 1-4",
+          "Archives V-Jump & Saikyō Jump"
+        ]
+      }
+    ],
+    "references": [
+      {
+        "id": "ref-manuel-1",
+        "subject": "Broly (1993)",
+        "keywords": [
+          "broly"
+        ],
+        "text": "ブロリーのデザインは僕です。",
+        "textFr": "Le design de Broly est de moi.",
+        "source": "Dragon Ball Super Broly, livret",
+        "year": 2018,
+        "document": "manuel",
+        "lang": "ja",
+        "provenance": "manuel"
+      },
+      {
+        "id": "ref-aphrody-2",
+        "subject": "Dragon Ball GT",
+        "keywords": [
+          "gt"
+        ],
+        "text": "GT is a side story.",
+        "source": "Daizenshuu",
+        "year": 1996,
+        "document": "guides/daizenshuu.md",
+        "lang": "en",
+        "provenance": "aphrody",
+        "visible": true
+      }
+    ],
+    "powerScaling": {
+      "enabled": true,
+      "kiriToBpRate": 50000,
+      "planetDestructionKiriFloor": 200,
+      "multipliers": [
+        {
+          "form": "Oozaru (Grand Singe)",
+          "multiplier": 10,
+          "baseForm": "Base",
+          "source": "Manga DB Chapitre 233 & Daizenshuu 7",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Multiplication brute de la puissance du Saiyan possédant sa queue sous les rayons Blutz."
+        },
+        {
+          "form": "Kaio-ken (x2 à x20)",
+          "multiplier": 2,
+          "baseForm": "Base",
+          "source": "Manga DB Chapitres 229 & 315",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Technique de Maître Kaio multipliant force, vitesse et ki d'un facteur exact (jusqu'à x20)."
+        },
+        {
+          "form": "Super Saiyan (SSJ1)",
+          "multiplier": 50,
+          "baseForm": "Base",
+          "source": "Daizenshuu 7 (p. 83) & Super Exciting Guide",
+          "canonTier": "CANON_ABSOLU",
+          "notes": "Éveil légendaire. Propulse Goku de 3 000 000 à 150 000 000 BP contre Freezer (120 000 000)."
+        },
+        {
+          "form": "Super Saiyan 2 (SSJ2)",
+          "multiplier": 100,
+          "baseForm": "Base (x2 de SSJ1)",
+          "source": "Super Exciting Guide : Story Volume (2009)",
+          "canonTier": "EXTENSION_OFFICIELLE",
+          "notes": "Dépassement du Super Saiyan initié par Gohan. Double la puissance du SSJ1 (x100 de la base)."
+        }
+      ],
+      "officialBps": [
+        {
+          "character": "Fermier au fusil",
+          "saga": "Saga Saiyans",
+          "state": "Normal",
+          "bp": 5,
+          "scouter": true,
+          "source": "Manga Ch. 195",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Son Goku",
+          "characterId": 1,
+          "saga": "Saga Saiyans",
+          "state": "Vêtements lourds",
+          "bp": 334,
+          "scouter": true,
+          "source": "Manga Ch. 199",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Piccolo",
+          "saga": "Saga Saiyans",
+          "state": "Vêtements lourds",
+          "bp": 322,
+          "scouter": true,
+          "source": "Manga Ch. 199",
+          "canonTier": "CANON_ABSOLU"
+        },
+        {
+          "character": "Piccolo",
+          "saga": "Saga Saiyans",
+          "state": "Makankosappo (max)",
+          "bp": 1440,
+          "scouter": true,
+          "source": "Manga Ch. 201",
+          "canonTier": "CANON_ABSOLU"
+        }
+      ],
+      "tiers": [
+        {
+          "tierNumber": 1,
+          "name": "Humain d'Élite & Art Martial",
+          "description": "Guerriers de niveau terrien, maîtres d'arts martiaux et soldats réguliers de l'armée de Freezer.",
+          "examples": [
+            "Fermier au fusil (5)",
+            "Tortue Géniale au repos (139)",
+            "Son Goku au 21e Tenkaichi Budokai"
+          ]
+        },
+        {
+          "tierNumber": 2,
+          "name": "Surhumain / Destructeur de Lune",
+          "description": "Puissance capable d'oblitérer un satellite naturel (Lune détruite par Roshi et Piccolo à ~140-300 BP).",
+          "examples": [
+            "Piccolo Makankosappo (1 440)",
+            "Raditz (1 500)",
+            "Saibaimen (1 200)"
+          ]
+        },
+        {
+          "tierNumber": 3,
+          "name": "Planétaire / Menace Extraterrestre",
+          "description": "Capacité prouvée de détruire une planète tellurique de taille standard comme la Terre (Galick Ho de Vegeta à 18 000 BP).",
+          "examples": [
+            "Vegeta Saga Saiyans (18 000)",
+            "Goku Kaio-ken x3/x4 (24 000 - 32 000)",
+            "Kiwi (18 000)",
+            "Nail (42 000)"
+          ]
+        }
+      ]
+    },
+    "fallback": {
+      "tier": "EXTENSION_OFFICIELLE",
+      "score": 50,
+      "verdict": "Affirmation nécessitant une vérification croisée dans les archives.",
+      "explanation": "Le sujet saisi ne correspond à aucun point de divergence répertorié. Dans la doctrine Shenron, une affirmation sans source manga, databook vérifié ou déclaration signée de Toriyama est considérée comme non établie.",
+      "sources": [
+        "Manga Dragon Ball",
+        "Daizenshuu 1-7",
+        "Super Exciting Guide"
+      ]
+    },
+    "vide": {
+      "verdict": "Saisis un texte, un personnage, un film ou une affirmation.",
+      "explanation": "Le moteur analysera sa canonicité selon les règles du manga, des databooks et des déclarations de l'auteur — telles qu'elles sont écrites dans les paramètres du site."
+    }
+  }
+}

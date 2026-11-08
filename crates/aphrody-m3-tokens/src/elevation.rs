@@ -10,6 +10,26 @@
 /// Number of M3 elevation levels (0 through 5 inclusive).
 pub const LEVEL_COUNT: usize = 6;
 
+/// Single M3 elevation token in density-independent pixels (`f32` dp).
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ElevationToken {
+    /// Elevation height in dp.
+    pub dp: f32,
+}
+
+/// Level 0 elevation (`0.0 dp`).
+pub const LEVEL_0: ElevationToken = ElevationToken { dp: 0.0 };
+/// Level 1 elevation (`1.0 dp`).
+pub const LEVEL_1: ElevationToken = ElevationToken { dp: 1.0 };
+/// Level 2 elevation (`3.0 dp`).
+pub const LEVEL_2: ElevationToken = ElevationToken { dp: 3.0 };
+/// Level 3 elevation (`6.0 dp`).
+pub const LEVEL_3: ElevationToken = ElevationToken { dp: 6.0 };
+/// Level 4 elevation (`8.0 dp`).
+pub const LEVEL_4: ElevationToken = ElevationToken { dp: 8.0 };
+/// Level 5 elevation (`12.0 dp`).
+pub const LEVEL_5: ElevationToken = ElevationToken { dp: 12.0 };
+
 /// Each entry is `(dp_value, css_box_shadow)`.
 ///
 /// The `dp_value` maps to the `--md-sys-elevation-level*` CSS custom property.

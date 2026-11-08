@@ -1,0 +1,10 @@
+{
+  "name": "@yolo-rs/stack-routes",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared showcase route set for the yolo-stack benchmark apps (TypeScript side).",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

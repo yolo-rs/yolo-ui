@@ -12,7 +12,11 @@
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+    "paths": {
+      "@yolo-rs/ui-mcp": ["./packages/yolo-ui-mcp/src/index.ts"],
+      "@yolo-rs/ui-plugin": ["./packages/yolo-ui-plugin/src/index.ts"]
+    }
   },
   "include": ["scripts/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "target", "submodules", "packages"]

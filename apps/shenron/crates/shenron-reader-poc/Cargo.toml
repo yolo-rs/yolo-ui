@@ -1,0 +1,79 @@
+[package]
+name = "shenron-reader-poc"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+description = "Shenron (dragonballfr.com) manga reader PoC: Dioxus 0.7 + Taffy 0.15 + wgpu 30"
+license = "MIT OR Apache-2.0"
+publish = false
+
+# Standalone: ignore any parent workspace.
+[workspace]
+
+[[bin]]
+name = "shenron-reader-poc"
+path = "src/main.rs"
+
+[dependencies]
+dioxus = { version = "0.7.10", default-features = false, features = [
+  "macro",
+  "html",
+  "signals",
+  "hooks",
+  "launch",
+  "mounted",
+  "logger",
+] }
+taffy = { version = "0.15.1", default-features = false, features = [
+  "std",
+  "taffy_tree",
+  "flexbox",
+] }
+wgpu = { version = "30.0.1", default-features = false, features = [
+  "std",
+  "wgsl",
+] }
+bytemuck = { version = "1", features = ["derive"] }
+log = "0.4"
+
+# --- desktop (tao window owned by dioxus-desktop, wgpu surface on top of it) ---
+dioxus-desktop = { version = "0.7.10", optional = true }
+tao = { version = "0.34", optional = true, features = ["rwh_06"] }
+raw-window-handle = { version = "0.6", optional = true }
+
+# --- web (wasm32, <canvas> via web-sys) ---
+dioxus-web = { version = "0.7.10", optional = true }
+web-sys = { version = "0.3", optional = true, features = [
+  "HtmlCanvasElement",
+  "Element",
+  "Window",
+] }
+wasm-bindgen = { version = "0.2", optional = true }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+
+[features]
+default = []
+desktop = [
+  "dioxus/desktop",
+  "dep:dioxus-desktop",
+  "dep:tao",
+  "dep:raw-window-handle",
+  "wgpu/dx12",
+  "wgpu/vulkan",
+  "wgpu/metal",
+  "wgpu/gles",
+]
+web = [
+  "dioxus/web",
+  "dep:dioxus-web",
+  "dep:web-sys",
+  "dep:wasm-bindgen",
+  "dep:wasm-bindgen-futures",
+  "wgpu/webgpu",
+  "wgpu/webgl",
+]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1

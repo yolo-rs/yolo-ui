@@ -1,0 +1,21 @@
+{
+  "name": "@yolo-rs/ui-bench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated browser benchmark of the rosegriffon and Shenron UI kits in two lanes: Bun.serve + React 19 HTML imports, and Leptos 0.8 static SSR on Axum.",
+  "license": "Apache-2.0",
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "serve:bun": "NODE_ENV=production bun lane-bun/server.ts",
+    "css:leptos": "bun scripts/build-leptos-css.ts",
+    "bench": "bun bench/run.ts"
+  },
+  "devDependencies": {
+    "bun-plugin-tailwind": "0.1.2",
+    "tailwindcss": "4.3.3"
+  }
+}

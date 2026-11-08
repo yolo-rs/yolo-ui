@@ -1,0 +1,17 @@
+[package]
+name = "libm3-wasm"
+publish = false
+version = "1.4.7"
+edition = "2024"
+rust-version = "1.97"
+license = "Apache-2.0"
+description = "WebAssembly ABI over aphrody-m3-tokens: runtime dynamic colour for @aphrody/m3-tokens/wasm"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+aphrody-m3-tokens = { workspace = true, default-features = false, features = ["std"] }
+
+[lints]
+workspace = true

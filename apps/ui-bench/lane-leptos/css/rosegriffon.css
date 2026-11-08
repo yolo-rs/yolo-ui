@@ -1,0 +1,44 @@
+@import "tailwindcss" source(none);
+@import "../../.kits/rosegriffon/packages/rg-ui/src/styles.css";
+@import "../../shared/bench.css";
+
+/* Only the Leptos markup is scanned: the kit contributes tokens, themes and typescale. */
+@source "../src/rosegriffon.rs";
+
+/* Zero-JS behaviour for the native controls, styled with the kit tokens. */
+.zt-panel {
+  display: none;
+}
+.zt:has(.zt-radio[data-tab="0"]:checked) .zt-panel[data-tab="0"],
+.zt:has(.zt-radio[data-tab="1"]:checked) .zt-panel[data-tab="1"],
+.zt:has(.zt-radio[data-tab="2"]:checked) .zt-panel[data-tab="2"] {
+  display: block;
+}
+.zt:has(.zt-radio[data-tab="0"]:checked) .zt-tab[data-tab="0"],
+.zt:has(.zt-radio[data-tab="1"]:checked) .zt-tab[data-tab="1"],
+.zt:has(.zt-radio[data-tab="2"]:checked) .zt-tab[data-tab="2"] {
+  @apply bg-background text-foreground shadow-sm;
+}
+.zt:has(.zt-radio:focus-visible) .zt-tab {
+  @apply outline-hidden;
+}
+.rg-check,
+.rg-range {
+  accent-color: var(--color-primary);
+}
+.rg-switch {
+  @apply relative h-6 w-11 cursor-pointer appearance-none rounded-full bg-input transition-colors;
+}
+.rg-switch::after {
+  @apply absolute top-0.5 left-0.5 size-5 rounded-full bg-background shadow-sm transition-transform;
+  content: "";
+}
+.rg-switch:checked {
+  @apply bg-primary;
+}
+.rg-switch:checked::after {
+  transform: translateX(1.25rem);
+}
+.rg-pop::backdrop {
+  background: color-mix(in srgb, var(--color-scrim) 50%, transparent);
+}

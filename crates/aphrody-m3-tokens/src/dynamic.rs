@@ -6,7 +6,7 @@
 //! seed-to-palette entry points on top of them.
 //!
 //! ```rust
-//! use aphrody_m3_tokens::dynamic::{TONE_VALUES, seed_to_palette};
+//! use yolo_tokens::dynamic::{TONE_VALUES, seed_to_palette};
 //! let palette = seed_to_palette(0xFF67_50A4);
 //! assert_eq!(palette.len(), TONE_VALUES.len());
 //! assert_eq!(palette[0].0, 0xFF00_0000); // tone 0 is black

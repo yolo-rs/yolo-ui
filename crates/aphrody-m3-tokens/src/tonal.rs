@@ -258,7 +258,7 @@ pub const ALL_BASELINE: [&Palette; 6] = [
 /// ```rust
 /// # #[cfg(feature = "std")]
 /// # {
-/// use aphrody_m3_tokens::tonal::{PRIMARY_BASELINE, export_css};
+/// use yolo_tokens::tonal::{PRIMARY_BASELINE, export_css};
 /// let css = export_css(&PRIMARY_BASELINE);
 /// assert!(css.contains("--md-ref-palette-primary40:"));
 /// # }

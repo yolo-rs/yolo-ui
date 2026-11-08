@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "metrics": {
+    "cases": 25,
+    "recall": { "1": 0.68, "3": 0.84, "5": 0.92, "10": 0.96 },
+    "mrr": 0.7704,
+    "ndcg": 0.8033,
+    "durationMs": 7811,
+    "misses": [
+      { "q": "Date de naissance de Bulma", "expected": ["Daizenshuu 7"], "returnedTitle": "Bulma" },
+      { "q": "Gine apparaît-elle dans le manga original ?", "expected": ["/wiki/gine"], "returnedTitle": "Bardock" }
+    ],
+    "engine": "Aphrody AI",
+    "persisted": true
+  }
+}

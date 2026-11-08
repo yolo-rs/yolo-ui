@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "yolo-next"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Next.js 16 -> Yolo migration compiler: next.config/Turbopack, App Router, Server Components, Server Actions, next/font, next/image + CDN into Bun + TanStack, Dioxus 0.8, or Leptos targets."
+publish = false
+autoexamples = false
+
+[lib]
+name = "yolo_next"
+path = "src/lib.rs"
+
+[[bin]]
+name = "yolo-next"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+# Same OXC pin as yolo-ui so sccache shares the compiled artifacts.
+oxc_allocator = "0.155"
+oxc_ast = "0.155"
+oxc_parser = "0.155"
+oxc_span = "0.155"
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+toml = "1.1.2"
+walkdir = "2.5.0"
+# yolo-ui crates consumed by path (sibling checkout) until the pillar is fused; see crates/README.md.
+yolo-react = { path = "../../../yolo-ui/crates/yolo-react" }
+yolo-shared = { path = "../../../yolo-ui/crates/yolo-shared" }

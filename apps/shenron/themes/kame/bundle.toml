@@ -1,0 +1,168 @@
+schema = 1
+header_font = "Bricolage Grotesque"
+
+[brand]
+logo_dark = "brand/logo-dark.svg"
+logo_mask = "brand/logo-mask.svg"
+
+[pet]
+name = "Tortue"
+sprite = "pet/sprite.svg"
+idle = ["bob", "blink"]
+behaviors = ["greet", "sleep"]
+
+[[wallpaper]]
+id = "main"
+label = "Motif"
+
+[[wallpaper.variant]]
+file = "wallpapers/main-light-1280.svg"
+scheme = "light"
+min_width = 0
+width = 1280
+height = 800
+dominant = "#e8f3ff"
+
+[[wallpaper.variant]]
+file = "wallpapers/main-light-2560.svg"
+scheme = "light"
+min_width = 1280
+width = 2560
+height = 1600
+dominant = "#e8f3ff"
+
+[[wallpaper.variant]]
+file = "wallpapers/main-dark-1280.svg"
+scheme = "dark"
+min_width = 0
+width = 1280
+height = 800
+dominant = "#07131f"
+
+[[wallpaper.variant]]
+file = "wallpapers/main-dark-2560.svg"
+scheme = "dark"
+min_width = 1280
+width = 2560
+height = 1600
+dominant = "#07131f"
+
+[[wallpaper]]
+id = "grid"
+label = "Grille"
+
+[[wallpaper.variant]]
+file = "wallpapers/grid-light-1280.svg"
+scheme = "light"
+min_width = 0
+width = 1280
+height = 800
+dominant = "#e8f3ff"
+
+[[wallpaper.variant]]
+file = "wallpapers/grid-light-2560.svg"
+scheme = "light"
+min_width = 1280
+width = 2560
+height = 1600
+dominant = "#e8f3ff"
+
+[[wallpaper.variant]]
+file = "wallpapers/grid-dark-1280.svg"
+scheme = "dark"
+min_width = 0
+width = 1280
+height = 800
+dominant = "#07131f"
+
+[[wallpaper.variant]]
+file = "wallpapers/grid-dark-2560.svg"
+scheme = "dark"
+min_width = 1280
+width = 2560
+height = 1600
+dominant = "#07131f"
+
+[[asset]]
+file = "brand/logo.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "brand/logo-mono.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "brand/logo-dark.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "brand/logo-mask.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "brand/wordmark.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "pet/sprite.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/main-light-1280.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/main-light-2560.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/main-dark-1280.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/main-dark-2560.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/grid-light-1280.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/grid-light-2560.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/grid-dark-1280.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true
+
+[[asset]]
+file = "wallpapers/grid-dark-2560.svg"
+license = "CC0-1.0"
+source = "original"
+placeholder = true

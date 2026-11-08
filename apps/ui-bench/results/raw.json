@@ -1,0 +1,3786 @@
+{
+  "meta": {
+    "date": "2026-11-05T08:18:47.952Z",
+    "host": {
+      "hostname": "bunos",
+      "cpu": "Intel Core Processor (Haswell, no TSX)",
+      "cores": 6,
+      "memGiB": 11.4,
+      "os": "Ubuntu 26.10",
+      "kernel": "7.3.0-9-generic"
+    },
+    "chrome": "HeadlessChrome/157.0.8103.38",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.38 Safari/537.36",
+    "bun": "1.4.6",
+    "lanes": {
+      "bun": "http://127.0.0.1:4100",
+      "leptos": "http://127.0.0.1:4200"
+    },
+    "runs": 5,
+    "calibration": {
+      "rate1": {
+        "loopMs": 58.5,
+        "longTasks": [
+          58
+        ]
+      },
+      "rate4": {
+        "loopMs": 184.79999995231628,
+        "longTasks": [
+          186
+        ]
+      }
+    },
+    "throttling": {
+      "network": {
+        "offline": false,
+        "latency": 562.5,
+        "downloadThroughput": 188743.68,
+        "uploadThroughput": 86400,
+        "connectionType": "cellular4g"
+      },
+      "cpuRate": 4,
+      "viewport": {
+        "width": 412,
+        "height": 823,
+        "deviceScaleFactor": 1.75,
+        "mobile": true
+      },
+      "cache": "disabled, fresh browser context per load"
+    }
+  },
+  "results": [
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "home",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/rosegriffon/",
+      "ttfb": 566.1999998092651,
+      "fcp": 4056,
+      "lcp": 4056,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 233,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3808.7999999523163,
+      "load": 3809.199999809265,
+      "loadWall": 3812.2399389999996,
+      "domNodes": 112,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-egs3q379.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291433
+        }
+      ],
+      "bytes": {
+        "total": 478062,
+        "document": 579,
+        "script": 291433,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "home",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/rosegriffon/",
+      "ttfb": 565.2999999523163,
+      "fcp": 1580,
+      "lcp": 1580,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 67,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 631,
+      "load": 1566.7000000476837,
+      "loadWall": 1571.9337309999992,
+      "domNodes": 107,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 11636
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 73903,
+        "document": 11636,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "home",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/shenron/",
+      "ttfb": 565.8000001907349,
+      "fcp": 5260,
+      "lcp": 5260,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 313,
+      "inp": 48,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4997.400000095367,
+      "load": 5000.900000095367,
+      "loadWall": 5002.866752999998,
+      "domNodes": 137,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-8psr0178.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 301624
+        }
+      ],
+      "bytes": {
+        "total": 680870,
+        "document": 569,
+        "script": 301624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "home",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/shenron/",
+      "ttfb": 565.3000001907349,
+      "fcp": 2132,
+      "lcp": 2132,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 78,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 622.7000000476837,
+      "load": 2113.2000000476837,
+      "loadWall": 2119.668995,
+      "domNodes": 95,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 8667
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 170333,
+        "document": 8667,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/rosegriffon/gallery",
+      "ttfb": 565.5999999046326,
+      "fcp": 5408,
+      "lcp": 5408,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 681,
+      "inp": 80,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 80
+        },
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4798.599999904633,
+      "load": 4798.799999952316,
+      "loadWall": 4802.92295,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-fv8ds8s1.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 465262
+        }
+      ],
+      "bytes": {
+        "total": 651891,
+        "document": 579,
+        "script": 465262,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/rosegriffon/gallery",
+      "ttfb": 564.2000000476837,
+      "fcp": 1592,
+      "lcp": 1592,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 84,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 652.4000000953674,
+      "load": 1578.4000000953674,
+      "loadWall": 1583.2645439999978,
+      "domNodes": 166,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 15655
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 77922,
+        "document": 15655,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/shenron/gallery",
+      "ttfb": 564.7999999523163,
+      "fcp": 6400,
+      "lcp": 6400,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 643,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5921.200000047684,
+      "load": 5921.700000047684,
+      "loadWall": 5924.7676809999975,
+      "domNodes": 205,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-faeqpw49.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 472624
+        }
+      ],
+      "bytes": {
+        "total": 851870,
+        "document": 569,
+        "script": 472624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/shenron/gallery",
+      "ttfb": 566.0999999046326,
+      "fcp": 2136,
+      "lcp": 2136,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 74,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 636.5,
+      "load": 2032.5,
+      "loadWall": 2109.025969000002,
+      "domNodes": 159,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 12280
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 173946,
+        "document": 12280,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "legal",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/rosegriffon/legal",
+      "ttfb": 565.5,
+      "fcp": 4032,
+      "lcp": 4032,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 221,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3800,
+      "load": 3800.5,
+      "loadWall": 3803.821483000007,
+      "domNodes": 152,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 589
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-y2sgbq8f.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 288767
+        }
+      ],
+      "bytes": {
+        "total": 475406,
+        "document": 589,
+        "script": 288767,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/rosegriffon/legal",
+      "ttfb": 564.7000000476837,
+      "fcp": 1580,
+      "lcp": 1580,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 73,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 741.7999999523163,
+      "load": 1566.6000001430511,
+      "loadWall": 1571.2116370000003,
+      "domNodes": 195,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 32604
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 94871,
+        "document": 32604,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "legal",
+      "run": 1,
+      "url": "http://127.0.0.1:4100/shenron/legal",
+      "ttfb": 564.4000000953674,
+      "fcp": 5120,
+      "lcp": 5120,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 265,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4894.600000143051,
+      "load": 4915.200000047684,
+      "loadWall": 4918.118459999998,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-j445wjem.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291698
+        }
+      ],
+      "bytes": {
+        "total": 670954,
+        "document": 579,
+        "script": 291698,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 1,
+      "url": "http://127.0.0.1:4200/shenron/legal",
+      "ttfb": 566.3999998569489,
+      "fcp": 2144,
+      "lcp": 2144,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 84,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 40
+        },
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 753.1999998092651,
+      "load": 2126.199999809265,
+      "loadWall": 2130.393631999992,
+      "domNodes": 199,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 34330
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 195996,
+        "document": 34330,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "home",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/rosegriffon/",
+      "ttfb": 565.1000001430511,
+      "fcp": 4056,
+      "lcp": 4056,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 251,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3792.100000143051,
+      "load": 3792.2000000476837,
+      "loadWall": 3794.641948000004,
+      "domNodes": 112,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-egs3q379.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291433
+        }
+      ],
+      "bytes": {
+        "total": 478062,
+        "document": 579,
+        "script": 291433,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "home",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/rosegriffon/",
+      "ttfb": 564.7999999523163,
+      "fcp": 1588,
+      "lcp": 1588,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 72,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 16
+        },
+        {
+          "name": "click",
+          "dur": 16
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 635.2999999523163,
+      "load": 1574.9000000953674,
+      "loadWall": 1579.6158260000084,
+      "domNodes": 107,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 11636
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 73903,
+        "document": 11636,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "home",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/shenron/",
+      "ttfb": 565.1000001430511,
+      "fcp": 5252,
+      "lcp": 5252,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 318,
+      "inp": 48,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4984,
+      "load": 4987.900000095367,
+      "loadWall": 4990.995754999996,
+      "domNodes": 137,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-8psr0178.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 301624
+        }
+      ],
+      "bytes": {
+        "total": 680870,
+        "document": 569,
+        "script": 301624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "home",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/shenron/",
+      "ttfb": 565.4000000953674,
+      "fcp": 2144,
+      "lcp": 2144,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 71,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 32
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 634,
+      "load": 2118.2000000476837,
+      "loadWall": 2120.5684089999995,
+      "domNodes": 95,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 8667
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 170333,
+        "document": 8667,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/rosegriffon/gallery",
+      "ttfb": 565.1999998092651,
+      "fcp": 5404,
+      "lcp": 5404,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 684,
+      "inp": 144,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 144
+        },
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4784.299999952316,
+      "load": 4785,
+      "loadWall": 4789.8135259999835,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-fv8ds8s1.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 465262
+        }
+      ],
+      "bytes": {
+        "total": 651891,
+        "document": 579,
+        "script": 465262,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/rosegriffon/gallery",
+      "ttfb": 565.5999999046326,
+      "fcp": 1596,
+      "lcp": 1596,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 69,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 654.7999999523163,
+      "load": 1499.5,
+      "loadWall": 1571.405109000014,
+      "domNodes": 166,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 15655
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 77922,
+        "document": 15655,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/shenron/gallery",
+      "ttfb": 565.7999999523163,
+      "fcp": 6276,
+      "lcp": 6276,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 515,
+      "inp": 80,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 80
+        },
+        {
+          "name": "click",
+          "dur": 80
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5901.399999856949,
+      "load": 5901.899999856949,
+      "loadWall": 5905.594165999995,
+      "domNodes": 205,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-faeqpw49.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 472624
+        }
+      ],
+      "bytes": {
+        "total": 851870,
+        "document": 569,
+        "script": 472624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/shenron/gallery",
+      "ttfb": 564.3000001907349,
+      "fcp": 2132,
+      "lcp": 2132,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 70,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 32
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 636.7000000476837,
+      "load": 2032.1000001430511,
+      "loadWall": 2104.786798999994,
+      "domNodes": 159,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 12280
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 173946,
+        "document": 12280,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "legal",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/rosegriffon/legal",
+      "ttfb": 566,
+      "fcp": 4052,
+      "lcp": 4052,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 235,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 56
+        },
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3803.5,
+      "load": 3803.5,
+      "loadWall": 3807.6664509999973,
+      "domNodes": 152,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 589
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-y2sgbq8f.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 288767
+        }
+      ],
+      "bytes": {
+        "total": 475406,
+        "document": 589,
+        "script": 288767,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/rosegriffon/legal",
+      "ttfb": 564.7999999523163,
+      "fcp": 1580,
+      "lcp": 1580,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 68,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 40
+        },
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 739.7000000476837,
+      "load": 1567.2000000476837,
+      "loadWall": 1571.9536439999938,
+      "domNodes": 195,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 32604
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 94871,
+        "document": 32604,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "legal",
+      "run": 2,
+      "url": "http://127.0.0.1:4100/shenron/legal",
+      "ttfb": 565.2000000476837,
+      "fcp": 5124,
+      "lcp": 5124,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 279,
+      "inp": 80,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 80
+        },
+        {
+          "name": "click",
+          "dur": 80
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4885.200000047684,
+      "load": 4902.5,
+      "loadWall": 4907.180307999981,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-j445wjem.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291698
+        }
+      ],
+      "bytes": {
+        "total": 670954,
+        "document": 579,
+        "script": 291698,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 2,
+      "url": "http://127.0.0.1:4200/shenron/legal",
+      "ttfb": 564.5,
+      "fcp": 2144,
+      "lcp": 2144,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 88,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 40
+        },
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 748.1999998092651,
+      "load": 2123.399999856949,
+      "loadWall": 2129.3552879999916,
+      "domNodes": 199,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 34330
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 195996,
+        "document": 34330,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "home",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/rosegriffon/",
+      "ttfb": 565.0999999046326,
+      "fcp": 4092,
+      "lcp": 4092,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 279,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 56
+        },
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3823.5999999046326,
+      "load": 3824.2999999523163,
+      "loadWall": 3828.287853000016,
+      "domNodes": 112,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-egs3q379.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291433
+        }
+      ],
+      "bytes": {
+        "total": 478062,
+        "document": 579,
+        "script": 291433,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "home",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/rosegriffon/",
+      "ttfb": 564.4000000953674,
+      "fcp": 1560,
+      "lcp": 1560,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 52,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 16
+        },
+        {
+          "name": "click",
+          "dur": 16
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 628.5,
+      "load": 1541.7000000476837,
+      "loadWall": 1547.2937920000113,
+      "domNodes": 107,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 11636
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 73903,
+        "document": 11636,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "home",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/shenron/",
+      "ttfb": 565.1000001430511,
+      "fcp": 5304,
+      "lcp": 5304,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 395,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5022.400000095367,
+      "load": 5046.600000143051,
+      "loadWall": 5049.5779760000005,
+      "domNodes": 137,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-8psr0178.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 301624
+        }
+      ],
+      "bytes": {
+        "total": 680870,
+        "document": 569,
+        "script": 301624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "home",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/shenron/",
+      "ttfb": 565,
+      "fcp": 2140,
+      "lcp": 2140,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 71,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 619.9000000953674,
+      "load": 2108.4000000953674,
+      "loadWall": 2112.7416850000154,
+      "domNodes": 95,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 8667
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 170333,
+        "document": 8667,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/rosegriffon/gallery",
+      "ttfb": 565.5,
+      "fcp": 5292,
+      "lcp": 5292,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 576,
+      "inp": 88,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 88
+        },
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4785.900000095367,
+      "load": 4785.900000095367,
+      "loadWall": 4789.946098999993,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-fv8ds8s1.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 465262
+        }
+      ],
+      "bytes": {
+        "total": 651891,
+        "document": 579,
+        "script": 465262,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/rosegriffon/gallery",
+      "ttfb": 564.2000000476837,
+      "fcp": 1592,
+      "lcp": 1592,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 60,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 40
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 656.7999999523163,
+      "load": 1500.0999999046326,
+      "loadWall": 1563.5725800000073,
+      "domNodes": 166,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 15655
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 77922,
+        "document": 15655,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/shenron/gallery",
+      "ttfb": 564.7000000476837,
+      "fcp": 6456,
+      "lcp": 6456,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 3,
+      "longTaskMsAll": 735,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5930.700000047684,
+      "load": 5930.799999952316,
+      "loadWall": 5935.2921680000145,
+      "domNodes": 205,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-faeqpw49.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 472624
+        }
+      ],
+      "bytes": {
+        "total": 851870,
+        "document": 569,
+        "script": 472624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/shenron/gallery",
+      "ttfb": 565.9000000953674,
+      "fcp": 2164,
+      "lcp": 2164,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 87,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 638,
+      "load": 2034.9000000953674,
+      "loadWall": 2125.4016690000426,
+      "domNodes": 159,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 12280
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 173946,
+        "document": 12280,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "legal",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/rosegriffon/legal",
+      "ttfb": 565.3999998569489,
+      "fcp": 3972,
+      "lcp": 3972,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 194,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3786.5,
+      "load": 3786.5999999046326,
+      "loadWall": 3789.8769060000195,
+      "domNodes": 152,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 589
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-y2sgbq8f.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 288767
+        }
+      ],
+      "bytes": {
+        "total": 475406,
+        "document": 589,
+        "script": 288767,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/rosegriffon/legal",
+      "ttfb": 564.4000000953674,
+      "fcp": 1572,
+      "lcp": 1572,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 69,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 741,
+      "load": 1563.2999999523163,
+      "loadWall": 1565.6735389999812,
+      "domNodes": 195,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 32604
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 94871,
+        "document": 32604,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "legal",
+      "run": 3,
+      "url": "http://127.0.0.1:4100/shenron/legal",
+      "ttfb": 565.1999998092651,
+      "fcp": 5116,
+      "lcp": 5116,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 255,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4916.799999952316,
+      "load": 4920.699999809265,
+      "loadWall": 4923.7526179999695,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-j445wjem.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291698
+        }
+      ],
+      "bytes": {
+        "total": 670954,
+        "document": 579,
+        "script": 291698,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 3,
+      "url": "http://127.0.0.1:4200/shenron/legal",
+      "ttfb": 564.9000000953674,
+      "fcp": 2176,
+      "lcp": 2176,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 121,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 751,
+      "load": 2156.5,
+      "loadWall": 2159.6854000000167,
+      "domNodes": 199,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 34330
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 195996,
+        "document": 34330,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "home",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/rosegriffon/",
+      "ttfb": 565.3999998569489,
+      "fcp": 3988,
+      "lcp": 3988,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 198,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3781,
+      "load": 3781.0999999046326,
+      "loadWall": 3784.7448519999743,
+      "domNodes": 112,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-egs3q379.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291433
+        }
+      ],
+      "bytes": {
+        "total": 478062,
+        "document": 579,
+        "script": 291433,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "home",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/rosegriffon/",
+      "ttfb": 564.5999999046326,
+      "fcp": 1564,
+      "lcp": 1564,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 51,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 16
+        },
+        {
+          "name": "click",
+          "dur": 16
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 633,
+      "load": 1553.7000000476837,
+      "loadWall": 1558.0567210000008,
+      "domNodes": 107,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 11636
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 73903,
+        "document": 11636,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "home",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/shenron/",
+      "ttfb": 565.4000000953674,
+      "fcp": 5232,
+      "lcp": 5232,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 313,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4965.5,
+      "load": 4989.900000095367,
+      "loadWall": 4993.876745999965,
+      "domNodes": 137,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-8psr0178.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 301624
+        }
+      ],
+      "bytes": {
+        "total": 680870,
+        "document": 569,
+        "script": 301624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "home",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/shenron/",
+      "ttfb": 566.5,
+      "fcp": 2140,
+      "lcp": 2140,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 71,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 633.5999999046326,
+      "load": 2120,
+      "loadWall": 2126.1345580000198,
+      "domNodes": 95,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 8667
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 170333,
+        "document": 8667,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/rosegriffon/gallery",
+      "ttfb": 565.5,
+      "fcp": 5296,
+      "lcp": 5296,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 595,
+      "inp": 80,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 80
+        },
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4786.299999952316,
+      "load": 4786.299999952316,
+      "loadWall": 4791.360779999988,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-fv8ds8s1.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 465262
+        }
+      ],
+      "bytes": {
+        "total": 651891,
+        "document": 579,
+        "script": 465262,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/rosegriffon/gallery",
+      "ttfb": 564.5,
+      "fcp": 1576,
+      "lcp": 1576,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 62,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 32
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 652.7000000476837,
+      "load": 1559.4000000953674,
+      "loadWall": 1562.959922000009,
+      "domNodes": 166,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 15655
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 77922,
+        "document": 15655,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/shenron/gallery",
+      "ttfb": 564.4000000953674,
+      "fcp": 6288,
+      "lcp": 6288,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 553,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 72
+        },
+        {
+          "name": "pointerup",
+          "dur": 56
+        },
+        {
+          "name": "click",
+          "dur": 56
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5892.5,
+      "load": 5892.599999904633,
+      "loadWall": 5896.532892999996,
+      "domNodes": 205,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-faeqpw49.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 472624
+        }
+      ],
+      "bytes": {
+        "total": 851870,
+        "document": 569,
+        "script": 472624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/shenron/gallery",
+      "ttfb": 564.6000001430511,
+      "fcp": 2128,
+      "lcp": 2128,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 85,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 638.2999999523163,
+      "load": 2112,
+      "loadWall": 2117.126068999991,
+      "domNodes": 159,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 12280
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 173946,
+        "document": 12280,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "legal",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/rosegriffon/legal",
+      "ttfb": 566,
+      "fcp": 3980,
+      "lcp": 3980,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 199,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3775.7999999523163,
+      "load": 3775.899999856949,
+      "loadWall": 3779.935899999982,
+      "domNodes": 152,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 589
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-y2sgbq8f.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 288767
+        }
+      ],
+      "bytes": {
+        "total": 475406,
+        "document": 589,
+        "script": 288767,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/rosegriffon/legal",
+      "ttfb": 565.2000000476837,
+      "fcp": 1592,
+      "lcp": 1592,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 73,
+      "inp": 48,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 743.0999999046326,
+      "load": 1574.4000000953674,
+      "loadWall": 1580.3821650000173,
+      "domNodes": 195,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 32604
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 94871,
+        "document": 32604,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "legal",
+      "run": 4,
+      "url": "http://127.0.0.1:4100/shenron/legal",
+      "ttfb": 564.9000000953674,
+      "fcp": 5152,
+      "lcp": 5152,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 261,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 72
+        },
+        {
+          "name": "pointerup",
+          "dur": 64
+        },
+        {
+          "name": "click",
+          "dur": 64
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4943.700000047684,
+      "load": 4947.700000047684,
+      "loadWall": 4950.1639040000155,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-j445wjem.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291698
+        }
+      ],
+      "bytes": {
+        "total": 670954,
+        "document": 579,
+        "script": 291698,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 4,
+      "url": "http://127.0.0.1:4200/shenron/legal",
+      "ttfb": 564.6999998092651,
+      "fcp": 2152,
+      "lcp": 2152,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 96,
+      "inp": 48,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 746.8999998569489,
+      "load": 2133.899999856949,
+      "loadWall": 2139.089386000007,
+      "domNodes": 199,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 34330
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 195996,
+        "document": 34330,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "home",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/rosegriffon/",
+      "ttfb": 564,
+      "fcp": 4020,
+      "lcp": 4020,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 220,
+      "inp": 40,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 40
+        },
+        {
+          "name": "click",
+          "dur": 40
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3791.5999999046326,
+      "load": 3791.699999809265,
+      "loadWall": 3794.6877220000024,
+      "domNodes": 112,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-egs3q379.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291433
+        }
+      ],
+      "bytes": {
+        "total": 478062,
+        "document": 579,
+        "script": 291433,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "home",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/rosegriffon/",
+      "ttfb": 564.6000001430511,
+      "fcp": 1568,
+      "lcp": 1568,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 52,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 16
+        },
+        {
+          "name": "click",
+          "dur": 16
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 630.2999999523163,
+      "load": 1548.9000000953674,
+      "loadWall": 1552.9776100000017,
+      "domNodes": 107,
+      "requests": [
+        {
+          "url": "/rosegriffon/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 11636
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 73903,
+        "document": 11636,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "home",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/shenron/",
+      "ttfb": 565.1999998092651,
+      "fcp": 5252,
+      "lcp": 5252,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 319,
+      "inp": 56,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 56
+        },
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4991.799999952316,
+      "load": 4996.5,
+      "loadWall": 4999.967694999999,
+      "domNodes": 137,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-8psr0178.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 301624
+        }
+      ],
+      "bytes": {
+        "total": 680870,
+        "document": 569,
+        "script": 301624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "home",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/shenron/",
+      "ttfb": 565.5999999046326,
+      "fcp": 2128,
+      "lcp": 2128,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 58,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 623.2000000476837,
+      "load": 2038.2999999523163,
+      "loadWall": 2100.1331629999913,
+      "domNodes": 95,
+      "requests": [
+        {
+          "url": "/shenron/",
+          "type": "Document",
+          "status": 200,
+          "bytes": 8667
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 170333,
+        "document": 8667,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/rosegriffon/gallery",
+      "ttfb": 564.1999998092651,
+      "fcp": 5176,
+      "lcp": 5176,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 479,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 72
+        },
+        {
+          "name": "pointerup",
+          "dur": 48
+        },
+        {
+          "name": "click",
+          "dur": 48
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4753.199999809265,
+      "load": 4753.5,
+      "loadWall": 4756.346330000029,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-fv8ds8s1.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 465262
+        }
+      ],
+      "bytes": {
+        "total": 651891,
+        "document": 579,
+        "script": 465262,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/rosegriffon/gallery",
+      "ttfb": 565,
+      "fcp": 1596,
+      "lcp": 1596,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 78,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 32
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 655.5,
+      "load": 1581.2000000476837,
+      "loadWall": 1584.5207660000306,
+      "domNodes": 166,
+      "requests": [
+        {
+          "url": "/rosegriffon/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 15655
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 77922,
+        "document": 15655,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "gallery",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/shenron/gallery",
+      "ttfb": 565.2000000476837,
+      "fcp": 6312,
+      "lcp": 6312,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 551,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 16
+        },
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 5896.900000095367,
+      "load": 5897,
+      "loadWall": 5901.478372999991,
+      "domNodes": 205,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 569
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-faeqpw49.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 472624
+        }
+      ],
+      "bytes": {
+        "total": 851870,
+        "document": 569,
+        "script": 472624,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "gallery",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/shenron/gallery",
+      "ttfb": 566.2000000476837,
+      "fcp": 2144,
+      "lcp": 2144,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 94,
+      "inp": 24,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 24
+        },
+        {
+          "name": "pointerup",
+          "dur": 24
+        },
+        {
+          "name": "click",
+          "dur": 24
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 637.3999998569489,
+      "load": 2129.5,
+      "loadWall": 2133.6577950000064,
+      "domNodes": 159,
+      "requests": [
+        {
+          "url": "/shenron/gallery",
+          "type": "Document",
+          "status": 200,
+          "bytes": 12280
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 173946,
+        "document": 12280,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "bun",
+      "page": "legal",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/rosegriffon/legal",
+      "ttfb": 565.7999999523163,
+      "fcp": 4012,
+      "lcp": 4012,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 225,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 3779,
+      "load": 3779.0999999046326,
+      "loadWall": 3782.6622409999836,
+      "domNodes": 152,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 589
+        },
+        {
+          "url": "/chunk-p7n7mbd4.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 186050
+        },
+        {
+          "url": "/chunk-y2sgbq8f.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 288767
+        }
+      ],
+      "bytes": {
+        "total": 475406,
+        "document": 589,
+        "script": 288767,
+        "stylesheet": 186050,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "rosegriffon",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/rosegriffon/legal",
+      "ttfb": 565.0999999046326,
+      "fcp": 1604,
+      "lcp": 1604,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 56,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 741,
+      "load": 1514.7000000476837,
+      "loadWall": 1575.777098999999,
+      "domNodes": 195,
+      "requests": [
+        {
+          "url": "/rosegriffon/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 32604
+        },
+        {
+          "url": "/assets/rosegriffon.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 62267
+        }
+      ],
+      "bytes": {
+        "total": 94871,
+        "document": 32604,
+        "script": 0,
+        "stylesheet": 62267,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "bun",
+      "page": "legal",
+      "run": 5,
+      "url": "http://127.0.0.1:4100/shenron/legal",
+      "ttfb": 564.8999998569489,
+      "fcp": 5188,
+      "lcp": 5188,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 2,
+      "longTaskMsAll": 332,
+      "inp": 72,
+      "clickEvents": [
+        {
+          "name": "pointerup",
+          "dur": 72
+        },
+        {
+          "name": "click",
+          "dur": 72
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 4908.599999904633,
+      "load": 4935,
+      "loadWall": 4937.801307999995,
+      "domNodes": 178,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 579
+        },
+        {
+          "url": "/chunk-jjhz206x.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 378677
+        },
+        {
+          "url": "/chunk-j445wjem.js",
+          "type": "Script",
+          "status": 200,
+          "bytes": 291698
+        }
+      ],
+      "bytes": {
+        "total": 670954,
+        "document": 579,
+        "script": 291698,
+        "stylesheet": 378677,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    },
+    {
+      "kit": "shenron",
+      "lane": "leptos",
+      "page": "legal",
+      "run": 5,
+      "url": "http://127.0.0.1:4200/shenron/legal",
+      "ttfb": 565.5999999046326,
+      "fcp": 2136,
+      "lcp": 2136,
+      "lcpTag": "p",
+      "cls": 0,
+      "tbt": 0,
+      "longTasks": 0,
+      "longTaskMs": 0,
+      "longTasksAll": 1,
+      "longTaskMsAll": 88,
+      "inp": 32,
+      "clickEvents": [
+        {
+          "name": "pointerdown",
+          "dur": 32
+        },
+        {
+          "name": "pointerup",
+          "dur": 32
+        },
+        {
+          "name": "click",
+          "dur": 32
+        }
+      ],
+      "clickHit": true,
+      "clickEffective": true,
+      "dcl": 747.6999998092651,
+      "load": 2114.899999856949,
+      "loadWall": 2121.035983000009,
+      "domNodes": 199,
+      "requests": [
+        {
+          "url": "/shenron/legal",
+          "type": "Document",
+          "status": 200,
+          "bytes": 34330
+        },
+        {
+          "url": "/assets/shenron.css",
+          "type": "Stylesheet",
+          "status": 200,
+          "bytes": 161666
+        }
+      ],
+      "bytes": {
+        "total": 195996,
+        "document": 34330,
+        "script": 0,
+        "stylesheet": 161666,
+        "font": 0,
+        "image": 0,
+        "other": 0
+      }
+    }
+  ]
+}

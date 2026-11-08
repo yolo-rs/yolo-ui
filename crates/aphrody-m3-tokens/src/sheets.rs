@@ -156,7 +156,7 @@ pub const EXTENDED: &[(&str, u32)] = spaceui::EXTENDED;
 fn header(what: &str, regenerate: &str) -> String {
     format!(
         "/* SPDX-License-Identifier: Apache-2.0 */\n/*\n * {what}\n * GENERATED - do not \
-         hand-edit. Source: crates/aphrody-m3-tokens/src/sheets.rs.\n * Regenerate with: \
+         hand-edit. Source: crates/yolo-tokens/src/sheets.rs.\n * Regenerate with: \
          {regenerate}\n */\n"
     )
 }
@@ -568,7 +568,7 @@ pub fn static_css() -> String {
          overlay on the content role. */\n{state}\n}}\n",
         header = header(
             "Material 3 static tokens: shape, typescale, motion, elevation, state layers.",
-            "APHRODY_UPDATE_TOKENS=1 scripts/aphrody/build/rust/cargo-serial.sh test -p aphrody-m3-tokens \
+            "APHRODY_UPDATE_TOKENS=1 scripts/aphrody/build/rust/cargo-serial.sh test -p yolo-tokens \
              --test sheets_golden"
         ),
         root = root.join("\n"),

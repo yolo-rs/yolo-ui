@@ -1,0 +1,125 @@
+[package]
+name = "shenron-admin-ai"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.95"
+description = "Shenron admin AI cockpit (/admin/ai) in Rust: Dioxus 0.7 web + desktop UI, Axum SSE hub over the Bun API"
+license = "MIT OR Apache-2.0"
+publish = false
+build = "build.rs"
+
+# Standalone: ignore any parent workspace (same convention as shenron-site and shenron-reader-poc).
+[workspace]
+
+[lib]
+path = "src/lib.rs"
+
+# Web (wasm32) and desktop client: one component tree, the feature picks the renderer.
+[[bin]]
+name = "shenron-admin-ai"
+path = "src/main.rs"
+
+# Axum hub: one upstream poller, SSE fan-out, admin gate, action proxy, fixture mode.
+[[bin]]
+name = "shenron-admin-ai-server"
+path = "src/bin/server.rs"
+required-features = ["server"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+
+# --- UI (shared component tree) ---
+dioxus = { version = "0.7.10", default-features = false, optional = true, features = [
+  "macro",
+  "html",
+  "signals",
+  "hooks",
+  "launch",
+  "mounted",
+  "logger",
+] }
+futures-channel = { version = "0.3", optional = true }
+futures-util = { version = "0.3", optional = true, default-features = false, features = ["std"] }
+
+# --- web (wasm32): EventSource, fetch, history ---
+dioxus-web = { version = "0.7.10", optional = true }
+wasm-bindgen = { version = "=0.2.129", optional = true }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+js-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true, features = [
+  "Window",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "Navigator",
+  "Location",
+  "History",
+  "EventSource",
+  "EventSourceInit",
+  "MessageEvent",
+  "Event",
+  "Headers",
+  "Request",
+  "RequestInit",
+  "RequestCredentials",
+  "Response",
+  "UrlSearchParams",
+  "Url",
+  "Storage",
+  "PopStateEvent",
+] }
+
+# --- desktop (and server): native HTTP + SSE client ---
+dioxus-desktop = { version = "0.7.10", optional = true }
+reqwest = { version = "0.13", optional = true, default-features = false, features = [
+  "json",
+  "stream",
+  "rustls",
+] }
+tokio = { version = "1", optional = true, features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
+
+# --- server ---
+axum = { version = "0.8", optional = true }
+tokio-stream = { version = "0.1", optional = true, features = ["sync"] }
+tower-http = { version = "0.6", optional = true, features = ["fs"] }
+sha2 = { version = "0.10", optional = true }
+
+[build-dependencies]
+# HCT / CAM16 tonal derivation of the palette at build time (in-repo yolo-ui pillar, portable across checkouts).
+yolo-ui-color = { path = "../../../../pillars/yolo-ui/crates/yolo-ui-color" }
+
+[features]
+default = []
+ui = ["dep:dioxus", "dep:futures-channel", "dep:futures-util"]
+web = [
+  "ui",
+  "dioxus/web",
+  "dep:dioxus-web",
+  "dep:wasm-bindgen",
+  "dep:wasm-bindgen-futures",
+  "dep:js-sys",
+  "dep:web-sys",
+]
+desktop = ["ui", "dioxus/desktop", "dep:dioxus-desktop", "dep:reqwest", "dep:tokio"]
+server = [
+  "dep:axum",
+  "dep:tokio",
+  "dep:tokio-stream",
+  "dep:tower-http",
+  "dep:reqwest",
+  "dep:sha2",
+  "dep:futures-util",
+]
+# Fixture mode by default (recorded payloads, simulated live updates); env SHENRON_ADMIN_AI_MODE overrides.
+fixture = ["server"]
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+tower = { version = "0.5", features = ["util"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1

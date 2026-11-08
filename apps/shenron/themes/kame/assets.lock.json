@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "files": {
+    "brand/logo.svg": {
+      "sha256": "0151eaf42bc75785f74f34f92c0a46bfb814ac7ed42abdbbd8431a3e9c9e2f6a",
+      "bytes": 437,
+      "mime": "image/svg+xml"
+    },
+    "brand/logo-mono.svg": {
+      "sha256": "6693d0040f9aad02491659ab63be0118b4f3152425c8e9f48a9ab0fda4b52826",
+      "bytes": 447,
+      "mime": "image/svg+xml"
+    },
+    "brand/logo-dark.svg": {
+      "sha256": "05d86e9fbb15fbc5f7193246984e53ce52ee0a9a7b17cb9563732361faf95c34",
+      "bytes": 437,
+      "mime": "image/svg+xml"
+    },
+    "brand/logo-mask.svg": {
+      "sha256": "eb93e0c57223fab6ea345831a8b3392ea4bc13708ec6b54cf9bdf2c0142cc5e1",
+      "bytes": 431,
+      "mime": "image/svg+xml"
+    },
+    "brand/wordmark.svg": {
+      "sha256": "d1600b726ce7993a0de0aac75e440f0435f393dbdb979e44bf49562c7e693e76",
+      "bytes": 379,
+      "mime": "image/svg+xml"
+    },
+    "pet/sprite.svg": {
+      "sha256": "3f3d3d23ecfbc5504e6a277b74eb0cc557fe83400f7f79f6fc1c082c885b493e",
+      "bytes": 632,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/main-light-1280.svg": {
+      "sha256": "07d619cea67912e7d8c7a78236a049a813e8488b26f4f98e79c4fa46326aff1f",
+      "bytes": 753,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/main-light-2560.svg": {
+      "sha256": "ca97294345b6959ef94214a687f9fdbb97ae9cadfe7ad4ef6c8b3d2b8a88c330",
+      "bytes": 759,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/main-dark-1280.svg": {
+      "sha256": "ee242579896f3f09b2eb1decf84c0cca0b4f36e4543e609959335277910baf8d",
+      "bytes": 753,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/main-dark-2560.svg": {
+      "sha256": "592d97909174add2cded8d0c2e425bb10c3ccc98b0df270d407e8bd4f26cec49",
+      "bytes": 759,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/grid-light-1280.svg": {
+      "sha256": "c3004174865b9aa462614023f5fe4debde51c21b99433b9a5083483dd6d05120",
+      "bytes": 1286,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/grid-light-2560.svg": {
+      "sha256": "e6fa4da41b9f73957f6b0b6b1e5ff3a79dfebd496e13a832e682d3d9d65788dd",
+      "bytes": 1319,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/grid-dark-1280.svg": {
+      "sha256": "28f784abf16ecb396285c042c7e691cf1d2c9d0b46fb191a882254aaddbec2f7",
+      "bytes": 1286,
+      "mime": "image/svg+xml"
+    },
+    "wallpapers/grid-dark-2560.svg": {
+      "sha256": "b5bdb285adf75d62a59d00ac975b0cd9c15d37f04a7b59f9f3243cec7502db33",
+      "bytes": 1319,
+      "mime": "image/svg+xml"
+    }
+  }
+}

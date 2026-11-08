@@ -1,0 +1,94 @@
+{
+  "brand": "Atelier Banc",
+  "nav": [
+    { "id": "home", "label": "Accueil", "path": "" },
+    { "id": "gallery", "label": "Galerie", "path": "gallery" },
+    { "id": "legal", "label": "Mentions légales", "path": "legal" }
+  ],
+  "hero": {
+    "eyebrow": "Banc d'essai d'interface",
+    "title": "Deux kits, deux piles, les mêmes pages",
+    "lead": "Cette page sert de coquille d'accueil pour comparer un rendu React 19 servi par Bun et un rendu statique Leptos servi par Axum. Le contenu, la structure et les jetons de couleur sont identiques dans les deux voies.",
+    "primary": "Voir la galerie",
+    "secondary": "Lire les conditions"
+  },
+  "stats": [
+    { "label": "Pages mesurées", "value": 3 },
+    { "label": "Exécutions par page", "value": 5 },
+    { "label": "Ralentissement CPU", "value": 4 },
+    { "label": "Voies comparées", "value": 2 }
+  ],
+  "cards": [
+    { "tag": "Rendu", "title": "Rendu côté client", "body": "La voie Bun monte les composants du kit dans le navigateur après le téléchargement du paquet JavaScript.", "cta": "Détails" },
+    { "tag": "Rendu", "title": "Rendu statique", "body": "La voie Leptos produit le HTML une fois au démarrage du serveur et le renvoie tel quel à chaque requête.", "cta": "Détails" },
+    { "tag": "Réseau", "title": "Profil 4G lent", "body": "Chaque chargement passe par une latence de 562,5 ms et un débit descendant d'environ 1,4 Mbit/s.", "cta": "Profil" },
+    { "tag": "Processeur", "title": "Ralentissement x4", "body": "Le processeur du navigateur est ralenti quatre fois pour approcher un téléphone de milieu de gamme.", "cta": "Profil" },
+    { "tag": "Mesure", "title": "Médiane de cinq", "body": "Chaque page est chargée cinq fois dans un contexte de navigation neuf, sans cache, puis la médiane est retenue.", "cta": "Méthode" },
+    { "tag": "Mesure", "title": "Interaction réelle", "body": "Après le chargement, un clic souris est envoyé par le protocole DevTools sur un déclencheur de la page.", "cta": "Méthode" }
+  ],
+  "faq": [
+    { "id": "q1", "q": "Pourquoi deux voies ?", "a": "Pour séparer le coût du kit lui-même du coût de la pile qui le sert : JavaScript client d'un côté, HTML statique de l'autre." },
+    { "id": "q2", "q": "Les composants sont-ils les mêmes ?", "a": "La voie Bun importe les composants réels du kit. La voie Leptos reconstruit le même balisage avec les jetons CSS du kit." },
+    { "id": "q3", "q": "Que mesure le clic ?", "a": "La durée de l'événement entre l'entrée et la peinture suivante, telle que l'expose l'API Event Timing du navigateur." }
+  ],
+  "gallery": {
+    "title": "Galerie de composants",
+    "lead": "Boutons, badges, champs, cases, interrupteurs, curseurs, onglets, accordéon, dialogue, progression, avatars et tableau.",
+    "buttons": ["Principal", "Secondaire", "Contour", "Fantôme", "Danger"],
+    "badges": ["Nouveau", "Bêta", "Stable", "Archivé"],
+    "selectLabel": "Région",
+    "options": ["Europe", "Amérique du Nord", "Asie", "Océanie", "Afrique"],
+    "tabs": [
+      { "id": "apercu", "label": "Aperçu", "body": "L'aperçu résume l'état du projet et les dernières mesures enregistrées sur l'hôte distant." },
+      { "id": "activite", "label": "Activité", "body": "L'activité liste les exécutions récentes, leur durée et le nombre d'octets transférés." },
+      { "id": "reglages", "label": "Réglages", "body": "Les réglages fixent le profil réseau, le ralentissement du processeur et le nombre d'exécutions." }
+    ],
+    "dialog": { "trigger": "Ouvrir le dialogue", "title": "Confirmer l'exécution", "body": "Lancer une nouvelle série de cinq mesures sur chaque page ?", "confirm": "Lancer", "cancel": "Annuler" },
+    "progress": 62,
+    "people": [
+      { "initials": "AL", "name": "Alix Lemaire" },
+      { "initials": "BT", "name": "Bastien Tanaka" },
+      { "initials": "CR", "name": "Camille Roux" }
+    ],
+    "table": [
+      { "name": "home", "lane": "bun", "status": "Stable", "score": 92 },
+      { "name": "home", "lane": "leptos", "status": "Stable", "score": 98 },
+      { "name": "gallery", "lane": "bun", "status": "Bêta", "score": 81 },
+      { "name": "gallery", "lane": "leptos", "status": "Bêta", "score": 95 },
+      { "name": "legal", "lane": "bun", "status": "Stable", "score": 88 },
+      { "name": "legal", "lane": "leptos", "status": "Stable", "score": 99 }
+    ]
+  },
+  "legal": {
+    "title": "Mentions légales et conditions d'utilisation",
+    "updated": "Dernière mise à jour : 5 novembre 2026",
+    "intro": "Le présent document décrit les conditions applicables à l'utilisation de ce site de démonstration. Il n'a aucune valeur contractuelle et sert uniquement à produire une page longue, composée de texte statique, pour les mesures de performance.",
+    "tocLabel": "Sommaire",
+    "sections": 24,
+    "topics": [
+      "Objet du site",
+      "Éditeur et hébergement",
+      "Accès au service",
+      "Propriété intellectuelle",
+      "Données personnelles",
+      "Cookies et traceurs",
+      "Responsabilité",
+      "Liens externes",
+      "Disponibilité",
+      "Modification des conditions",
+      "Droit applicable",
+      "Contact"
+    ],
+    "paragraphs": [
+      "L'utilisateur reconnaît avoir pris connaissance des présentes conditions avant toute navigation. L'accès au site vaut acceptation pleine et entière de ces conditions, dans leur version en vigueur au jour de la consultation. Toute personne qui ne souhaite pas y adhérer est invitée à quitter le site.",
+      "L'éditeur s'efforce de fournir des informations exactes et à jour, sans pouvoir garantir l'absence d'erreur ou d'omission. Les contenus sont proposés à titre indicatif et peuvent être modifiés à tout moment, sans préavis, notamment pour tenir compte de l'évolution des mesures et des outils employés.",
+      "Les textes, mises en page, jetons de couleur et éléments graphiques présentés restent la propriété de leurs auteurs respectifs. Toute reproduction, représentation ou adaptation, totale ou partielle, sans autorisation écrite préalable est interdite, à l'exception des usages expressément permis par la loi.",
+      "Aucune donnée personnelle n'est collectée lors de la consultation de ces pages. Le serveur conserve uniquement les journaux techniques nécessaires à son fonctionnement, pendant une durée limitée, et ne les transmet à aucun tiers. Aucun outil de mesure d'audience n'est chargé.",
+      "Le site peut contenir des liens vers des ressources externes. L'éditeur n'exerce aucun contrôle sur ces ressources et décline toute responsabilité quant à leur contenu, leur disponibilité ou leur politique de confidentialité. L'utilisateur les consulte sous sa seule responsabilité.",
+      "L'éditeur ne saurait être tenu responsable d'une interruption du service, d'un dysfonctionnement du réseau ou d'une incompatibilité du navigateur. Il appartient à l'utilisateur de protéger son propre matériel et ses données contre toute atteinte, notamment par l'emploi de logiciels à jour.",
+      "Les présentes conditions peuvent être révisées à tout moment. La version applicable est celle publiée sur cette page à la date de la consultation. Les modifications entrent en vigueur dès leur mise en ligne et ne s'appliquent pas rétroactivement aux consultations antérieures.",
+      "Tout litige relatif à l'interprétation ou à l'exécution des présentes conditions relève du droit français. À défaut de résolution amiable dans un délai raisonnable, les juridictions compétentes du ressort du siège de l'éditeur seront seules saisies, sous réserve des règles impératives applicables."
+    ]
+  },
+  "footer": "Banc d'essai interne. Mesures réalisées le 5 novembre 2026 sur un hôte distant, Chromium sans interface."
+}

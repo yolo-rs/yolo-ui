@@ -12,7 +12,7 @@
 //! dislike analyses of the private `temperature` module.
 //!
 //! ```rust
-//! use aphrody_m3_tokens::scheme::{DynamicScheme, Role, Variant};
+//! use yolo_tokens::scheme::{DynamicScheme, Role, Variant};
 //! let light = DynamicScheme::from_argb(0xFF67_50A4, Variant::TonalSpot, false, 0.0);
 //! let dark = DynamicScheme::from_argb(0xFF67_50A4, Variant::TonalSpot, true, 0.0);
 //! assert_ne!(light.argb(Role::Primary), dark.argb(Role::Primary));
