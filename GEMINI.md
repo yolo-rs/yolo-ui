@@ -1,16 +1,13 @@
-# yolo-ui — Gemini & Antigravity Operating Guidelines
+# GEMINI.md — YOLO-UI Design System, Longbridge GPUI-Kit & Dioxus 0.8 (`C:\src\yolo-ui`)
 
-> **Doctrine**: No Human In The Loop (NHITL) | 100% Upstream Bun v1.4.4+ & Rust 2024
+> **Doctrine**: No Human In The Loop (NHITL) | 100% Upstream Bun v1.4.4+ & Rust 2024 | 120 FPS Native GPU UI
 
-## Autonomous NHITL Agent & Context / Token Optimization Best Practices (24/7 Operations)
+## 1. Architecture (`C:\src\yolo-ui`)
+- **Desktop & Studio UI**: Longbridge `gpui-kit` v0.8 (`gpui-base`, `gpui-component`, `gpui-shell`, `DockArea`, `DataTable`, forked from Zed GPUI 0.8) + Taffy 0.15 + WGPU 30.0.1 / Skia 0.156 at 120 FPS.
+- **Web & Hybrid SSR/Native UI**: Dioxus 0.8 + Blitz + Taffy + Manganis + Subsecond hot-patching.
+- **HCT / CAM16 Chromatic Engine**: Perceptual color science (`design.google` tokens) with 7 brand presets (`Neutral`, `M3`, `Fluent`, `Apple`, `Omarchy`, `Hyprland`, `Aphrody`) and deduplicated Phosphor vector icons.
+- **Integration with `yolo-engine`**: Shared WGPU 30 render surfaces and Storytold `*Craft` creative suite viewports.
 
-### 1. Context Window & Token Optimization
-- **High-Precision Targeting**: Never dump large raw files into the model context. Use exact byte/line range reads or AST/symbol lookups.
-- **Zero-Polling Reactive Wakeup**: When launching background tasks or subagents, do not poll in loops. Yield execution immediately and wait for reactive system events.
-- **Compact & High Information Density**: Output concise, fact-based reports with clickable markdown file links (`[file.ext](file:///path/to/file)`). Do not narrate obvious actions.
-- **Strict Zero-Emoji Policy**: Zero emojis in all code, comments, commit messages, PRs, logs, and agent communications.
-
-### 2. Autonomous Execution (NHITL - No Human In The Loop)
-- **Continuous Grind & Auto-Goal**: Independently identify objectives, resolve compile errors, apply fixes, format (`bun fmt`), lint (`bun lint`), typecheck (`bun check`), test (`bun test` / `cargo test`), commit, and push.
-- **Pure Tech Stack**: 100% Upstream Bun v1.4.4+, Rust 2024, Python uv v0.13.7+, Go 1.27+. Zero Node.js, npm, yarn, or pnpm.
-- **Strict Isolation & Safe Execution**: Heavy Rust builds run on vps (12 cores) with sccache under shared lock; web and fast tests run on bunos or local Bun.
+## 2. Operating Directives
+- Zero emojis in all code, UI components, commits, and responses.
+- Validate changes with `bun fmt`, `bun check`, `bun test`, and `cargo test`.
