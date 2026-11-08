@@ -1,0 +1,19 @@
+{
+  "name": "@aphrody/bun-blender",
+  "version": "1.4.7",
+  "license": "MIT",
+  "bin": {
+    "bun-blender": "./src/cli.ts",
+    "bun-blender-mcp": "./src/mcp.ts"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./plugin": "./src/plugin.ts",
+    "./ffi": "./src/ffi.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}

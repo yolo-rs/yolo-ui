@@ -35,6 +35,11 @@
     "packages/yolo-ui-plugin",
     "packages/yolo-ui-mcp",
     "packages/bun-tauri",
+    "packages/bun-blender",
+    "packages/bun-video-project",
+    "packages/bun-gamestream",
+    "packages/bun-app-host",
+    "packages/bun-artifacts",
     "packages/yolo-shadcn-bun",
     "packages/yolo-react",
     "packages/yolo-fullstack"

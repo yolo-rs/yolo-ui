@@ -1,0 +1,21 @@
+{
+  "name": "@aphrody/bun-video-project",
+  "version": "1.4.7",
+  "description": "Aphrody video project bridge",
+  "license": "MIT",
+  "bin": {
+    "aphrody-video": "./src/cli.ts"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./native": "./src/native.ts",
+    "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@aphrody/bun-workspace": "workspace:*"
+  },
+  "engines": {
+    "bun": "1.4.4-canary.20261028.1"
+  }
+}
