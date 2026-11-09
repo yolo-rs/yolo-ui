@@ -1,0 +1,10 @@
+{
+  "max_agent_steps": 50,
+  "max_tool_result_bytes": 262144,
+  "context": [
+    "C:/src/yolo-ui/DESIGN.md",
+    "C:/src/yolo-ui/docs/design/00-INDEX.md",
+    "C:/src/yolo-ui/docs/design/01-ANTI-AI-SLOP-MANIFESTO.md",
+    "C:/src/docs/YOLO_DESIGN_GENERATIVE_UI_SPEC.md"
+  ]
+}

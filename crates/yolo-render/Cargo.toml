@@ -36,7 +36,7 @@ correctness = { level = "warn", priority = -1 }
 perf = { level = "warn", priority = -1 }
 
 [dependencies]
-aphrody-m3-tokens = { workspace = true }
+yolo-tokens = { workspace = true, features = ["serde"] }
 yolo-shared = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }

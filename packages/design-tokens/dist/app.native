@@ -1,0 +1,7 @@
+<!-- AUTO-GENERATED VERCEL-LABS/NATIVE VIEW (ui_schema.zig v2) FROM DESIGN.md (YOLO Sovereign Design System) -->
+<column id="root" padding="24" gap="16" bg="#0f1014">
+  <row id="header-card" justify="between" align="center" padding="12" radius="20" bg="#12141a">
+    <text id="title" size="28" weight="semibold" color="#ff73a8">YOLO Sovereign Design System — Native Engine (Zig + MVU)</text>
+    <button id="audit-btn" label="Verify DESIGN.md" press="RunDesignAudit" bg="#ff9e3b" radius="8" padding="12" />
+  </row>
+</column>

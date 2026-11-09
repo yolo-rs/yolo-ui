@@ -6,6 +6,7 @@ members = [
     "crates/yolo-tokens",
     "crates/yolo-theme-pack",
     "crates/yolo-contracts",
+    "crates/yolo-design-codegen",
     "crates/yolo-emit",
     "crates/yolo-layout",
     "crates/yolo-migrator",
@@ -202,6 +203,7 @@ default-members = [
     "crates/yolo-tokens",
     "crates/yolo-theme-pack",
     "crates/yolo-contracts",
+    "crates/yolo-design-codegen",
     "crates/yolo-emit",
     "crates/yolo-layout",
     "crates/yolo-migrator",
@@ -381,7 +383,6 @@ yolo-gpu = { path = "crates/yolo-gpu", version = "=0.8.0-alpha.3" }
 yolo-shell = { path = "crates/yolo-shell", version = "=0.8.0-alpha.3" }
 yolo-craft = { path = "crates/yolo-craft", version = "=0.8.0-alpha.3" }
 yolo-storyteller = { path = "crates/yolo-storyteller", version = "=0.8.0-alpha.3" }
-aphrody-m3-tokens = { package = "yolo-tokens", path = "crates/yolo-tokens", version = "=0.8.0-alpha.3", features = ["serde"] }
 yolo-react = { path = "crates/yolo-react", version = "=0.8.0-alpha.3" }
 yolo-engines = { path = "crates/yolo-engines", version = "=0.8.0-alpha.3" }
 yolo-3d = { path = "crates/yolo-3d", version = "=0.8.0-alpha.3" }
@@ -510,13 +511,13 @@ accesskit_xplat = { path = "submodules/blitz/packages/accesskit_xplat", version 
 debug_timer = { path = "submodules/blitz/packages/debug_timer", version = "0.1.3" }
 
 # Servo / Stylo / Blitz dependencies
-style = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo" }
-stylo = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo" }
-style_traits = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_traits" }
-style_atoms = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_atoms" }
-style_config = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_static_prefs" }
-style_dom = { version = "0.23.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "stylo_dom" }
-selectors = { version = "0.42.0", git = "https://github.com/yolo-rs/stylo", rev = "015d9bba18f078e2869fb57bf4f2e3e9c1eed0a6", package = "selectors" }
+style = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo" }
+stylo = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo" }
+style_traits = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo_traits" }
+style_atoms = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo_atoms" }
+style_config = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo_static_prefs" }
+style_dom = { version = "0.23.0", git = "https://github.com/servo/stylo", branch = "main", package = "stylo_dom" }
+selectors = { version = "0.42.0", git = "https://github.com/servo/stylo", branch = "main", package = "selectors" }
 cssparser = { version = "0.38.0" }
 markup5ever = "0.40.0"
 html5ever = "0.40.1"

@@ -23,7 +23,7 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, optional = true }
 axum = { workspace = true, optional = true, features = ["json", "tokio", "http1"] }
 hyper = { workspace = true, optional = true, features = ["client", "http1"] }
-hyper-util = { version = "0.1.21", optional = true, default-features = false, features = ["tokio"] }
+hyper-util = { workspace = true, optional = true, default-features = false, features = ["tokio"] }
 tokio = { workspace = true, optional = true, features = ["net", "fs", "io-util", "rt", "time"] }
 tower = { workspace = true, optional = true }
 tower-http = { workspace = true, optional = true, features = ["fs"] }

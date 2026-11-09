@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Deterministic benchmark and test scenes.
 
-use aphrody_m3_tokens::facade::color::{Role, Variant};
+use yolo_tokens::facade::color::{Role, Variant};
 
 use crate::{
     mesh3d::Geometry,

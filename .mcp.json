@@ -1,0 +1,68 @@
+{
+  "mcpServers": {
+    "yolo-universal": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo/packages/plugins/packages/yolo-universal-mcp/src/index.ts"
+      ]
+    },
+    "yolo-ui": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo-ui/packages/yolo-ui-mcp/src/mcp-server.ts"
+      ]
+    },
+    "yolo-web": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo-web/packages/web-mcp/src/index.ts"
+      ]
+    },
+    "yolo-engine-re": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo-engine/packages/re/yolo-re-mcp/src/index.ts"
+      ]
+    },
+    "free-context7": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo/packages/free-context7/src/mcp.ts"
+      ]
+    },
+    "microsoft-learn": {
+      "command": "bun",
+      "args": [
+        "run",
+        "C:/src/yolo/packages/free-context7/src/microsoft-learn-mcp.ts"
+      ]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${CONTEXT7_API_KEY}"
+      }
+    },
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "figma-desktop": {
+      "type": "http",
+      "url": "http://127.0.0.1:3845/mcp"
+    },
+    "stitch": {
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "x-goog-user-project": "aphrody"
+      }
+    }
+  }
+}

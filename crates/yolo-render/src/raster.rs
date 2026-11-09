@@ -143,7 +143,7 @@ pub fn encode_png(width: u32, height: u32, pixels: &[u8]) -> Result<Vec<u8>, png
 fn paint_node(
     canvas: &mut Canvas,
     node: &Node,
-    scheme: &aphrody_m3_tokens::facade::color::DynamicScheme,
+    scheme: &yolo_tokens::facade::color::DynamicScheme,
 ) {
     match node {
         Node::Surface {
@@ -429,7 +429,7 @@ fn paint_image(canvas: &mut Canvas, rect: Rect, src_w: u32, src_h: u32, rgba: &[
 
 #[cfg(test)]
 mod tests {
-    use aphrody_m3_tokens::facade::color::{Role, Variant};
+    use yolo_tokens::facade::color::{Role, Variant};
 
     use super::*;
     use crate::scene::{Corners, Node, Paint, Rect, Scene, StateKind};

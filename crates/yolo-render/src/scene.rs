@@ -12,7 +12,7 @@
 //! agree pixel-for-pixel within the tolerance documented in
 //! `docs/design/M3-RENDER.md`.
 
-use aphrody_m3_tokens::facade::color::{DynamicScheme, Role, Variant};
+use yolo_tokens::facade::color::{DynamicScheme, Role, Variant};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Serialize a [`Variant`] by its kebab-case name.
@@ -88,11 +88,11 @@ impl Corners {
     /// No rounding.
     pub const NONE: Self = Self::uniform(0.0);
 
-    /// Build corners from an [`aphrody_m3_tokens::shape::CornerRadius`] token
+    /// Build corners from an [`yolo_tokens::shape::CornerRadius`] token
     /// applied uniformly to all four corners, at the given `dp`-to-pixel scale.
     #[must_use]
     pub fn from_shape_token(
-        token: aphrody_m3_tokens::facade::motion::CornerRadius,
+        token: yolo_tokens::facade::motion::CornerRadius,
         scale: f32,
     ) -> Self {
         // The `full`/pill sentinel (9999dp) is clamped by callers against the
@@ -176,7 +176,7 @@ pub enum Paint {
 
 /// Serde wire representation of [`Paint`].
 ///
-/// `aphrody_m3_tokens::scheme::Role` does not derive `serde` (it lives in a
+/// `yolo_tokens::scheme::Role` does not derive `serde` (it lives in a
 /// `no_std`-friendly crate), so `Paint` implements `Serialize`/`Deserialize`
 /// by hand through this shadow enum instead of relying on derive helpers
 /// (`tag`/`content` do not compose with per-field `deserialize_with` for
@@ -220,7 +220,7 @@ impl Paint {
     }
 }
 
-/// M3 interaction state layers (`aphrody_m3_tokens::state`).
+/// M3 interaction state layers (`yolo_tokens::state`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum StateKind {
@@ -239,10 +239,10 @@ impl StateKind {
     #[must_use]
     pub const fn opacity(self) -> f32 {
         match self {
-            Self::Hover => aphrody_m3_tokens::facade::motion::HOVER.opacity,
-            Self::Focus => aphrody_m3_tokens::facade::motion::FOCUS.opacity,
-            Self::Pressed => aphrody_m3_tokens::facade::motion::PRESSED.opacity,
-            Self::Dragged => aphrody_m3_tokens::facade::motion::DRAGGED.opacity,
+            Self::Hover => yolo_tokens::facade::motion::HOVER.opacity,
+            Self::Focus => yolo_tokens::facade::motion::FOCUS.opacity,
+            Self::Pressed => yolo_tokens::facade::motion::PRESSED.opacity,
+            Self::Dragged => yolo_tokens::facade::motion::DRAGGED.opacity,
         }
     }
 }
@@ -257,7 +257,7 @@ pub struct Outline {
 }
 
 /// The 15 canonical M3 type styles, naming the constants in
-/// `aphrody_m3_tokens::facade::typography`.
+/// `yolo_tokens::facade::typography`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 #[allow(missing_docs, reason = "self-documenting M3 type-scale names")]
@@ -280,10 +280,10 @@ pub enum TypeStyleName {
 }
 
 impl TypeStyleName {
-    /// Resolve to the canonical `aphrody_m3_tokens::typography` constant.
+    /// Resolve to the canonical `yolo_tokens::typography` constant.
     #[must_use]
-    pub const fn style(self) -> aphrody_m3_tokens::facade::typography::TypeStyle {
-        use aphrody_m3_tokens::facade::typography::{
+    pub const fn style(self) -> yolo_tokens::facade::typography::TypeStyle {
+        use yolo_tokens::facade::typography::{
             BODY_LARGE, BODY_MEDIUM, BODY_SMALL, DISPLAY_LARGE, DISPLAY_MEDIUM, DISPLAY_SMALL,
             HEADLINE_LARGE, HEADLINE_MEDIUM, HEADLINE_SMALL, LABEL_LARGE, LABEL_MEDIUM,
             LABEL_SMALL, TITLE_LARGE, TITLE_MEDIUM, TITLE_SMALL,
@@ -461,7 +461,7 @@ mod tests {
     fn paint_resolves_role_against_scheme() {
         let scheme = DynamicScheme::from_argb(
             0xFF67_50A4,
-            aphrody_m3_tokens::facade::color::Variant::TonalSpot,
+            yolo_tokens::facade::color::Variant::TonalSpot,
             false,
             0.0,
         );
@@ -475,7 +475,7 @@ mod tests {
             width: 10,
             height: 10,
             seed_argb: 0xFF67_50A4,
-            variant: aphrody_m3_tokens::facade::color::Variant::TonalSpot,
+            variant: yolo_tokens::facade::color::Variant::TonalSpot,
             is_dark: false,
             contrast_level: 0.0,
             background: Some(Paint::Role(Role::Surface)),

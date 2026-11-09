@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.native-sdk.dev/app/v1.json",
+  "id": "com.aphrody.yolo.studio",
+  "name": "yolo-studio",
+  "display_name": "YOLO Sovereign Design System",
+  "version": "0.8.0",
+  "theme": "geist",
+  "theme_accent": "#ff73a8",
+  "compiledTypography": {
+    "display": {
+      "fontFamily": "Google Sans Flex",
+      "fontSize": "2.75rem",
+      "fontWeight": 680,
+      "lineHeight": 1.12,
+      "letterSpacing": "-0.03em"
+    },
+    "body": {
+      "fontFamily": "Google Sans Flex",
+      "fontSize": "1rem",
+      "fontWeight": 400,
+      "lineHeight": 1.5
+    },
+    "mono": {
+      "fontFamily": "JetBrains Mono",
+      "fontSize": "0.875rem",
+      "fontWeight": 500,
+      "lineHeight": 1.4,
+      "fontFeature": "tnum"
+    }
+  },
+  "themeOverrides": {
+    "colors": {
+      "primary": "#ff73a8",
+      "on-primary": "#1a0911",
+      "secondary": "#00d4b2",
+      "tertiary": "#ff9e3b",
+      "neutral": "#0f1014",
+      "surface-0": "#0b0c0f",
+      "surface-1": "#12141a",
+      "surface-2": "#1a1d26",
+      "surface-dark": "#0f1014",
+      "on-surface": "#f3f4f6",
+      "on-surface-variant": "#9ca3af",
+      "border-hairline": "oklch(100% 0 0 / 0.08)"
+    },
+    "radii": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "12px",
+      "lg": "20px",
+      "xl": "28px"
+    },
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "12px",
+      "lg": "20px",
+      "xl": "32px"
+    },
+    "concentricInnerRadiusPx": 8
+  }
+}

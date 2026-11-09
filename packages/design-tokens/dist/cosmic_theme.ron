@@ -1,0 +1,13 @@
+// AUTO-GENERATED COSMIC EPOCH THEME
+(
+    name: "YOLO Sovereign Design System",
+    primary: "#ff73a8",
+    accent: "#ff9e3b",
+    surface_dark: "#0f1014",
+    corner_radii: (
+        radius_xs: 4.0,
+        radius_s: 8.0,
+        radius_m: 12.0,
+        radius_l: 20.0,
+    ),
+)

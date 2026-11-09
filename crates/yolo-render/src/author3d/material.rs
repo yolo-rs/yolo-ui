@@ -6,7 +6,7 @@
 //! metallic/roughness [`Material`]. Presets use measured-style base colours
 //! for common metals and dielectrics.
 
-use aphrody_m3_tokens::facade::color::Role;
+use yolo_tokens::facade::color::Role;
 use serde::{Deserialize, Serialize};
 
 use crate::{

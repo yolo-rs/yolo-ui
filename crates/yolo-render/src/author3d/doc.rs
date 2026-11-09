@@ -1065,7 +1065,7 @@ impl Document3d {
     /// # Errors
     /// [`Doc3dError`] for evaluation or export failures.
     pub fn export_skinned_glb(&self, view: &ViewSpec) -> Result<Vec<u8>, Doc3dError> {
-        use aphrody_m3_tokens::facade::color::{DynamicScheme, Variant};
+        use yolo_tokens::facade::color::{DynamicScheme, Variant};
         use serde_json::json;
 
         let scheme = DynamicScheme::from_argb(view.seed_argb, Variant::TonalSpot, view.is_dark, 0.0);

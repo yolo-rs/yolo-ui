@@ -42,7 +42,8 @@
     "packages/bun-artifacts",
     "packages/yolo-shadcn-bun",
     "packages/yolo-react",
-    "packages/yolo-fullstack"
+    "packages/yolo-fullstack",
+    "packages/generative-ui"
   ],
   "scripts": {
     "ui": "bun scripts/ui.ts",

@@ -681,7 +681,7 @@ fn align_bytes_per_row(unaligned: u32) -> u32 {
 
 fn background_clear(
     scene: &Scene,
-    scheme: &aphrody_m3_tokens::facade::color::DynamicScheme,
+    scheme: &yolo_tokens::facade::color::DynamicScheme,
 ) -> wgpu::Color {
     let Some(bg) = scene.background else {
         return wgpu::Color::TRANSPARENT;
@@ -979,7 +979,7 @@ fn draw_textured<'pass>(
 
 #[cfg(test)]
 mod tests {
-    use aphrody_m3_tokens::facade::color::{Role, Variant};
+    use yolo_tokens::facade::color::{Role, Variant};
 
     use super::*;
     use crate::{
